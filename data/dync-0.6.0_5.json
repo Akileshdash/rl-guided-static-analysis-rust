@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "dync-0.6.0/src/value.rs",
+    "start_line": 300,
+    "start_col": 1,
+    "end_line": 300,
+    "end_col": 96,
+    "code_snippet": "unsafe impl<B: GetBytesMut + DropAsAligned, V: ?Sized + HasDrop + HasSync> Sync for Value<B, V> {}"
+}

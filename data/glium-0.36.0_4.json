@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/framebuffer/render_buffer.rs",
+    "start_line": 489,
+    "start_col": 1,
+    "end_line": 489,
+    "end_col": 30,
+    "code_snippet": "impl Drop for RenderBufferAny {\n    fn drop(&mut self) {\n        unsafe {\n            let mut ctxt = self.context.make_current();\n\n            // removing FBOs which contain this buffer\n            FramebuffersContainer::purge_renderbuffer(&mut ctxt, self.id);\n\n            if ctxt.version >= &Version(Api::Gl, 3, 0) ||\n               ctxt.version >= &Version(Api::GlEs, 2, 0)\n            {\n                if ctxt.state.renderbuffer == self.id {\n                    ctxt.state.renderbuffer = 0;\n                }\n\n                ctxt.gl.DeleteRenderbuffers(1, [ self.id ].as_ptr());\n\n            } else if ctxt.extensions.gl_ext_framebuffer_object {\n                if ctxt.state.renderbuffer == self.id {\n                    ctxt.state.renderbuffer = 0;\n                }\n\n                ctxt.gl.DeleteRenderbuffersEXT(1, [ self.id ].as_ptr());\n\n            } else {\n                unreachable!();\n            }\n        }\n    }\n}"
+}

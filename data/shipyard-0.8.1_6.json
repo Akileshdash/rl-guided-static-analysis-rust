@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sparse_set::SparseSet::<T>::private_apply_mut`",
+    "file": "shipyard-0.8.1/src/sparse_set/mod.rs",
+    "start_line": 623,
+    "start_col": 5,
+    "end_line": 656,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn private_apply_mut<R, F: FnOnce(&mut T, &mut T) -> R>(\n        &mut self,\n        a: EntityId,\n        b: EntityId,\n        f: F,\n        current: TrackingTimestamp,\n    ) -> R {\n        let a_index = self.index_of(a).unwrap_or_else(move || {\n            panic!(\n                \"Entity {:?} does not have any component in this storage.\",\n                a\n            )\n        });\n        let b_index = self.index_of(b).unwrap_or_else(move || {\n            panic!(\n                \"Entity {:?} does not have any component in this storage.\",\n                b\n            )\n        });\n\n        if a_index != b_index {\n            if self.is_tracking_modification {\n                self.modification_data[a_index] = current;\n                self.modification_data[b_index] = current;\n            }\n\n            let a = unsafe { &mut *self.data.as_mut_ptr().add(a_index) };\n            let b = unsafe { &mut *self.data.as_mut_ptr().add(b_index) };\n\n            f(a, b)\n        } else {\n            panic!(\"Cannot use apply with identical components.\");\n        }\n    }"
+}

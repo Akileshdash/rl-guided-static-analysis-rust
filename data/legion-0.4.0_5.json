@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "legion-0.4.0/src/internals/query/view/try_read.rs",
+    "start_line": 31,
+    "start_col": 1,
+    "end_line": 31,
+    "end_col": 35,
+    "code_snippet": "unsafe impl<T> Send for TryRead<T> {}\nunsafe impl<T: Sync> Sync for TryRead<T> {}"
+}

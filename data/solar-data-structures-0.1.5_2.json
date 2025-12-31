@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<on_drop::OnDrop<T, F> as std::ops::Drop>::drop`",
+    "file": "solar-data-structures-0.1.5/src/on_drop.rs",
+    "start_line": 65,
+    "start_col": 5,
+    "end_line": 73,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        unsafe {\n            if let Some(f) = self.0.1.take() {\n                f(std::ptr::read(&self.0.0));\n            } else {\n                ManuallyDrop::drop(&mut self.0);\n            }\n        }\n    }"
+}

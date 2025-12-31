@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `cache::delta::traverse::resolve::deltas`",
+    "file": "gix-pack-0.60.0/src/cache/delta/traverse/resolve.rs",
+    "start_line": 101,
+    "start_col": 1,
+    "end_line": 251,
+    "end_col": 2,
+    "code_snippet": "pub(super) unsafe fn deltas<T, F, MBFN, E, R>(\n    objects: gix_features::progress::StepShared,\n    size: gix_features::progress::StepShared,\n    item: &mut Item<T>,\n    State {\n        delta_bytes,\n        fully_resolved_delta_bytes,\n        progress,\n        resolve,\n        modify_base,\n        child_items,\n    }: &mut State<'_, F, MBFN, T>,"
+}

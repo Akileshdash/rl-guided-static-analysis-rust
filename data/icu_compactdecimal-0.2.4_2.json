@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::CompactDecimalPatternDataV1<'static> as icu_provider::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_compactdecimal-0.2.4/src/provider.rs",
+    "start_line": 73,
+    "start_col": 1,
+    "end_line": 84,
+    "end_col": 3,
+    "code_snippet": "#[icu_provider::data_struct(\n    marker(\n        LongCompactDecimalFormatDataV1Marker,\n        \"compactdecimal/long@1\",\n        extension_key = \"nu\"\n    ),\n    marker(\n        ShortCompactDecimalFormatDataV1Marker,\n        \"compactdecimal/short@1\",\n        extension_key = \"nu\"\n    )\n)]\n#[derive(Debug, Clone, Default, PartialEq)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(\n    feature = \"datagen\", \n    derive(serde::Serialize, databake::Bake),\n    databake(path = icu_compactdecimal::provider)\n)]\n#[yoke(prove_covariance_manually)]\npub struct CompactDecimalPatternDataV1<'data> {\n    /// A map keyed on log10 of the CLDR `type` attribute and the CLDR `count` attribute.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub patterns: ZeroMap2d<'data, i8, Count, PatternULE>,\n}"
+}

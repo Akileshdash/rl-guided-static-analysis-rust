@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `coercions::vec::<impl coercions::FromRuby for std::vec::Vec<T>>::from_ruby`",
+    "file": "helix-0.7.5/src/coercions/vec.rs",
+    "start_line": 9,
+    "start_col": 5,
+    "end_line": 27,
+    "end_col": 6,
+    "code_snippet": "fn from_ruby(value: VALUE) -> CheckResult<Self::Checked> {\n        if unsafe { sys::RB_TYPE_P(value, sys::T_ARRAY) } {\n            // Make sure we can actually do the conversions for the values.\n            let len = unsafe { sys::RARRAY_LEN(value) };\n            let mut checked = Vec::with_capacity(len as usize);\n\n            for i in 0..len {\n                let val = unsafe { sys::rb_ary_entry(value, i) };\n                match T::from_ruby(val) {\n                    Ok(v) => checked.push(v),\n                    Err(e) => type_error!(format!(\"Failed to convert {}, element {} has the wrong type: {}\", inspect(value), i, e)),\n                }\n            }\n\n            Ok(checked)\n        } else {\n            type_error!(value, \"an array\")\n        }\n    }"
+}

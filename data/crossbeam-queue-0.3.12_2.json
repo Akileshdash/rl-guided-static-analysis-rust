@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crossbeam-queue-0.3.12/src/seg_queue.rs",
+    "start_line": 461,
+    "start_col": 1,
+    "end_line": 461,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for SegQueue<T> {\n    fn drop(&mut self) {\n        let mut head = *self.head.index.get_mut();\n        let mut tail = *self.tail.index.get_mut();\n        let mut block = *self.head.block.get_mut();\n\n        // Erase the lower bits.\n        head &= !((1 << SHIFT) - 1);\n        tail &= !((1 << SHIFT) - 1);\n\n        unsafe {\n            // Drop all values between `head` and `tail` and deallocate the heap-allocated blocks.\n            while head != tail {\n                let offset = (head >> SHIFT) % LAP;\n\n                if offset < BLOCK_CAP {\n                    // Drop the value in the slot.\n                    let slot = (*block).slots.get_unchecked(offset);\n                    (*slot.value.get()).assume_init_drop();\n                } else {\n                    // Deallocate the block and move to the next one.\n                    let next = *(*block).next.get_mut();\n                    drop(Box::from_raw(block));\n                    block = next;\n                }\n\n                head = head.wrapping_add(1 << SHIFT);\n            }\n\n            // Deallocate the last remaining block.\n            if !block.is_null() {\n                drop(Box::from_raw(block));\n            }\n        }\n    }\n}"
+}

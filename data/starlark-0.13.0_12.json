@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::collect_repr_cycle`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 364,
+    "start_col": 5,
+    "end_line": 364,
+    "end_col": 57,
+    "code_snippet": "fn collect_repr_cycle(&self, collector: &mut String) {\n        write!(collector, \"<{}...>\", Self::TYPE).unwrap()\n    }"
+}

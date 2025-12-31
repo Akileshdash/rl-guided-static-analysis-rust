@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ducc::Ducc::set_user_data`",
+    "file": "ducc-0.1.5/src/ducc.rs",
+    "start_line": 106,
+    "start_col": 5,
+    "end_line": 115,
+    "end_col": 6,
+    "code_snippet": "pub fn set_user_data<K, T>(&mut self, key: K, data: T) -> Option<Box<dyn Any + 'static>>\n    where\n        K: ToString,\n        T: Any + 'static,\n    {\n        unsafe {\n            let any_map = get_any_map(self.ctx);\n            (*any_map).insert(key.to_string(), Box::new(data))\n        }\n    }"
+}

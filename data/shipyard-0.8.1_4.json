@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "shipyard-0.8.1/src/sparse_set/window.rs",
+    "start_line": 178,
+    "start_col": 1,
+    "end_line": 178,
+    "end_col": 80,
+    "code_snippet": "unsafe impl<T: Send + Component, Track> Send for FullRawWindowMut<'_, T, Track> {}"
+}

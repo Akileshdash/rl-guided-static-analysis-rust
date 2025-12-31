@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arcache::ll::LL::<K>::append_n`",
+    "file": "concread-0.5.7/src/arcache/ll.rs",
+    "start_line": 237,
+    "start_col": 5,
+    "end_line": 264,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn append_n(&mut self, mut owned: LLNodeOwned<K>) -> LLNodeRef<K> {\n        // Who is to the left of tail?\n        let n = owned.into_inner();\n        unsafe {\n            self.size += (*(*n).k.as_ptr()).ll_weight();\n            // must be untagged\n            // assert!((*n).tag == 0);\n            debug_assert!((*self.tail).next.is_null());\n            debug_assert!(!(*self.tail).prev.is_null());\n            let pred = (*self.tail).prev;\n            debug_assert!(!pred.is_null());\n            debug_assert!((*pred).next == self.tail);\n            (*n).prev = pred;\n            (*n).next = self.tail;\n            // (*n).tag = self.tag;\n            (*pred).next = n;\n            (*self.tail).prev = n;\n            // We should have a prev and next\n            debug_assert!(!(*n).prev.is_null());\n            debug_assert!(!(*n).next.is_null());\n            // And that prev's next is us, and next's prev is us.\n            debug_assert!(!(*(*n).prev).next.is_null());\n            debug_assert!(!(*(*n).next).prev.is_null());\n            debug_assert!((*(*n).prev).next == n);\n            debug_assert!((*(*n).next).prev == n);\n        };\n        LLNodeRef { inner: n }\n    }"
+}

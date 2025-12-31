@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "spin-0.10.0/src/mutex.rs",
+    "start_line": 117,
+    "start_col": 1,
+    "end_line": 117,
+    "end_col": 54,
+    "code_snippet": "unsafe impl<T: ?Sized + Send, R> Sync for Mutex<T, R> {}\nunsafe impl<T: ?Sized + Send, R> Send for Mutex<T, R> {}"
+}

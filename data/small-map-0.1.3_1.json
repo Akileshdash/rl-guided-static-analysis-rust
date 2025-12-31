@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "small-map-0.1.3/src/inline.rs",
+    "start_line": 67,
+    "start_col": 1,
+    "end_line": 67,
+    "end_col": 49,
+    "code_snippet": "impl<const N: usize, T> Drop for RawInline<N, T> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe { self.drop_elements() }\n    }\n}"
+}

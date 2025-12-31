@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "j4rs-0.22.0/src/api/instance.rs",
+    "start_line": 166,
+    "start_col": 1,
+    "end_line": 166,
+    "end_col": 31,
+    "code_snippet": "impl Drop for InstanceReceiver {\n    fn drop(&mut self) {\n        if self.tx_address > 0 {\n            debug(\"Dropping an InstanceReceiver\");\n            let p = self.tx_address as *mut Sender<Instance>;\n            unsafe {\n                let tx = Box::from_raw(p);\n                drop(tx);\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ssl::callbacks::raw_tlsext_ticket_key_evp`",
+    "file": "variant-ssl-0.17.3/src/ssl/callbacks.rs",
+    "start_line": 302,
+    "start_col": 1,
+    "end_line": 341,
+    "end_col": 2,
+    "code_snippet": "pub unsafe extern \"C\" fn raw_tlsext_ticket_key_evp<F>(\n    ssl: *mut ffi::SSL,\n    key_name: *mut c_uchar,\n    iv: *mut c_uchar,\n    cipher_ctx: *mut ffi::EVP_CIPHER_CTX,\n    mac_ctx: *mut ffi::EVP_MAC_CTX,\n    enc: c_int,\n) -> c_int\nwhere\n    F: Fn(\n            &mut SslRef,\n            &mut [u8],\n            &mut [u8],\n            &mut CipherCtxRef,\n            &mut MacCtxRef,\n            bool,\n        ) -> Result<TicketKeyStatus, ErrorStack>\n        + 'static\n        + Sync\n        + Send,\n{\n    let ssl = SslRef::from_ptr_mut(ssl);\n    let callback = ssl\n        .ssl_context()\n        .ex_data(SslContext::cached_ex_index::<F>())\n        .expect(\"BUG: ticket key callback missing\") as *const F;\n\n    let cipher_ctx = CipherCtxRef::from_ptr_mut(cipher_ctx);\n    let mac_ctx = MacCtxRef::from_ptr_mut(mac_ctx);\n\n    let key_name =\n        unsafe { util::from_raw_parts_mut(key_name, ffi::SSL_TICKET_KEY_NAME_LEN as usize) };\n    let iv = unsafe { util::from_raw_parts_mut(iv, ffi::EVP_MAX_IV_LENGTH as usize) };\n    (*callback)(ssl, key_name, iv, cipher_ctx, mac_ctx, enc != 0)\n        .map(|v| v.0)\n        .unwrap_or_else(|e| {\n            e.put();\n            -1\n        })\n}"
+}

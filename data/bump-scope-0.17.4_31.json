@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `mut_bump_vec_rev::MutBumpVecRev::<T, A>::generic_extend_from_slice_clone`",
+    "file": "bump-scope-0.17.4/src/mut_bump_vec_rev.rs",
+    "start_line": 1446,
+    "start_col": 5,
+    "end_line": 1464,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn generic_extend_from_slice_clone<E: ErrorBehavior>(&mut self, slice: &[T]) -> Result<(), E>\n    where\n        T: Clone,\n    {\n        self.generic_reserve(slice.len())?;\n\n        unsafe {\n            let src = slice.as_ptr().add(slice.len());\n            let mut pos = 0usize;\n\n            while likely(pos != slice.len()) {\n                let elem = &*src.sub(pos + 1);\n                self.push_unchecked(elem.clone());\n                pos += 1;\n            }\n        }\n\n        Ok(())\n    }"
+}

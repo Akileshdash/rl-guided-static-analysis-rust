@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "reusable-box-future-0.2.0/src/local_box_future.rs",
+    "start_line": 148,
+    "start_col": 1,
+    "end_line": 148,
+    "end_col": 43,
+    "code_snippet": "impl<T> Drop for ReusableLocalBoxFuture<T> {\n    fn drop(&mut self) {\n        unsafe {\n            drop(Box::from_raw(self.boxed.as_ptr()));\n        }\n    }\n}"
+}

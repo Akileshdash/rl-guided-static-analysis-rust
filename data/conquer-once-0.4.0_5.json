@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `cell::OnceCell::<T, B>::try_init_inner`",
+    "file": "conquer-once-0.4.0/src/cell.rs",
+    "start_line": 307,
+    "start_col": 5,
+    "end_line": 322,
+    "end_col": 6,
+    "code_snippet": "fn try_init_inner(&self, func: &mut dyn FnMut() -> T) -> Result<&T, TryBlockError> {\n        // sets the state to blocked (i.e. guarantees mutual exclusion) or\n        // returns with an error.\n        let guard = PanicGuard::<B>::try_block(&self.state)?;\n        // SAFETY: `try_block` ensures mutual exclusion, so no aliasing of the\n        // cell is possible and the raw pointer write is unproblematic (pointer\n        // is trivially aligned and valid)\n        unsafe {\n            let inner = &mut *self.inner.get();\n            inner.as_mut_ptr().write(func());\n        }\n        guard.disarm();\n\n        // SAFETY: the cell was just initialized so no check is required here\n        Ok(unsafe { self.get_unchecked() })\n    }"
+}

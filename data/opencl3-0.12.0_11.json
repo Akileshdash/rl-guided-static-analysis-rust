@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "opencl3-0.12.0/src/program.rs",
+    "start_line": 96,
+    "start_col": 1,
+    "end_line": 96,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Program {\n    fn drop(&mut self) {\n        unsafe { release_program(self.program).expect(\"Error: clReleaseProgram\") };\n    }\n}"
+}

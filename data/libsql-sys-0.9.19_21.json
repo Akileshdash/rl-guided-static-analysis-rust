@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::uses_heap_memory`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 147,
+    "start_col": 5,
+    "end_line": 149,
+    "end_col": 6,
+    "code_snippet": "fn uses_heap_memory(&self) -> bool {\n        unsafe { (*self.wrapper).uses_heap_memory(&*self.wrapped) }\n    }"
+}

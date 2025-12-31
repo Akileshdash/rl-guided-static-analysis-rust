@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::name_for_call_stack`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 369,
+    "start_col": 5,
+    "end_line": 369,
+    "end_col": 59,
+    "code_snippet": "fn name_for_call_stack(&self, me: Value<'v>) -> String {\n        me.to_repr()\n    }"
+}

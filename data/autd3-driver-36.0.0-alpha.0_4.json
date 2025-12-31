@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<O as firmware::driver::operation::boxed::DOperation>::pack`",
+    "file": "autd3-driver-36.0.0-alpha.0/src/firmware/driver/operation/boxed.rs",
+    "start_line": 150,
+    "start_col": 5,
+    "end_line": 152,
+    "end_col": 6,
+    "code_snippet": "fn pack(&mut self, device: &Device, tx: &mut [u8]) -> Result<usize, AUTDDriverError> {\n        Ok(O::pack(self, unsafe { std::mem::transmute(device) }, tx)?)\n    }"
+}

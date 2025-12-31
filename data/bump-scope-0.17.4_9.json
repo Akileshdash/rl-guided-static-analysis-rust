@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/bump_string.rs",
+    "start_line": 2066,
+    "start_col": 1,
+    "end_line": 2066,
+    "end_col": 46,
+    "code_snippet": "impl<A: BumpAllocator> Drop for BumpString<A> {\n    fn drop(&mut self) {\n        // SAFETY:\n        // The dangling pointer cannot be a valid ptr into a chunk; because\n        // of the minimum chunk alignment of 16 the smallest address the chunk\n        // may be at is 16. The bump allocator handles deallocate requests\n        // from pointers outside its bound just fine by ignoring them.\n        unsafe {\n            let ptr = self.fixed.as_non_null().cast();\n            let layout = Layout::from_size_align_unchecked(self.fixed.capacity(), 1);\n            self.allocator.deallocate(ptr, layout);\n        }\n    }\n}"
+}

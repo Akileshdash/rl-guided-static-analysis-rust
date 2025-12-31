@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "alto-3.0.4/src/alc.rs",
+    "start_line": 801,
+    "start_col": 1,
+    "end_line": 801,
+    "end_col": 43,
+    "code_snippet": "impl<F: StandardFrame> Drop for Capture<F> {\n\tfn drop(&mut self) {\n\t\tunsafe { self.alto.0.api.alcCaptureCloseDevice(self.dev); }\n\t}\n}"
+}

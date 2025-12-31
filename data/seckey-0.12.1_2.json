@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "seckey-0.12.1/src/bytes.rs",
+    "start_line": 169,
+    "start_col": 1,
+    "end_line": 169,
+    "end_col": 35,
+    "code_snippet": "impl<'a> Drop for SecReadGuard<'a> {\n    fn drop(&mut self) {\n        #[cfg(feature = \"use_os\")]\n        unsafe {\n            let count = self.0.count.get();\n            self.0.count.set(count - 1);\n            if count <= 1 {\n                mprotect(self.0.ptr, Prot::NoAccess);\n            }\n        }\n    }\n}"
+}

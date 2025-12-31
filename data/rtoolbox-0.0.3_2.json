@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rtoolbox-0.0.3/src/safe_vec.rs",
+    "start_line": 22,
+    "start_col": 1,
+    "end_line": 22,
+    "end_col": 22,
+    "code_snippet": "impl Drop for SafeVec {\n    fn drop(&mut self) {\n        let default = u8::default();\n\n        for c in self.inner.as_mut_slice() {\n            unsafe { ptr::write_volatile(c, default) };\n        }\n\n        atomic::fence(atomic::Ordering::SeqCst);\n        atomic::compiler_fence(atomic::Ordering::SeqCst);\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arcache::ARCacheWriteTxn::<'_, K, V, S>::get_mut`",
+    "file": "concread-0.5.7/src/arcache/mod.rs",
+    "start_line": 1709,
+    "start_col": 5,
+    "end_line": 1747,
+    "end_col": 6,
+    "code_snippet": "pub fn get_mut<Q>(&mut self, k: &Q, make_dirty: bool) -> Option<&mut V>\n    where\n        K: Borrow<Q>,\n        Q: Hash + Eq + Ord + ?Sized,\n    {\n        // If we were requested to clear, we can not copy to the tlocal cache.\n        let is_cleared = unsafe {\n            let clear_ptr = self.clear.get();\n            *clear_ptr\n        };\n\n        // If the main cache has NOT been cleared (ie it has items) and our tlocal\n        // does NOT contain this key, then we prime it.\n        if !is_cleared && !self.tlocal.contains_key(k) {\n            // Copy from the core cache into the tlocal.\n            let k_hash: u64 = self.cache.prehash(k);\n            if let Some(v) = self.cache.get_prehashed(k, k_hash) {\n                if let Some((dk, dv, ds)) = v.to_kvsref() {\n                    self.tlocal.insert(\n                        dk.clone(),\n                        ThreadCacheItem::Present(dv.clone(), !make_dirty, ds),\n                    );\n                }\n            }\n        };\n\n        // Now return from the tlocal, if present, a mut pointer.\n\n        match self.tlocal.get_mut(k) {\n            Some(ThreadCacheItem::Present(v, clean, _size)) => {\n                if make_dirty && *clean {\n                    *clean = false;\n                }\n                let v = v as *mut _;\n                unsafe { Some(&mut (*v)) }\n            }\n            _ => None,\n        }\n    }"
+}

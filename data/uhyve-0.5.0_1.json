@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "uhyve-0.5.0/src/mem.rs",
+    "start_line": 158,
+    "start_col": 1,
+    "end_line": 158,
+    "end_col": 25,
+    "code_snippet": "impl Drop for MmapMemory {\n\tfn drop(&mut self) {\n\t\tif self.memory_size > 0 {\n\t\t\tlet host_addr = NonNull::new(self.host_address as *mut c_void).unwrap();\n\t\t\tunsafe {\n\t\t\t\tmunmap(host_addr, self.memory_size).unwrap();\n\t\t\t}\n\t\t}\n\t}\n}"
+}

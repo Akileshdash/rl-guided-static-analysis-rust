@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "ringbuf-0.4.8/src/storage.rs",
+    "start_line": 141,
+    "start_col": 1,
+    "end_line": 141,
+    "end_col": 46,
+    "code_snippet": "unsafe impl<T> Sync for Heap<T> where T: Send {}\n#[cfg(feature = \"alloc\")]"
+}

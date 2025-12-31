@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `input::text_editable::BasicEditor::<T>::process_pre_edit`",
+    "file": "ribir_widgets-0.4.0-alpha.44/src/input/text_editable.rs",
+    "start_line": 204,
+    "start_col": 3,
+    "end_line": 244,
+    "end_col": 4,
+    "code_snippet": "fn process_pre_edit(&mut self, e: &ImePreEditEvent) {\n    match &e.pre_edit {\n      ImePreEdit::Begin => {\n        self.del_sel();\n        self.pre_edit = Some(PreEditState { position: self.cluster_rg().start, value: None });\n      }\n      ImePreEdit::PreEdit { value, cursor } => {\n        let Some(pre_edit) = self.pre_edit.as_mut() else {\n          return;\n        };\n        // Safety: it is safe to modify all the fields to avoid conflicts with the\n        // borrow checker.\n        let PreEditState { position: pos, value: editing } =\n          unsafe { &mut *(pre_edit as *mut PreEditState) };\n        if let Some(txt) = editing {\n          self.delete(Range { start: *pos, end: *pos + txt.len() });\n        }\n        let len = self.insert(value);\n        let pos = if len == value.len() {\n          *editing = Some(value.clone());\n          CaretPosition {\n            cluster: *pos + cursor.map(|(start, _)| start).unwrap_or(0),\n            position: None,\n          }\n        } else {\n          *editing = Some(\n            self\n              .substr(Range { start: *pos, end: *pos + len })\n              .to_string(),\n          );\n          CaretPosition { cluster: *pos + len, position: None }\n        };\n        self.host.selection = Selection::splat(pos);\n      }\n      ImePreEdit::End => {\n        if let Some(PreEditState { value: Some(txt), position, .. }) = self.pre_edit.take() {\n          self.delete(Range { start: position, end: position + txt.len() });\n        }\n      }\n    }\n  }"
+}

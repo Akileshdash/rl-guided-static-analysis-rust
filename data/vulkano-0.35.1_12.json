@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkano-0.35.1/src/sync/future/fence_signal.rs",
+    "start_line": 520,
+    "start_col": 1,
+    "end_line": 522,
+    "end_col": 18,
+    "code_snippet": "impl<F> Drop for FenceSignalFuture<F>\nwhere\n    F: GpuFuture,\n{\n    fn drop(&mut self) {\n        if thread::panicking() {\n            return;\n        }\n\n        let mut state = self.state.lock();\n\n        // We ignore any possible error while submitting for now. Problems are handled below.\n        let _ = self.flush_impl(&mut state);\n\n        match replace(&mut *state, FenceSignalFutureState::Cleaned) {\n            FenceSignalFutureState::Flushed(previous, fence) => {\n                // This is a normal situation. Submitting worked.\n                // TODO: handle errors?\n                fence.wait(None).unwrap();\n                unsafe { previous.signal_finished() };\n            }\n            FenceSignalFutureState::Cleaned => {\n                // Also a normal situation. The user called `cleanup_finished()` before dropping.\n            }\n            FenceSignalFutureState::Poisoned => {\n                // The previous future was already dropped and blocked the current queue.\n            }\n            FenceSignalFutureState::Pending(_, _)\n            | FenceSignalFutureState::PartiallyFlushed(_, _) => {\n                // Flushing produced an error. There's nothing more we can do except drop the\n                // previous future and let it block the current queue.\n            }\n        }\n    }\n}"
+}

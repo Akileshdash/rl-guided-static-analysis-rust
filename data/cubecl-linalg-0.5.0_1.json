@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `matmul::components::global::args::TensorOutput::<EI, EO, GA>::write`",
+    "file": "cubecl-linalg-0.5.0/src/matmul/components/global/args.rs",
+    "start_line": 402,
+    "start_col": 5,
+    "end_line": 404,
+    "end_col": 6,
+    "code_snippet": "pub fn write(&self, coordinate: u32, value: Line<EO>) {\n        unsafe { GA::write_out(&mut (*self.state), coordinate, value) }\n    }"
+}

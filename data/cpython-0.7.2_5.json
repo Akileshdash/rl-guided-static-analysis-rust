@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `buffer::PyBuffer::as_fortran_slice`",
+    "file": "cpython-0.7.2/src/buffer.rs",
+    "start_line": 374,
+    "start_col": 5,
+    "end_line": 392,
+    "end_col": 6,
+    "code_snippet": "pub fn as_fortran_slice<'a, T: Element>(\n        &'a self,\n        _py: Python<'a>,\n    ) -> Option<&'a [ReadOnlyCell<T>]> {\n        if mem::size_of::<T>() == self.item_size()\n            && (self.0.buf as usize) % mem::align_of::<T>() == 0\n            && self.is_fortran_contiguous()\n            && T::is_compatible_format(self.format())\n        {\n            unsafe {\n                Some(slice::from_raw_parts(\n                    self.0.buf as *mut ReadOnlyCell<T>,\n                    self.item_count(),\n                ))\n            }\n        } else {\n            None\n        }\n    }"
+}

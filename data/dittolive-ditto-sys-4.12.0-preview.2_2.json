@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dittolive-ditto-sys-4.12.0-preview.2/ffi_utils.rs",
+    "start_line": 379,
+    "start_col": 5,
+    "end_line": 381,
+    "end_col": 23,
+    "code_snippet": "impl<T> Drop for ThinArc<T>\n    where\n        T: FfiDropArc,\n    {\n        fn drop(&mut self) {\n            unsafe {\n                T::drop_arced(::core::mem::transmute(self));\n            }\n        }\n    }"
+}

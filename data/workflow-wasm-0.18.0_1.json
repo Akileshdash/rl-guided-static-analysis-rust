@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "workflow-wasm-0.18.0/src/callback.rs",
+    "start_line": 88,
+    "start_col": 1,
+    "end_line": 88,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T: ?Sized> Sync for Callback<T> {}"
+}

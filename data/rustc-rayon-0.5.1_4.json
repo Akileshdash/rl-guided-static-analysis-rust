@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rustc-rayon-0.5.1/src/slice/mergesort.rs",
+    "start_line": 205,
+    "start_col": 5,
+    "end_line": 205,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for MergeHole<T> {\n        fn drop(&mut self) {\n            // `T` is not a zero-sized type, so it's okay to divide by its size.\n            unsafe {\n                let len = self.end.offset_from(self.start) as usize;\n                ptr::copy_nonoverlapping(self.start, self.dest, len);\n            }\n        }\n    }"
+}

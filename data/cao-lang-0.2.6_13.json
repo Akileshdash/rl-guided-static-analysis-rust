@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `collections::hash_map::Entry::<'a, K, V>::or_insert_with`",
+    "file": "cao-lang-0.2.6/src/collections/hash_map.rs",
+    "start_line": 97,
+    "start_col": 5,
+    "end_line": 115,
+    "end_col": 6,
+    "code_snippet": "pub fn or_insert_with<F: FnOnce() -> V>(self, fun: F) -> &'a mut V {\n        match self.pl {\n            EntryPayload::Occupied(res) => res,\n            EntryPayload::Vacant {\n                hash,\n                key,\n                value,\n                count,\n            } => {\n                *hash = self.hash;\n                unsafe {\n                    std::ptr::write(key, self.key);\n                    std::ptr::write(value, fun());\n                    *count += 1;\n                    &mut *value\n                }\n            }\n        }\n    }"
+}

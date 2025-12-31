@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mallumo-gls-0.43.0/src/compute_program.rs",
+    "start_line": 122,
+    "start_col": 1,
+    "end_line": 122,
+    "end_col": 29,
+    "code_snippet": "impl Drop for ComputeProgram {\n    fn drop(&mut self) {\n        unsafe {\n            delete_program(self.id);\n        }\n    }\n}"
+}

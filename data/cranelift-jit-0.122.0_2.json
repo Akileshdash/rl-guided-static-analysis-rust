@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cranelift-jit-0.122.0/src/memory/system.rs",
+    "start_line": 99,
+    "start_col": 1,
+    "end_line": 99,
+    "end_col": 21,
+    "code_snippet": "impl Drop for PtrLen {\n    fn drop(&mut self) {\n        if !self.ptr.is_null() {\n            let page_size = region::page::size();\n            let layout = alloc::Layout::from_size_align(self.len, page_size).unwrap();\n            unsafe {\n                region::protect(self.ptr, self.len, region::Protection::READ_WRITE)\n                    .expect(\"unable to unprotect memory\");\n                alloc::dealloc(self.ptr, layout)\n            }\n        }\n    }\n}"
+}

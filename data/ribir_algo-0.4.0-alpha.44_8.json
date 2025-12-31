@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<frame_cache::KeyRef<K> as std::cmp::PartialEq>::eq`",
+    "file": "ribir_algo-0.4.0-alpha.44/src/frame_cache.rs",
+    "start_line": 29,
+    "start_col": 3,
+    "end_line": 29,
+    "end_col": 81,
+    "code_snippet": "fn eq(&self, other: &KeyRef<K>) -> bool { unsafe { (*self.k).eq(&*other.k) } }\n}\n\nimpl<K: Eq> Eq for KeyRef<K> {}\n\n// This type exists to allow a \"blanket\" Borrow impl for KeyRef without\n// conflicting with the  stdlib blanket impl\n#[repr(transparent)]\nstruct KeyWrapper<K: ?Sized>(K);\n\nimpl<K: ?Sized> KeyWrapper<K> {"
+}

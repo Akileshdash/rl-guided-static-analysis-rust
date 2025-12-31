@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "macroquad-0.4.14/src/telemetry.rs",
+    "start_line": 310,
+    "start_col": 1,
+    "end_line": 310,
+    "end_col": 35,
+    "code_snippet": "impl<'a> Drop for LogTimeGuard<'a> {\n    fn drop(&mut self) {\n        log_string(&format!(\n            \"Time query: {}, {:.1}s\",\n            self.name,\n            get_time() - self.start_time\n        ));\n    }\n}"
+}

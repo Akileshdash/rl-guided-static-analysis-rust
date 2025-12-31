@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "basedrop-0.1.2/src/shared_cell.rs",
+    "start_line": 152,
+    "start_col": 1,
+    "end_line": 152,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for SharedCell<T> {\n    fn drop(&mut self) {\n        let _ = Shared {\n            node: unsafe { NonNull::new_unchecked(self.node.load(Ordering::Relaxed)) },\n            phantom: PhantomData,\n        };\n    }\n}"
+}

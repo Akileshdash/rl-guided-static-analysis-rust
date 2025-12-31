@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "zng-app-0.16.9/src/widget/builder.rs",
+    "start_line": 3021,
+    "start_col": 1,
+    "end_line": 3021,
+    "end_col": 54,
+    "code_snippet": "unsafe impl<Tuple> Send for PropertyInputTypes<Tuple> {}\nunsafe impl<Tuple> Sync for PropertyInputTypes<Tuple> {}"
+}

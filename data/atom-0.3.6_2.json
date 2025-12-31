@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "atom-0.3.6/src/lib.rs",
+    "start_line": 145,
+    "start_col": 1,
+    "end_line": 147,
+    "end_col": 39,
+    "code_snippet": "unsafe impl<P> Sync for Atom<P>\nwhere\n    P: IntoRawPtr + FromRawPtr + Send,\n{\n}"
+}

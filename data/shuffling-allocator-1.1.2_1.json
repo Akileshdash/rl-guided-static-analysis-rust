@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "shuffling-allocator-1.1.2/src/lazy_atomic_cell.rs",
+    "start_line": 18,
+    "start_col": 1,
+    "end_line": 20,
+    "end_col": 30,
+    "code_snippet": "impl<A, T> Drop for LazyAtomicCell<A, T>\nwhere\n    A: 'static + GlobalAlloc,\n{\n    fn drop(&mut self) {\n        let p = self.ptr.swap(ptr::null_mut(), Ordering::SeqCst);\n        if p.is_null() {\n            return;\n        }\n        unsafe {\n            ptr::drop_in_place(p);\n            self.allocator.dealloc(p.cast(), Layout::new::<T>());\n        }\n    }\n}"
+}

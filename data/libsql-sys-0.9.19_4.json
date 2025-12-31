@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wal::ffi::frames`",
+    "file": "libsql-sys-0.9.19/src/wal/ffi.rs",
+    "start_line": 317,
+    "start_col": 1,
+    "end_line": 347,
+    "end_col": 2,
+    "code_snippet": "pub unsafe extern \"C\" fn frames<T: Wal>(\n    wal: *mut wal_impl,\n    page_size: c_int,\n    page_headers: *mut PgHdr,\n    size_after: u32,\n    is_commit: c_int,\n    sync_flags: c_int,\n    out_commited_frames: *mut c_int,\n) -> c_int {\n    let this = &mut (*(wal as *mut T));\n    let mut headers = PageHeaders {\n        inner: page_headers,\n    };\n    match this.insert_frames(\n        page_size,\n        &mut headers,\n        size_after,\n        is_commit != 0,\n        sync_flags,\n    ) {\n        Ok(n) => {\n            if !out_commited_frames.is_null() {\n                unsafe {\n                    *out_commited_frames = n as _;\n                }\n            }\n            SQLITE_OK\n        }\n        Err(code) => code.extended_code,\n    }\n}"
+}

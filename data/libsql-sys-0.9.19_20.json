@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::exclusive_mode`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 143,
+    "start_col": 5,
+    "end_line": 145,
+    "end_col": 6,
+    "code_snippet": "fn exclusive_mode(&mut self, op: c_int) -> super::Result<()> {\n        unsafe { (*self.wrapper).exclusive_mode(&mut *self.wrapped, op) }\n    }"
+}

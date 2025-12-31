@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "any_vec-0.14.0/src/ops/splice.rs",
+    "start_line": 62,
+    "start_col": 1,
+    "end_line": 66,
+    "end_col": 32,
+    "code_snippet": "impl<'a, AnyVecPtr: IAnyVecRawPtr, ReplaceIter: ExactSizeIterator> Drop\nfor\n    Splice<'a, AnyVecPtr, ReplaceIter>\nwhere\n    ReplaceIter::Item: AnyValue\n{\n    fn drop(&mut self) {\n        use any_vec_ptr::utils::*;\n        let mut any_vec_ptr = self.iter.any_vec_ptr;\n\n        let elements_left = self.original_len - self.iter.end;\n        let replace_end = self.start + self.replace_with.len();\n        let new_len = replace_end + elements_left;\n\n        // 0. capacity.\n        {\n            let any_vec_raw = unsafe{any_vec_ptr.any_vec_raw_mut()};\n            any_vec_raw.reserve(new_len);\n        }\n\n        // 1. drop elements.\n        unsafe{\n            drop_elements_range(\n                any_vec_ptr,\n                self.iter.index,\n                self.iter.end\n            );\n        }\n\n        // 2. move elements\n        unsafe{\n            move_elements_at(\n                any_vec_ptr,\n                self.iter.end,\n                replace_end,\n                elements_left\n            );\n        }\n\n        // 3. move replace_with in\n        unsafe{\n            let type_id = element_typeid(any_vec_ptr);\n            let element_size = element_size(any_vec_ptr);\n            let mut ptr = element_mut_ptr_at(any_vec_ptr, self.start);\n            while let Some(replace_element) = self.replace_with.next() {\n                assert_types_equal(type_id, replace_element.value_typeid());\n                replace_element.move_into::<\n                    <ReplaceIter::Item as AnyValueSizeless>::Type\n                >(ptr, element_size);\n                ptr = ptr.add(element_size);\n            }\n        }\n\n        // 4. restore len\n        {\n            let any_vec_raw = unsafe{any_vec_ptr.any_vec_raw_mut()};\n            any_vec_raw.len = new_len;\n        }\n    }\n}"
+}

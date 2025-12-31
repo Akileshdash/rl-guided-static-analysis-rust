@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "slave-pool-0.4.0/src/lib.rs",
+    "start_line": 141,
+    "start_col": 1,
+    "end_line": 141,
+    "end_col": 42,
+    "code_snippet": "unsafe impl<T: Send> Sync for Receiver<T> {\n}"
+}

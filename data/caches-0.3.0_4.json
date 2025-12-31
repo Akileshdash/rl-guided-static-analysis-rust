@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<KeyRef<K> as core::cmp::PartialEq>::eq`",
+    "file": "caches-0.3.0/src/lib.rs",
+    "start_line": 160,
+    "start_col": 5,
+    "end_line": 162,
+    "end_col": 6,
+    "code_snippet": "fn eq(&self, other: &KeyRef<K>) -> bool {\n        unsafe { (*self.k).eq(&*other.k) }\n    }"
+}

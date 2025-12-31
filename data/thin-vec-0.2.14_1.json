@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "thin-vec-0.2.14/src/lib.rs",
+    "start_line": 2462,
+    "start_col": 1,
+    "end_line": 2462,
+    "end_col": 34,
+    "code_snippet": "impl<'a, T> Drop for Drain<'a, T> {\n    fn drop(&mut self) {\n        // Consume the rest of the iterator.\n        for _ in self.by_ref() {}\n\n        // Move the tail over the drained items, and update the length.\n        unsafe {\n            let vec = &mut *self.vec;\n\n            // Don't mutate the empty singleton!\n            if !vec.is_singleton() {\n                let old_len = vec.len();\n                let start = vec.data_raw().add(old_len);\n                let end = vec.data_raw().add(self.end);\n                ptr::copy(end, start, self.tail);\n                vec.set_len_non_singleton(old_len + self.tail);\n            }\n        }\n    }\n}"
+}

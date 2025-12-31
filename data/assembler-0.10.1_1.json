@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "assembler-0.10.1/src/LabelledLocations.rs",
+    "start_line": 15,
+    "start_col": 1,
+    "end_line": 15,
+    "end_col": 32,
+    "code_snippet": "impl Drop for LabelledLocations\n{\n\t#[inline(always)]\n\tfn drop(&mut self)\n\t{\n\t\tunsafe { dealloc(self.mut_u8_pointer(), self.layout) }\n\t}\n}"
+}

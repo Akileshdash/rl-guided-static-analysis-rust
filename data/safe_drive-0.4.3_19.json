@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "safe_drive-0.4.3/src/service/server.rs",
+    "start_line": 291,
+    "start_col": 1,
+    "end_line": 291,
+    "end_col": 34,
+    "code_snippet": "unsafe impl<T> Send for Server<T> {}"
+}

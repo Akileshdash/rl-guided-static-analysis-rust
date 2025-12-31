@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `rank_select::RankSimple::<BV>::try_rank`",
+    "file": "bitm-0.5.1/src/rank_select/mod.rs",
+    "start_line": 330,
+    "start_col": 5,
+    "end_line": 340,
+    "end_col": 6,
+    "code_snippet": "pub fn try_rank(&self, index: usize) -> Option<u32> {\n        let word_idx = index / 64;\n        let word_offset = index as u8 % 64;\n        let block = index / 512;\n        let mut r = (self.content.get(word_idx)? & n_lowest_bits(word_offset)).count_ones() as u32;\n        r += unsafe{self.ranks.get_unchecked(block)};\n        for w in block * (512 / 64)..word_idx {\n            r += unsafe{self.content.get_unchecked(w)}.count_ones();\n        }\n        Some(r)\n    }"
+}

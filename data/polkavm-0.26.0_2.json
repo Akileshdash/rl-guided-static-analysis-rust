@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "polkavm-0.26.0/src/linker.rs",
+    "start_line": 568,
+    "start_col": 1,
+    "end_line": 568,
+    "end_col": 45,
+    "code_snippet": "unsafe impl<T> Send for UnsafePhantomData<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "self_cell-1.2.0/src/unsafe_self_cell.rs",
+    "start_line": 134,
+    "start_col": 1,
+    "end_line": 139,
+    "end_col": 27,
+    "code_snippet": "unsafe impl<ContainedIn, Owner, DependentStatic> Sync\n    for UnsafeSelfCell<ContainedIn, Owner, DependentStatic>\nwhere\n    // Only derive Sync if Owner and DependentStatic is also Sync\n    Owner: Sync,\n    DependentStatic: Sync,\n{\n}"
+}

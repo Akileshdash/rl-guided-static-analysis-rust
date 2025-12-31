@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `string::repr::_::<impl bytecheck::CheckBytes<C> for string::repr::ArchivedStringRepr>::check_bytes`",
+    "file": "rkyv-0.8.11/src/string/repr.rs",
+    "start_line": 286,
+    "start_col": 9,
+    "end_line": 299,
+    "end_col": 10,
+    "code_snippet": "unsafe fn check_bytes(\n            value: *const Self,\n            _: &mut C,\n        ) -> Result<(), C::Error> {\n            // SAFETY: The fields of `ArchivedStringRepr` are always valid for\n            // every bit pattern.\n            let repr = unsafe { &*value };\n\n            if !repr.is_inline() && repr.len() <= INLINE_CAPACITY {\n                fail!(CheckStringReprError);\n            } else {\n                Ok(())\n            }\n        }"
+}

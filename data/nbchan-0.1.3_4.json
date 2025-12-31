@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "nbchan-0.1.3/src/queue.rs",
+    "start_line": 59,
+    "start_col": 1,
+    "end_line": 59,
+    "end_col": 43,
+    "code_snippet": "unsafe impl<T: Send> Sync for QueueTail<T> {}\nimpl<T> Clone for QueueTail<T> {\n    fn clone(&self) -> Self {\n        QueueTail {\n            tail: Arc::clone(&self.tail),\n        }\n    }\n}"
+}

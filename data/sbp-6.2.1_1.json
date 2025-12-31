@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<[T; LEN] as wire_format::WireFormat>::parse_unchecked`",
+    "file": "sbp-6.2.1/src/wire_format.rs",
+    "start_line": 78,
+    "start_col": 5,
+    "end_line": 89,
+    "end_col": 6,
+    "code_snippet": "fn parse_unchecked<B: Buf>(buf: &mut B) -> Self {\n        // Safety: MaybeUninit`s do not require initialization so we can call assume_init()\n        // https://doc.rust-lang.org/stable/std/mem/union.MaybeUninit.html#initializing-an-array-element-by-element\n        let mut a: [MaybeUninit<T>; LEN] = unsafe { MaybeUninit::uninit().assume_init() };\n        for el in &mut a[..] {\n            unsafe {\n                ptr::write(el.as_mut_ptr(), T::parse_unchecked(buf));\n            }\n        }\n        // Safety: Everything is initialized\n        unsafe { ptr::read(&a as *const _ as *const Self) }\n    }"
+}

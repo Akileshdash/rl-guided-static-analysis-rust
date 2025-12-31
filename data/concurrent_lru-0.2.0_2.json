@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "concurrent_lru-0.2.0/src/unsharded.rs",
+    "start_line": 102,
+    "start_col": 1,
+    "end_line": 102,
+    "end_col": 80,
+    "code_snippet": "unsafe impl<'a, K, V> Sync for CacheHandle<'a, K, V> where K: Hash + Eq + Clone {}"
+}

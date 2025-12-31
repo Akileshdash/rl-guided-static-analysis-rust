@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "crossbeam-queue-0.3.12/src/array_queue.rs",
+    "start_line": 77,
+    "start_col": 1,
+    "end_line": 77,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T: Send> Sync for ArrayQueue<T> {}\nunsafe impl<T: Send> Send for ArrayQueue<T> {}"
+}

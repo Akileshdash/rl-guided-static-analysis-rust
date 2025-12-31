@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "opencl3-0.12.0/src/svm.rs",
+    "start_line": 171,
+    "start_col": 1,
+    "end_line": 171,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for SvmRawVec<'_, T> {\n    fn drop(&mut self) {\n        if !self.ptr.is_null() {\n            if self.fine_grain_system {\n                let layout = Layout::array::<T>(self.cap).expect(\"Layout::array failure.\");\n                unsafe {\n                    alloc::dealloc(self.ptr.cast::<u8>(), layout);\n                }\n            } else {\n                unsafe {\n                    let _ = svm_free(self.context.get(), self.ptr.cast::<c_void>());\n                };\n            }\n            self.ptr = ptr::null_mut();\n        }\n    }\n}"
+}

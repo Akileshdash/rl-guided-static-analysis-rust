@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `interface::boxed::<impl interface::Resolver<K> for std::boxed::Box<I>>::resolve_unchecked`",
+    "file": "lasso-0.7.3/src/interface/boxed.rs",
+    "start_line": 116,
+    "start_col": 5,
+    "end_line": 118,
+    "end_col": 6,
+    "code_snippet": "unsafe fn resolve_unchecked<'a>(&'a self, key: &K) -> &'a str {\n        unsafe { (**self).resolve_unchecked(key) }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glean-ffi-44.2.0/src/upload.rs",
+    "start_line": 135,
+    "start_col": 1,
+    "end_line": 135,
+    "end_col": 32,
+    "code_snippet": "impl Drop for FfiPingUploadTask {\n    fn drop(&mut self) {\n        if let FfiPingUploadTask::Upload {\n            document_id,\n            path,\n            body,\n            headers,\n        } = self\n        {\n            // We need to free the previously allocated strings before dropping.\n            unsafe {\n                glean_str_free(*document_id);\n                glean_str_free(*path);\n                glean_str_free(*headers);\n            }\n            // Unfortunately, we cannot directly call `body.destroy();` as\n            // we're behind a mutable reference, so we have to manually take the\n            // ownership and drop. Moreover, `ByteBuffer::new_with_size(0)`\n            // does not allocate, so we are not leaking memory.\n            let body = std::mem::replace(body, ByteBuffer::new_with_size(0));\n            body.destroy();\n        }\n    }\n}"
+}

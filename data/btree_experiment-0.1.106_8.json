@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `vecs::PairVec::<K, V>::search_to`",
+    "file": "btree_experiment-0.1.106/src/vecs.rs",
+    "start_line": 585,
+    "start_col": 5,
+    "end_line": 603,
+    "end_col": 6,
+    "code_snippet": "pub fn search_to<Q>(&self, mut j: usize, key: &Q) -> Result<usize, usize>\n    where\n        K: Borrow<Q> + Ord,\n        Q: Ord + ?Sized,\n    {\n        unsafe {\n            let mut i = 0;\n            let p = self.p.as_ptr().cast::<K>();\n            while i != j {\n                let m = (i + j) >> 1;\n                match (*p.add(m)).borrow().cmp(key) {\n                    Ordering::Equal => return Ok(m),\n                    Ordering::Less => i = m + 1,\n                    Ordering::Greater => j = m,\n                }\n            }\n            Err(i)\n        }\n    }"
+}

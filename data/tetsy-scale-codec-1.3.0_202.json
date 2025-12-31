@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<[T; 8192] as codec::Encode>::encode_to`",
+    "file": "tetsy-scale-codec-1.3.0/src/codec.rs",
+    "start_line": 563,
+    "start_col": 5,
+    "end_line": 590,
+    "end_col": 6,
+    "code_snippet": "fn encode_to<W: Output>(&self, dest: &mut W) {\n\t\t\t\t\tmacro_rules! encode_to {\n\t\t\t\t\t\t( u8, $self:ident, $dest:ident ) => {{\n\t\t\t\t\t\t\tlet typed = unsafe { mem::transmute::<&[T], &[u8]>(&$self[..]) };\n\t\t\t\t\t\t\t$dest.write(&typed)\n\t\t\t\t\t\t}};\n\t\t\t\t\t\t( i8, $self:ident, $dest:ident ) => {{\n\t\t\t\t\t\t\t// `i8` has the same size as `u8`. We can just convert it here and write to the\n\t\t\t\t\t\t\t// dest buffer directly.\n\t\t\t\t\t\t\tlet typed = unsafe { mem::transmute::<&[T], &[u8]>(&$self[..]) };\n\t\t\t\t\t\t\t$dest.write(&typed)\n\t\t\t\t\t\t}};\n\t\t\t\t\t\t( $ty:ty, $self:ident, $dest:ident ) => {{\n\t\t\t\t\t\t\tlet typed = unsafe { mem::transmute::<&[T], &[$ty]>(&$self[..]) };\n\t\t\t\t\t\t\t$dest.write(<[$ty] as AsByteSlice<$ty>>::as_byte_slice(typed))\n\t\t\t\t\t\t}};\n\t\t\t\t\t}\n\n\t\t\t\t\twith_type_info! {\n\t\t\t\t\t\t<T as Encode>::TYPE_INFO,\n\t\t\t\t\t\tencode_to(self, dest),\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfor item in self.iter() {\n\t\t\t\t\t\t\t\titem.encode_to(dest);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t},\n\t\t\t\t\t}\n\t\t\t\t}"
+}

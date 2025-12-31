@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ring-channel-0.12.0/src/channel.rs",
+    "start_line": 73,
+    "start_col": 1,
+    "end_line": 73,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for RingSender<T> {\n    fn drop(&mut self) {\n        // Synchronizes with other senders.\n        if self.handle.senders.fetch_sub(1, Ordering::AcqRel) == 1 {\n            #[cfg(feature = \"futures_api\")]\n            {\n                // A full memory barrier is necessary to ensure that updating senders\n                // happens before waking receivers.\n                fence(Ordering::SeqCst);\n\n                while let Some(waker) = self.handle.waitlist.pop() {\n                    waker.wake();\n                }\n            }\n\n            // Synchronizes the last sender and receiver with each other.\n            if !self.handle.connected.swap(false, Ordering::AcqRel) {\n                unsafe { ManuallyDrop::drop(&mut self.handle) }\n            }\n        }\n    }\n}"
+}

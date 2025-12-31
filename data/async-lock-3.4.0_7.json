@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-lock-3.4.0/src/rwlock.rs",
+    "start_line": 725,
+    "start_col": 1,
+    "end_line": 725,
+    "end_col": 48,
+    "code_snippet": "impl<T: ?Sized> Drop for RwLockReadGuard<'_, T> {\n    #[inline]\n    fn drop(&mut self) {\n        // SAFETY: we are dropping a read guard.\n        unsafe {\n            self.lock.read_unlock();\n        }\n    }\n}"
+}

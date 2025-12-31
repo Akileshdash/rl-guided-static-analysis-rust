@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `exec_handler::set_command_line`",
+    "file": "signal-0.7.0/src/exec_handler.rs",
+    "start_line": 47,
+    "start_col": 1,
+    "end_line": 83,
+    "end_col": 2,
+    "code_snippet": "pub fn set_command_line<P, Ai, A, Ek, Ev, E>(program: P, args: A, environ: E)\n    where P: ToCString,\n          Ai: ToCString,\n          A: IntoIterator<Item=Ai>,\n          Ek: ToCString,\n          Ev: ToCString,\n          E: IntoIterator<Item=(Ek, Ev)>,\n{\n    let args = args.into_iter().map(|x| x.to_cstring()).collect::<Vec<_>>();\n    let mut c_args = args.iter().map(|x| x.as_ptr()).collect::<Vec<_>>();\n    c_args.push(null());\n    let env = environ.into_iter().map(|(k, v)| {\n        let mut pair = Vec::new();\n        pair.write(k.as_bytes()).unwrap();\n        pair.push(b'=');\n        pair.write(v.as_bytes()).unwrap();\n        CString::new(pair).unwrap()\n    }).collect::<Vec<_>>();\n    let mut c_env = env.iter().map(|x| x.as_ptr()).collect::<Vec<_>>();\n    c_env.push(null());\n    unsafe {\n        if EXEC_COMMAND_LINE != null() {\n            transmute::<_, Box<ExecCommandLine>>(EXEC_COMMAND_LINE);\n        }\n        let new = Box::new(ExecCommandLine {\n            program: program.to_cstring(),\n            args: args,\n            c_args: c_args,\n            env: env,\n            c_env: c_env,\n            pid: getpid(),\n        });\n\n        EXEC_COMMAND_LINE = &*new;\n        forget(new);\n    }\n}"
+}

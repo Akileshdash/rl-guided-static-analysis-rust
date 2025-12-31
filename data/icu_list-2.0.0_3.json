@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::ConditionalListJoinerPattern<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_list-2.0.0/src/provider/mod.rs",
+    "start_line": 126,
+    "start_col": 35,
+    "end_line": 126,
+    "end_col": 49,
+    "code_snippet": "#[derive(Clone, Debug, PartialEq, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_list::provider))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\npub struct ConditionalListJoinerPattern<'data> {\n    /// The default pattern\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub default: ListJoinerPattern<'data>,\n    /// And optional special case\n    #[cfg_attr(\n        feature = \"serde\",\n        serde(borrow, deserialize_with = \"SpecialCasePattern::deserialize_option\")\n    )]\n    pub special_case: Option<SpecialCasePattern<'data>>,\n}"
+}

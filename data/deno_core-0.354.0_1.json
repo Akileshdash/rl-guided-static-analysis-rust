@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deno_core-0.354.0/arena/raw_arena.rs",
+    "start_line": 372,
+    "start_col": 1,
+    "end_line": 372,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for RawArena<T> {\n  /// Drop the arena. All pointers are invalidated at this point, except for those\n  /// allocated outside outside of the arena.\n  ///\n  /// The allocation APIs are unsafe because we don't track lifetimes here.\n  fn drop(&mut self) {\n    unsafe { self.clear_allocated() };\n\n    #[cfg(debug_assertions)]\n    {\n      debug_assert_eq!(self.signature, SIGNATURE);\n      self.signature = 0;\n    }\n    unsafe {\n      std::alloc::dealloc(self.alloc.as_ptr() as _, Self::layout(self.capacity))\n    }\n  }\n}"
+}

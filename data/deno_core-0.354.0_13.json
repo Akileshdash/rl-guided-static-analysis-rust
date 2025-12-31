@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `async_cell::internal::<impl async_cell::AsyncRefCell<T>>::borrow_sync`",
+    "file": "deno_core-0.354.0/async_cell.rs",
+    "start_line": 264,
+    "start_col": 5,
+    "end_line": 286,
+    "end_col": 6,
+    "code_snippet": "pub fn borrow_sync<M: BorrowModeTrait, R: RcLike<AsyncRefCell<T>>>(\n      cell: R,\n    ) -> Option<AsyncBorrowImpl<T, M>> {\n      let cell_ref = cell.as_ref();\n      // Don't allow synchronous borrows to cut in line; if there are any\n      // enqueued waiters, return `None`, even if the current borrow is a shared\n      // one and the requested borrow is too.\n      // TODO(piscisaureus): safety comment\n      #[allow(clippy::undocumented_unsafe_blocks)]\n      let waiters = unsafe { &mut *cell_ref.waiters.as_ptr() };\n      if waiters.is_empty() {\n        // There are no enqueued waiters, but it is still possible that the cell\n        // is currently borrowed. If there are no current borrows, or both the\n        // existing and requested ones are shared, `try_add()` returns the\n        // adjusted borrow count.\n        let new_borrow_count =\n          cell_ref.borrow_count.get().try_add(M::borrow_mode())?;\n        cell_ref.borrow_count.set(new_borrow_count);\n        Some(AsyncBorrowImpl::<T, M>::new(cell.into()))\n      } else {\n        None\n      }\n    }"
+}

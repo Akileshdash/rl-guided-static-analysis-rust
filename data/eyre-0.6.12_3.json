@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "eyre-0.6.12/src/ptr.rs",
+    "start_line": 76,
+    "start_col": 1,
+    "end_line": 76,
+    "end_col": 68,
+    "code_snippet": "unsafe impl<'a, T: ?Sized> Sync for RefPtr<'a, T> where &'a T: Sync {}"
+}

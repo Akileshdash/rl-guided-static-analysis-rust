@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "napi-ohos-1.1.0/src/bindgen_runtime/js_values/function.rs",
+    "start_line": 463,
+    "start_col": 1,
+    "end_line": 463,
+    "end_col": 83,
+    "code_snippet": "unsafe impl<Args: JsValuesTupleIntoVec, Return> Sync for FunctionRef<Args, Return> {}"
+}

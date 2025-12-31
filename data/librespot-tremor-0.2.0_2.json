@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `Decoder::<R>::new::seek_func`",
+    "file": "librespot-tremor-0.2.0/src/lib.rs",
+    "start_line": 145,
+    "start_col": 9,
+    "end_line": 166,
+    "end_col": 10,
+    "code_snippet": "extern \"C\" fn seek_func<R>(\n            datasource: *mut libc::c_void,\n            offset: tremor_sys::ogg_int64_t,\n            whence: libc::c_int,\n        ) -> libc::c_int\n        where\n            R: Read + Seek,\n        {\n            let data: &mut DecoderData<R> = unsafe { &mut *(datasource as *mut _) };\n\n            let result = match whence {\n                libc::SEEK_SET => data.reader.seek(io::SeekFrom::Start(offset as u64)),\n                libc::SEEK_CUR => data.reader.seek(io::SeekFrom::Current(offset)),\n                libc::SEEK_END => data.reader.seek(io::SeekFrom::End(offset)),\n                _ => unreachable!(),\n            };\n\n            match result {\n                Ok(_) => 0,\n                Err(_) => -1,\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `collections::hash_map::CaoHashMap::<K, V, A>::find_ind`",
+    "file": "cao-lang-0.2.6/src/collections/hash_map.rs",
+    "start_line": 411,
+    "start_col": 5,
+    "end_line": 433,
+    "end_col": 6,
+    "code_snippet": "fn find_ind<Q: ?Sized>(&self, needle: u64, k: &Q) -> usize\n    where\n        K: Borrow<Q>,\n        Q: Eq,\n    {\n        let len = self.capacity;\n\n        // improve uniformity via fibonacci hashing\n        // in wasm sizeof usize is 4, so multiply our already 32 bit hash\n        let mut ind = (needle.wrapping_mul(2654435769) as usize) % len;\n        let hashes = self.hashes();\n        let keys = self.keys.as_ptr();\n        loop {\n            unsafe {\n                debug_assert!(ind < len);\n                let h = hashes[ind];\n                if h == 0 || (h == needle && (*keys.add(ind)).borrow() == k) {\n                    return ind;\n                }\n            }\n            ind = (ind + 1) % len;\n        }\n    }"
+}

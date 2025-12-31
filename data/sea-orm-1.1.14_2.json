@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sea-orm-1.1.14/src/database/stream/transaction.rs",
+    "start_line": 20,
+    "start_col": 1,
+    "end_line": 20,
+    "end_col": 31,
+    "code_snippet": "#[ouroboros::self_referencing]\npub struct TransactionStream<'a> {\n    stmt: Statement,\n    conn: MutexGuard<'a, InnerConnection>,\n    metric_callback: Option<crate::metric::Callback>,\n    #[borrows(mut conn, stmt, metric_callback)]\n    #[not_covariant]\n    stream: MetricStream<'this>,\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lockfree-object-pool-0.1.6/src/linear_page.rs",
+    "start_line": 71,
+    "start_col": 1,
+    "end_line": 71,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for LinearPage<T> {\n    #[inline]\n    fn drop(&mut self) {\n        let current = self.next.load(Ordering::Relaxed);\n        if !current.is_null() {\n            unsafe {\n                // SAFETY: current was allocated with Box::new\n                drop(Box::from_raw(current))\n            };\n        }\n    }\n}"
+}

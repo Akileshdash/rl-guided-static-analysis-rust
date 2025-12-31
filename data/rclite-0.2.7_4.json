@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arc::Arc::<T>::optimized_clone`",
+    "file": "rclite-0.2.7/src/arc.rs",
+    "start_line": 505,
+    "start_col": 5,
+    "end_line": 516,
+    "end_col": 6,
+    "code_snippet": "fn optimized_clone(&self) -> Arc<T> {\n        let mut buffer: Box<MaybeUninit<ArcInner<T>>> = Box::new(MaybeUninit::uninit());\n        let ptr = unsafe {\n            (*buffer.as_ptr()).data.get().write(T::clone(self));\n            (*buffer.as_mut_ptr()).counter = AtomicCounter::new(1);\n            NonNull::new_unchecked(Box::leak(buffer) as *mut _ as *mut ArcInner<T>)\n        };\n        Arc {\n            ptr,\n            phantom: PhantomData,\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stronghold-runtime-2.0.1/src/boxed.rs",
+    "start_line": 244,
+    "start_col": 1,
+    "end_line": 244,
+    "end_col": 33,
+    "code_snippet": "impl<T: Bytes> Drop for Boxed<T> {\n    fn drop(&mut self) {\n        extern crate std;\n\n        use std::thread;\n\n        if !thread::panicking() {\n            assert!(self.refs.get() == 0, \"Retains exceeded releases\");\n\n            assert!(self.prot.get() == Prot::NoAccess, \"Dropped secret was still accessible\");\n        }\n\n        unsafe { free(self.ptr.as_mut()) }\n    }\n}"
+}

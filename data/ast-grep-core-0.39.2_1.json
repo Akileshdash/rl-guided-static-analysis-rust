@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `pinned::PinnedNodeData::<D, T>::new`",
+    "file": "ast-grep-core-0.39.2/src/pinned.rs",
+    "start_line": 36,
+    "start_col": 3,
+    "end_line": 44,
+    "end_col": 4,
+    "code_snippet": "pub fn new<F>(pin: Root<D>, func: F) -> Self\n  where\n    F: FnOnce(&'static Root<D>) -> T,\n  {\n    // TODO: explain why unsafe works here and what guarantee it needs\n    let reference = unsafe { &*(&pin as *const Root<D>) as &'static Root<D> };\n    let data = func(reference);\n    Self { pin, data }\n  }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `inspectable::IInspectable_Vtbl::new::GetTrustLevel`",
+    "file": "windows-core-0.61.2/src/inspectable.rs",
+    "start_line": 104,
+    "start_col": 9,
+    "end_line": 115,
+    "end_col": 10,
+    "code_snippet": "unsafe extern \"system\" fn GetTrustLevel<T: IUnknownImpl, const OFFSET: isize>(\n            this: *mut c_void,\n            value: *mut i32,\n        ) -> HRESULT {\n            unsafe {\n                if value.is_null() {\n                    return imp::E_POINTER;\n                }\n                let this = (this as *mut *mut c_void).offset(OFFSET) as *mut T;\n                (*this).GetTrustLevel(value)\n            }\n        }"
+}

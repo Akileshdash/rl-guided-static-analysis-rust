@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sll::unlink`",
+    "file": "rowan-0.15.17/src/sll.rs",
+    "start_line": 66,
+    "start_col": 1,
+    "end_line": 83,
+    "end_col": 2,
+    "code_snippet": "pub(crate) fn unlink<E: Elem>(head: &Cell<*const E>, elem: &E) {\n    debug_assert!(!head.get().is_null(), \"invalid linked list head\");\n\n    let elem_ptr: *const E = elem;\n\n    let prev = elem.prev().replace(elem_ptr);\n    let next = elem.next().replace(elem_ptr);\n    unsafe {\n        debug_assert_eq!((*prev).next().get(), elem_ptr, \"invalid linked list links\");\n        debug_assert_eq!((*next).prev().get(), elem_ptr, \"invalid linked list links\");\n        (*prev).next().set(next);\n        (*next).prev().set(prev);\n    }\n\n    if head.get() == elem_ptr {\n        head.set(if next == elem_ptr { ptr::null() } else { next })\n    }\n}"
+}

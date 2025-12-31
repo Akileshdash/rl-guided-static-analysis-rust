@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<types::internal::RefMeta<M, R> as core::fmt::Debug>::fmt`",
+    "file": "skl-0.22.17/src/types.rs",
+    "start_line": 97,
+    "start_col": 5,
+    "end_line": 103,
+    "end_col": 6,
+    "code_snippet": "fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n      f.debug_struct(\"RefMeta\")\n        .field(\"meta\", unsafe { &*self.meta.as_ptr() })\n        .field(\"refs\", &self.ref_counter.load(Ordering::Acquire))\n        .field(\"unify\", &self.unify)\n        .finish()\n    }"
+}

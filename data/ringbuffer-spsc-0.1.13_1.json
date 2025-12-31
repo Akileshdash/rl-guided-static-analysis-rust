@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ringbuffer-spsc-0.1.13/src/lib.rs",
+    "start_line": 99,
+    "start_col": 1,
+    "end_line": 99,
+    "end_col": 50,
+    "code_snippet": "impl<T, const N: usize> Drop for RingBuffer<T, N> {\n    fn drop(&mut self) {\n        let mut idx_r = self.idx_r.load(Ordering::Acquire);\n        let idx_w = self.idx_w.load(Ordering::Acquire);\n\n        while idx_r != idx_w {\n            let t =\n                unsafe { mem::replace(self.get_mut(idx_r), MaybeUninit::uninit()).assume_init() };\n            mem::drop(t);\n            idx_r = idx_r.wrapping_add(1);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sc::SCAllocator::<'a, P>::deallocate`",
+    "file": "slabmalloc-0.11.0/src/sc.rs",
+    "start_line": 305,
+    "start_col": 5,
+    "end_line": 326,
+    "end_col": 6,
+    "code_snippet": "pub fn deallocate(&self, ptr: NonNull<u8>, layout: Layout) -> Result<(), AllocationError> {\n        assert!(layout.size() <= self.size);\n        assert!(self.size <= (P::SIZE - OBJECT_PAGE_METADATA_OVERHEAD));\n        trace!(\n            \"SCAllocator({}) is trying to deallocate ptr = {:p} layout={:?} P.size= {}\",\n            self.size,\n            ptr,\n            layout,\n            P::SIZE\n        );\n\n        let page = (ptr.as_ptr() as usize) & !(P::SIZE - 1) as usize;\n\n        // Figure out which page we are on and construct a reference to it\n        // TODO: The linked list will have another &mut reference\n        let slab_page = unsafe { mem::transmute::<VAddr, &'a mut P>(page) };\n        let new_layout = unsafe { Layout::from_size_align_unchecked(self.size, layout.align()) };\n\n        let ret = slab_page.deallocate(ptr, new_layout);\n        debug_assert!(ret.is_ok(), \"Slab page deallocate won't fail at the moment\");\n        ret\n    }"
+}

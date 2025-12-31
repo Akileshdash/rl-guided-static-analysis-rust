@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `de::Deserializer::<'de>::recoverable_visit_some`",
+    "file": "candid-0.10.16/src/de.rs",
+    "start_line": 583,
+    "start_col": 5,
+    "end_line": 621,
+    "end_col": 6,
+    "code_snippet": "fn recoverable_visit_some<'a, V>(&'a mut self, visitor: V) -> Result<V::Value>\n    where\n        V: Visitor<'de>,\n    {\n        use de::Deserializer;\n        let tid = type_of(&visitor);\n        if tid != TypeId::of::<de::IgnoredAny>() // derive Copy\n        // OptionVisitor doesn't derive Copy, but has only PhantomData.\n        // OptionVisitor is private and we cannot get TypeId of OptionVisitor<T>,\n        // we also cannot downcast V to concrete type, because of 'de\n        // The only option left seems to be type_name, but it is not guaranteed to be stable, so there is risk here.\n            && !tid.name.starts_with(\"serde::de::impls::OptionVisitor<\")\n        {\n            #[cfg(feature = \"value\")]\n            if tid != TypeId::of::<crate::types::value::IDLValueVisitor>() {\n                // derive Copy\n                panic!(\"Not a valid visitor: {tid:?}\");\n            }\n            #[cfg(not(feature = \"value\"))]\n            panic!(\"Not a valid visitor: {tid:?}\");\n        }\n        // This is safe, because the visitor either impl Copy or is zero sized\n        let v = unsafe { std::ptr::read(&visitor) };\n        let self_clone = self.clone();\n        match v.visit_some(&mut *self) {\n            Ok(v) => Ok(v),\n            Err(Error::Subtype(_)) => {\n                *self = Self {\n                    // Remember the backtracking cost\n                    config: self.config.clone(),\n                    ..self_clone\n                };\n                self.add_cost(10)?;\n                self.deserialize_ignored_any(serde::de::IgnoredAny)?;\n                visitor.visit_none()\n            }\n            Err(e) => Err(e),\n        }\n    }"
+}

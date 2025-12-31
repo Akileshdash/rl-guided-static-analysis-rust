@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "array_map-0.4.0/src/map.rs",
+    "start_line": 390,
+    "start_col": 1,
+    "end_line": 390,
+    "end_col": 70,
+    "code_snippet": "impl<K: Indexable, V, const N: usize> Drop for PanicSafeInit<K, V, N> {\n  fn drop(&mut self) {\n    if core::mem::needs_drop::<V>() {\n      for k in K::iter() {\n        let index = k.index();\n        if self.filled[index] {\n          #[allow(unsafe_code)]\n          // Safety: We only drop items that are previously initialized\n          unsafe {\n            core::ptr::drop_in_place(self.array.as_mut_ptr().cast::<V>().add(index));\n          }\n        }\n      }\n    }\n  }\n}"
+}

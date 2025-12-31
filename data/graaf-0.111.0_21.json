@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `algo::johnson_75::Johnson75::<'a, D>::circuit`",
+    "file": "graaf-0.111.0/src/algo/johnson_75.rs",
+    "start_line": 82,
+    "start_col": 5,
+    "end_line": 120,
+    "end_col": 6,
+    "code_snippet": "fn circuit(\n        &mut self,\n        v: usize,\n        s: usize,\n        scc: &D,\n        result: &mut Vec<Vec<usize>>,\n    ) -> bool\n    where\n        D: OutNeighbors,\n    {\n        self.stack.push(v);\n\n        let mut f = false;\n        let _ = self.blocked.insert(v);\n\n        for w in scc.out_neighbors(v) {\n            if w == s {\n                result.push(self.stack.clone());\n\n                f = true;\n            } else if !self.is_blocked(w) && self.circuit(w, s, scc, result) {\n                f = true;\n            }\n        }\n\n        if f {\n            self.unblock(v);\n        } else {\n            let b_ptr = self.b.as_mut_ptr();\n\n            for w in scc.out_neighbors(v) {\n                let _ = unsafe { (*b_ptr.add(w)).insert(v) };\n            }\n        }\n\n        let _ = self.stack.pop();\n\n        f\n    }"
+}

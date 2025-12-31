@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<[T; N] as Deserialize>::deserialize`",
+    "file": "savefile-0.19.0/src/lib.rs",
+    "start_line": 7213,
+    "start_col": 5,
+    "end_line": 7246,
+    "end_col": 6,
+    "code_snippet": "fn deserialize(deserializer: &mut Deserializer<impl Read>) -> Result<Self, SavefileError> {\n        if N == 0 {\n            return Ok([(); N].map(|_| unreachable!()));\n        }\n\n        if unsafe { T::repr_c_optimization_safe(deserializer.file_version) }.is_false() {\n            let mut data: [MaybeUninit<T>; N] = unsafe {\n                MaybeUninit::uninit().assume_init() //This seems strange, but is correct according to rust docs: https://doc.rust-lang.org/std/mem/union.MaybeUninit.html, see chapter 'Initializing an array element-by-element'\n            };\n            for idx in 0..N {\n                data[idx] = MaybeUninit::new(T::deserialize(deserializer)?); //This leaks on panic, but we shouldn't panic and at least it isn't UB!\n            }\n            let ptr = &mut data as *mut _ as *mut [T; N];\n            let res = unsafe { ptr.read() };\n            Ok(res)\n        } else {\n            let mut data: [MaybeUninit<T>; N] = unsafe {\n                MaybeUninit::uninit().assume_init() //This seems strange, but is correct according to rust docs: https://doc.rust-lang.org/std/mem/union.MaybeUninit.html, see chapter 'Initializing an array element-by-element'\n            };\n\n            {\n                let ptr = data.as_mut_ptr();\n                let num_bytes: usize = std::mem::size_of::<T>() * N;\n                let slice: &mut [MaybeUninit<u8>] =\n                    unsafe { std::slice::from_raw_parts_mut(ptr as *mut MaybeUninit<u8>, num_bytes) };\n                deserializer\n                    .reader\n                    .read_exact(unsafe { std::mem::transmute::<&mut [MaybeUninit<u8>], &mut [u8]>(slice) })?;\n            }\n            let ptr = &mut data as *mut _ as *mut [T; N];\n            let res = unsafe { ptr.read() };\n            Ok(res)\n        }\n    }"
+}

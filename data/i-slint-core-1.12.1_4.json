@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "i-slint-core-1.12.1/properties.rs",
+    "start_line": 110,
+    "start_col": 5,
+    "end_line": 110,
+    "end_col": 43,
+    "code_snippet": "impl<T> Drop for DependencyListHead<T> {\n        fn drop(&mut self) {\n            unsafe { DependencyListHead::drop(self as *mut Self) };\n        }\n    }"
+}

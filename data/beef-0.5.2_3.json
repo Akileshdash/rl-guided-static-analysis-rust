@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "beef-0.5.2/src/generic.rs",
+    "start_line": 531,
+    "start_col": 1,
+    "end_line": 535,
+    "end_col": 20,
+    "code_snippet": "unsafe impl<T, U> Sync for Cow<'_, T, U>\nwhere\n    U: Capacity,\n    T: Beef + Sync + ?Sized,\n    T::Owned: Sync,\n{\n}"
+}

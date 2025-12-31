@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sled-1.0.0-alpha.124/src/tree.rs",
+    "start_line": 129,
+    "start_col": 1,
+    "end_line": 129,
+    "end_col": 76,
+    "code_snippet": "impl<'a, const LEAF_FANOUT: usize> Drop for LeafWriteGuard<'a, LEAF_FANOUT> {\n    fn drop(&mut self) {\n        let size = self.leaf_write.leaf.as_ref().unwrap().in_memory_size;\n\n        // we must drop our mutex before calling mark_access_and_evict\n        unsafe {\n            ManuallyDrop::drop(&mut self.leaf_write);\n        }\n        if self.external_cache_access_and_eviction {\n            return;\n        }\n\n        if let Err(e) = self.inner.cache.mark_access_and_evict(\n            self.node.object_id,\n            size,\n            self.epoch(),\n        ) {\n            self.inner.set_error(&e);\n            log::error!(\"io error while paging out dirty data: {:?}\", e);\n        }\n    }\n}"
+}

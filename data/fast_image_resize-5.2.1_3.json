@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `convolution::vertical_u16::native::convolution_by_u16`",
+    "file": "fast_image_resize-5.2.1/src/convolution/vertical_u16/native.rs",
+    "start_line": 46,
+    "start_col": 1,
+    "end_line": 69,
+    "end_col": 2,
+    "code_snippet": "pub(crate) fn convolution_by_u16<T: InnerPixel<Component = u16>>(\n    src_view: &impl ImageView<Pixel = T>,\n    normalizer: &Normalizer32,\n    initial: i64,\n    dst_components: &mut [u16],\n    mut x_src: usize,\n    first_y_src: u32,\n    ks: &[i32],\n) -> usize {\n    for dst_component in dst_components.iter_mut() {\n        let mut ss = initial;\n        let src_rows = src_view.iter_rows(first_y_src);\n        for (&k, src_row) in ks.iter().zip(src_rows) {\n            // SAFETY: Alignment of src_row is greater or equal than alignment u16\n            //         because one component of pixel type T is u16.\n            let src_ptr = src_row.as_ptr() as *const u16;\n            let src_component = unsafe { *src_ptr.add(x_src) };\n            ss += src_component as i64 * (k as i64);\n        }\n        *dst_component = normalizer.clip(ss);\n        x_src += 1\n    }\n    x_src\n}"
+}

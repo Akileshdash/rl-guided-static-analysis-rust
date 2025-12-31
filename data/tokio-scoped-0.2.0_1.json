@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tokio-scoped-0.2.0/src/lib.rs",
+    "start_line": 222,
+    "start_col": 1,
+    "end_line": 222,
+    "end_col": 28,
+    "code_snippet": "impl<'a> Drop for Scope<'a> {\n    fn drop(&mut self) {\n        unsafe {\n            ManuallyDrop::drop(&mut self.send);\n        }\n\n        let recv = self.recv.take().unwrap();\n        let n = tokio::task::block_in_place(move || {\n            self.handle.block_on(UnboundedReceiverStream::new(recv).next())\n        });\n        assert_eq!(n, None);\n    }\n}"
+}

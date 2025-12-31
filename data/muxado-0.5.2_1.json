@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "muxado-0.5.2/src/stream.rs",
+    "start_line": 45,
+    "start_col": 37,
+    "end_line": 45,
+    "end_col": 47,
+    "code_snippet": "#[pin_project(project = StreamProj, PinnedDrop)]\npub struct Stream {\n    pub(crate) dropref: Option<awaitdrop::Ref>,\n\n    window: Window,\n\n    read_buf: BytesMut,\n\n    // These are the two channels that are used to shuttle data back and forth\n    // between the stream and the stream manager, which is responsible for\n    // routing frames to their proper stream.\n    #[pin]\n    fin: mpsc::Receiver<Frame>,\n    #[pin]\n    fout: StreamSender,\n\n    read_waker: Option<Waker>,\n    write_waker: Option<Waker>,\n\n    write_closed: Option<Error>,\n\n    data_read_closed: bool,\n\n    needs_syn: bool,\n}"
+}

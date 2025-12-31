@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "spin-0.10.0/src/once.rs",
+    "start_line": 55,
+    "start_col": 1,
+    "end_line": 55,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T: Send, R> Send for Once<T, R> {}"
+}

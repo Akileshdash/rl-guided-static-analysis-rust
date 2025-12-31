@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::invoke`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 439,
+    "start_col": 5,
+    "end_line": 444,
+    "end_col": 34,
+    "code_snippet": "fn invoke(\n        &self,\n        _me: Value<'v>,\n        _args: &Arguments<'v, '_>,\n        _eval: &mut Evaluator<'v, '_, '_>,\n    ) -> crate::Result<Value<'v>> {\n        ValueError::unsupported(self, \"call()\")\n    }"
+}

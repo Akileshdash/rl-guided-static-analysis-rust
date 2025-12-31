@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "async-task-4.7.1/src/task.rs",
+    "start_line": 58,
+    "start_col": 1,
+    "end_line": 58,
+    "end_col": 51,
+    "code_snippet": "unsafe impl<T, M: Send + Sync> Sync for Task<T, M> {}"
+}

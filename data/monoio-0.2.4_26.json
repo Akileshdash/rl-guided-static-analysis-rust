@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `driver::uring::UringInner::submit_with_data`",
+    "file": "monoio-0.2.4/src/driver/uring/mod.rs",
+    "start_line": 432,
+    "start_col": 5,
+    "end_line": 471,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn submit_with_data<T>(\n        this: &Rc<UnsafeCell<UringInner>>,\n        data: T,\n    ) -> io::Result<Op<T>>\n    where\n        T: OpAble,\n    {\n        let inner = unsafe { &mut *this.get() };\n        // If the submission queue is full, flush it to the kernel\n        if inner.uring.submission().is_full() {\n            inner.submit()?;\n        }\n\n        // Create the operation\n        let mut op = Self::new_op(data, inner, Inner::Uring(this.clone()));\n\n        // Configure the SQE\n        let data_mut = unsafe { op.data.as_mut().unwrap_unchecked() };\n        let sqe = OpAble::uring_op(data_mut).user_data(op.index as _);\n\n        {\n            let mut sq = inner.uring.submission();\n\n            // Push the new operation\n            if unsafe { sq.push(&sqe).is_err() } {\n                unimplemented!(\"when is this hit?\");\n            }\n        }\n\n        // Submit the new operation. At this point, the operation has been\n        // pushed onto the queue and the tail pointer has been updated, so\n        // the submission entry is visible to the kernel. If there is an\n        // error here (probably EAGAIN), we still return the operation. A\n        // future `io_uring_enter` will fully submit the event.\n\n        // CHIHAI: We are not going to do syscall now. If we are waiting\n        // for IO, we will submit on `park`.\n        // let _ = inner.submit();\n        Ok(op)\n    }"
+}

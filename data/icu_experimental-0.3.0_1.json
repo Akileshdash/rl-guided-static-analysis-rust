@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<duration::provider::DigitalDurationData<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_experimental-0.3.0/src/duration/provider.rs",
+    "start_line": 19,
+    "start_col": 35,
+    "end_line": 19,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, Clone, PartialEq, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_experimental::duration::provider))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n/// A struct containing digital duration data (durationUnit-type-* patterns).\npub struct DigitalDurationData<'data> {\n    /// The separator between the hour, minute, and second fields.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub separator: Cow<'data, str>,\n\n    /// The number of digits to pad hours when hour, minutes and seconds must be displayed.\n    /// Calculated from the hms pattern.\n    pub hms_padding: HmsPadding,\n\n    /// The number of digits to pad hours when only hour and minutes must be displayed.\n    /// Calculated from the hm pattern.\n    pub hm_padding: HmPadding,\n\n    /// The number of digits to pad minutes when only minutes and seconds must be displayed.\n    /// Calculated from the ms pattern.\n    pub ms_padding: MsPadding,\n}"
+}

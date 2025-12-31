@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "cubecl-runtime-0.6.0/src/tune/local.rs",
+    "start_line": 25,
+    "start_col": 1,
+    "end_line": 25,
+    "end_col": 61,
+    "code_snippet": "unsafe impl<AK: AutotuneKey, ID> Sync for LocalTuner<AK, ID> {}"
+}

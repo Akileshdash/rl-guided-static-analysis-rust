@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "scrap-0.5.0/src/x11/capturer.rs",
+    "start_line": 147,
+    "start_col": 1,
+    "end_line": 147,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Capturer {\n    fn drop(&mut self) {\n        unsafe {\n            // Process pending request.\n            self.handle_response();\n            // Detach segment from XCB.\n            xcb_shm_detach(self.display.server().raw(), self.xcbid);\n            // Detach segment from our space.\n            libc::shmdt(self.buffer as *mut _);\n            // Destroy the shared memory segment.\n            libc::shmctl(self.shmid, libc::IPC_RMID, ptr::null_mut());\n        }\n    }\n}"
+}

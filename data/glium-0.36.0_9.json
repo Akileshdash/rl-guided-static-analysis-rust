@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/texture/buffer_texture.rs",
+    "start_line": 473,
+    "start_col": 1,
+    "end_line": 473,
+    "end_col": 59,
+    "code_snippet": "impl<T> Drop for BufferTexture<T> where [T]: BufferContent {\n    fn drop(&mut self) {\n        let mut ctxt = self.buffer.get_context().make_current();\n\n        // resetting the bindings\n        for tex_unit in ctxt.state.texture_units.iter_mut() {\n            if tex_unit.texture == self.texture {\n                tex_unit.texture = 0;\n            }\n        }\n\n        unsafe { ctxt.gl.DeleteTextures(1, [ self.texture ].as_ptr()); }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `OccupiedEntry::<'a, K, A>::into_mut`",
+    "file": "typemap-ors-1.0.0/src/lib.rs",
+    "start_line": 268,
+    "start_col": 5,
+    "end_line": 273,
+    "end_col": 6,
+    "code_snippet": "pub fn into_mut(self) -> &'a mut K::Value\n    where\n        K::Value: Any + Implements<A>,\n    {\n        unsafe { self.data.into_mut().downcast_mut_unchecked() }\n    }"
+}

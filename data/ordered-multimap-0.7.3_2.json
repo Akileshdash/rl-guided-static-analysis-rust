@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "ordered-multimap-0.7.3/src/list_ordered_multimap.rs",
+    "start_line": 3311,
+    "start_col": 1,
+    "end_line": 3314,
+    "end_col": 15,
+    "code_snippet": "unsafe impl<Key, Value> Sync for KeyValuesMut<'_, Key, Value>\nwhere\n  Key: Sync,\n  Value: Sync,\n{\n}"
+}

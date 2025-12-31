@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "s2n-tls-0.3.23/src/cert_chain.rs",
+    "start_line": 73,
+    "start_col": 1,
+    "end_line": 73,
+    "end_col": 41,
+    "code_snippet": "impl Drop for CertificateChainHandle<'_> {\n    /// Corresponds to [s2n_cert_chain_and_key_free].\n    fn drop(&mut self) {\n        if self.is_owned {\n            if let Some(internal_context) = self.context_mut() {\n                drop(unsafe { Box::from_raw(internal_context) });\n            }\n            // ignore failures since there's not much we can do about it\n            unsafe {\n                // null the cert chain context out of an abundance of caution\n                let _ = s2n_cert_chain_and_key_set_ctx(self.cert.as_ptr(), std::ptr::null_mut())\n                    .into_result();\n\n                let _ = s2n_cert_chain_and_key_free(self.cert.as_ptr()).into_result();\n            }\n        }\n    }\n}"
+}

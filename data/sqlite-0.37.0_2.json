@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `connection::process_callback`",
+    "file": "sqlite-0.37.0/src/connection.rs",
+    "start_line": 383,
+    "start_col": 1,
+    "end_line": 412,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn process_callback<F>(\n    callback: *mut c_void,\n    count: c_int,\n    values: *mut *mut c_char,\n    columns: *mut *mut c_char,\n) -> c_int\nwhere\n    F: FnMut(&[(&str, Option<&str>)]) -> bool,\n{\n    unsafe {\n        let mut pairs = Vec::with_capacity(count as usize);\n        for index in 0..(count as isize) {\n            let column = {\n                let pointer = *columns.offset(index);\n                debug_assert!(!pointer.is_null());\n                c_str_to_str!(pointer).unwrap()\n            };\n            let value = {\n                let pointer = *values.offset(index);\n                if pointer.is_null() {\n                    None\n                } else {\n                    Some(c_str_to_str!(pointer).unwrap())\n                }\n            };\n            pairs.push((column, value));\n        }\n        c_int::from(!(*(callback as *mut F))(&pairs))\n    }\n}"
+}

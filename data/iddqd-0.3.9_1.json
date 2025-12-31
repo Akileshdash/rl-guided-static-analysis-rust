@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "iddqd-0.3.9/src/support/borrow.rs",
+    "start_line": 25,
+    "start_col": 1,
+    "end_line": 25,
+    "end_col": 71,
+    "code_snippet": "unsafe impl<'a, T> Sync for DormantMutRef<'a, T> where &'a mut T: Sync {}"
+}

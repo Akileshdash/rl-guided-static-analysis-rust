@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deno_http-0.210.0/service.rs",
+    "start_line": 745,
+    "start_col": 1,
+    "end_line": 745,
+    "end_col": 33,
+    "code_snippet": "impl Drop for HttpRecordResponse {\n  fn drop(&mut self) {\n    let Some(record) = &mut self.0 else {\n      return;\n    };\n    // SAFETY: this ManuallyDrop is not used again.\n    let record = unsafe { ManuallyDrop::take(record) };\n    http_trace!(record, \"HttpRecordResponse::drop\");\n    record.finish();\n  }\n}"
+}

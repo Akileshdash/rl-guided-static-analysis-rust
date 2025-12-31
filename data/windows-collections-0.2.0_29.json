@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `bindings::IVector_Vtbl::<T>::new::GetMany`",
+    "file": "windows-collections-0.2.0/src/bindings.rs",
+    "start_line": 1580,
+    "start_col": 9,
+    "end_line": 1609,
+    "end_col": 10,
+    "code_snippet": "unsafe extern \"system\" fn GetMany<\n            T: windows_core::RuntimeType + 'static,\n            Identity: IVector_Impl<T>,\n            const OFFSET: isize,\n        >(\n            this: *mut core::ffi::c_void,\n            startindex: u32,\n            items_array_size: u32,\n            items: *mut T,\n            result__: *mut u32,\n        ) -> windows_core::HRESULT {\n            unsafe {\n                let this: &Identity =\n                    &*((this as *const *const ()).offset(OFFSET) as *const Identity);\n                match IVector_Impl::GetMany(\n                    this,\n                    startindex,\n                    core::slice::from_raw_parts_mut(\n                        core::mem::transmute_copy(&items),\n                        items_array_size as usize,\n                    ),\n                ) {\n                    Ok(ok__) => {\n                        result__.write(core::mem::transmute_copy(&ok__));\n                        windows_core::HRESULT(0)\n                    }\n                    Err(err) => err.into(),\n                }\n            }\n        }"
+}

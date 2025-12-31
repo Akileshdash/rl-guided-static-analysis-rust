@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<ScopeGuard<T, F, S> as std::ops::Drop>::drop`",
+    "file": "scopeguard-1.2.0/src/lib.rs",
+    "start_line": 470,
+    "start_col": 5,
+    "end_line": 477,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        // This is OK because the fields are `ManuallyDrop`s\n        // which will not be dropped by the compiler.\n        let (value, dropfn) = unsafe { (ptr::read(&*self.value), ptr::read(&*self.dropfn)) };\n        if S::should_run() {\n            dropfn(value);\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<compactdecimal::provider::Pattern<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_experimental-0.3.0/src/compactdecimal/provider.rs",
+    "start_line": 124,
+    "start_col": 39,
+    "end_line": 124,
+    "end_col": 53,
+    "code_snippet": "Debug, Clone, Default, PartialEq, yoke::Yokeable, zerofrom::ZeroFrom, Ord, PartialOrd, Eq,\n)]\n#[zerovec::make_varule(PatternULE)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_experimental::compactdecimal::provider))]\n#[cfg_attr(feature = \"datagen\", zerovec::derive(Serialize))]\n#[zerovec::derive(Debug)]\n#[cfg_attr(feature = \"serde\", zerovec::derive(Deserialize))]\npub struct Pattern<'data> {\n    /// The compact decimal exponent, e.g., 6 for \"million\".\n    /// The value 0 indicates that compact notation is not used; in that case,\n    /// literal text must be empty; this corresponds to the CLDR pattern \"0\".\n    /// This is derived from the numbers of 0s in the pattern and the associated\n    /// `type` attribute; it is a more convenient representation than the number\n    /// of 0s, because it is often common to multiple types; for instance, the\n    /// following correspond to the same [`Pattern`]:\n    ///   <pattern type=\"1000000\" count=\"other\">0 M</pattern>\n    ///   <pattern type=\"10000000\" count=\"other\">00 M</pattern>\n    pub exponent: i8,\n    /// The index in literal_text before which the placeholder is inserted;\n    /// this is 0 for insertion at the beginning, which is most common.\n    /// The value 255 indicates that the pattern does not have a placeholder,\n    /// as in French \"mille\" for 1000.\n    pub index: u8,\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    /// The underlying CLDR pattern with the placeholder removed, e.g.,\n    /// \" M\" for the pattern \"000 M\"\n    pub literal_text: Cow<'data, str>,\n}"
+}

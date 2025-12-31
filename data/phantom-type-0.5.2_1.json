@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "phantom-type-0.5.2/src/lib.rs",
+    "start_line": 30,
+    "start_col": 1,
+    "end_line": 30,
+    "end_col": 47,
+    "code_snippet": "unsafe impl<T: ?Sized> Send for PhantomType<T> { }\nunsafe impl<T: ?Sized> Sync for PhantomType<T> { }"
+}

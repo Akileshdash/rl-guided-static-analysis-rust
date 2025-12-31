@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stable-vec-0.4.1/src/core/bitvec.rs",
+    "start_line": 345,
+    "start_col": 1,
+    "end_line": 345,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for BitVecCore<T> {\n    fn drop(&mut self) {\n        // Drop all elements\n        self.clear();\n\n        unsafe {\n            // Deallocate the memory. `clear()` sets the length to 0 and drops\n            // all existing elements, so it's fine to call `dealloc`.\n            self.dealloc();\n        }\n    }\n}"
+}

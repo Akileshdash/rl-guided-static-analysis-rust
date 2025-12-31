@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hibitset-0.6.4/src/atomic.rs",
+    "start_line": 209,
+    "start_col": 1,
+    "end_line": 209,
+    "end_col": 23,
+    "code_snippet": "impl Drop for OnceAtom {\n    fn drop(&mut self) {\n        let ptr = *self.inner.get_mut();\n        if !ptr.is_null() {\n            // SAFETY: If the pointer is not null, we created it from\n            // `Box::into_raw` in `Self::atom_get_or_init`.\n            drop(unsafe { Box::from_raw(ptr) });\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stack-buf-0.1.6/src/vec.rs",
+    "start_line": 1223,
+    "start_col": 1,
+    "end_line": 1223,
+    "end_col": 48,
+    "code_snippet": "impl<T, const N: usize> Drop for IntoIter<T, N> {\n    #[inline]\n    fn drop(&mut self) {\n        let index = self.index;\n        let len = self.vec.len();\n        unsafe {\n            self.vec.set_len(0);\n            let elements = slice::from_raw_parts_mut(self.vec.as_mut_ptr().add(index), len - index);\n            ptr::drop_in_place(elements);\n        }\n    }\n}"
+}

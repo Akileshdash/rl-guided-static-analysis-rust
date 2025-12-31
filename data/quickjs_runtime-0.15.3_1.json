@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "quickjs_runtime-0.15.3/src/quickjs_utils/properties.rs",
+    "start_line": 74,
+    "start_col": 1,
+    "end_line": 74,
+    "end_col": 32,
+    "code_snippet": "impl Drop for JSPropertyEnumRef {\n    fn drop(&mut self) {\n        unsafe {\n            for index in 0..self.length {\n                let prop: *mut q::JSPropertyEnum = self.property_enum.offset(index as isize);\n                q::JS_FreeAtom(self.context, (*prop).atom);\n            }\n\n            q::js_free(self.context, self.property_enum as *mut std::ffi::c_void);\n        }\n    }\n}"
+}

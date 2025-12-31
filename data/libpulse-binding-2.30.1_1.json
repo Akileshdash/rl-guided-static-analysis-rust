@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "libpulse-binding-2.30.1/src/callbacks.rs",
+    "start_line": 94,
+    "start_col": 1,
+    "end_line": 94,
+    "end_col": 91,
+    "code_snippet": "impl<ClosureProto: ?Sized, ProxyProto> Drop for MultiUseCallback<ClosureProto, ProxyProto> {\n    #[inline]\n    fn drop(&mut self) {\n        if self.saved.is_some() {\n            let _to_drop = unsafe { Box::from_raw(self.saved.unwrap()) };\n        }\n    }\n}"
+}

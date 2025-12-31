@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "rp235x-hal-0.3.0/src/pio.rs",
+    "start_line": 746,
+    "start_col": 1,
+    "end_line": 746,
+    "end_col": 82,
+    "code_snippet": "unsafe impl<SM: ValidStateMachine + Send, State> Send for StateMachine<SM, State> {}"
+}

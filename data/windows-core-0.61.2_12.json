@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `com_object::ComObject::<T>::take`",
+    "file": "windows-core-0.61.2/src/com_object.rs",
+    "start_line": 142,
+    "start_col": 5,
+    "end_line": 149,
+    "end_col": 6,
+    "code_snippet": "pub fn take(self) -> Result<T, Self> {\n        if self.is_reference_count_one() {\n            let outer_box: Box<T::Outer> = unsafe { core::mem::transmute(self) };\n            Ok(outer_box.into_inner())\n        } else {\n            Err(self)\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `managed::DynamicManagedRef::map`",
+    "file": "intuicio-data-0.47.0/src/managed.rs",
+    "start_line": 1173,
+    "start_col": 5,
+    "end_line": 1186,
+    "end_col": 6,
+    "code_snippet": "pub unsafe fn map<T, U>(self, f: impl FnOnce(&T) -> &U) -> Option<Self> {\n        if self.type_hash == TypeHash::of::<T>() {\n            unsafe {\n                let data = f(&*self.data.cast::<T>());\n                Some(Self {\n                    type_hash: TypeHash::of::<U>(),\n                    lifetime: self.lifetime,\n                    data: data as *const U as *const u8,\n                })\n            }\n        } else {\n            None\n        }\n    }"
+}

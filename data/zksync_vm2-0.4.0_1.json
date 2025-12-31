@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `instruction_handlers::common::full_boilerplate`",
+    "file": "zksync_vm2-0.4.0/src/instruction_handlers/common.rs",
+    "start_line": 36,
+    "start_col": 1,
+    "end_line": 70,
+    "end_col": 2,
+    "code_snippet": "pub(crate) fn full_boilerplate<Opcode: OpcodeType, T: Tracer, W: World<T>>(\n    vm: &mut VirtualMachine<T, W>,\n    world: &mut W,\n    tracer: &mut T,\n    business_logic: impl FnOnce(\n        &mut VirtualMachine<T, W>,\n        &Arguments,\n        &mut W,\n        &mut T,\n    ) -> ExecutionStatus,\n) -> ExecutionStatus {\n    let args = unsafe { &(*vm.state.current_frame.pc).arguments };\n\n    if vm.state.use_gas(args.get_static_gas_cost()).is_err()\n        || !args.mode_requirements().met(\n            vm.state.current_frame.is_kernel,\n            vm.state.current_frame.is_static,\n        )\n    {\n        return free_panic(vm, world, tracer);\n    }\n\n    if args.predicate().satisfied(&vm.state.flags) {\n        tracer.before_instruction::<Opcode, _>(&mut VmAndWorld { vm, world });\n        vm.state.current_frame.pc = unsafe { vm.state.current_frame.pc.add(1) };\n        business_logic(vm, args, world, tracer)\n            .merge_tracer(tracer.after_instruction::<Opcode, _>(&mut VmAndWorld { vm, world }))\n    } else {\n        tracer.before_instruction::<opcodes::Nop, _>(&mut VmAndWorld { vm, world });\n        vm.state.current_frame.pc = unsafe { vm.state.current_frame.pc.add(1) };\n        tracer\n            .after_instruction::<opcodes::Nop, _>(&mut VmAndWorld { vm, world })\n            .into()\n    }\n}"
+}

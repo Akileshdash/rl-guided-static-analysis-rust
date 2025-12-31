@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "rarena-allocator-0.6.0/src/object.rs",
+    "start_line": 38,
+    "start_col": 1,
+    "end_line": 38,
+    "end_col": 57,
+    "code_snippet": "unsafe impl<A: Allocator + Send, T> Send for Owned<T, A> {}\nunsafe impl<A: Allocator + Sync, T> Sync for Owned<T, A> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<AppendOnlyVec<T> as std::ops::Drop>::drop`",
+    "file": "append-only-vec-0.1.7/src/lib.rs",
+    "start_line": 311,
+    "start_col": 5,
+    "end_line": 337,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        // First we'll drop all the `T` in a slightly sloppy way.  FIXME this\n        // could be optimized to avoid reloading the `ptr`.\n        for idx in 0..self.len() {\n            let (array, offset) = indices(idx);\n            // We use a Relaxed load of the pointer, because the loop above (which\n            // ends before `self.len()`) should ensure that the data we want is\n            // already visible, since it Acquired `self.count` which synchronizes\n            // with the write in `self.push`.\n            let ptr = unsafe { *self.data[array as usize].get() };\n            unsafe {\n                std::ptr::drop_in_place(ptr.add(offset));\n            }\n        }\n        // Now we will free all the arrays.\n        for array in 0..self.data.len() as u32 {\n            // This load is relaxed because no other thread can have a reference\n            // to Self because we have a &mut self.\n            let ptr = unsafe { *self.data[array as usize].get() };\n            if !ptr.is_null() {\n                let layout = self.layout(array);\n                unsafe { std::alloc::dealloc(ptr as *mut u8, layout) };\n            } else {\n                break;\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/fatptr.rs",
+    "start_line": 430,
+    "start_col": 1,
+    "end_line": 430,
+    "end_col": 58,
+    "code_snippet": "impl<P: IPtrOwned, Vt: HasDropVt> Drop for Dyn<'_, P, Vt> {\n    fn drop(&mut self) {\n        P::drop(&mut self.ptr, *unsafe {\n            self.vtable.drop_vt().drop.as_ref_unchecked()\n        })\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cglue-0.3.5/src/arc.rs",
+    "start_line": 35,
+    "start_col": 1,
+    "end_line": 35,
+    "end_col": 25,
+    "code_snippet": "impl<T> Drop for CArc<T> {\n    fn drop(&mut self) {\n        if let Some(arc) = <Option<&mut CArcSome<T>>>::from(self) {\n            unsafe { std::ptr::drop_in_place(arc) };\n        }\n    }\n}"
+}

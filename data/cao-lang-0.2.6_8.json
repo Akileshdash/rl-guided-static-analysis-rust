@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "cao-lang-0.2.6/src/collections/hash_map.rs",
+    "start_line": 39,
+    "start_col": 1,
+    "end_line": 39,
+    "end_col": 68,
+    "code_snippet": "unsafe impl<K, V, A: Allocator + Send> Sync for CaoHashMap<K, V, A> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tract-linalg-0.21.13/src/frame/element_wise_helper.rs",
+    "start_line": 161,
+    "start_col": 1,
+    "end_line": 161,
+    "end_col": 25,
+    "code_snippet": "impl Drop for TempBuffer {\n    fn drop(&mut self) {\n        unsafe {\n            if !self.buffer.is_null() {\n                std::alloc::dealloc(self.buffer, self.layout);\n            }\n        }\n    }\n}"
+}

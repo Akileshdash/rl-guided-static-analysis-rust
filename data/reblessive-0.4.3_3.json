@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "reblessive-0.4.3/src/stack/runner.rs",
+    "start_line": 92,
+    "start_col": 1,
+    "end_line": 92,
+    "end_col": 31,
+    "code_snippet": "impl<R> Drop for Runner<'_, R> {\n    fn drop(&mut self) {\n        // The runner is dropped so we need to clear all the futures that might still be present on\n        // the stack, if the runner was dropped before finishing the stack.\n        self.stack.state.set(StackState::Cancelled);\n        unsafe { self.stack.clear::<R>() }\n        self.stack.state.set(StackState::Base);\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "emit-1.11.0/src/frame.rs",
+    "start_line": 177,
+    "start_col": 1,
+    "end_line": 177,
+    "end_col": 32,
+    "code_snippet": "impl<C: Ctxt> Drop for Frame<C> {\n    fn drop(&mut self) {\n        // SAFETY: We're being dropped, so won't access fields again\n        let ctxt = unsafe { mem::ManuallyDrop::take(&mut self.ctxt) };\n        let scope = unsafe { mem::ManuallyDrop::take(&mut self.scope) };\n\n        ctxt.close(scope)\n    }\n}"
+}

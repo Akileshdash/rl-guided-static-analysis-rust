@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkano-0.35.1/src/buffer/subbuffer.rs",
+    "start_line": 672,
+    "start_col": 1,
+    "end_line": 672,
+    "end_col": 48,
+    "code_snippet": "impl<T: ?Sized> Drop for BufferReadGuard<'_, T> {\n    fn drop(&mut self) {\n        let mut state = self.subbuffer.buffer().state();\n        unsafe { state.cpu_read_unlock(self.range.clone()) };\n    }\n}"
+}

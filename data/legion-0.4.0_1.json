@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "legion-0.4.0/src/internals/insert.rs",
+    "start_line": 251,
+    "start_col": 1,
+    "end_line": 251,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for SoaElement<T> {\n    fn drop(&mut self) {\n        unsafe {\n            // reconstruct the original vector, but with length set to the remaining elements\n            let _ = Vec::from_raw_parts(self.ptr, self.len, self.capacity);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ijson-0.1.4/src/value.rs",
+    "start_line": 718,
+    "start_col": 1,
+    "end_line": 718,
+    "end_col": 21,
+    "code_snippet": "impl Drop for IValue {\n    fn drop(&mut self) {\n        match self.type_() {\n            // Inline types can be trivially dropped\n            ValueType::Null | ValueType::Bool => {}\n            // Safety: We checked the type\n            ValueType::Array => unsafe { self.as_array_unchecked_mut() }.drop_impl(),\n            ValueType::Object => unsafe { self.as_object_unchecked_mut() }.drop_impl(),\n            ValueType::String => unsafe { self.as_string_unchecked_mut() }.drop_impl(),\n            ValueType::Number => unsafe { self.as_number_unchecked_mut() }.drop_impl(),\n        }\n    }\n}"
+}

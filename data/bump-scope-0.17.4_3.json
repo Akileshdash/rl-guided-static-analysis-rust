@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/bump_box.rs",
+    "start_line": 1013,
+    "start_col": 9,
+    "end_line": 1013,
+    "end_col": 43,
+    "code_snippet": "impl Drop for SetLenOnDrop<'_, '_> {\n            fn drop(&mut self) {\n                let new_len = self.idx - self.del_bytes;\n                debug_assert!(new_len <= self.s.len());\n                unsafe { self.s.set_len(new_len) };\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<value::Value<B, V> as std::fmt::Debug>::fmt`",
+    "file": "dync-0.6.0/src/value.rs",
+    "start_line": 304,
+    "start_col": 5,
+    "end_line": 306,
+    "end_col": 6,
+    "code_snippet": "fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {\n        unsafe { self.vtable.fmt_fn()(self.bytes.get_bytes_ref(), f) }\n    }"
+}

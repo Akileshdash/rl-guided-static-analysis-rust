@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<dimension::provider::extended_currency::CurrencyExtendedData<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_experimental-0.3.0/src/dimension/provider/extended_currency.rs",
+    "start_line": 34,
+    "start_col": 35,
+    "end_line": 34,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, Clone, PartialEq, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize))]\n#[yoke(prove_covariance_manually)]\npub struct CurrencyExtendedData<'data> {\n    /// Contains the localized display names for a currency based on plural rules.\n    /// For instance, in the \"en\" locale for the \"USD\" currency:\n    ///     - \"US Dollars\" when count is `zero`,\n    ///     - \"US Dollar\" when count is `one`,\n    ///     ... etc.\n    /// # NOTE\n    ///    Regards to the [Unicode Report TR35](https://unicode.org/reports/tr35/tr35-numbers.html#Currencies),\n    ///    If no matching for specific count, the `other` count will be used.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub display_names: PluralElementsPackedCow<'data, str>,\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/resource.rs",
+    "start_line": 882,
+    "start_col": 1,
+    "end_line": 882,
+    "end_col": 30,
+    "code_snippet": "impl Drop for DestroyedBuffer {\n    fn drop(&mut self) {\n        let mut deferred = self.device.deferred_destroy.lock();\n        deferred.push(DeferredDestroy::BindGroups(mem::take(\n            &mut self.bind_groups,\n        )));\n        drop(deferred);\n\n        if let Some(raw) = self.timestamp_normalization_bind_group.take() {\n            raw.dispose(self.device.raw());\n        }\n\n        if let Some(raw) = self.indirect_validation_bind_groups.take() {\n            raw.dispose(self.device.raw());\n        }\n\n        resource_log!(\"Destroy raw Buffer (destroyed) {:?}\", self.label());\n        // SAFETY: We are in the Drop impl and we don't use self.raw anymore after this point.\n        let raw = unsafe { ManuallyDrop::take(&mut self.raw) };\n        unsafe {\n            hal::DynDevice::destroy_buffer(self.device.raw(), raw);\n        }\n    }\n}"
+}

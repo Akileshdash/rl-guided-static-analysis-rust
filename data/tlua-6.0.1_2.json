@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tlua-6.0.1/src/lib.rs",
+    "start_line": 1552,
+    "start_col": 1,
+    "end_line": 1552,
+    "end_col": 37,
+    "code_snippet": "impl<L: AsLua> Drop for PushGuard<L> {\n    #[inline]\n    fn drop(&mut self) {\n        if self.size != 0 {\n            unsafe {\n                ffi::lua_pop(self.lua.as_lua(), self.size as _);\n            }\n        }\n    }\n}"
+}

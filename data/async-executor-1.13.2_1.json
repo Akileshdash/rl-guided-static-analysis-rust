@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-executor-1.13.2/src/lib.rs",
+    "start_line": 406,
+    "start_col": 1,
+    "end_line": 406,
+    "end_col": 27,
+    "code_snippet": "impl Drop for Executor<'_> {\n    fn drop(&mut self) {\n        let ptr = *self.state.get_mut();\n        if ptr.is_null() {\n            return;\n        }\n\n        // SAFETY: As ptr is not null, it was allocated via Arc::new and converted\n        // via Arc::into_raw in state_ptr.\n        let state = unsafe { Arc::from_raw(ptr) };\n\n        let mut active = state.active();\n        for w in active.drain() {\n            w.wake();\n        }\n        drop(active);\n\n        while state.queue.pop().is_ok() {}\n    }\n}"
+}

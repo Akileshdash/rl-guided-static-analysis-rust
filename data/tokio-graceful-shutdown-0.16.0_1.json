@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tokio-graceful-shutdown-0.16.0/src/subsystem/subsystem_handle.rs",
+    "start_line": 345,
+    "start_col": 1,
+    "end_line": 345,
+    "end_col": 63,
+    "code_snippet": "impl<ErrType: ErrTypeTraits> Drop for SubsystemHandle<ErrType> {\n    fn drop(&mut self) {\n        // SAFETY: This is how ManuallyDrop is meant to be used.\n        // `self.inner` won't ever be used again because `self` will be gone after this\n        // function is finished.\n        // This takes the `self.inner` object and makes it droppable again.\n        //\n        // This workaround is required to take ownership for the `self.drop_redirect` channel.\n        let inner = unsafe { ManuallyDrop::take(&mut self.inner) };\n\n        if let Some(redirect) = self.drop_redirect.take() {\n            let redirected_self = WeakSubsystemHandle {\n                joiner_token: inner.joiner_token,\n                _children: inner.children,\n            };\n\n            // ignore error; an error would indicate that there is no receiver.\n            // in that case, do nothing.\n            let _ = redirect.send(redirected_self);\n        }\n    }\n}"
+}

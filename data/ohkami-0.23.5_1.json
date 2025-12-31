@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `fang::handler::into_handler::from_request`",
+    "file": "ohkami-0.23.5/src/fang/handler/into_handler.rs",
+    "start_line": 22,
+    "start_col": 1,
+    "end_line": 30,
+    "end_col": 2,
+    "code_snippet": "fn from_request<'fr, 'req, R: FromRequest<'fr>>(\n    req: &'req Request\n) -> Result<R, Response> {\n    <R as FromRequest>::from_request(unsafe {\n        std::mem::transmute::<&'req _, &'fr _>(req)\n    })\n        .ok_or_else(|| Response::BadRequest().with_text(\"missing something expected in request\"))?\n        .map_err(IntoResponse::into_response)\n}"
+}

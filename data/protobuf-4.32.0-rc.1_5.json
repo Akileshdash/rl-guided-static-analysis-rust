@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "protobuf-4.32.0-rc.1/src/map.rs",
+    "start_line": 30,
+    "start_col": 1,
+    "end_line": 30,
+    "end_col": 69,
+    "code_snippet": "unsafe impl<'msg, K: ?Sized, V: ?Sized> Send for MapView<'msg, K, V> {}"
+}

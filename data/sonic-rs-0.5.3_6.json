@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `serde::de::Deserializer::<R>::deserialize_owned_lazyvalue`",
+    "file": "sonic-rs-0.5.3/src/serde/de.rs",
+    "start_line": 353,
+    "start_col": 5,
+    "end_line": 368,
+    "end_col": 6,
+    "code_snippet": "fn deserialize_owned_lazyvalue<V>(&mut self, visitor: V) -> Result<V::Value>\n    where\n        V: de::Visitor<'de>,\n    {\n        let val = ManuallyDrop::new(self.parser.get_owned_lazyvalue(true)?);\n        // #Safety\n        // the json is validate before parsing json, and we pass the document using visit_bytes\n        // here.\n        unsafe {\n            let binary = &*slice_from_raw_parts(\n                &val as *const _ as *const u8,\n                std::mem::size_of::<OwnedLazyValue>(),\n            );\n            visitor.visit_bytes(binary)\n        }\n    }"
+}

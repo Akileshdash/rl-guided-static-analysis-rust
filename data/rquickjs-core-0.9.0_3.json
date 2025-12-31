@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rquickjs-core-0.9.0/src/class/cell.rs",
+    "start_line": 258,
+    "start_col": 1,
+    "end_line": 258,
+    "end_col": 64,
+    "code_snippet": "impl<'a, 'js, T: JsClass<'js> + 'a> Drop for Borrow<'a, 'js, T> {\n    fn drop(&mut self) {\n        unsafe { <T::Mutable as Mutability>::unborrow(self.0) }\n    }\n}"
+}

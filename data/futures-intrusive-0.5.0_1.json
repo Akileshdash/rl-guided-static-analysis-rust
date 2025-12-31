@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "futures-intrusive-0.5.0/src/buffer/ring_buffer.rs",
+    "start_line": 153,
+    "start_col": 1,
+    "end_line": 155,
+    "end_col": 77,
+    "code_snippet": "impl<T, A> Drop for ArrayBuf<T, A>\nwhere\n    A: core::convert::AsMut<[T]> + core::convert::AsRef<[T]> + RealArray<T>,\n{\n    fn drop(&mut self) {\n        // Drop all elements which are still stored inside the buffer\n        while self.size > 0 {\n            // Safety: This drops only as many elements as have been written via\n            // ptr::write and haven't read via ptr::read before\n            unsafe {\n                let arr_ptr = self.buffer.as_mut_ptr() as *mut T;\n                arr_ptr.add(self.recv_idx).drop_in_place();\n            }\n            self.recv_idx = self.next_idx(self.recv_idx);\n            self.size -= 1;\n        }\n    }\n}"
+}

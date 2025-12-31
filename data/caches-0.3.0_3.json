@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<KeyRef<K> as core::hash::Hash>::hash`",
+    "file": "caches-0.3.0/src/lib.rs",
+    "start_line": 154,
+    "start_col": 5,
+    "end_line": 156,
+    "end_col": 6,
+    "code_snippet": "fn hash<H: Hasher>(&self, state: &mut H) {\n        unsafe { (*self.k).hash(state) }\n    }"
+}

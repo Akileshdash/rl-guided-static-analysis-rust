@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arrayvec::ArrayVec::<T, CAP>::retain::process_one`",
+    "file": "arrayvec-0.7.6/src/arrayvec.rs",
+    "start_line": 502,
+    "start_col": 9,
+    "end_line": 521,
+    "end_col": 10,
+    "code_snippet": "fn process_one<F: FnMut(&mut T) -> bool, T, const CAP: usize, const DELETED: bool>(\n            f: &mut F,\n            g: &mut BackshiftOnDrop<'_, T, CAP>\n        ) -> bool {\n            let cur = unsafe { g.v.as_mut_ptr().add(g.processed_len) };\n            if !f(unsafe { &mut *cur }) {\n                g.processed_len += 1;\n                g.deleted_cnt += 1;\n                unsafe { ptr::drop_in_place(cur) };\n                return false;\n            }\n            if DELETED {\n                unsafe {\n                    let hole_slot = cur.sub(g.deleted_cnt);\n                    ptr::copy_nonoverlapping(cur, hole_slot, 1);\n                }\n            }\n            g.processed_len += 1;\n            true\n        }"
+}

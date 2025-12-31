@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "griddle-0.6.0/src/map.rs",
+    "start_line": 1553,
+    "start_col": 1,
+    "end_line": 1556,
+    "end_col": 13,
+    "code_snippet": "unsafe impl<K, V, S> Sync for RawOccupiedEntryMut<'_, K, V, S>\nwhere\n    K: Sync,\n    V: Sync,\n{\n}"
+}

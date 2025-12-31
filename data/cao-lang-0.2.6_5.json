@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "cao-lang-0.2.6/src/collections/handle_table.rs",
+    "start_line": 602,
+    "start_col": 1,
+    "end_line": 602,
+    "end_col": 71,
+    "code_snippet": "unsafe impl<T, A> Send for HandleTable<T, A> where A: Allocator + Send {}\nunsafe impl<T, A> Sync for HandleTable<T, A> where A: Allocator + Sync {}"
+}

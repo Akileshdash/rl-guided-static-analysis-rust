@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::new_object_unchecked`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 1524,
+    "start_col": 5,
+    "end_line": 1549,
+    "end_col": 6,
+    "code_snippet": "pub unsafe fn new_object_unchecked<'other_local, T>(\n        &mut self,\n        class: T,\n        ctor_id: JMethodID,\n        ctor_args: &[jvalue],\n    ) -> Result<JObject<'local>>\n    where\n        T: Desc<'local, JClass<'other_local>>,\n    {\n        let class = class.lookup(self)?;\n\n        let jni_args = ctor_args.as_ptr();\n\n        let obj = jni_non_null_call!(\n            self.internal,\n            NewObjectA,\n            class.as_ref().as_raw(),\n            ctor_id.into_raw(),\n            jni_args\n        );\n\n        // Ensure that `class` isn't dropped before the JNI call returns.\n        drop(class);\n\n        Ok(unsafe { JObject::from_raw(obj) })\n    }"
+}

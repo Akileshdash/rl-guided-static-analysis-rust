@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `conversions::std::array::array_try_from_fn`",
+    "file": "pyo3-0.25.1/src/conversions/std/array.rs",
+    "start_line": 71,
+    "start_col": 1,
+    "end_line": 109,
+    "end_col": 2,
+    "code_snippet": "fn array_try_from_fn<E, F, T, const N: usize>(mut cb: F) -> Result<[T; N], E>\nwhere\n    F: FnMut(usize) -> Result<T, E>,\n{\n    // Helper to safely create arrays since the standard library doesn't\n    // provide one yet. Shouldn't be necessary in the future.\n    struct ArrayGuard<T, const N: usize> {\n        dst: *mut T,\n        initialized: usize,\n    }\n\n    impl<T, const N: usize> Drop for ArrayGuard<T, N> {\n        fn drop(&mut self) {\n            debug_assert!(self.initialized <= N);\n            let initialized_part = core::ptr::slice_from_raw_parts_mut(self.dst, self.initialized);\n            unsafe {\n                core::ptr::drop_in_place(initialized_part);\n            }\n        }\n    }\n\n    // [MaybeUninit<T>; N] would be \"nicer\" but is actually difficult to create - there are nightly\n    // APIs which would make this easier.\n    let mut array: core::mem::MaybeUninit<[T; N]> = core::mem::MaybeUninit::uninit();\n    let mut guard: ArrayGuard<T, N> = ArrayGuard {\n        dst: array.as_mut_ptr() as _,\n        initialized: 0,\n    };\n    unsafe {\n        let mut value_ptr = array.as_mut_ptr() as *mut T;\n        for i in 0..N {\n            core::ptr::write(value_ptr, cb(i)?);\n            value_ptr = value_ptr.offset(1);\n            guard.initialized += 1;\n        }\n        core::mem::forget(guard);\n        Ok(array.assume_init())\n    }\n}"
+}

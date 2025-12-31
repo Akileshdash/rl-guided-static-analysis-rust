@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "predicates-3.1.3/src/function.rs",
+    "start_line": 39,
+    "start_col": 1,
+    "end_line": 42,
+    "end_col": 15,
+    "code_snippet": "unsafe impl<F, T> Sync for FnPredicate<F, T>\nwhere\n    F: Sync + Fn(&T) -> bool,\n    T: ?Sized,\n{\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sll::link`",
+    "file": "rowan-0.15.17/src/sll.rs",
+    "start_line": 86,
+    "start_col": 1,
+    "end_line": 110,
+    "end_col": 2,
+    "code_snippet": "pub(crate) fn link<'a, E: Elem>(head: &'a Cell<*const E>, elem: &E) -> AddToSllResult<'a, E> {\n    unsafe {\n        let old_head = head.get();\n        // Case 1: empty head, replace it.\n        if old_head.is_null() {\n            return AddToSllResult::EmptyHead(head);\n        }\n\n        // Case 2: we are smaller than the head, replace it.\n        if elem.key() < (*old_head).key() {\n            return AddToSllResult::SmallerThanHead(head);\n        }\n\n        // Case 3: loop *backward* until we find insertion place. Because of\n        // Case 2, we can't loop beyond the head.\n        let mut curr = (*old_head).prev().get();\n        loop {\n            match (*curr).key().cmp(elem.key()) {\n                Ordering::Less => return AddToSllResult::SmallerThanNotHead(curr),\n                Ordering::Equal => return AddToSllResult::AlreadyInSll(curr),\n                Ordering::Greater => curr = (*curr).prev().get(),\n            }\n        }\n    }\n}"
+}

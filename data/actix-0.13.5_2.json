@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "actix-0.13.5/src/address/queue.rs",
+    "start_line": 173,
+    "start_col": 1,
+    "end_line": 173,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Queue<T> {\n    fn drop(&mut self) {\n        unsafe {\n            let mut cur = *self.tail.get();\n            while !cur.is_null() {\n                let next = (*cur).next.load(Ordering::Relaxed);\n                drop(Box::from_raw(cur));\n                cur = next;\n            }\n        }\n    }\n}"
+}

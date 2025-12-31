@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "secstr-0.5.1/src/lib.rs",
+    "start_line": 873,
+    "start_col": 1,
+    "end_line": 875,
+    "end_col": 21,
+    "code_snippet": "impl<T> Drop for SecBox<T>\nwhere\n    T: Sized + Copy,\n{\n    #[cfg_attr(any(test, feature = \"pre\"), pre::pre)]\n    fn drop(&mut self) {\n        // Make sure that the box does not need to be dropped after this function, because it may\n        // see an invalid type, if `T` does not support an all-zero byte-pattern\n        // Instead we manually destruct the box and only handle the potentially invalid values\n        // behind the pointer\n        let ptr = Box::into_raw(self.content.take().unwrap());\n\n        // There is no need to worry about dropping the contents, because `T: Copy` and `Copy`\n        // types cannot implement `Drop`\n\n        #[cfg_attr(\n            any(test, feature = \"pre\"),\n            assure(\n                valid_ptr(ptr, w),\n                reason = \"`ptr` comes from a valid box, which is guaranteed to be a valid pointer\"\n            ),\n            assure(\n                \"`ptr` points to a single allocation that is valid for at least `count` bytes\",\n                reason = \"a `Box<T>` points to an allocation of at least `mem::size_of::<T>()` bytes\"\n            ),\n            assure(\n                count <= std::isize::MAX as usize,\n                reason = \"`mem::size_of::<T>()` cannot return a value larger than `isize::MAX`\"\n            )\n        )]\n        unsafe {\n            mem::zero(ptr as *mut u8, std::mem::size_of::<T>())\n        };\n        memlock::munlock(ptr, std::mem::size_of::<T>());\n\n        // Deallocate only non-zero-sized types, because otherwise it's UB\n        if std::mem::size_of::<T>() != 0 {\n            // Safety:\n            // This way to manually deallocate is advertised in the documentation of `Box::into_raw`.\n            // The box was allocated with the global allocator and a layout of `T` and is thus\n            // deallocated using the same allocator and layout here.\n            unsafe { std::alloc::dealloc(ptr as *mut u8, std::alloc::Layout::new::<T>()) };\n        }\n    }\n}"
+}

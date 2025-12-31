@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<sharedvector::SharedVector<T> as core::convert::From<&[T]>>::from`",
+    "file": "i-slint-core-1.12.1/sharedvector.rs",
+    "start_line": 303,
+    "start_col": 5,
+    "end_line": 316,
+    "end_col": 6,
+    "code_snippet": "fn from(slice: &[T]) -> Self {\n        let capacity = slice.len();\n        let mut result = Self::with_capacity(capacity);\n        for x in slice {\n            unsafe {\n                core::ptr::write(\n                    result.inner.as_mut().data.as_mut_ptr().add(result.inner.as_mut().header.size),\n                    x.clone(),\n                );\n                result.inner.as_mut().header.size += 1;\n            }\n        }\n        result\n    }"
+}

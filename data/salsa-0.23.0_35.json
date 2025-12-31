@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `interned::IngredientImpl::<C>::value_eq`",
+    "file": "salsa-0.23.0/src/interned.rs",
+    "start_line": 720,
+    "start_col": 5,
+    "end_line": 736,
+    "end_col": 6,
+    "code_snippet": "unsafe fn value_eq<'db, Key>(\n        id: Id,\n        key: &Key,\n        zalsa: &'db Zalsa,\n        found_value: &Cell<Option<&'db Value<C>>>,\n    ) -> bool\n    where\n        C::Fields<'db>: HashEqLike<Key>,\n    {\n        let value = zalsa.table().get::<Value<C>>(id);\n        found_value.set(Some(value));\n\n        // SAFETY: We hold the lock for the shard containing the value.\n        let fields = unsafe { &*value.fields.get() };\n\n        HashEqLike::eq(Self::from_internal_data(fields), key)\n    }"
+}

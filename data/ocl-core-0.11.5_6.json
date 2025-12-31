@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ocl-core-0.11.5/src/types/abs.rs",
+    "start_line": 1256,
+    "start_col": 1,
+    "end_line": 1256,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Event {\n    fn drop(&mut self) {\n        if !self.0.is_null() {\n            unsafe {\n                functions::release_event(self).unwrap();\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `result::Result::<Ok, Err>::match_owned`",
+    "file": "stabby-abi-72.1.1/src/result.rs",
+    "start_line": 352,
+    "start_col": 5,
+    "end_line": 368,
+    "end_col": 6,
+    "code_snippet": "pub fn match_owned<U, FnOk: FnOnce(Ok) -> U, FnErr: FnOnce(Err) -> U>(\n        self,\n        ok: FnOk,\n        err: FnErr,\n    ) -> U {\n        let is_ok = self.is_ok();\n        let storage = &self.storage;\n        if is_ok {\n            let t = unsafe { core::ptr::read(Self::ok_ptr(storage)) };\n            core::mem::forget(self);\n            ok(t)\n        } else {\n            let t = unsafe { core::ptr::read(Self::err_ptr(storage)) };\n            core::mem::forget(self);\n            err(t)\n        }\n    }"
+}

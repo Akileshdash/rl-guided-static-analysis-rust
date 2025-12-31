@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::boxed::Box<T> as trace::Trace>::trace_non_roots`",
+    "file": "boa_gc-0.20.0/src/trace.rs",
+    "start_line": 306,
+    "start_col": 5,
+    "end_line": 311,
+    "end_col": 6,
+    "code_snippet": "unsafe fn trace_non_roots(&self) {\n        // SAFETY: The implementor must ensure that `trace_non_roots` is correctly implemented.\n        unsafe {\n            Trace::trace_non_roots(&**self);\n        }\n    }"
+}

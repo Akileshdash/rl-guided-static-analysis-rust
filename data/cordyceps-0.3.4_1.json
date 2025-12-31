@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cordyceps-0.3.4/src/mpsc_queue.rs",
+    "start_line": 831,
+    "start_col": 1,
+    "end_line": 831,
+    "end_col": 48,
+    "code_snippet": "impl<T: Linked<Links<T>>> Drop for MpscQueue<T> {\n    fn drop(&mut self) {\n        let mut current = self.tail.with_mut(|tail| unsafe {\n            // Safety: because `Drop` is called with `&mut self`, we have\n            // exclusive ownership over the queue, so it's always okay to touch\n            // the tail cell.\n            *tail\n        });\n        while let Some(node) = NonNull::new(current) {\n            unsafe {\n                let links = links(node);\n                let next = links.next.load(Relaxed);\n\n                // Skip dropping the stub node; it is owned by the queue and\n                // will be dropped when the queue is dropped. If we dropped it\n                // here, that would cause a double free!\n                if node != self.stub {\n                    // Convert the pointer to the owning handle and drop it.\n                    #[cfg(debug_assertions)]\n                    debug_assert!(!links.is_stub(), \"stub: {:p}, node: {node:p}\", self.stub);\n                    drop(T::from_ptr(node));\n                } else {\n                    #[cfg(debug_assertions)]\n                    debug_assert!(links.is_stub());\n                }\n\n                current = next;\n            }\n        }\n\n        unsafe {\n            // If the stub is static, don't drop it. It lives 5eva\n            // (that's one more than 4eva)\n            if !self.stub_is_static {\n                drop(T::from_ptr(self.stub));\n            }\n        }\n    }\n}"
+}

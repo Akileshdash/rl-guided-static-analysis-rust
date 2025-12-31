@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "variant-ssl-0.17.3/src/macros.rs",
+    "start_line": 293,
+    "start_col": 9,
+    "end_line": 293,
+    "end_col": 45,
+    "code_snippet": "unsafe impl<T> Sync for $borrowed<T>{}\n    };\n}"
+}

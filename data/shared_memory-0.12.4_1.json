@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "shared_memory-0.12.4/src/unix.rs",
+    "start_line": 37,
+    "start_col": 1,
+    "end_line": 37,
+    "end_col": 22,
+    "code_snippet": "impl Drop for MapData {\n    ///Takes care of properly closing the SharedMem (munmap(), shmem_unlink(), close())\n    fn drop(&mut self) {\n        //Unmap memory\n        if !self.map_ptr.is_null() {\n            trace!(\n                \"munmap(map_ptr:{:p},map_size:{})\",\n                self.map_ptr,\n                self.map_size\n            );\n            if let Err(_e) = unsafe { munmap(self.map_ptr as *mut _, self.map_size) } {\n                debug!(\"Failed to munmap() shared memory mapping : {}\", _e);\n            };\n        }\n\n        //Unlink shmem\n        if self.map_fd != 0 {\n            //unlink shmem if we created it\n            if self.owner {\n                debug!(\"Deleting persistent mapping\");\n                trace!(\"shm_unlink({})\", self.unique_id.as_str());\n                if let Err(_e) = shm_unlink(self.unique_id.as_str()) {\n                    debug!(\"Failed to shm_unlink() shared memory : {}\", _e);\n                };\n            }\n\n            trace!(\"close({})\", self.map_fd);\n            if let Err(_e) = close(self.map_fd) {\n                debug!(\n                    \"os_impl::Linux : Failed to close() shared memory file descriptor : {}\",\n                    _e\n                );\n            };\n        }\n    }\n}"
+}

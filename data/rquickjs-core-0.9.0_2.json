@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rquickjs-core-0.9.0/src/runtime/raw.rs",
+    "start_line": 126,
+    "start_col": 1,
+    "end_line": 126,
+    "end_col": 25,
+    "code_snippet": "impl Drop for RawRuntime {\n    fn drop(&mut self) {\n        unsafe {\n            let ptr = qjs::JS_GetRuntimeOpaque(self.rt.as_ptr());\n            let mut opaque: Box<Opaque> = Box::from_raw(ptr as *mut _);\n            opaque.clear();\n            qjs::JS_FreeRuntime(self.rt.as_ptr());\n            mem::drop(opaque);\n        }\n    }\n}"
+}

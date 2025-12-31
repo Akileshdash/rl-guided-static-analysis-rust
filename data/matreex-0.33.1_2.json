@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `resize::MemoryRange::<T>::init_with`",
+    "file": "matreex-0.33.1/src/resize.rs",
+    "start_line": 896,
+    "start_col": 5,
+    "end_line": 919,
+    "end_col": 6,
+    "code_snippet": "unsafe fn init_with<F>(\n        self,\n        start_index: usize,\n        order: Order,\n        new_stride: Stride,\n        initializer: &mut F,\n    ) where\n        F: FnMut(Index) -> T,\n    {\n        let mut to_init_index = start_index;\n        let mut to_init = self.start;\n        unsafe {\n            for _ in 1..self.len.get() {\n                let index = Index::from_flattened(to_init_index, order, new_stride);\n                let value = initializer(index);\n                ptr::write(to_init, value);\n                to_init_index += 1;\n                to_init = to_init.add(1);\n            }\n            let index = Index::from_flattened(to_init_index, order, new_stride);\n            let value = initializer(index);\n            ptr::write(to_init, value);\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arena::Arena::<R>::try_new`",
+    "file": "gc-arena-0.5.3/src/arena.rs",
+    "start_line": 146,
+    "start_col": 5,
+    "end_line": 156,
+    "end_col": 6,
+    "code_snippet": "pub fn try_new<F, E>(f: F) -> Result<Arena<R>, E>\n    where\n        F: for<'gc> FnOnce(&'gc Mutation<'gc>) -> Result<Root<'gc, R>, E>,\n    {\n        unsafe {\n            let context = Box::new(Context::new());\n            let mc: &'static Mutation<'_> = &*(context.mutation_context() as *const _);\n            let root: Root<'static, R> = f(mc)?;\n            Ok(Arena { context, root })\n        }\n    }"
+}

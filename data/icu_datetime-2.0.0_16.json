@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::calendar::DateLengths<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_datetime-2.0.0/src/provider/calendar/mod.rs",
+    "start_line": 28,
+    "start_col": 64,
+    "end_line": 28,
+    "end_col": 78,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, Default, zerofrom::ZeroFrom, yoke::Yokeable)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_datetime::provider::calendar))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\npub struct DateLengths<'data> {\n    /// Date pattern data, broken down by pattern length.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub date: patterns::LengthPatterns<'data>,\n\n    /// Patterns used to combine date and time length patterns into full date_time patterns.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub length_combinations: patterns::GenericLengthPatterns<'data>,\n}"
+}

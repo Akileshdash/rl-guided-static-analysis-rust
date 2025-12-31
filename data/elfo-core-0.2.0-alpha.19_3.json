@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `envelope::Envelope::with_trace_id`",
+    "file": "elfo-core-0.2.0-alpha.19/src/envelope.rs",
+    "start_line": 99,
+    "start_col": 5,
+    "end_line": 128,
+    "end_col": 6,
+    "code_snippet": "pub fn with_trace_id<M: Message>(message: M, kind: MessageKind, trace_id: TraceId) -> Self {\n        let message_layout = message._repr_layout();\n        let (layout, message_offset) = envelope_repr_layout(message_layout);\n\n        let header = EnvelopeHeader {\n            link: <_>::default(),\n            created_time: Instant::now(),\n            trace_id,\n            kind,\n            message_offset,\n        };\n\n        // SAFETY: `layout` is correct and non-zero.\n        let ptr = unsafe { alloc::alloc(layout) };\n\n        let Some(ptr) = NonNull::new(ptr) else {\n            alloc::handle_alloc_error(layout);\n        };\n\n        // SAFETY: `ptr` is valid to write the header.\n        unsafe { ptr::write(ptr.cast().as_ptr(), header) };\n\n        let this = Self(ptr.cast());\n        let message_ptr = this.message_repr_ptr();\n\n        // SAFETY: `message_ptr` is valid to write the message.\n        unsafe { message._write(message_ptr) };\n\n        this\n    }"
+}

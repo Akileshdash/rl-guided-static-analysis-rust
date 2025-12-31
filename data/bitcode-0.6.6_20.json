@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `length::LengthEncoder::encode_vectored_max_len`",
+    "file": "bitcode-0.6.6/src/length.rs",
+    "start_line": 61,
+    "start_col": 5,
+    "end_line": 85,
+    "end_col": 6,
+    "code_snippet": "pub fn encode_vectored_max_len<T: Len, const N: usize>(\n        &mut self,\n        i: impl Iterator<Item = T>,\n        mut encode: impl FnMut(T),\n    ) -> bool {\n        debug_assert!(N <= 64);\n        let mut ptr = self.small.end_ptr();\n        for t in i {\n            let n = t.len();\n            unsafe {\n                *ptr = n as u8;\n                ptr = ptr.add(1);\n            }\n            if n == 0 {\n                continue;\n            }\n            if n > N {\n                // Don't set end ptr (elements won't be saved).\n                return true;\n            }\n            encode(t);\n        }\n        self.small.set_end_ptr(ptr);\n        false\n    }"
+}

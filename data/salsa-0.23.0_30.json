@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<(A, B, C, D, E) as update::Update>::maybe_update`",
+    "file": "salsa-0.23.0/src/update.rs",
+    "start_line": 502,
+    "start_col": 13,
+    "end_line": 512,
+    "end_col": 14,
+    "code_snippet": "unsafe fn maybe_update(old_pointer: *mut Self, new_value: Self) -> bool {\n                let ($($t,)*) = new_value;\n                let ($($u,)*) = unsafe { &mut *old_pointer };\n\n                #[allow(unused_mut)]\n                let mut changed = false;\n                $(\n                    unsafe { changed |= Update::maybe_update($u, $t); }\n                )*\n                changed\n            }"
+}

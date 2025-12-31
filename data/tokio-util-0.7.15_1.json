@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tokio-util-0.7.15/src/sync/reusable_box.rs",
+    "start_line": 152,
+    "start_col": 1,
+    "end_line": 152,
+    "end_col": 52,
+    "code_snippet": "impl<O, F: FnOnce() -> O> Drop for CallOnDrop<O, F> {\n    fn drop(&mut self) {\n        let f = unsafe { ManuallyDrop::take(&mut self.f) };\n        f();\n    }\n}"
+}

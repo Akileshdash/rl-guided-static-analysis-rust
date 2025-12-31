@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "wayland-server-0.31.10/src/lib.rs",
+    "start_line": 121,
+    "start_col": 9,
+    "end_line": 121,
+    "end_col": 61,
+    "code_snippet": "wayland_scanner::generate_interfaces!(\"wayland.xml\");\n    }\n    wayland_scanner::generate_server_code!(\"wayland.xml\");\n}\n\n// internal imports for dispatching logging depending on the `log` feature\n#[cfg(feature = \"log\")]\n#[allow(unused_imports)]\nuse log::{debug as log_debug, error as log_error, info as log_info, warn as log_warn};\n#[cfg(not(feature = \"log\"))]"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "slice-dst-1.6.0/src/lib.rs",
+    "start_line": 346,
+    "start_col": 9,
+    "end_line": 346,
+    "end_col": 54,
+    "code_snippet": "impl<S: ?Sized + SliceDst> Drop for RawBox<S> {\n            fn drop(&mut self) {\n                unsafe {\n                    dealloc(self.0.as_ptr().cast(), self.1);\n                }\n            }\n        }"
+}

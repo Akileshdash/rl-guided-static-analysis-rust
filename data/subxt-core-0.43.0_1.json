@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "subxt-core-0.43.0/src/utils/mod.rs",
+    "start_line": 68,
+    "start_col": 1,
+    "end_line": 68,
+    "end_col": 47,
+    "code_snippet": "unsafe impl<T> Send for PhantomDataSendSync<T> {}\nunsafe impl<T> Sync for PhantomDataSendSync<T> {}"
+}

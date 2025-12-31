@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `traphandlers::catch_traps::call_closure`",
+    "file": "substrate-wasmtime-runtime-0.16.0-threadsafe.4/src/traphandlers.rs",
+    "start_line": 390,
+    "start_col": 5,
+    "end_line": 395,
+    "end_col": 6,
+    "code_snippet": "extern \"C\" fn call_closure<F>(payload: *mut u8)\n    where\n        F: FnMut(),\n    {\n        unsafe { (*(payload as *mut F))() }\n    }"
+}

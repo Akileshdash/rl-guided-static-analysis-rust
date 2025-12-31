@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<frame_cache::KeyRef<K> as std::borrow::Borrow<frame_cache::KeyWrapper<Q>>>::borrow`",
+    "file": "ribir_algo-0.4.0-alpha.44/src/frame_cache.rs",
+    "start_line": 61,
+    "start_col": 3,
+    "end_line": 64,
+    "end_col": 4,
+    "code_snippet": "fn borrow(&self) -> &KeyWrapper<Q> {\n    let key = unsafe { &*self.k }.borrow();\n    KeyWrapper::from_ref(key)\n  }"
+}

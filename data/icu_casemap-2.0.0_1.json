@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::exceptions::CaseMapExceptions<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_casemap-2.0.0/src/provider/exceptions.rs",
+    "start_line": 39,
+    "start_col": 39,
+    "end_line": 39,
+    "end_col": 53,
+    "code_snippet": "#[derive(Debug, Eq, PartialEq, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\npub struct CaseMapExceptions<'data> {\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    /// The list of exceptions\n    pub exceptions: VarZeroVec<'data, ExceptionULE>,\n}"
+}

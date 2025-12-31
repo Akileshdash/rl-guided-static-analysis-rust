@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `anymap::VacantEntry::<'map, A, V>::insert`",
+    "file": "ra_ap_stdx-0.0.296/src/anymap.rs",
+    "start_line": 183,
+    "start_col": 5,
+    "end_line": 185,
+    "end_col": 6,
+    "code_snippet": "pub fn insert(self, value: V) -> &'map mut V {\n        unsafe { self.inner.insert(value.into_box()).downcast_mut_unchecked() }\n    }"
+}

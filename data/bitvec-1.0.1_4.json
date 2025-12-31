@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "bitvec-1.0.1/src/ptr/addr.rs",
+    "start_line": 167,
+    "start_col": 1,
+    "end_line": 167,
+    "end_col": 41,
+    "code_snippet": "unsafe impl<T> Sync for MisalignError<T> {}"
+}

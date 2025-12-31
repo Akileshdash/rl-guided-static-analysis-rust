@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "supercow-0.1.0/src/lib.rs",
+    "start_line": 1144,
+    "start_col": 17,
+    "end_line": 1150,
+    "end_col": 40,
+    "code_snippet": "$($us)* impl<'a, $($tparm $(: ?$tparmsized)*,)* OWNED,\n             BORROWED : ?Sized, SHARED, STORAGE, PTR>\n            $($spec)* Supercow<'a, OWNED, BORROWED, SHARED, STORAGE, PTR>\n        where BORROWED : 'a,\n              *const BORROWED : PointerFirstRef,\n              STORAGE : OwnedStorage<OWNED, SHARED>,\n              PTR : PtrWrite<BORROWED>,\n              $($wo)*\n            $body\n    }\n}\n\ndefimpl! {[] (Drop for) where { } {\n    fn drop(&mut self) {\n        match self.mode() {\n            Owned(ptr) => unsafe { self.storage.deallocate_a(ptr) },\n            Shared(ptr) => unsafe { self.storage.deallocate_b(ptr) },\n            Borrowed => (),\n        }\n    }\n} }"
+}

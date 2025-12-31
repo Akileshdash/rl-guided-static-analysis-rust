@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "femtovg-0.15.0/src/renderer/opengl/framebuffer.rs",
+    "start_line": 127,
+    "start_col": 1,
+    "end_line": 127,
+    "end_col": 26,
+    "code_snippet": "impl Drop for Framebuffer {\n    fn drop(&mut self) {\n        unsafe {\n            self.context.delete_framebuffer(self.fbo);\n            if let Some(stencil_rbo) = self.stencil_rbo {\n                self.context.delete_renderbuffer(stencil_rbo);\n            }\n        }\n    }\n}"
+}

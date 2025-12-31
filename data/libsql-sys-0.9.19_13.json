@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::end_write_txn`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 76,
+    "start_col": 5,
+    "end_line": 78,
+    "end_col": 6,
+    "code_snippet": "fn end_write_txn(&mut self) -> super::Result<()> {\n        unsafe { (*self.wrapper).end_write_txn(&mut *self.wrapped) }\n    }"
+}

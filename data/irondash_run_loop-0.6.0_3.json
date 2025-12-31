@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `task::Task::<T>::poll`",
+    "file": "irondash_run_loop-0.6.0/src/task.rs",
+    "start_line": 43,
+    "start_col": 5,
+    "end_line": 50,
+    "end_col": 6,
+    "code_snippet": "fn poll(self: &std::sync::Arc<Self>) -> Poll<T> {\n        let waker = waker_ref(self).clone();\n        let context = &mut core::task::Context::from_waker(&waker);\n        unsafe {\n            let future = &mut *self.future.get();\n            future.as_mut().poll(context)\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<codepointinvlist::cpinvlist::CodePointInversionList<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_collections-2.0.0/src/codepointinvlist/cpinvlist.rs",
+    "start_line": 36,
+    "start_col": 39,
+    "end_line": 36,
+    "end_col": 47,
+    "code_snippet": "#[derive(Debug, Eq, PartialEq, Clone, Yokeable, ZeroFrom)]\n#[cfg_attr(not(feature = \"alloc\"), zerovec::skip_derive(ZeroMapKV, ToOwned))]\npub struct CodePointInversionList<'data> {\n    // If we wanted to use an array to keep the memory on the stack, there is an unsafe nightly feature\n    // https://doc.rust-lang.org/nightly/core/array/trait.FixedSizeArray.html\n    // Allows for traits of fixed size arrays\n\n    // Implements an [inversion list.](https://en.wikipedia.org/wiki/Inversion_list)\n    inv_list: ZeroVec<'data, PotentialCodePoint>,\n    size: u32,\n}"
+}

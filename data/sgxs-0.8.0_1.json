@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<W as sgxs::SgxsWrite>::write_meas`",
+    "file": "sgxs-0.8.0/src/sgxs.rs",
+    "start_line": 415,
+    "start_col": 5,
+    "end_line": 456,
+    "end_col": 6,
+    "code_snippet": "fn write_meas(&mut self, meas: &Meas) -> Result<()> {\n        use self::Meas::*;\n        use std::ptr;\n\n        let mut buf = [0u8; 64];\n        unsafe {\n            let (tag, headerdst) = buf.split_at_mut(8);\n            let tag = &mut *(&mut tag[0..8] as *mut _ as *mut u64);\n            let headerdst = &mut headerdst[0..56] as *mut _;\n\n            match meas {\n                &ECreate(ref header) => {\n                    *tag = MEAS_ECREATE;\n                    ptr::write(headerdst as *mut _, header.clone())\n                }\n                &Unsized(ref header) => {\n                    *tag = MEAS_UNSIZED;\n                    ptr::write(headerdst as *mut _, header.clone())\n                }\n                &EAdd(ref header) => {\n                    *tag = MEAS_EADD;\n                    ptr::write(headerdst as *mut _, header.clone())\n                }\n                &EExtend { ref header, .. } | &BareEExtend(ref header) => {\n                    *tag = MEAS_EEXTEND;\n                    ptr::write(headerdst as *mut _, header.clone())\n                }\n                &Unmeasured { ref header, .. } | &BareUnmeasured(ref header) => {\n                    *tag = MEAS_UNMEASRD;\n                    ptr::write(headerdst as *mut _, header.clone())\n                }\n            };\n        }\n        self.write_all(&buf)?;\n\n        match meas {\n            &EExtend { ref data, .. } | &Unmeasured { ref data, .. } => self.write_all(data)?,\n            _ => {}\n        }\n\n        Ok(())\n    }"
+}

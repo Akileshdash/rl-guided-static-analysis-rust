@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mbox-0.7.1/src/mbox.rs",
+    "start_line": 524,
+    "start_col": 5,
+    "end_line": 524,
+    "end_col": 38,
+    "code_snippet": "impl<T> Drop for MSliceBuilder<T> {\n        fn drop(&mut self) {\n            // SAFETY: `ptr` has been allocated by `gen_malloc()`.\n            unsafe {\n                gen_free(self.ptr);\n            }\n        }\n    }"
+}

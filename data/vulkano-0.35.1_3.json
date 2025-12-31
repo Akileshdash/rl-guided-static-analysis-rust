@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkano-0.35.1/src/buffer/subbuffer.rs",
+    "start_line": 699,
+    "start_col": 1,
+    "end_line": 699,
+    "end_col": 49,
+    "code_snippet": "impl<T: ?Sized> Drop for BufferWriteGuard<'_, T> {\n    fn drop(&mut self) {\n        let allocation = match self.subbuffer.buffer().memory() {\n            BufferMemory::Normal(a) => a,\n            BufferMemory::Sparse => unreachable!(),\n            BufferMemory::External => unreachable!(),\n        };\n\n        if allocation.atom_size().is_some() && !thread::panicking() {\n            let memory_range = MappedMemoryRange {\n                offset: self.range.start,\n                size: self.range.end - self.range.start,\n                _ne: crate::NonExhaustive(()),\n            };\n\n            unsafe { allocation.flush_range_unchecked(memory_range) }.unwrap();\n        }\n\n        let mut state = self.subbuffer.buffer().state();\n        unsafe { state.cpu_write_unlock(self.range.clone()) };\n    }\n}"
+}

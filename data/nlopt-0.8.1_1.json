@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `function_raw_callback`",
+    "file": "nlopt-0.8.1/src/lib.rs",
+    "start_line": 134,
+    "start_col": 1,
+    "end_line": 151,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn function_raw_callback<F: ObjFn<T>, T>(\n    n: c_uint,\n    x: *const f64,\n    g: *mut f64,\n    params: *mut c_void,\n) -> f64 {\n    // prepare args\n    let argument = unsafe { slice::from_raw_parts(x, n as usize) };\n    let gradient = if g.is_null() {\n        None\n    } else {\n        Some(unsafe { slice::from_raw_parts_mut(g, n as usize) })\n    };\n\n    // recover FunctionCfg object from supplied params and call\n    let f = unsafe { &mut *(params as *mut FunctionCfg<F, T>) };\n    (f.objective_fn)(argument, gradient, &mut f.user_data)\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<functions_write::Function<Z, (A, B, C, D), R> as Push<L>>::push_to_lua`",
+    "file": "hlua-0.4.2/src/functions_write.rs",
+    "start_line": 271,
+    "start_col": 13,
+    "end_line": 306,
+    "end_col": 14,
+    "code_snippet": "fn push_to_lua(self, mut lua: L) -> Result<PushGuard<L>, (Void, L)> {\n                unsafe {\n                    // pushing the function pointer as a userdata\n                    let lua_data = ffi::lua_newuserdata(lua.as_mut_lua().0,\n                                                        mem::size_of::<Z>() as libc::size_t);\n                    let lua_data: *mut Z = mem::transmute(lua_data);\n                    ptr::write(lua_data, self.function);\n\n                    let lua_raw = lua.as_mut_lua();\n\n                    // Creating a metatable.\n                    ffi::lua_newtable(lua.as_mut_lua().0);\n\n                    // Index \"__gc\" in the metatable calls the object's destructor.\n\n                    // TODO: Could use std::intrinsics::needs_drop to avoid that if not needed.\n                    // After some discussion on IRC, it would be acceptable to add a reexport in libcore\n                    // without going through the RFC process.\n                    {\n                        match \"__gc\".push_to_lua(&mut lua) {\n                            Ok(p) => p.forget_internal(),\n                            Err(_) => unreachable!(),\n                        };\n\n                        ffi::lua_pushcfunction(lua.as_mut_lua().0, closure_destructor_wrapper::<Z>);\n                        ffi::lua_settable(lua.as_mut_lua().0, -3);\n                    }\n                    ffi::lua_setmetatable(lua_raw.0, -2);\n\n                    // pushing wrapper as a closure\n                    let wrapper: extern fn(*mut ffi::lua_State) -> libc::c_int = wrapper::<Self, _, R>;\n                    ffi::lua_pushcclosure(lua.as_mut_lua().0, wrapper, 1);\n                    let raw_lua = lua.as_lua();\n                    Ok(PushGuard { lua: lua, size: 1, raw_lua: raw_lua })\n                }\n            }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `smart_ptrs::decrement_strong_count`",
+    "file": "aarc-0.3.2/src/smart_ptrs.rs",
+    "start_line": 125,
+    "start_col": 1,
+    "end_line": 133,
+    "end_col": 2,
+    "code_snippet": "fn decrement_strong_count<T>(ptr: NonNull<u8>) {\n    unsafe {\n        let inner = ptr.cast::<ArcInner<T>>().as_ptr();\n        if (*inner).strong_count.fetch_sub(1, SeqCst) == 1 {\n            drop_in_place(&mut (*inner).data);\n            decrement_weak_count::<T>(ptr);\n        }\n    }\n}"
+}

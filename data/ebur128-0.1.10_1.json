@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ebur128-0.1.10/src/filter.rs",
+    "start_line": 399,
+    "start_col": 5,
+    "end_line": 399,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Ftz {\n        #[allow(deprecated)]\n        fn drop(&mut self) {\n            unsafe {\n                _mm_setcsr(self.0);\n            }\n        }\n    }"
+}

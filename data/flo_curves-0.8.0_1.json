@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "flo_curves-0.8.0/src/bezier/walk.rs",
+    "start_line": 315,
+    "start_col": 1,
+    "end_line": 315,
+    "end_col": 20,
+    "code_snippet": "#[self_referencing]\nstruct EvenWalkMapIterator<TCurve, TMapFn, TResult>\nwhere\n    TCurve: 'static + BezierCurve,\n    TMapFn: for<'a> Fn(CurveSection<'a, TCurve>) -> TResult,\n{\n    curve: TCurve,\n    map_fn: TMapFn,\n\n    #[borrows(curve)]\n    #[not_covariant]\n    walk_iterator: EvenWalkIterator<'this, TCurve>,\n}"
+}

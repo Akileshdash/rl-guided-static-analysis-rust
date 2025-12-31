@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "trees-0.4.2/src/rc.rs",
+    "start_line": 555,
+    "start_col": 1,
+    "end_line": 555,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for WeakNode<T> {\n    fn drop( &mut self ) {\n        if let WeakNode::Piled( PiledWeakNode( node_vec, _ )) = self  {\n            unsafe {\n                if node_vec.as_ref().ref_cnt.decr() == 0 {\n                    drop( Box::from_raw( node_vec.as_ptr() ));\n                }\n            }\n        }\n    }\n}"
+}

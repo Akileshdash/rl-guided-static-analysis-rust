@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "faer-core-0.17.1/src/lib.rs",
+    "start_line": 7829,
+    "start_col": 1,
+    "end_line": 7829,
+    "end_col": 40,
+    "code_snippet": "impl<T: 'static> Drop for RawMatUnit<T> {\n    fn drop(&mut self) {\n        use alloc::alloc::{dealloc, Layout};\n        // this cannot overflow because we already allocated this much memory\n        // self.row_capacity.wrapping_mul(self.col_capacity) may overflow if T is a zst\n        // but that's fine since we immediately multiply it by 0.\n        let alloc_size =\n            self.row_capacity.wrapping_mul(self.col_capacity) * core::mem::size_of::<T>();\n        if alloc_size != 0 {\n            // SAFETY: pointer was allocated with alloc::alloc::alloc\n            unsafe {\n                dealloc(\n                    self.ptr.as_ptr() as *mut u8,\n                    Layout::from_size_align_unchecked(alloc_size, align_for::<T>()),\n                );\n            }\n        }\n    }\n}"
+}

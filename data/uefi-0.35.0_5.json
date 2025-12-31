@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "uefi-0.35.0/src/mem/memory_map/impl_.rs",
+    "start_line": 344,
+    "start_col": 1,
+    "end_line": 344,
+    "end_col": 37,
+    "code_snippet": "impl Drop for MemoryMapBackingMemory {\n    fn drop(&mut self) {\n        if boot::are_boot_services_active() {\n            let res = unsafe { boot::free_pool(self.0.cast()) };\n            if let Err(e) = res {\n                log::error!(\"Failed to deallocate memory map: {e:?}\");\n            }\n        } else {\n            log::debug!(\"Boot services are exited. Memory map won't be freed using the UEFI boot services allocator.\");\n        }\n    }\n}"
+}

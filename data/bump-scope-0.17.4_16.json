@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/bump_vec.rs",
+    "start_line": 228,
+    "start_col": 1,
+    "end_line": 228,
+    "end_col": 49,
+    "code_snippet": "impl<T, A: BumpAllocator> Drop for BumpVec<T, A> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe { self.drop_inner() }\n    }\n}"
+}

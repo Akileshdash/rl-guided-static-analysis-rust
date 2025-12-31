@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<io::util::split::OwnedReadHalf<Inner> as io::async_rent_cancelable::CancelableAsyncReadRent>::cancelable_read`",
+    "file": "monoio-0.2.4/src/io/util/split.rs",
+    "start_line": 90,
+    "start_col": 5,
+    "end_line": 97,
+    "end_col": 6,
+    "code_snippet": "fn cancelable_read<T: crate::buf::IoBufMut>(\n        &mut self,\n        buf: T,\n        c: CancelHandle,\n    ) -> impl Future<Output = crate::BufResult<usize, T>> {\n        let stream = unsafe { &mut *self.0.get() };\n        stream.cancelable_read(buf, c)\n    }"
+}

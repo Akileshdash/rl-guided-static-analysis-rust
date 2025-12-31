@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rancor-0.1.0/src/thin_box.rs",
+    "start_line": 27,
+    "start_col": 1,
+    "end_line": 27,
+    "end_col": 46,
+    "code_snippet": "impl<T: Pointee + ?Sized> Drop for ThinBox<T> {\n    fn drop(&mut self) {\n        let ptr = self.as_ptr();\n        // SAFETY: `ptr` always points to a valid `T`, even when it's dangling.\n        let value = unsafe { &*ptr };\n        let value_layout = Layout::for_value(value);\n        // SAFETY: `ptr` is always initialized and we own it, so we may drop it.\n        // We only ever drop it during `drop`, so it won't get dropped twice.\n        unsafe {\n            self.as_ptr().drop_in_place();\n        }\n        let (layout, header) = Self::layout_for(value_layout);\n        if layout.size() > 0 {\n            // SAFETY: The pointer passed to `dealloc` is our raw pointer moved\n            // backwards to the beginning of the allocation. `layout` is the\n            // same layout used to allocate the memory because it is from\n            // `Self::layout_for` given the layout of the owned value.\n            unsafe {\n                dealloc(ptr.cast::<u8>().sub(header), layout);\n            }\n        }\n    }\n}"
+}

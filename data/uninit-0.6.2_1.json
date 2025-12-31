@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "uninit-0.6.2/src/out_ref.rs",
+    "start_line": 121,
+    "start_col": 1,
+    "end_line": 121,
+    "end_col": 82,
+    "code_snippet": "unsafe impl<'out, T: ?Sized + 'out> Sync for Out<'out, T> where &'out mut T: Sync {}"
+}

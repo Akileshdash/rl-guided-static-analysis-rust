@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "alto-3.0.4/src/alc.rs",
+    "start_line": 724,
+    "start_col": 1,
+    "end_line": 724,
+    "end_col": 57,
+    "code_snippet": "unsafe impl<F: LoopbackFrame> Sync for LoopbackDevice<F> { }"
+}

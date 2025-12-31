@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "wasmi_collections-0.48.0/src/arena/mod.rs",
+    "start_line": 41,
+    "start_col": 1,
+    "end_line": 41,
+    "end_col": 57,
+    "code_snippet": "unsafe impl<Idx, T> Sync for Arena<Idx, T> where T: Sync {}"
+}

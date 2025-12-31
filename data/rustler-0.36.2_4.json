@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rustler-0.36.2/src/env.rs",
+    "start_line": 315,
+    "start_col": 1,
+    "end_line": 315,
+    "end_col": 23,
+    "code_snippet": "impl Drop for OwnedEnv {\n    fn drop(&mut self) {\n        unsafe {\n            enif_free_env(*self.env);\n        }\n    }\n}"
+}

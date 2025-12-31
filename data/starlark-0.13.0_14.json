@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::write_hash`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 384,
+    "start_col": 5,
+    "end_line": 384,
+    "end_col": 75,
+    "code_snippet": "fn write_hash(&self, hasher: &mut StarlarkHasher) -> crate::Result<()> {\n        if Self::TYPE == FUNCTION_TYPE {\n            // The Starlark spec says values of type \"function\" must be hashable.\n            // We could return the address of the function, but that changes\n            // with frozen/non-frozen which breaks freeze for Dict.\n            // We could create an atomic counter and use that, but it takes memory,\n            // effort, complexity etc, and we don't expect many Dict's keyed by\n            // function. Returning 0 as the hash is valid, as Eq will sort it out.\n            let _ = hasher;\n            Ok(())\n        } else {\n            Err(crate::Error::new_other(ControlError::NotHashableValue(\n                Self::TYPE.to_owned(),\n            )))\n        }\n    }"
+}

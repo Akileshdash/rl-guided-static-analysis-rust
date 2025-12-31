@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `algo::floyd_warshall::FloydWarshall::<'a, D>::distances`",
+    "file": "graaf-0.111.0/src/algo/floyd_warshall.rs",
+    "start_line": 211,
+    "start_col": 5,
+    "end_line": 257,
+    "end_col": 6,
+    "code_snippet": "pub fn distances(&mut self) -> &DistanceMatrix<isize>\n    where\n        D: ArcsWeighted<Weight = isize> + Order + Vertices,\n    {\n        let dist_ptr = self.dist.dist.as_mut_ptr();\n        let order = self.digraph.order();\n\n        for (u, v, &w) in self.digraph.arcs_weighted() {\n            unsafe {\n                *dist_ptr.add(u * order + v) = w;\n            }\n        }\n\n        for i in 0..self.digraph.order() {\n            unsafe {\n                *dist_ptr.add(i * order + i) = 0;\n            }\n        }\n\n        for i in self.digraph.vertices() {\n            for j in self.digraph.vertices() {\n                let a = unsafe { *dist_ptr.add(j * order + i) };\n\n                if a == isize::MAX {\n                    continue;\n                }\n\n                for k in self.digraph.vertices() {\n                    let b = unsafe { *dist_ptr.add(i * order + k) };\n\n                    if b == isize::MAX {\n                        continue;\n                    }\n\n                    let s = a + b;\n\n                    if s < unsafe { *dist_ptr.add(j * order + k) } {\n                        unsafe {\n                            *dist_ptr.add(j * order + k) = s;\n                        }\n                    }\n                }\n            }\n        }\n\n        &self.dist\n    }"
+}

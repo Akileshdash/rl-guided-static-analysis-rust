@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-once-cell-0.5.4/src/lib.rs",
+    "start_line": 1425,
+    "start_col": 1,
+    "end_line": 1425,
+    "end_col": 31,
+    "code_snippet": "impl<T, F> Drop for Lazy<T, F> {\n    fn drop(&mut self) {\n        let state = *self.inner.state.get_mut();\n        // Safety: the state always reflects the variant of the union that we must drop\n        unsafe {\n            if state == EMPTY_STATE {\n                // do nothing (see into_inner and the _empty variant)\n            } else if state & READY_BIT == 0 {\n                ManuallyDrop::drop(&mut self.value.get_mut().running);\n            } else {\n                ManuallyDrop::drop(&mut self.value.get_mut().ready);\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vapoursynth-0.4.0/src/map/mod.rs",
+    "start_line": 109,
+    "start_col": 1,
+    "end_line": 109,
+    "end_col": 37,
+    "code_snippet": "impl<'elem> Drop for OwnedMap<'elem> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            API::get_cached().free_map(&mut self.map);\n        }\n    }\n}"
+}

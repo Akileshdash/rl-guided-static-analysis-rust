@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<&'static T as yokeable::Yokeable<'a>>::transform_mut`",
+    "file": "yoke-0.8.0/src/yokeable.rs",
+    "start_line": 310,
+    "start_col": 5,
+    "end_line": 318,
+    "end_col": 6,
+    "code_snippet": "fn transform_mut<F>(&'a mut self, f: F)\n    where\n        F: 'static + for<'b> FnOnce(&'b mut Self::Output),\n    {\n        // Cast away the lifetime of Self\n        // Safety: this is equivalent to f(transmute(self)), and the documentation of the trait\n        // method explains why doing so is sound.\n        unsafe { f(mem::transmute::<&'a mut Self, &'a mut Self::Output>(self)) }\n    }"
+}

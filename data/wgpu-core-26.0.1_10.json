@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/instance.rs",
+    "start_line": 614,
+    "start_col": 1,
+    "end_line": 614,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Surface {\n    fn drop(&mut self) {\n        if let Some(present) = self.presentation.lock().take() {\n            for (&backend, surface) in &self.surface_per_backend {\n                if backend == present.device.backend() {\n                    unsafe { surface.unconfigure(present.device.raw()) };\n                }\n            }\n        }\n    }\n}"
+}

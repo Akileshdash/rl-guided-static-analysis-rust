@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "jxl-grid-0.6.0/src/shared_subgrid.rs",
+    "start_line": 16,
+    "start_col": 1,
+    "end_line": 16,
+    "end_col": 69,
+    "code_snippet": "unsafe impl<'g, V> Sync for SharedSubgrid<'g, V> where &'g [V]: Sync {}"
+}

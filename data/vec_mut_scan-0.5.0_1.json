@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vec_mut_scan-0.5.0/src/lib.rs",
+    "start_line": 172,
+    "start_col": 1,
+    "end_line": 172,
+    "end_col": 43,
+    "code_snippet": "impl<'a, T: 'a> Drop for VecMutScan<'a, T> {\n    fn drop(&mut self) {\n        // When we are dropped, there might be a gap of uninitialized (after dropping) memory\n        // between a prefix of non-removed items we iterated over and a suffix of items we did not\n        // iterate over. We need to move the suffix to close the gap, so we have a consecutive\n        // buffer of items. Then we can safely set `vec`'s length to the total number of remaining\n        // items.\n\n        unsafe {\n            // The read performed by copy is safe as `self.read..self.end` contains valid data and\n            // is within `vec`'s buffer.\n\n            // The write performed by copy is safe as `self.write <= self.read` so\n            // `self.write..self.write + suffix_len` also stays within `vec`'s buffer.\n            let suffix_len = self.end - self.read;\n            // This is required to handle overlapping copies.\n            ptr::copy(\n                self.base.add(self.read),\n                self.base.add(self.write),\n                suffix_len,\n            );\n            // `0..self.write` contained valid data before the copy and the copy also moved valid\n            // data to `self.write..self.write + suffix_len`. We took ownership of that data and can\n            // safely pass that ownership to `vec` here.\n            self.vec.set_len(self.write + suffix_len);\n        }\n    }\n}"
+}

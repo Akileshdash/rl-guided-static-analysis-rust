@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glommio-0.9.0/src/task/raw.rs",
+    "start_line": 549,
+    "start_col": 9,
+    "end_line": 552,
+    "end_col": 25,
+    "code_snippet": "impl<F, R, S> Drop for Guard<F, R, S>\n        where\n            F: Future<Output = R>,\n            S: Fn(Task),\n        {\n            fn drop(&mut self) {\n                let raw = self.0;\n                let ptr = raw.header as *const ();\n\n                unsafe {\n                    // Mark the task as not running and not scheduled.\n                    (*(raw.header as *mut Header)).state =\n                        ((*(raw.header)).state & !RUNNING & !SCHEDULED) | CLOSED;\n\n                    // Drop tasks future, and drop the task reference.\n                    // The thread that closed the task didn't drop the future because it\n                    // was running, so now it's our responsibility to do so.\n                    RawTask::<F, R, S>::drop_future(ptr);\n\n                    // Notify the awaiter that the future has been dropped.\n                    (*(raw.header as *mut Header)).notify(None);\n\n                    // Drop the task reference.\n                    RawTask::<F, R, S>::drop_task(ptr);\n                }\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `scoped::Scope::<'a, T, Sp>::spawn`",
+    "file": "async-scoped-0.9.0/src/scoped.rs",
+    "start_line": 59,
+    "start_col": 5,
+    "end_line": 67,
+    "end_col": 6,
+    "code_snippet": "pub fn spawn<F: Future<Output = T> + Send + 'a>(&mut self, f: F) {\n        let handle = self.spawner().spawn(unsafe {\n            std::mem::transmute::<_, Pin<Box<dyn Future<Output = T> + Send>>>(\n                Box::pin(f) as Pin<Box<dyn Future<Output = T>>>\n            )\n        });\n        self.futs.push_back(handle);\n        self.len += 1;\n    }"
+}

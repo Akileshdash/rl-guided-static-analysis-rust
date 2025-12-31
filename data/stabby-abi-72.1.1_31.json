@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<enums::ValueIsErr<Offset, Value, Tail> as enums::IDeterminant>::is_det_ok`",
+    "file": "stabby-abi-72.1.1/src/enums/mod.rs",
+    "start_line": 132,
+    "start_col": 5,
+    "end_line": 135,
+    "end_col": 6,
+    "code_snippet": "fn is_det_ok(&self, union: *const u8) -> bool {\n        let ptr = union;\n        unsafe { *ptr.add(Offset::USIZE) != Value::U8 || self.1.is_det_ok(union) }\n    }"
+}

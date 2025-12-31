@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "allsorts-0.15.1/src/font.rs",
+    "start_line": 101,
+    "start_col": 5,
+    "end_line": 101,
+    "end_col": 36,
+    "code_snippet": "#[self_referencing(pub_extras)]\n    pub struct CBLC {\n        data: Box<[u8]>,\n        #[borrows(data)]\n        #[not_covariant]\n        pub(crate) table: CBLCTable<'this>,\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "odbc-0.17.0/src/raii.rs",
+    "start_line": 32,
+    "start_col": 1,
+    "end_line": 32,
+    "end_col": 45,
+    "code_snippet": "impl<'p, T: OdbcObject> Drop for Raii<'p, T> {\n    fn drop(&mut self) {\n        match unsafe { ffi::SQLFreeHandle(T::HANDLE_TYPE, self.handle() as ffi::SQLHANDLE) } {\n            ffi::SQL_SUCCESS => (),\n            ffi::SQL_ERROR => {\n                let rec = self.get_diag_rec(1).unwrap_or_else(DiagnosticRecord::empty);\n                error!(\"Error freeing handle: {}\", rec)\n            },\n            _ => panic!(\"Unexepected return value of SQLFreeHandle\"),\n        }\n    }\n}"
+}

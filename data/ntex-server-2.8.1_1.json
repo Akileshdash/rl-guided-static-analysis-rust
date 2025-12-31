@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "ntex-server-2.8.1/src/net/factory.rs",
+    "start_line": 169,
+    "start_col": 1,
+    "end_line": 169,
+    "end_col": 61,
+    "code_snippet": "unsafe impl<F, R, E> Send for Factory<F, R, E> where F: Send {}"
+}

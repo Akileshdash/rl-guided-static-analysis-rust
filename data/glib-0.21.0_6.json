@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glib-0.21.0/src/collections/slice.rs",
+    "start_line": 75,
+    "start_col": 1,
+    "end_line": 75,
+    "end_col": 43,
+    "code_snippet": "impl<T: TransparentType> Drop for Slice<T> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            if mem::needs_drop::<T>() {\n                for i in 0..self.len {\n                    ptr::drop_in_place::<T>(self.ptr.as_ptr().add(i) as *mut T);\n                }\n            }\n\n            if self.capacity != 0 {\n                ffi::g_free(self.ptr.as_ptr() as ffi::gpointer);\n            }\n        }\n    }\n}"
+}

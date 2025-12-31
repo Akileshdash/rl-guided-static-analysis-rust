@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<collections::ptr_slice::PtrSlice<T> as std::convert::From<&'a [T]>>::from`",
+    "file": "glib-0.21.0/src/collections/ptr_slice.rs",
+    "start_line": 383,
+    "start_col": 5,
+    "end_line": 396,
+    "end_col": 6,
+    "code_snippet": "fn from(value: &'a [T]) -> Self {\n        unsafe {\n            let mut s = Self::with_capacity(value.len());\n            for (i, item) in value.iter().enumerate() {\n                ptr::write(s.ptr.as_ptr().add(i) as *mut T, item.clone());\n            }\n            s.len = value.len();\n            ptr::write(\n                s.ptr.as_ptr().add(s.len),\n                Ptr::from(ptr::null_mut::<<T as GlibPtrDefault>::GlibType>()),\n            );\n            s\n        }\n    }"
+}

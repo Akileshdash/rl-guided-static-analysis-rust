@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "safe_drive-0.4.3/src/topic/publisher.rs",
+    "start_line": 306,
+    "start_col": 1,
+    "end_line": 306,
+    "end_col": 37,
+    "code_snippet": "unsafe impl<T> Send for Publisher<T> {}"
+}

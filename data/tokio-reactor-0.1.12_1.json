@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tokio-reactor-0.1.12/src/sharded_rwlock.rs",
+    "start_line": 126,
+    "start_col": 1,
+    "end_line": 126,
+    "end_col": 45,
+    "code_snippet": "impl<'a, T> Drop for RwLockWriteGuard<'a, T> {\n    fn drop(&mut self) {\n        // Unlock the shards in reverse order of locking.\n        for shard in self.parent.shards.iter().rev() {\n            unsafe {\n                shard.force_unlock_write();\n            }\n        }\n    }\n}"
+}

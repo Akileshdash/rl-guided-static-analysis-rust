@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rapier3d-f64-0.27.0/src/utils.rs",
+    "start_line": 535,
+    "start_col": 1,
+    "end_line": 535,
+    "end_col": 47,
+    "code_snippet": "impl Drop for FlushToZeroDenormalsAreZeroFlags {\n    #[allow(deprecated)] // will address that later.\n    fn drop(&mut self) {\n        #[cfg(target_arch = \"x86\")]\n        unsafe {\n            std::arch::x86::_mm_setcsr(self.original_flags)\n        }\n        #[cfg(target_arch = \"x86_64\")]\n        unsafe {\n            std::arch::x86_64::_mm_setcsr(self.original_flags)\n        }\n    }\n}"
+}

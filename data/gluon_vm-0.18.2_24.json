@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<typed_arena::Arena<T> as core::ArenaExt<T>>::alloc_fixed`",
+    "file": "gluon_vm-0.18.2/src/core/mod.rs",
+    "start_line": 729,
+    "start_col": 5,
+    "end_line": 776,
+    "end_col": 6,
+    "code_snippet": "fn alloc_fixed<'a, I>(&'a self, iter: I) -> &'a mut [T]\n    where\n        I: IntoIterator<Item = T>,\n        T: Default,\n    {\n        use std::{mem::MaybeUninit, ptr};\n\n        let iter = iter.into_iter();\n\n        unsafe {\n            struct FillRemainingOnDrop<U: Default> {\n                ptr: *mut U,\n                end: *mut U,\n            }\n\n            impl<U: Default> Drop for FillRemainingOnDrop<U> {\n                fn drop(&mut self) {\n                    unsafe {\n                        while self.ptr != self.end {\n                            ptr::write(self.ptr, U::default());\n                            self.ptr = self.ptr.add(1);\n                        }\n                    }\n                }\n            }\n            let (len, max) = iter.size_hint();\n            assert!(Some(len) == max);\n\n            let elems = self.alloc_uninitialized(len);\n\n            {\n                let elems = elems as *mut _ as *mut MaybeUninit<T>;\n                let mut fill = FillRemainingOnDrop {\n                    ptr: elems as *mut T,\n                    end: elems.add(len) as *mut T,\n                };\n\n                for elem in iter {\n                    assert!(fill.ptr != fill.end);\n                    ptr::write(fill.ptr, elem);\n                    fill.ptr = fill.ptr.add(1);\n                }\n            }\n\n            let elems = elems as *mut _ as *mut [T];\n            &mut *elems\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lock_api-0.4.13/src/rwlock.rs",
+    "start_line": 2222,
+    "start_col": 1,
+    "end_line": 2222,
+    "end_col": 96,
+    "code_snippet": "impl<'a, R: RawRwLockUpgrade + 'a, T: ?Sized + 'a> Drop for RwLockUpgradableReadGuard<'a, R, T> {\n    #[inline]\n    fn drop(&mut self) {\n        // Safety: An RwLockUpgradableReadGuard always holds an upgradable lock.\n        unsafe {\n            self.rwlock.raw.unlock_upgradable();\n        }\n    }\n}"
+}

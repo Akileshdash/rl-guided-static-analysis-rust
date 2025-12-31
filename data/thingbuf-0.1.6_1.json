@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "thingbuf-0.1.6/src/mpsc/async_impl.rs",
+    "start_line": 1847,
+    "start_col": 28,
+    "end_line": 1847,
+    "end_col": 38,
+    "code_snippet": "#[pin_project::pin_project(PinnedDrop)]\nstruct SendRefFuture<'sender, T, R> {\n    core: &'sender ChannelCore<Waker>,\n    slots: &'sender [Slot<T>],\n    recycle: &'sender R,\n    state: State,\n    #[pin]\n    waiter: queue::Waiter<Waker>,\n}"
+}

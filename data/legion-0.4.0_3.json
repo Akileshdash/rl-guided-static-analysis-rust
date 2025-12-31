@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "legion-0.4.0/src/internals/storage/packed.rs",
+    "start_line": 267,
+    "start_col": 1,
+    "end_line": 267,
+    "end_col": 33,
+    "code_snippet": "impl<T> Drop for ComponentVec<T> {\n    fn drop(&mut self) {\n        if std::mem::needs_drop::<T>() {\n            unsafe {\n                let (ptr, len) = self.as_raw_slice();\n                for i in 0..len {\n                    std::ptr::drop_in_place(ptr.as_ptr().add(i));\n                }\n            }\n        }\n    }\n}"
+}

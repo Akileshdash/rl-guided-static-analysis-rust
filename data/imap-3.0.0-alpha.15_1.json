@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "imap-3.0.0-alpha.15/src/types/fetch.rs",
+    "start_line": 19,
+    "start_col": 1,
+    "end_line": 19,
+    "end_col": 20,
+    "code_snippet": "#[self_referencing]\npub struct Fetches {\n    data: Vec<u8>,\n    #[borrows(data)]\n    #[covariant]\n    pub(crate) fetches: Vec<Fetch<'this>>,\n}"
+}

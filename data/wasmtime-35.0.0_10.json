@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/vm/sys/unix/mmap.rs",
+    "start_line": 199,
+    "start_col": 1,
+    "end_line": 199,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Mmap {\n    fn drop(&mut self) {\n        unsafe {\n            let ptr = self.memory.as_ptr().cast();\n            let len = self.memory.as_ptr().len();\n            if len == 0 {\n                return;\n            }\n            rustix::mm::munmap(ptr, len).expect(\"munmap failed\");\n        }\n    }\n}"
+}

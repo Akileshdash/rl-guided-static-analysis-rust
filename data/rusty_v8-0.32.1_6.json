@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `inspector::V8InspectorClientBase::get_offset_within_embedder`",
+    "file": "rusty_v8-0.32.1/src/inspector.rs",
+    "start_line": 538,
+    "start_col": 3,
+    "end_line": 546,
+    "end_col": 4,
+    "code_snippet": "fn get_offset_within_embedder<T>() -> FieldOffset<Self>\n  where\n    T: V8InspectorClientImpl,\n  {\n    let buf = std::mem::MaybeUninit::<T>::uninit();\n    let embedder_ptr: *const T = buf.as_ptr();\n    let self_ptr: *const Self = unsafe { (*embedder_ptr).base() };\n    FieldOffset::from_ptrs(embedder_ptr, self_ptr)\n  }"
+}

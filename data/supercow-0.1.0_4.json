@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "supercow-0.1.0/src/lib.rs",
+    "start_line": 1173,
+    "start_col": 12,
+    "end_line": 1178,
+    "end_col": 6,
+    "code_snippet": "defimpl! {@unsafe [] (Sync for) where {\n    OWNED : Sync,\n    &'a BORROWED : Sync,\n    SHARED : Sync,\n    STORAGE : Sync,\n} { } }"
+}

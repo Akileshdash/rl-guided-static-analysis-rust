@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "odbc-api-14.2.0/src/statement_connection.rs",
+    "start_line": 28,
+    "start_col": 1,
+    "end_line": 28,
+    "end_col": 38,
+    "code_snippet": "impl Drop for StatementConnection<'_> {\n    fn drop(&mut self) {\n        unsafe {\n            drop_handle(self.handle as Handle, HandleType::Stmt);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "rune-0.14.0/src/shared/caller.rs",
+    "start_line": 66,
+    "start_col": 1,
+    "end_line": 66,
+    "end_col": 59,
+    "code_snippet": "unsafe impl<A, const N: usize, T> Send for Caller<A, N, T> {}\nunsafe impl<A, const N: usize, T> Sync for Caller<A, N, T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "intuicio-data-0.47.0/src/managed_box.rs",
+    "start_line": 219,
+    "start_col": 1,
+    "end_line": 219,
+    "end_col": 32,
+    "code_snippet": "impl Drop for ManagedMemoryPage {\n    fn drop(&mut self) {\n        // TODO: if it somehow happen that some objects won't deallocate before page gets destroyed\n        // (highly impossible), add consuming headers and finalizing objects.\n        unsafe {\n            match self {\n                ManagedMemoryPage::Chunked { memory, layout, .. } => {\n                    if memory.is_null() {\n                        return;\n                    }\n                    non_zero_dealloc(*memory, *layout);\n                }\n                ManagedMemoryPage::Exclusive { memory, layout, .. } => {\n                    if memory.is_null() {\n                        return;\n                    }\n                    non_zero_dealloc(*memory, *layout);\n                }\n            }\n        }\n    }\n}"
+}

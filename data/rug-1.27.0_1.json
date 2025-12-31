@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rug-1.27.0/src/misc.rs",
+    "start_line": 478,
+    "start_col": 1,
+    "end_line": 478,
+    "end_col": 28,
+    "code_snippet": "impl<T> Drop for VecLike<T> {\n    fn drop(&mut self) {\n        // if capacity is zero, ptr is dangling\n        if self.cap == 0 {\n            return;\n        }\n        unsafe {\n            let s = ptr::slice_from_raw_parts_mut(self.ptr, self.len);\n            self.len = 0;\n            ptr::drop_in_place(s);\n            libc::free(self.ptr.cast());\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bevy_ecs-0.16.1/src/world/command_queue.rs",
+    "start_line": 311,
+    "start_col": 1,
+    "end_line": 311,
+    "end_col": 27,
+    "code_snippet": "impl Drop for CommandQueue {\n    fn drop(&mut self) {\n        if !self.bytes.is_empty() {\n            warn!(\"CommandQueue has un-applied commands being dropped. Did you forget to call SystemState::apply?\");\n        }\n        // SAFETY: A reference is always a valid pointer\n        unsafe { self.get_raw().apply_or_drop_queued(None) };\n    }\n}"
+}

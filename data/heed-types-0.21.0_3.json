@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "heed-types-0.21.0/src/serde_bincode.rs",
+    "start_line": 33,
+    "start_col": 1,
+    "end_line": 33,
+    "end_col": 40,
+    "code_snippet": "unsafe impl<T> Send for SerdeBincode<T> {}"
+}

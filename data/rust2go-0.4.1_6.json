@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "rust2go-0.4.1/src/future.rs",
+    "start_line": 31,
+    "start_col": 1,
+    "end_line": 31,
+    "end_col": 82,
+    "code_snippet": "unsafe impl<Req: Send, Resp: Send, Exec> Send for ResponseFuture<Req, Resp, Exec> {}\nunsafe impl<Req: Sync, Resp: Sync, Exec> Sync for ResponseFuture<Req, Resp, Exec> {}"
+}

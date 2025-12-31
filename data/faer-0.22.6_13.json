@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `Conj::apply`",
+    "file": "faer-0.22.6/src/lib.rs",
+    "start_line": 907,
+    "start_col": 2,
+    "end_line": 915,
+    "end_col": 3,
+    "code_snippet": "pub(crate) fn apply<T: Conjugate>(value: &T) -> T::Canonical {\n\t\tlet value = unsafe { &*(value as *const T as *const T::Canonical) };\n\n\t\tif try_const! { matches!(Self::get::<T>(), Conj::Yes) } {\n\t\t\tT::Canonical::conj_impl(value)\n\t\t} else {\n\t\t\tT::Canonical::copy_impl(value)\n\t\t}\n\t}"
+}

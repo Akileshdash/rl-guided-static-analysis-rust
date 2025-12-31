@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/sync.rs",
+    "start_line": 61,
+    "start_col": 1,
+    "end_line": 61,
+    "end_col": 24,
+    "code_snippet": "impl Drop for SyncFence {\n    #[inline]\n    fn drop(&mut self) {\n        let sync = match self.id {\n            None => return,     // fence has already been deleted\n            Some(s) => s\n        };\n\n        let mut ctxt = self.context.make_current();\n        unsafe { delete_fence(&mut ctxt, sync) };\n    }\n}"
+}

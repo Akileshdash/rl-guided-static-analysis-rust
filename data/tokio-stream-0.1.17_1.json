@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "tokio-stream-0.1.17/src/empty.rs",
+    "start_line": 13,
+    "start_col": 1,
+    "end_line": 13,
+    "end_col": 33,
+    "code_snippet": "unsafe impl<T> Send for Empty<T> {}\nunsafe impl<T> Sync for Empty<T> {}"
+}

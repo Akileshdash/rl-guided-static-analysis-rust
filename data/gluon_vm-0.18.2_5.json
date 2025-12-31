@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gluon_vm-0.18.2/src/thread.rs",
+    "start_line": 575,
+    "start_col": 1,
+    "end_line": 575,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Thread {\n    fn drop(&mut self) {\n        // Make sure that context reference is dropped before the Gc itself as the RwLock is dropped\n        // when the Gc is dropped\n        let mut gc_to_drop = {\n            // The child threads need to refer to `self` so drop the gc (and thus the child threads)\n            // first so that `self` is valid while dropping them\n            let context = self.context.get_mut().unwrap_or_else(|err| {\n                // Ignore poisoning since we don't need to interact with the Gc values, only\n                // drop them\n                err.into_inner()\n            });\n            ::std::mem::replace(&mut context.gc, Gc::new(Generation::default(), 0))\n        };\n\n        // SAFETY GcPtr's may not leak outside of the `Thread` so we can safely clear it when\n        // droppting the thread\n        unsafe {\n            gc_to_drop.clear();\n        }\n\n        let mut parent_threads = self.parent_threads();\n        parent_threads.remove(self.thread_index);\n    }\n}"
+}

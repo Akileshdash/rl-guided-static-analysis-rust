@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "substrate-wasmtime-runtime-0.16.0-threadsafe.4/src/jit_int.rs",
+    "start_line": 75,
+    "start_col": 1,
+    "end_line": 75,
+    "end_col": 38,
+    "code_snippet": "impl Drop for GdbJitImageRegistration {\n    fn drop(&mut self) {\n        unsafe {\n            unregister_gdb_jit_image(self.entry.load(Ordering::SeqCst));\n        }\n    }\n}"
+}

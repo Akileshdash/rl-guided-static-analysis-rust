@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `map::core::extract::ExtractCore::<'_, K, V>::extract_if`",
+    "file": "indexmap-2.10.0/src/map/core/extract.rs",
+    "start_line": 74,
+    "start_col": 5,
+    "end_line": 103,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn extract_if<F>(&mut self, mut pred: F) -> Option<Bucket<K, V>>\n    where\n        F: FnMut(&mut Bucket<K, V>) -> bool,\n    {\n        debug_assert!(self.end <= self.map.entries.capacity());\n\n        let base = self.map.entries.as_mut_ptr();\n        while self.current < self.end {\n            // SAFETY: We're maintaining both indices within bounds of the original entries, so\n            // 0..new_len and current..indices.len() are always valid items for our Drop to keep.\n            unsafe {\n                let item = base.add(self.current);\n                if pred(&mut *item) {\n                    // Extract it!\n                    self.current += 1;\n                    return Some(item.read());\n                } else {\n                    // Keep it, shifting it down if needed.\n                    if self.new_len != self.current {\n                        debug_assert!(self.new_len < self.current);\n                        let dest = base.add(self.new_len);\n                        item.copy_to_nonoverlapping(dest, 1);\n                    }\n                    self.current += 1;\n                    self.new_len += 1;\n                }\n            }\n        }\n        None\n    }"
+}

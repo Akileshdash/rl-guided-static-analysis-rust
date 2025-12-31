@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "swc_plugin-1.0.1/src/pseudo_scoped_key.rs",
+    "start_line": 31,
+    "start_col": 1,
+    "end_line": 31,
+    "end_col": 56,
+    "code_snippet": "unsafe impl<T> std::marker::Sync for PseudoScopedKey<T> {}"
+}

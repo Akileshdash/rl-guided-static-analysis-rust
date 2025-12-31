@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "foyer-intrusive-collections-0.10.0-dev/src/pointer_ops.rs",
+    "start_line": 249,
+    "start_col": 5,
+    "end_line": 249,
+    "end_col": 57,
+    "code_snippet": "impl<'a, T: PointerOps> Drop for PointerGuard<'a, T> {\n        #[inline]\n        fn drop(&mut self) {\n            // Prevent shared pointers from being released by converting them\n            // back into the raw pointers\n            // SAFETY: `pointer` is never dropped. `ManuallyDrop::take` is not stable until 1.42.0.\n            let _ = self\n                .pointer_ops\n                .into_raw(unsafe { core::ptr::read(&*self.pointer) });\n        }\n    }"
+}

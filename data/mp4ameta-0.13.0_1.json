@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `atom::head::parse`",
+    "file": "mp4ameta-0.13.0/src/atom/head.rs",
+    "start_line": 103,
+    "start_col": 1,
+    "end_line": 154,
+    "end_col": 2,
+    "code_snippet": "pub fn parse(reader: &mut impl Read, remaining_bytes: u64) -> crate::Result<Head> {\n    let mut buf = [[0u8; 4]; 2];\n\n    // SAFETY: the buffer has the same size and alignment\n    let byte_buf: &mut [u8; 8] = unsafe { std::mem::transmute(&mut buf) };\n\n    reader\n        .read_exact(byte_buf)\n        .map_err(|e| crate::Error::new(ErrorKind::Io(e), \"Error reading atom head\"))?;\n\n    let mut len = u32::from_be_bytes(buf[0]) as u64;\n    let fourcc = Fourcc(buf[1]);\n\n    let ext = if len == 1 {\n        match reader.read_be_u64() {\n            Ok(ext_len) if ext_len < 16 => {\n                return Err(crate::Error::new(\n                    crate::ErrorKind::InvalidAtomSize,\n                    format!(\n                        \"Read extended length of '{fourcc}' which is less than 16 bytes: {ext_len}\"\n                    ),\n                ));\n            }\n            Ok(ext_len) => len = ext_len,\n            Err(e) => {\n                return Err(crate::Error::new(\n                    ErrorKind::Io(e),\n                    \"Error reading extended atom length\",\n                ));\n            }\n        }\n        true\n    } else if len < 8 {\n        return Err(crate::Error::new(\n            crate::ErrorKind::InvalidAtomSize,\n            format!(\"Read length of '{fourcc}' which is less than 8 bytes: {len}\"),\n        ));\n    } else {\n        false\n    };\n\n    if len > remaining_bytes {\n        return Err(crate::Error::new(\n            ErrorKind::AtomSizeOutOfBounds,\n            format!(\n                \"Atom size {len} of {fourcc} out larger than the remaining number of bytes {remaining_bytes}\"\n            ),\n        ));\n    }\n\n    Ok(Head::new(ext, len, fourcc))\n}"
+}

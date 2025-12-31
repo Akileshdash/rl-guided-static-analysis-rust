@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<[U; N] as array::MapArray<[T; N], F>>::map_array`",
+    "file": "glsl-layout-0.5.0/src/array.rs",
+    "start_line": 175,
+    "start_col": 5,
+    "end_line": 192,
+    "end_col": 6,
+    "code_snippet": "fn map_array(values: [T; N], mut f: F) -> Self {\n        use std::{\n            mem::{ManuallyDrop, MaybeUninit},\n            ptr::{read, write},\n        };\n\n        // Use `ManuallyDrop<_>` to guard against panic safety issue.\n        // Upon panic in `f`, `values` isn't dropped\n        // and thus item copied by `read()` is dropped only once.\n        let values = ManuallyDrop::new(values);\n        unsafe {\n            let mut result: MaybeUninit<[U; N]> = MaybeUninit::zeroed();\n            for i in 0..N {\n                write(result.as_mut_ptr().cast::<U>().add(i), f(read(&values[i])));\n            }\n            result.assume_init()\n        }\n    }"
+}

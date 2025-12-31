@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<smart::Smart<T, C> as core::clone::Clone>::clone`",
+    "file": "hipstr-0.8.0/src/smart.rs",
+    "start_line": 327,
+    "start_col": 5,
+    "end_line": 337,
+    "end_col": 6,
+    "code_snippet": "fn clone(&self) -> Self {\n        if unsafe { &(*self.0.as_ptr()).count }.incr() == UpdateResult::Done {\n            Self(self.0)\n        } else {\n            let inner = self.inner().clone();\n            let ptr = Box::into_raw(Box::new(inner));\n            // SAFETY: duh\n            let nonnull = unsafe { NonNull::new_unchecked(ptr) };\n            Self(nonnull)\n        }\n    }"
+}

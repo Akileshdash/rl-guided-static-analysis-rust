@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tree-sitter-c2rust-0.25.2/binding_rust/lib.rs",
+    "start_line": 3586,
+    "start_col": 1,
+    "end_line": 3586,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Query {\n    fn drop(&mut self) {\n        unsafe { ffi::ts_query_delete(self.ptr.as_ptr()) }\n    }\n}"
+}

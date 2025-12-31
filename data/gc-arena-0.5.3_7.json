@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arena::Arena::<R>::map_root`",
+    "file": "gc-arena-0.5.3/src/arena.rs",
+    "start_line": 190,
+    "start_col": 5,
+    "end_line": 203,
+    "end_col": 6,
+    "code_snippet": "pub fn map_root<R2: for<'a> Rootable<'a>>(\n        self,\n        f: impl for<'gc> FnOnce(&'gc Mutation<'gc>, Root<'gc, R>) -> Root<'gc, R2>,\n    ) -> Arena<R2> {\n        self.context.root_barrier();\n        let new_root: Root<'static, R2> = unsafe {\n            let mc: &'static Mutation<'_> = &*(self.context.mutation_context() as *const _);\n            f(mc, self.root)\n        };\n        Arena {\n            context: self.context,\n            root: new_root,\n        }\n    }"
+}

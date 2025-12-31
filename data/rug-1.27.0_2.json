@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rug-1.27.0/src/integer/traits.rs",
+    "start_line": 59,
+    "start_col": 1,
+    "end_line": 59,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Integer {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            xmpz::clear(self);\n        }\n    }\n}"
+}

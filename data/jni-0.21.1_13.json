@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::throw_new`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 465,
+    "start_col": 5,
+    "end_line": 487,
+    "end_col": 6,
+    "code_snippet": "pub fn throw_new<'other_local, S, T>(&mut self, class: T, msg: S) -> Result<()>\n    where\n        S: Into<JNIString>,\n        T: Desc<'local, JClass<'other_local>>,\n    {\n        let class = class.lookup(self)?;\n        let msg = msg.into();\n        let res: i32 = jni_unchecked!(\n            self.internal,\n            ThrowNew,\n            class.as_ref().as_raw(),\n            msg.as_ptr()\n        );\n\n        // Ensure that `class` isn't dropped before the JNI call returns.\n        drop(class);\n\n        if res == 0 {\n            Ok(())\n        } else {\n            Err(Error::ThrowFailed(res))\n        }\n    }"
+}

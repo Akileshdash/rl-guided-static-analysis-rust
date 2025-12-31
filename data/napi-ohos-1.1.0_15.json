@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "napi-ohos-1.1.0/src/threadsafe_function.rs",
+    "start_line": 197,
+    "start_col": 1,
+    "end_line": 214,
+    "end_col": 4,
+    "code_snippet": "unsafe impl<\n    T: 'static,\n    Return: FromNapiValue,\n    CallJsBackArgs: 'static + JsValuesTupleIntoVec,\n    ErrorStatus: AsRef<str> + From<Status>,\n    const CalleeHandled: bool,\n    const Weak: bool,\n    const MaxQueueSize: usize,\n  > Send\n  for ThreadsafeFunction<\n    T,\n    Return,\n    CallJsBackArgs,\n    ErrorStatus,\n    { CalleeHandled },\n    { Weak },"
+}

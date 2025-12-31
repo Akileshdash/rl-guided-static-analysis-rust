@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/vm/store_box.rs",
+    "start_line": 31,
+    "start_col": 1,
+    "end_line": 31,
+    "end_col": 37,
+    "code_snippet": "impl<T: ?Sized> Drop for StoreBox<T> {\n    fn drop(&mut self) {\n        unsafe {\n            drop(Box::from_raw(self.0.as_ptr()));\n        }\n    }\n}"
+}

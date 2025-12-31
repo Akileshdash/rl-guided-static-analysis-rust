@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `acto_ref::ActoRef::<M>::with_count`",
+    "file": "acto-0.8.0/src/acto_ref.rs",
+    "start_line": 134,
+    "start_col": 5,
+    "end_line": 140,
+    "end_col": 6,
+    "code_snippet": "fn with_count(&self, f: impl FnOnce(&AtomicUsize) -> usize) -> usize {\n        match &self.0.fields {\n            Inner::Straight(s) => f(&s.count),\n            Inner::Mapped(m) => f(unsafe { &*m.count }),\n            Inner::Blackhole => 0,\n        }\n    }"
+}

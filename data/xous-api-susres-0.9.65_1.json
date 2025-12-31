@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "xous-api-susres-0.9.65/src/lib.rs",
+    "start_line": 217,
+    "start_col": 1,
+    "end_line": 217,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Susres {\n    fn drop(&mut self) {\n        if let Some(sid) = self.suspend_cb_sid.take() {\n            drop_conn(sid);\n        }\n        if REFCOUNT.fetch_sub(1, Ordering::Relaxed) == 1 {\n            unsafe {\n                xous::disconnect(self.conn).unwrap();\n            }\n        }\n    }\n}"
+}

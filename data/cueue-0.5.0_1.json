@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cueue-0.5.0/src/lib.rs",
+    "start_line": 146,
+    "start_col": 1,
+    "end_line": 146,
+    "end_col": 41,
+    "code_snippet": "impl<T> Drop for MemoryMapInitialized<T> {\n    fn drop(&mut self) {\n        for i in 0..self.cap {\n            unsafe {\n                self.buf.add(i).drop_in_place();\n            }\n        }\n    }\n}"
+}

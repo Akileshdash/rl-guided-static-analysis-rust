@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `mem_vec::MemVec::<'a, T, A>::retain_mut::process_loop`",
+    "file": "memvec-0.2.0/src/mem_vec.rs",
+    "start_line": 514,
+    "start_col": 9,
+    "end_line": 547,
+    "end_col": 10,
+    "code_snippet": "fn process_loop<F, T: Copy, A: Memory, const DELETED: bool>(\n            original_len: usize,\n            f: &mut F,\n            g: &mut BackshiftOnDrop<'_, '_, T, A>,\n        ) where\n            F: FnMut(&mut T) -> bool,\n        {\n            while g.processed_len != original_len {\n                // SAFETY: Unchecked element must be valid.\n                let cur = unsafe { &mut *g.v.as_mut_ptr().add(g.processed_len) };\n                if !f(cur) {\n                    // Advance early to avoid double drop if `drop_in_place` panicked.\n                    g.processed_len += 1;\n                    g.deleted_cnt += 1;\n                    // SAFETY: We never touch this element again after dropped.\n                    unsafe { ptr::drop_in_place(cur) };\n                    // We already advanced the counter.\n                    if DELETED {\n                        continue;\n                    } else {\n                        break;\n                    }\n                }\n                if DELETED {\n                    // SAFETY: `deleted_cnt` > 0, so the hole slot must not overlap with current element.\n                    // We use copy for move, and never touch this element again.\n                    unsafe {\n                        let hole_slot = g.v.as_mut_ptr().add(g.processed_len - g.deleted_cnt);\n                        ptr::copy_nonoverlapping(cur, hole_slot, 1);\n                    }\n                }\n                g.processed_len += 1;\n            }\n        }"
+}

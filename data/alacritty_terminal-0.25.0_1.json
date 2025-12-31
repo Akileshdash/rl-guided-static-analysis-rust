@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `grid::row::Row::<T>::new`",
+    "file": "alacritty_terminal-0.25.0/src/grid/row.rs",
+    "start_line": 37,
+    "start_col": 5,
+    "end_line": 56,
+    "end_col": 6,
+    "code_snippet": "pub fn new(columns: usize) -> Row<T> {\n        debug_assert!(columns >= 1);\n\n        let mut inner: Vec<T> = Vec::with_capacity(columns);\n\n        // This is a slightly optimized version of `std::vec::Vec::resize`.\n        unsafe {\n            let mut ptr = inner.as_mut_ptr();\n\n            for _ in 1..columns {\n                ptr::write(ptr, T::default());\n                ptr = ptr.offset(1);\n            }\n            ptr::write(ptr, T::default());\n\n            inner.set_len(columns);\n        }\n\n        Row { inner, occ: 0 }\n    }"
+}

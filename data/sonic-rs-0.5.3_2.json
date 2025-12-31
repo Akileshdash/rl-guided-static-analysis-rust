@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sonic-rs-0.5.3/src/lazyvalue/value.rs",
+    "start_line": 205,
+    "start_col": 1,
+    "end_line": 205,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Inner {\n    fn drop(&mut self) {\n        if self.no_escaped() {\n            return;\n        }\n\n        let ptr = self.unescaped.load(Ordering::Acquire);\n        if !ptr.is_null() {\n            unsafe { Arc::decrement_strong_count(ptr as *const String) };\n        }\n    }\n}"
+}

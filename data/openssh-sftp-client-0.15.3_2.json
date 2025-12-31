@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "openssh-sftp-client-0.15.3/src/fs/dir.rs",
+    "start_line": 56,
+    "start_col": 15,
+    "end_line": 56,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\npub struct ReadDir {\n    dir: Dir,\n\n    // future and entries contain the state\n    //\n    // Invariant:\n    //  - entries.is_none() => future.is_none()\n    //  - If entries.is_some(), then future.is_none() ^ entries.unwrap().as_slice().is_empty()\n    future: Option<ResponseFuture>,\n    entries: Option<IntoIter<NameEntry>>,\n\n    /// cancellation_fut is not only cancel-safe, but also can be polled after\n    /// it is ready.\n    ///\n    /// Once it is ready, all polls after that immediately return Poll::Ready(())\n    #[pin]\n    cancellation_fut: WaitForCancellationFutureOwned,\n}"
+}

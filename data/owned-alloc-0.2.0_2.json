@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "owned-alloc-0.2.0/src/owned.rs",
+    "start_line": 110,
+    "start_col": 1,
+    "end_line": 112,
+    "end_col": 15,
+    "code_snippet": "impl<T> Drop for OwnedAlloc<T>\nwhere\n    T: ?Sized,\n{\n    fn drop(&mut self) {\n        unsafe {\n            let layout = Layout::for_value(self.nnptr.as_ref());\n            self.nnptr.as_ptr().drop_in_place();\n            if layout.size() != 0 {\n                dealloc(self.nnptr.cast().as_ptr(), layout);\n            }\n        }\n    }\n}"
+}

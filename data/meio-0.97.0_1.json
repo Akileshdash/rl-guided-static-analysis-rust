@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "meio-0.97.0/src/handlers.rs",
+    "start_line": 404,
+    "start_col": 1,
+    "end_line": 404,
+    "end_col": 39,
+    "code_snippet": "unsafe impl<T> Send for TerminateBy<T> {}"
+}

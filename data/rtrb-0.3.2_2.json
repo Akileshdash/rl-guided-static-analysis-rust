@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rtrb-0.3.2/src/lib.rs",
+    "start_line": 218,
+    "start_col": 1,
+    "end_line": 218,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for RingBuffer<T> {\n    /// Drops all non-empty slots.\n    fn drop(&mut self) {\n        let mut head = self.head.load(Ordering::Relaxed);\n        let tail = self.tail.load(Ordering::Relaxed);\n\n        // Loop over all slots that hold a value and drop them.\n        while head != tail {\n            // SAFETY: All slots between head and tail have been initialized.\n            unsafe { self.slot_ptr(head).drop_in_place() };\n            head = self.increment1(head);\n        }\n\n        // Finally, deallocate the buffer, but don't run any destructors.\n        // SAFETY: data_ptr and capacity are still valid from the original initialization.\n        unsafe { Vec::from_raw_parts(self.data_ptr, 0, self.capacity) };\n    }\n}"
+}

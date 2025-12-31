@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "zed_extension_api-0.6.0/src/extension_api.rs",
+    "start_line": 301,
+    "start_col": 5,
+    "end_line": 304,
+    "end_col": 7,
+    "code_snippet": "wit_bindgen::generate!({\n        skip: [\"init-extension\"],\n        path: \"./wit/since_v0.6.0\",\n    });"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/as_hal.rs",
+    "start_line": 206,
+    "start_col": 1,
+    "end_line": 206,
+    "end_col": 39,
+    "code_snippet": "impl<Fence> Drop for FenceGuard<Fence> {\n    fn drop(&mut self) {\n        // SAFETY:\n        // - We are not going to access the rank data anymore.\n        let data = unsafe { ManuallyDrop::take(&mut self.fence_lock_rank_data) };\n\n        // SAFETY:\n        // - The pointer is no longer going to be accessed.\n        // - The fence lock is being held because this type was not created\n        //   until after the fence lock was forgotten.\n        unsafe {\n            self.device.fence.force_unlock_read(data);\n        };\n    }\n}"
+}

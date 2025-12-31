@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "neso-0.5.0/src/lib.rs",
+    "start_line": 367,
+    "start_col": 1,
+    "end_line": 367,
+    "end_col": 18,
+    "code_snippet": "impl Drop for Nes {\n    fn drop(&mut self) {\n        if let Some(mapper) = self.mapper {\n            unsafe {\n                Box::from_raw(mapper);\n            }\n        }\n    }\n}"
+}

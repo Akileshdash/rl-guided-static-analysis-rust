@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `toa::itoa::ItoaTmp::format`",
+    "file": "readable-0.16.0/src/toa/itoa.rs",
+    "start_line": 181,
+    "start_col": 2,
+    "end_line": 194,
+    "end_col": 3,
+    "code_snippet": "pub fn format<I: Integer>(&mut self, integer: I) -> &str {\n\t\t// SAFETY: dtolnay\n\t\tunsafe {\n\t\t\tlet (len, offset) = integer.write(\n\t\t\t\t&mut *(&mut self.bytes as *mut [MaybeUninit<u8>; I128_MAX_LEN]\n\t\t\t\t\tas *mut <I as private::Sealed>::Itoa)\n\t\t\t);\n\t\t\tlet slice = slice::from_raw_parts(\n\t\t\t\tself.bytes.as_ptr().offset(offset) as *const u8,\n\t\t\t\tlen,\n\t\t\t);\n\t\t\tstd::str::from_utf8_unchecked(slice)\n\t\t}\n\t}"
+}

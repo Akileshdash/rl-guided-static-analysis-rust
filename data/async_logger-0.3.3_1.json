@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async_logger-0.3.3/src/buf.rs",
+    "start_line": 286,
+    "start_col": 1,
+    "end_line": 286,
+    "end_col": 24,
+    "code_snippet": "impl<T> Drop for Buf<T> {\n\n    fn drop(&mut self) {\n\n        let align = std::mem::align_of::<T>();\n\n        unsafe {\n\n            std::alloc::dealloc(self.ptr as *mut u8, std::alloc::Layout::from_size_align(self.size, align).unwrap());\n        }\n    }\n}"
+}

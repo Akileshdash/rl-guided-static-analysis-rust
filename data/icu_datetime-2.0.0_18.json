@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::time_zones::MetazonePeriod<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_datetime-2.0.0/src/provider/time_zones.rs",
+    "start_line": 311,
+    "start_col": 44,
+    "end_line": 311,
+    "end_col": 58,
+    "code_snippet": "#[derive(PartialEq, Debug, Clone, Default, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_datetime::provider::time_zones))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[yoke(prove_covariance_manually)]\npub struct MetazonePeriod<'data> {\n    /// The default mapping between period and offsets. The second level key is a wall-clock time encoded as\n    /// [`ZoneNameTimestamp`]. It represents when the metazone started to be used.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub list: ZeroMap2d<'data, TimeZone, ZoneNameTimestamp, NichedOption<MetazoneId, 1>>,\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rendy-factory-0.5.1/src/factory.rs",
+    "start_line": 182,
+    "start_col": 1,
+    "end_line": 184,
+    "end_col": 16,
+    "code_snippet": "impl<B> Drop for Factory<B>\nwhere\n    B: Backend,\n{\n    fn drop(&mut self) {\n        log::debug!(\"Dropping factory\");\n        self.wait_idle().unwrap();\n\n        unsafe {\n            // Device is idle.\n            self.uploader.dispose(&self.device);\n            log::trace!(\"Uploader disposed\");\n            self.blitter.dispose(&self.device);\n            log::trace!(\"Blitter disposed\");\n            std::ptr::read(&mut *self.resources).dispose(\n                &self.device,\n                self.heaps.get_mut(),\n                self.descriptor_allocator.get_mut(),\n            );\n\n            log::trace!(\"Resources disposed\");\n        }\n\n        unsafe {\n            std::ptr::read(&mut *self.heaps)\n                .into_inner()\n                .dispose(&self.device);\n            log::trace!(\"Heaps disposed\");\n        }\n\n        unsafe {\n            std::ptr::read(&mut *self.descriptor_allocator)\n                .into_inner()\n                .dispose(&self.device);\n            log::trace!(\"Descriptor allocator disposed\");\n        }\n\n        log::trace!(\"Factory dropped\");\n    }\n}"
+}

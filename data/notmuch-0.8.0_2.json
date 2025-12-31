@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `database::Database::_upgrade::wrapper`",
+    "file": "notmuch-0.8.0/src/database.rs",
+    "start_line": 255,
+    "start_col": 9,
+    "end_line": 261,
+    "end_col": 10,
+    "code_snippet": "extern \"C\" fn wrapper<F>(closure: *mut libc::c_void, progress: libc::c_double)\n        where\n            F: FnMut(f64),\n        {\n            let closure = closure as *mut F;\n            unsafe { (*closure)(progress as f64) }\n        }"
+}

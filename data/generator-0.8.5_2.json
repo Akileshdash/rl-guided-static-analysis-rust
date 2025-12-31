@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<stack::StackBox<T> as std::ops::Drop>::drop`",
+    "file": "generator-0.8.5/src/stack/mod.rs",
+    "start_line": 183,
+    "start_col": 5,
+    "end_line": 192,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        let header = self.get_header();\n        unsafe {\n            *header.stack.get_offset() -= header.data_size + HEADER_SIZE;\n            ptr::drop_in_place(self.ptr.as_ptr());\n            if header.need_drop != 0 {\n                header.stack.drop_stack();\n            }\n        }\n    }"
+}

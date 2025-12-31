@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<ffi_utils::repr_c::ThinArc<T> as std::ops::Drop>::drop`",
+    "file": "dittolive-ditto-sys-4.12.0-preview.2/ffi_utils.rs",
+    "start_line": 383,
+    "start_col": 9,
+    "end_line": 387,
+    "end_col": 10,
+    "code_snippet": "fn drop(&mut self) {\n            unsafe {\n                T::drop_arced(::core::mem::transmute(self));\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "radsort-0.1.1/src/double_buffer.rs",
+    "start_line": 94,
+    "start_col": 1,
+    "end_line": 94,
+    "end_col": 41,
+    "code_snippet": "impl<'a, T> Drop for DoubleBuffer<'a, T> {\n    fn drop(&mut self) {\n        if self.slice_is_write {\n            // The input slice is the write buffer, copy the consistent state from the read buffer\n            unsafe {\n                // SAFETY: `scratch` is the read buffer, it is initialized. The length is the same.\n                self.slice\n                    .as_mut_ptr()\n                    .copy_from_nonoverlapping(self.scratch.as_ptr(), self.slice.len());\n            }\n            self.slice_is_write = false;\n        }\n    }\n}"
+}

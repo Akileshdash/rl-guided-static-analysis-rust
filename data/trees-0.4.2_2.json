@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "trees-0.4.2/src/rc.rs",
+    "start_line": 125,
+    "start_col": 1,
+    "end_line": 125,
+    "end_col": 27,
+    "code_snippet": "impl<T> Drop for RcNode<T> {\n    fn drop( &mut self ) {\n        let mut drop_piled = false;\n        match self {\n            RcNode::Scattered( ScatteredRcNode( rc )) => {\n                if Rc::strong_count( &rc ) == 1 {\n                    while let Some(_) = self.pop_front() {}\n                }\n            },\n            RcNode::Piled( PiledRcNode( node_vec, index )) => unsafe {\n                let node = node_vec.as_ref().buf.get_unchecked( *index );\n                if node.count.decr() == 0 {\n                    drop_piled = true;\n                    while let Some(_) = self.pop_front() {}\n                }\n            },\n        }\n        match self {\n            RcNode::Piled( PiledRcNode( node_vec, index )) => unsafe {\n                if drop_piled {\n                    let node = node_vec.as_mut().buf.get_unchecked_mut( *index );\n                    ptr::drop_in_place( &mut node.data );\n                }\n                NodeVec::decr_ref( *node_vec );\n            }\n            _ => (),\n        }\n    }\n}"
+}

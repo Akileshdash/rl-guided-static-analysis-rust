@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `vec::StackVec::<T, N>::dedup_by`",
+    "file": "stack-buf-0.1.6/src/vec.rs",
+    "start_line": 635,
+    "start_col": 5,
+    "end_line": 664,
+    "end_col": 6,
+    "code_snippet": "pub fn dedup_by<F>(&mut self, mut same_bucket: F)\n    where\n        F: FnMut(&mut T, &mut T) -> bool,\n    {\n        // See the implementation of Vec::dedup_by in the\n        // standard library for an explanation of this algorithm.\n        let len = self.len();\n        if len <= 1 {\n            return;\n        }\n\n        let ptr = self.as_mut_ptr();\n        let mut w: usize = 1;\n\n        unsafe {\n            for r in 1..len {\n                let p_r = ptr.add(r);\n                let p_wm1 = ptr.add(w - 1);\n                if !same_bucket(&mut *p_r, &mut *p_wm1) {\n                    if r != w {\n                        let p_w = p_wm1.add(1);\n                        std::mem::swap(&mut *p_r, &mut *p_w);\n                    }\n                    w += 1;\n                }\n            }\n        }\n\n        self.truncate(w);\n    }"
+}

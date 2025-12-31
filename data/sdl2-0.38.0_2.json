@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `event::event_callback_marshall`",
+    "file": "sdl2-0.38.0/src/sdl2/event.rs",
+    "start_line": 2992,
+    "start_col": 1,
+    "end_line": 3000,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn event_callback_marshall<CB: EventWatchCallback>(\n    user_data: *mut c_void,\n    event: *mut sdl2_sys::SDL_Event,\n) -> i32 {\n    let f: &mut CB = unsafe { &mut *(user_data as *mut _) };\n    let event = Event::from_ll(unsafe { *event });\n    f.callback(event);\n    0\n}"
+}

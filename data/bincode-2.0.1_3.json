@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `features::impl_alloc::<impl enc::Encode for alloc::vec::Vec<T>>::encode`",
+    "file": "bincode-2.0.1/src/features/impl_alloc.rs",
+    "start_line": 323,
+    "start_col": 5,
+    "end_line": 336,
+    "end_col": 6,
+    "code_snippet": "fn encode<E: Encoder>(&self, encoder: &mut E) -> Result<(), EncodeError> {\n        crate::enc::encode_slice_len(encoder, self.len())?;\n        if unty::type_equal::<T, u8>() {\n            // Safety: T == u8\n            let slice: &[u8] = unsafe { core::mem::transmute(self.as_slice()) };\n            encoder.writer().write(slice)?;\n            Ok(())\n        } else {\n            for item in self.iter() {\n                item.encode(encoder)?;\n            }\n            Ok(())\n        }\n    }"
+}

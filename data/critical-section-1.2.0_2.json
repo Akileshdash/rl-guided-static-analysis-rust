@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "critical-section-1.2.0/src/mutex.rs",
+    "start_line": 199,
+    "start_col": 1,
+    "end_line": 199,
+    "end_col": 47,
+    "code_snippet": "unsafe impl<T> Sync for Mutex<T> where T: Send {}"
+}

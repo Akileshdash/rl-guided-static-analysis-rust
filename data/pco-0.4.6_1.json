@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sort_utils::partition`",
+    "file": "pco-0.4.6/src/sort_utils.rs",
+    "start_line": 109,
+    "start_col": 1,
+    "end_line": 126,
+    "end_col": 2,
+    "code_snippet": "pub fn partition<L: Latent>(latents: &mut [L], pivot: L) -> (usize, bool) {\n  // |-- < pivot--|-- >= pivot --|-- unprocessed --|\n  let mut left_idx = 0;\n  let mut pos = latents.as_mut_ptr();\n  unsafe {\n    let end = latents.as_mut_ptr().add(latents.len());\n    while pos < end {\n      let value = *pos;\n      let is_lt_pivot = value < pivot;\n      *pos = *latents.get_unchecked(left_idx);\n      *latents.get_unchecked_mut(left_idx) = value;\n      left_idx += is_lt_pivot as usize;\n      pos = pos.add(1);\n    }\n  }\n  let was_bad_pivot = 1 + left_idx.min(latents.len() - left_idx) < latents.len() / 8;\n  (left_idx, was_bad_pivot)\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "ringbuf-0.4.8/src/storage.rs",
+    "start_line": 93,
+    "start_col": 1,
+    "end_line": 93,
+    "end_col": 56,
+    "code_snippet": "unsafe impl<T: ?Sized> Sync for Owning<T> where T: Send {}\nimpl<T> From<T> for Owning<T> {\n    fn from(value: T) -> Self {\n        Self {\n            data: UnsafeCell::new(value),\n        }\n    }\n}"
+}

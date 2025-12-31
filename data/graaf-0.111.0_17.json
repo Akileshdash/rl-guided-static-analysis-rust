@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `algo::predecessor_tree::PredecessorTree::search_by`",
+    "file": "graaf-0.111.0/src/algo/predecessor_tree.rs",
+    "start_line": 187,
+    "start_col": 5,
+    "end_line": 228,
+    "end_col": 6,
+    "code_snippet": "pub fn search_by<F>(\n        &self,\n        mut s: usize,\n        is_target: F,\n    ) -> Option<Vec<usize>>\n    where\n        F: Fn(&usize, &Option<usize>) -> bool,\n    {\n        if is_target(&s, &self.pred[s]) {\n            return Some(vec![s]);\n        }\n\n        let mut visited = vec![false; self.pred.len()];\n        let visited_ptr = visited.as_mut_ptr();\n        let mut path = vec![s];\n\n        while let Some(&v) = self.pred.get(s) {\n            if is_target(&s, &v) {\n                return Some(path);\n            }\n\n            if let Some(v) = v {\n                if unsafe { *visited_ptr.add(v) } {\n                    break;\n                }\n\n                unsafe {\n                    *visited_ptr.add(v) = true;\n                }\n\n                if v != s {\n                    path.push(v);\n                }\n\n                s = v;\n            } else {\n                break;\n            }\n        }\n\n        None\n    }"
+}

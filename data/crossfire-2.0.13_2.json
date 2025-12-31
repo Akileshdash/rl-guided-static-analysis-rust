@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "crossfire-2.0.13/src/async_tx.rs",
+    "start_line": 452,
+    "start_col": 1,
+    "end_line": 452,
+    "end_col": 42,
+    "code_snippet": "unsafe impl<T: Send> Sync for MAsyncTx<T> {}"
+}

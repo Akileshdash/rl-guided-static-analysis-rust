@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "legion-0.4.0/src/internals/storage/packed.rs",
+    "start_line": 82,
+    "start_col": 1,
+    "end_line": 82,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for RawAlloc<T> {\n    fn drop(&mut self) {\n        if size_of::<T>() != 0 && self.cap > 0 {\n            unsafe {\n                let layout =\n                    Layout::from_size_align_unchecked(size_of::<T>() * self.cap, align_of::<T>());\n                std::alloc::dealloc(self.ptr.as_ptr() as *mut _, layout);\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "generator-0.8.5/src/stack/mod.rs",
+    "start_line": 182,
+    "start_col": 1,
+    "end_line": 182,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for StackBox<T> {\n    fn drop(&mut self) {\n        let header = self.get_header();\n        unsafe {\n            *header.stack.get_offset() -= header.data_size + HEADER_SIZE;\n            ptr::drop_in_place(self.ptr.as_ptr());\n            if header.need_drop != 0 {\n                header.stack.drop_stack();\n            }\n        }\n    }\n}"
+}

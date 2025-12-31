@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "chumsky-0.10.1/src/lib.rs",
+    "start_line": 156,
+    "start_col": 1,
+    "end_line": 156,
+    "end_col": 40,
+    "code_snippet": "unsafe impl<T> Send for EmptyPhantom<T> {}\n// SAFETY: This is safe because `EmptyPhantom` doesn't actually contain a `T`."
+}

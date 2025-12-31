@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "neptune-triton-2.1.0/src/arrays.rs",
+    "start_line": 463,
+    "start_col": 1,
+    "end_line": 463,
+    "end_col": 27,
+    "code_snippet": "impl Drop for Array_u64_1d {\n    fn drop(&mut self) {\n        unsafe {\n            self.free_array();\n        }\n    }\n}"
+}

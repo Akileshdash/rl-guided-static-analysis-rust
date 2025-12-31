@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "diplomat-runtime-0.12.0/src/slices.rs",
+    "start_line": 128,
+    "start_col": 1,
+    "end_line": 128,
+    "end_col": 39,
+    "code_snippet": "impl<T> Drop for DiplomatOwnedSlice<T> {\n    fn drop(&mut self) {\n        if !self.ptr.is_null() {\n            unsafe {\n                // Safety: This is equivalent to a valid Box\n                drop(Box::from_raw(core::ptr::slice_from_raw_parts_mut(\n                    self.ptr, self.len,\n                )));\n            }\n        }\n    }\n}"
+}

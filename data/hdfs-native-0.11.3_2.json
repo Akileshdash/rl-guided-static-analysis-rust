@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hdfs-native-0.11.3/src/security/gssapi.rs",
+    "start_line": 354,
+    "start_col": 1,
+    "end_line": 354,
+    "end_col": 27,
+    "code_snippet": "impl Drop for GssClientCtx {\n    fn drop(&mut self) {\n        if !self.ctx.is_null() {\n            let mut minor = bindings::GSS_S_COMPLETE;\n            let major = unsafe {\n                libgssapi().unwrap().gss_delete_sec_context(\n                    &mut minor,\n                    &mut self.ctx,\n                    ptr::null_mut(),\n                )\n            };\n            if let Err(e) = check_gss_ok(major, minor) {\n                warn!(\"Failed to release GSSAPI context: {:?}\", e);\n            }\n        }\n    }\n}"
+}

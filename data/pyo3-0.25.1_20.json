@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `buffer::PyBuffer::<T>::get`",
+    "file": "pyo3-0.25.1/src/buffer.rs",
+    "start_line": 193,
+    "start_col": 5,
+    "end_line": 225,
+    "end_col": 6,
+    "code_snippet": "pub fn get(obj: &Bound<'_, PyAny>) -> PyResult<PyBuffer<T>> {\n        // TODO: use nightly API Box::new_uninit() once our MSRV is 1.82\n        let mut buf = Box::new(mem::MaybeUninit::uninit());\n        let buf: Box<ffi::Py_buffer> = {\n            err::error_on_minusone(obj.py(), unsafe {\n                ffi::PyObject_GetBuffer(obj.as_ptr(), buf.as_mut_ptr(), ffi::PyBUF_FULL_RO)\n            })?;\n            // Safety: buf is initialized by PyObject_GetBuffer.\n            // TODO: use nightly API Box::assume_init() once our MSRV is 1.82\n            unsafe { mem::transmute(buf) }\n        };\n        // Create PyBuffer immediately so that if validation checks fail, the PyBuffer::drop code\n        // will call PyBuffer_Release (thus avoiding any leaks).\n        let buf = PyBuffer(Pin::from(buf), PhantomData);\n\n        if buf.0.shape.is_null() {\n            Err(PyBufferError::new_err(\"shape is null\"))\n        } else if buf.0.strides.is_null() {\n            Err(PyBufferError::new_err(\"strides is null\"))\n        } else if mem::size_of::<T>() != buf.item_size() || !T::is_compatible_format(buf.format()) {\n            Err(PyBufferError::new_err(format!(\n                \"buffer contents are not compatible with {}\",\n                std::any::type_name::<T>()\n            )))\n        } else if buf.0.buf.align_offset(mem::align_of::<T>()) != 0 {\n            Err(PyBufferError::new_err(format!(\n                \"buffer contents are insufficiently aligned for {}\",\n                std::any::type_name::<T>()\n            )))\n        } else {\n            Ok(buf)\n        }\n    }"
+}

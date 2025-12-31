@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rtrb-0.3.2/src/chunks.rs",
+    "start_line": 325,
+    "start_col": 1,
+    "end_line": 325,
+    "end_col": 35,
+    "code_snippet": "impl<T> Drop for WriteChunk<'_, T> {\n    fn drop(&mut self) {\n        // NB: If `commit()` or `commit_all()` has been called, `self.0` is `None`.\n        if let Some(mut chunk) = self.0.take() {\n            // No part of the chunk has been committed, all slots are dropped.\n            // SAFETY: All slots have been initialized in From::from().\n            unsafe { chunk.drop_suffix(0) };\n        }\n    }\n}"
+}

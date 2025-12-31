@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<freelist::Freelist<Limit, A> as core::alloc::Allocator>::deallocate`",
+    "file": "composable-allocators-0.3.4/src/freelist.rs",
+    "start_line": 167,
+    "start_col": 5,
+    "end_line": 175,
+    "end_col": 6,
+    "code_snippet": "unsafe fn deallocate(&self, ptr: NonNull<u8>, layout: alloc::Layout) {\n        let mut list = self.list.lock().unwrap();\n        if self.limit.limit_reached(list.len) || !self.manages(layout) {\n            return self.base().deallocate(ptr, layout);\n        }\n        ptr::write(ptr.as_ptr() as *mut Node, Node { next: AtomicPtr::new(*list.head.next.get_mut()) });\n        *list.head.next.get_mut() = ptr.as_ptr();\n        list.len = unsafe { self.limit.inc_list_len(list.len) };\n    }"
+}

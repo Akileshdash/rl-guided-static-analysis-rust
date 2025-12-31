@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<engine::NaiveThunk<A, S, T> as engine::Force<T>>::eq`",
+    "file": "adapton-0.3.31/src/engine.rs",
+    "start_line": 2204,
+    "start_col": 5,
+    "end_line": 2216,
+    "end_col": 6,
+    "code_snippet": "fn eq (&self, other:&dyn Force<T>) -> bool {\n        if   &self.id      == other.id()\n            && &self.prog_pt == other.prog_pt()\n        {\n            let other = Box::new(other) ;\n            // This is safe if the prog_pt implies unique Arg and Res types.\n            // TODO-Soon: Program points should store argument + result types; we should check these dynamically here\n            let other : &Box<NaiveThunk<A,S,T>> = unsafe { transmute::<_,_>( other ) } ;\n            self.arg == other.arg\n        } else {\n            false\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "starlark_map-0.13.0/src/vec2.rs",
+    "start_line": 434,
+    "start_col": 9,
+    "end_line": 434,
+    "end_col": 49,
+    "code_snippet": "impl<'a, A, B> Drop for Retain<'a, A, B> {\n            fn drop(&mut self) {\n                debug_assert!(self.written <= self.next);\n                debug_assert!(self.next <= self.vec.len);\n                unsafe {\n                    // Copy remaining elements to the beginning.\n                    // Copy occurs only if `f` or `{A,B}::drop` panics.\n                    ptr::copy(\n                        self.vec.aaa_ptr().as_ptr().add(self.next),\n                        self.vec.aaa_ptr().as_ptr().add(self.written),\n                        self.vec.len - self.next,\n                    );\n                    ptr::copy(\n                        self.vec.bbb_ptr().as_ptr().add(self.next),\n                        self.vec.bbb_ptr().as_ptr().add(self.written),\n                        self.vec.len - self.next,\n                    );\n\n                    // Set correct length.\n                    self.vec.len = self.written + self.vec.len - self.next;\n                }\n            }\n        }"
+}

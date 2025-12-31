@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "starlark_map-0.13.0/src/vec2.rs",
+    "start_line": 531,
+    "start_col": 1,
+    "end_line": 531,
+    "end_col": 31,
+    "code_snippet": "impl<A, B> Drop for Vec2<A, B> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            if self.cap != 0 {\n                self.drop_in_place();\n                self.dealloc();\n            }\n        }\n    }\n}"
+}

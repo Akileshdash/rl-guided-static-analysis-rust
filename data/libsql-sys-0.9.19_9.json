@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::read_frame`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 60,
+    "start_col": 5,
+    "end_line": 62,
+    "end_col": 6,
+    "code_snippet": "fn read_frame(&mut self, frame_no: NonZeroU32, buffer: &mut [u8]) -> super::Result<()> {\n        unsafe { (*self.wrapper).read_frame(&mut *self.wrapped, frame_no, buffer) }\n    }"
+}

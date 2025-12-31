@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "skl-0.22.17/src/generic/list.rs",
+    "start_line": 69,
+    "start_col": 1,
+    "end_line": 75,
+    "end_col": 11,
+    "code_snippet": "unsafe impl<K, V, C, A, R> Sync for SkipList<K, V, C, A, R>\nwhere\n  K: ?Sized,\n  V: ?Sized,\n  A: Allocator + Sync,\n  R: RefCounter + Sync,\n  C: Sync,\n{\n}"
+}

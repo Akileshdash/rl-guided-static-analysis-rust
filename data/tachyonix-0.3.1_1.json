@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tachyonix-0.3.1/src/queue.rs",
+    "start_line": 255,
+    "start_col": 1,
+    "end_line": 255,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Queue<T> {\n    fn drop(&mut self) {\n        // Drop all values in the queue.\n        //\n        // Safety: single-thread access is guaranteed since the dropping thread\n        // holds exclusive ownership.\n        unsafe { while self.pop().is_ok() {} }\n    }\n}"
+}

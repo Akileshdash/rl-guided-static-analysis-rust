@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `IniMutex::<T>::lock_default`",
+    "file": "gstuff-0.8.23/gstuff.rs",
+    "start_line": 1007,
+    "start_col": 3,
+    "end_line": 1018,
+    "end_col": 29,
+    "code_snippet": "pub fn lock_default (&self) -> Result<IniMutexGuard<'_, T>, i8> {\n    match self.au.compare_exchange (1, 2, Ordering::Acquire, Ordering::Relaxed) {\n      Ok (1) => Ok (IniMutexGuard {lo: self}),\n      Err (0) => match self.au.compare_exchange (0, 2, Ordering::Acquire, Ordering::Relaxed) {\n        Ok (0) => {\n          let vc = unsafe {&mut *self.vc.get()}; \n          *vc = MaybeUninit::new (Default::default());\n          Ok (IniMutexGuard {lo: self})},\n        Ok (au) => Err (au),\n        Err (au) => Err (au)},\n      Ok (au) => Err (au),\n      Err (au) => Err (au)}}"
+}

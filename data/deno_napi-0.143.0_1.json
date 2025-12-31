@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "deno_napi-0.143.0/util.rs",
+    "start_line": 17,
+    "start_col": 1,
+    "end_line": 17,
+    "end_col": 35,
+    "code_snippet": "unsafe impl<T> Sync for SendPtr<T> {}"
+}

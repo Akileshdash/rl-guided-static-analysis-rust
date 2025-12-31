@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `mut_bump_vec::MutBumpVec::<T, A>::generic_extend_from_within_clone`",
+    "file": "bump-scope-0.17.4/src/mut_bump_vec.rs",
+    "start_line": 1518,
+    "start_col": 5,
+    "end_line": 1562,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn generic_extend_from_within_clone<E: ErrorBehavior, R>(&mut self, src: R) -> Result<(), E>\n    where\n        T: Clone,\n        R: RangeBounds<usize>,\n    {\n        let range = slice::range(src, ..self.len());\n        let count = range.len();\n\n        self.generic_reserve(count)?;\n\n        if T::IS_ZST {\n            unsafe {\n                // We can materialize ZST's from nothing.\n                #[allow(clippy::uninit_assumed_init)]\n                let fake = ManuallyDrop::new(MaybeUninit::<T>::uninit().assume_init());\n\n                for _ in 0..count {\n                    self.push_unchecked((*fake).clone());\n                }\n\n                return Ok(());\n            }\n        }\n\n        // SAFETY:\n        // - `slice::range` guarantees that the given range is valid for indexing self\n        unsafe {\n            let ptr = self.as_mut_ptr();\n\n            let mut src = ptr.add(range.start);\n            let mut dst = ptr.add(self.len());\n\n            let src_end = src.add(count);\n\n            while src != src_end {\n                dst.write((*src).clone());\n\n                src = src.add(1);\n                dst = dst.add(1);\n                self.inc_len(1);\n            }\n        }\n\n        Ok(())\n    }"
+}

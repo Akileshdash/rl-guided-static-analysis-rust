@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<id_ord_map::imp::IdOrdMap<T> as core::fmt::Debug>::fmt`",
+    "file": "iddqd-0.3.9/src/id_ord_map/imp.rs",
+    "start_line": 944,
+    "start_col": 5,
+    "end_line": 966,
+    "end_col": 6,
+    "code_snippet": "fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {\n        let mut map = f.debug_map();\n\n        for item in self.iter() {\n            let key = item.key();\n\n            // SAFETY:\n            //\n            // * Lifetime extension: for a type T and two lifetime params 'a and\n            //   'b, T<'a> and T<'b> aren't guaranteed to have the same layout,\n            //   but (a) that is true today and (b) it would be shocking and\n            //   break half the Rust ecosystem if that were to change in the\n            //   future.\n            // * We only use key within the scope of this block before immediately\n            //   dropping it. In particular, map.entry calls key.fmt() without\n            //   holding a reference to it.\n            let key: T::Key<'a> =\n                unsafe { core::mem::transmute::<T::Key<'_>, T::Key<'a>>(key) };\n\n            map.entry(&key, &item);\n        }\n        map.finish()\n    }"
+}

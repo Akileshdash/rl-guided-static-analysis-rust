@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `value::Value::<std::boxed::Box<[std::mem::MaybeUninit<u8>]>, V>::upcast`",
+    "file": "dync-0.6.0/src/value.rs",
+    "start_line": 236,
+    "start_col": 5,
+    "end_line": 258,
+    "end_col": 6,
+    "code_snippet": "pub fn upcast<U: HasDrop + From<V>>(self) -> BoxValue<U>\n    where\n        V: Clone,\n    {\n        // Inhibit drop for self, it will be dropped by the returned value\n        let mut md = ManuallyDrop::new(self);\n        // It is safe to take the bytes from md since self is consumed and will not be used later.\n        let output = Value {\n            bytes: ManuallyDrop::new(unsafe { ManuallyDrop::take(&mut md.bytes) }),\n            type_id: md.type_id,\n            alignment: md.alignment,\n            vtable: ManuallyDrop::new(Ptr::new(U::from((**md.vtable).clone()))),\n        };\n\n        // Manually drop the old vtable.\n        // This is safe since the old vtable will not be used again since self is consumed.\n        // It will also not be double dropped since it is cloned above.\n        unsafe {\n            ManuallyDrop::drop(&mut md.vtable);\n        }\n\n        output\n    }"
+}

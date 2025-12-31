@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `Fortify::<T>::new_box_dep`",
+    "file": "fortify-0.4.1/src/lib.rs",
+    "start_line": 104,
+    "start_col": 5,
+    "end_line": 115,
+    "end_col": 6,
+    "code_snippet": "pub fn new_box_dep<O: 'a, C>(owned: Box<O>, cons: C) -> Self\n    where\n        C: for<'b> FnOnce(&'b mut O) -> Lowered<'b, T>,\n    {\n        let owned = Box::into_raw(owned);\n        let value = cons(unsafe { &mut *owned });\n        Self {\n            value: ManuallyDrop::new(value.value),\n            data_raw: owned as *mut (),\n            data_drop_fn: drop_box_from_raw::<O>,\n        }\n    }"
+}

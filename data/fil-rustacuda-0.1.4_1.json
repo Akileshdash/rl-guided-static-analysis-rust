@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fil-rustacuda-0.1.4/src/memory/device/device_box.rs",
+    "start_line": 238,
+    "start_col": 1,
+    "end_line": 238,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for DeviceBox<T> {\n    fn drop(&mut self) {\n        if self.ptr.is_null() {\n            return;\n        }\n\n        let ptr = mem::replace(&mut self.ptr, DevicePointer::null());\n        // No choice but to panic if this fails.\n        unsafe {\n            cuda_free(ptr).expect(\"Failed to deallocate CUDA memory.\");\n        }\n    }\n}"
+}

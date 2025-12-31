@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "zenoh-runtime-1.5.0/src/lib.rs",
+    "start_line": 183,
+    "start_col": 1,
+    "end_line": 183,
+    "end_col": 32,
+    "code_snippet": "impl Drop for ZRuntimePoolGuard {\n    fn drop(&mut self) {\n        unsafe {\n            std::mem::drop((ZRUNTIME_POOL.deref() as *const ZRuntimePool).read());\n            std::mem::drop(\n                (ZRUNTIME_INDEX.deref() as *const HashMap<ZRuntime, AtomicUsize>).read(),\n            );\n        }\n    }\n}"
+}

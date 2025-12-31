@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "concread-0.5.7/src/ebrcell/mod.rs",
+    "start_line": 234,
+    "start_col": 1,
+    "end_line": 236,
+    "end_col": 38,
+    "code_snippet": "impl<T> Drop for EbrCell<T>\nwhere\n    T: Clone + Sync + Send + 'static,\n{\n    fn drop(&mut self) {\n        // Right, we are dropping! Everything is okay here *except*\n        // that we need to tell our active data to be unlinked, else it may\n        // be dropped \"unsafely\".\n        let guard = epoch::pin();\n\n        let prev_data = self.active.load(Acquire, &guard);\n        unsafe { guard.defer_destroy(prev_data) };\n    }\n}"
+}

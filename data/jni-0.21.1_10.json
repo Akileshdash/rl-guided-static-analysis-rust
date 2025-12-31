@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::is_instance_of`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 376,
+    "start_col": 5,
+    "end_line": 392,
+    "end_col": 6,
+    "code_snippet": "pub fn is_instance_of<'other_local_1, 'other_local_2, O, T>(\n        &mut self,\n        object: O,\n        class: T,\n    ) -> Result<bool>\n    where\n        O: AsRef<JObject<'other_local_1>>,\n        T: Desc<'local, JClass<'other_local_2>>,\n    {\n        let class = class.lookup(self)?;\n        Ok(jni_unchecked!(\n            self.internal,\n            IsInstanceOf,\n            object.as_ref().as_raw(),\n            class.as_ref().as_raw()\n        ) == sys::JNI_TRUE)\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/as_mut.rs",
+    "start_line": 95,
+    "start_col": 1,
+    "end_line": 95,
+    "end_col": 47,
+    "code_snippet": "impl<T, As: Into<T>> Drop for MutAs<'_, T, As> {\n    fn drop(&mut self) {\n        unsafe { core::ptr::write(self.source, core::ptr::read(&*self.target).into()) }\n    }\n}"
+}

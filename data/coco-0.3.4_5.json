@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "coco-0.3.4/src/epoch/thread.rs",
+    "start_line": 52,
+    "start_col": 1,
+    "end_line": 52,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Harness {\n    fn drop(&mut self) {\n        // Now that the thread is exiting, we must move the local bag into the global garbage\n        // queue. Also, let's try advancing the epoch and help free some garbage.\n        let thread = unsafe { &*self.thread };\n\n        // If we called `pin()` here, it would try to access `HARNESS` and then panic.\n        // To work around the problem, we manually pin the thread.\n        let pin = &Scope { bag: &self.bag };\n        thread.set_pinned(pin);\n\n        // Spare some cycles on garbage collection.\n        // Note: This may itself produce garbage and in turn allocate new bags.\n        try_advance(pin);\n        garbage::collect(pin);\n\n        // Push the local bag into the global garbage queue.\n        let bag = unsafe { Box::from_raw(self.bag.get()) };\n        garbage::push(bag, pin);\n\n        // Manually unpin the thread.\n        thread.set_unpinned();\n\n        // Mark the thread entry as deleted.\n        thread.unregister();\n    }\n}"
+}

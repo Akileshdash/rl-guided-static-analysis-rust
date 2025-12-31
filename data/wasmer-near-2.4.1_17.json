@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<Func as sys::externals::function::inner::HostFunction<(A1, A2, A3, A4, A5, A6), Rets, sys::externals::function::inner::WithEnv, Env>>::function_body_ptr::func_wrapper`",
+    "file": "wasmer-near-2.4.1/src/sys/externals/function.rs",
+    "start_line": 1347,
+    "start_col": 21,
+    "end_line": 1366,
+    "end_col": 22,
+    "code_snippet": "extern fn func_wrapper<$( $x, )* Rets, RetsAsResult, Env, Func>( env: &Env, $( $x: $x::Native, )* ) -> Rets::CStruct\n                    where\n                        $( $x: FromToNativeWasmType, )*\n                        Rets: WasmTypeList,\n                        RetsAsResult: IntoResult<Rets>,\n                        Env: Sized,\n                        Func: Fn(&Env, $( $x ),* ) -> RetsAsResult + 'static\n                    {\n                        let func: &Func = unsafe { &*(&() as *const () as *const Func) };\n\n                        let result = panic::catch_unwind(AssertUnwindSafe(|| {\n                            func(env, $( FromToNativeWasmType::from_native($x) ),* ).into_result()\n                        }));\n\n                        match result {\n                            Ok(Ok(result)) => return result.into_c_struct(),\n                            Ok(Err(trap)) => unsafe { raise_user_trap(Box::new(trap)) },\n                            Err(panic) => unsafe { resume_panic(panic) },\n                        }\n                    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "oxc_allocator-0.79.1/src/vec2/mod.rs",
+    "start_line": 2600,
+    "start_col": 1,
+    "end_line": 2600,
+    "end_col": 60,
+    "code_snippet": "unsafe impl<T: Sync, A: Alloc> Sync for Drain<'_, '_, T, A> {}\nunsafe impl<T: Send, A: Alloc> Send for Drain<'_, '_, T, A> {}"
+}

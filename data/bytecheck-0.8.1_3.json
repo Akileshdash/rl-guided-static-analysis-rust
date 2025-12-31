@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<core::cell::Cell<T> as CheckBytes<C>>::check_bytes`",
+    "file": "bytecheck-0.8.1/src/lib.rs",
+    "start_line": 478,
+    "start_col": 5,
+    "end_line": 497,
+    "end_col": 6,
+    "code_snippet": "unsafe fn check_bytes(\n        value: *const Self,\n        c: &mut C,\n    ) -> Result<(), C::Error> {\n        // SAFETY: Because `Cell<T>` has the same memory layout as\n        // `UnsafeCell<T>` (and therefore `T` itself), a pointer to a\n        // `Cell<T>` is guaranteed to be the same as a pointer to `T`. We\n        // can't call `.cast()` here because `T` may be an unsized type.\n        let inner_ptr =\n            unsafe { core::mem::transmute::<*const Self, *const T>(value) };\n        // SAFETY: The caller has guaranteed that `value` is aligned for\n        // `Cell<T>` and points to enough bytes to represent `Cell<T>`. Since\n        // `Cell<T>` has the same layout as `UnsafeCell<T>` ( and therefore `T`\n        // itself), `inner_ptr` is also aligned for `T` and points to enough\n        // bytes to represent it.\n        unsafe {\n            T::check_bytes(inner_ptr, c)\n                .trace(\"while checking inner value of `Cell`\")\n        }\n    }"
+}

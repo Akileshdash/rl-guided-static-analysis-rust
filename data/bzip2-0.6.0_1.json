@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bzip2-0.6.0/src/mem.rs",
+    "start_line": 323,
+    "start_col": 1,
+    "end_line": 323,
+    "end_col": 38,
+    "code_snippet": "impl<D: Direction> Drop for Stream<D> {\n    fn drop(&mut self) {\n        unsafe {\n            let _ = D::destroy(&mut *self.raw);\n        }\n    }\n}"
+}

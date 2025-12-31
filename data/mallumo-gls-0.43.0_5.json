@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mallumo-gls-0.43.0/src/framebuffer/framebuffer.rs",
+    "start_line": 328,
+    "start_col": 1,
+    "end_line": 328,
+    "end_col": 33,
+    "code_snippet": "impl Drop for GeneralFramebuffer {\n    fn drop(&mut self) {\n        unsafe {\n            delete_framebuffer(self.id.into());\n        }\n    }\n}"
+}

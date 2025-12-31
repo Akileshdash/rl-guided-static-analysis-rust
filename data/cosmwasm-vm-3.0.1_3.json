@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "cosmwasm-vm-3.0.1/src/cache.rs",
+    "start_line": 522,
+    "start_col": 1,
+    "end_line": 526,
+    "end_col": 26,
+    "code_snippet": "unsafe impl<A, S, Q> Sync for Cache<A, S, Q>\nwhere\n    A: BackendApi + 'static,\n    S: Storage + 'static,\n    Q: Querier + 'static,\n{\n}"
+}

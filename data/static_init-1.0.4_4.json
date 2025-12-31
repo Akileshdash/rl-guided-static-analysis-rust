@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "static_init-1.0.4/src/lazy.rs",
+    "start_line": 772,
+    "start_col": 9,
+    "end_line": 772,
+    "end_col": 51,
+    "code_snippet": "impl<T, G> Drop for UnSyncLockedLazy<T, G> {\n            #[inline(always)]\n            fn drop(&mut self) {\n                if Phased::phase(GenericLockedLazy::sequentializer(&self.__private))\n                    .intersects(Phase::INITIALIZED)\n                {\n                    unsafe { (&*self.__private).get().drop_in_place() }\n                }\n            }\n        }"
+}

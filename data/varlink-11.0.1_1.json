@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "varlink-11.0.1/src/server.rs",
+    "start_line": 300,
+    "start_col": 1,
+    "end_line": 300,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Listener {\n    fn drop(&mut self) {\n        match *self {\n            Listener::UNIX(Some(ref listener), false) => {\n                if let Ok(local_addr) = listener.local_addr() {\n                    if let Some(path) = local_addr.as_pathname() {\n                        let _ = fs::remove_file(path);\n                    }\n                }\n            }\n            Listener::UNIX(ref mut listener, true) => {\n                if let Some(l) = listener.take() {\n                    #[cfg(unix)]\n                    unsafe {\n                        let s = UnixStream::from_raw_fd(l.into_raw_fd());\n                        let _ = s.set_read_timeout(None);\n                    }\n                    #[cfg(windows)]\n                    let _ = l;\n                }\n            }\n            Listener::TCP(ref mut listener, true) => {\n                if let Some(l) = listener.take() {\n                    #[cfg(unix)]\n                    unsafe {\n                        let s = TcpStream::from_raw_fd(l.into_raw_fd());\n                        let _ = s.set_read_timeout(None);\n                    }\n                    #[cfg(windows)]\n                    unsafe {\n                        let s = TcpStream::from_raw_socket(l.into_raw_socket());\n                        let _ = s.set_read_timeout(None);\n                    }\n                }\n            }\n            _ => {}\n        }\n    }\n}"
+}

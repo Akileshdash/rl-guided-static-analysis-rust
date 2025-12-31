@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fastly-0.11.5/src/http/body.rs",
+    "start_line": 571,
+    "start_col": 1,
+    "end_line": 571,
+    "end_col": 32,
+    "code_snippet": "impl Drop for BodyHandleWrapper {\n    fn drop(&mut self) {\n        // In order to avoid doing a double free we replace the handle with an\n        // invalid handle that doesn't point to anything. We then `mem::forget`\n        // the original handle which is just a wrapper around `u32` and is left\n        // on the stack that will get cleared out so we don't leak any memory.\n        let handle = mem::replace(&mut self.handle, unsafe {\n            BodyHandle::from_u32(fastly_shared::INVALID_BODY_HANDLE)\n        });\n        mem::forget(handle);\n    }\n}"
+}

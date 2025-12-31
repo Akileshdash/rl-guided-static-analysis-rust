@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `formatter::FormatterTarget::<W>::convert`",
+    "file": "dynfmt-0.1.5/src/formatter.rs",
+    "start_line": 139,
+    "start_col": 5,
+    "end_line": 149,
+    "end_col": 6,
+    "code_snippet": "fn convert<F>(&mut self, f: F)\n    where\n        F: FnOnce(W) -> Self,\n    {\n        unsafe {\n            let mut placeholder = MaybeUninit::uninit();\n            mem::swap(self, &mut *placeholder.as_mut_ptr());\n            let converted = f(placeholder.assume_init().into_inner());\n            mem::forget(mem::replace(self, converted));\n        }\n    }"
+}

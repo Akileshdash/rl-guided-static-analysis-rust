@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "monoio-0.2.4/src/utils/slab.rs",
+    "start_line": 328,
+    "start_col": 1,
+    "end_line": 328,
+    "end_col": 25,
+    "code_snippet": "impl<T> Drop for Page<T> {\n    fn drop(&mut self) {\n        let mut to_drop = std::mem::take(&mut self.slots).into_vec();\n\n        unsafe {\n            if self.is_empty() {\n                // fast drop if empty\n                to_drop.set_len(0);\n            } else {\n                // slow drop\n                to_drop.set_len(self.initialized);\n                std::mem::transmute::<Vec<MaybeUninit<Entry<T>>>, Vec<Entry<T>>>(to_drop);\n            }\n        }\n    }\n}"
+}

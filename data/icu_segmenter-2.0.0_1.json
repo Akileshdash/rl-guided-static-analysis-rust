@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::RuleBreakDataOverride<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_segmenter-2.0.0/src/provider/mod.rs",
+    "start_line": 216,
+    "start_col": 35,
+    "end_line": 216,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(\n    feature = \"datagen\",\n    derive(serde::Serialize,databake::Bake),\n    databake(path = icu_segmenter::provider),\n)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\npub struct RuleBreakDataOverride<'data> {\n    /// The difference of property table for special locale.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub property_table_override: CodePointTrie<'data, u8>,\n}"
+}

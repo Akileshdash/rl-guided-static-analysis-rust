@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "tendermint-light-client-verifier-0.40.4/src/operations/voting_power.rs",
+    "start_line": 194,
+    "start_col": 1,
+    "end_line": 194,
+    "end_col": 57,
+    "code_snippet": "unsafe impl<V> Send for ProvidedVotingPowerCalculator<V> {}\nunsafe impl<V> Sync for ProvidedVotingPowerCalculator<V> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `matmul::components::global::args::TensorOutput::<EI, EO, GA>::len`",
+    "file": "cubecl-linalg-0.5.0/src/matmul/components/global/args.rs",
+    "start_line": 423,
+    "start_col": 5,
+    "end_line": 425,
+    "end_col": 6,
+    "code_snippet": "pub fn len(&self) -> u32 {\n        unsafe { GA::len_out(&(*self.state)) }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dyn-stack-0.13.0/src/lib.rs",
+    "start_line": 210,
+    "start_col": 1,
+    "end_line": 210,
+    "end_col": 29,
+    "code_snippet": "impl Drop for UnpodStack<'_> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe { launder(self.ptr.as_ptr(), self.len) };\n    }\n}"
+}

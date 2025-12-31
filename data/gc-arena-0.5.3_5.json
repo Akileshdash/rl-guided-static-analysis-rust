@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arena::Arena::<R>::mutate`",
+    "file": "gc-arena-0.5.3/src/arena.rs",
+    "start_line": 163,
+    "start_col": 5,
+    "end_line": 172,
+    "end_col": 6,
+    "code_snippet": "pub fn mutate<F, T>(&self, f: F) -> T\n    where\n        F: for<'gc> FnOnce(&'gc Mutation<'gc>, &'gc Root<'gc, R>) -> T,\n    {\n        unsafe {\n            let mc: &'static Mutation<'_> = &*(self.context.mutation_context() as *const _);\n            let root: &'static Root<'_, R> = &*(&self.root as *const _);\n            f(mc, root)\n        }\n    }"
+}

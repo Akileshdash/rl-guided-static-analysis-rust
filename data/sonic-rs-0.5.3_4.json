@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sonic-rs-0.5.3/src/value/tls_buffer.rs",
+    "start_line": 52,
+    "start_col": 1,
+    "end_line": 52,
+    "end_col": 21,
+    "code_snippet": "impl Drop for TlsBuf {\n    fn drop(&mut self) {\n        if self.need_drop {\n            let boxed: Box<Vec<ManuallyDrop<Value>>> = unsafe { Box::from_raw(self.buf.as_ptr()) };\n            drop(boxed);\n        }\n    }\n}"
+}

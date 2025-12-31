@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `writer::ThreadedWriter::write_log_loop`",
+    "file": "async_logger-0.3.3/src/writer.rs",
+    "start_line": 180,
+    "start_col": 5,
+    "end_line": 218,
+    "end_col": 6,
+    "code_snippet": "fn write_log_loop<T: Send + 'static>(writer: Arc<Mutex<Box<dyn Writer<T>>>>, buf: DoubleBuf<T>, terminate: Arc<AtomicBool>) {\n\n        let mut terminated_cnt = 0;\n\n        let mut buf_id = 0;\n\n        loop {\n\n            let slice: &mut [T] = buf.reserve_for_reaed(buf_id);\n\n            let mut guard = writer.lock().unwrap();\n\n            guard.process_slice(slice);\n\n            let ptr = slice.as_mut_ptr();\n            for i in 0..slice.len() {\n                unsafe { std::ptr::drop_in_place(ptr.offset(i as isize)) }\n            }\n\n            if terminate.load(Ordering::Relaxed) {\n\n                buf.set_buf_terminated(buf_id);\n\n                terminated_cnt += 1;\n\n                if terminated_cnt == buf.get_buf_cnt() {\n\n                    guard.flush();\n                    break;\n                }\n \n            } else {\n\n                buf.set_buf_appendable(buf_id);\n            }\n\n            buf_id = 1 - buf_id;\n        }\n    }"
+}

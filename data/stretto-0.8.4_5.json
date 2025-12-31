@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "stretto-0.8.4/src/utils.rs",
+    "start_line": 34,
+    "start_col": 1,
+    "end_line": 34,
+    "end_col": 69,
+    "code_snippet": "unsafe impl<'a, V: Send, S: BuildHasher> Send for ValueRef<'a, V, S> {}"
+}

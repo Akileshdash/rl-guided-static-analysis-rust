@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "caches-0.3.0/src/lru/raw.rs",
+    "start_line": 1652,
+    "start_col": 1,
+    "end_line": 1652,
+    "end_col": 76,
+    "code_snippet": "unsafe impl<K: Sync, V: Sync, E: Send, S: Sync> Sync for RawLRU<K, V, E, S> {}"
+}

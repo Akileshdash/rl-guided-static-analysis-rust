@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `trap::traphandlers::tls::with`",
+    "file": "wasmer-vm-near-2.4.1/src/trap/traphandlers.rs",
+    "start_line": 399,
+    "start_col": 5,
+    "end_line": 402,
+    "end_col": 6,
+    "code_snippet": "pub fn with<R>(closure: impl FnOnce(Option<&CallThreadState>) -> R) -> R {\n        let p = raw::get();\n        unsafe { closure(if p.is_null() { None } else { Some(&*p) }) }\n    }"
+}

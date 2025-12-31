@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "miniserde-0.1.42/src/ptr.rs",
+    "start_line": 53,
+    "start_col": 1,
+    "end_line": 55,
+    "end_col": 15,
+    "code_snippet": "impl<T> Drop for NonuniqueBox<T>\nwhere\n    T: ?Sized,\n{\n    fn drop(&mut self) {\n        let ptr = self.ptr.as_ptr();\n        let _ = unsafe { Box::from_raw(ptr) };\n    }\n}"
+}

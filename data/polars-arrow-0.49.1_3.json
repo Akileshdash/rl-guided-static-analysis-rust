@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "polars-arrow-0.49.1/src/storage.rs",
+    "start_line": 385,
+    "start_col": 1,
+    "end_line": 385,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for SharedStorage<T> {\n    fn drop(&mut self) {\n        let inner = self.inner();\n        if matches!(inner.backing, BackingStorage::Leaked) {\n            return;\n        }\n\n        // Ordering semantics copied from Arc<T>.\n        if inner.ref_count.fetch_sub(1, Ordering::Release) == 1 {\n            std::sync::atomic::fence(Ordering::Acquire);\n            unsafe {\n                self.drop_slow();\n            }\n        }\n    }\n}"
+}

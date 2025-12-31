@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sdd-3.0.10/src/collector.rs",
+    "start_line": 443,
+    "start_col": 1,
+    "end_line": 443,
+    "end_col": 24,
+    "code_snippet": "impl Drop for Collector {\n    #[inline]\n    fn drop(&mut self) {\n        let collector_ptr = addr_of_mut!(*self);\n        unsafe {\n            Self::clear_for_drop(collector_ptr);\n        }\n    }\n}"
+}

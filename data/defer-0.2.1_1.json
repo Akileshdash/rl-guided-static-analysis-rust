@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "defer-0.2.1/src/lib.rs",
+    "start_line": 12,
+    "start_col": 5,
+    "end_line": 12,
+    "end_col": 40,
+    "code_snippet": "impl<F: FnOnce()> Drop for Defer<F> {\n        fn drop(&mut self) {\n            let f: F = unsafe { ManuallyDrop::take(&mut self.0) };\n            f();\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `result::Result::<Ok, Err>::is_ok`",
+    "file": "stabby-abi-72.1.1/src/result.rs",
+    "start_line": 389,
+    "start_col": 5,
+    "end_line": 391,
+    "end_col": 6,
+    "code_snippet": "pub fn is_ok(&self) -> bool {\n        unsafe { &*Self::det_ptr(&self.storage) }.is_det_ok(self.storage.as_ptr())\n    }"
+}

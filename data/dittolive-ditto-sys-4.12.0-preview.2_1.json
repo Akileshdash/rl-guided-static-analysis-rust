@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dittolive-ditto-sys-4.12.0-preview.2/ffi_utils.rs",
+    "start_line": 193,
+    "start_col": 5,
+    "end_line": 195,
+    "end_col": 23,
+    "code_snippet": "impl<T> Drop for ThinBox<T>\n    where\n        T: FfiDropBox,\n    {\n        fn drop(&mut self) {\n            unsafe {\n                T::drop_boxed(::core::mem::transmute(self));\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "region-3.0.2/src/alloc.rs",
+    "start_line": 63,
+    "start_col": 1,
+    "end_line": 63,
+    "end_col": 25,
+    "code_snippet": "impl Drop for Allocation {\n  #[inline]\n  fn drop(&mut self) {\n    let result = unsafe { os::free(self.base, self.size) };\n    debug_assert!(result.is_ok(), \"freeing region: {:?}\", result);\n  }\n}"
+}

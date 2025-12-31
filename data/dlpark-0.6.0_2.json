@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dlpark-0.6.0/src/versioned/safe_managed_tensor.rs",
+    "start_line": 15,
+    "start_col": 1,
+    "end_line": 15,
+    "end_col": 41,
+    "code_snippet": "impl Drop for SafeManagedTensorVersioned {\n    /// Implements the Drop trait to ensure proper cleanup of the managed tensor.\n    /// When this wrapper is dropped, it calls the tensor's deleter function if one exists.\n    fn drop(&mut self) {\n        unsafe {\n            if let Some(deleter) = self.0.as_ref().deleter {\n                deleter(self.0.as_ptr());\n            }\n        }\n    }\n}"
+}

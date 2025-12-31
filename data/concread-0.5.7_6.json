@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "concread-0.5.7/src/internals/bptree/node.rs",
+    "start_line": 121,
+    "start_col": 1,
+    "end_line": 122,
+    "end_col": 19,
+    "code_snippet": "unsafe impl<K: Clone + Ord + Debug + Send + 'static, V: Clone + Sync + Send + 'static> Sync\n    for Node<K, V>\n{\n}"
+}

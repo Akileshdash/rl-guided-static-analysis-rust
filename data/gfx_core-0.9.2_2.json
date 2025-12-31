@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gfx_core-0.9.2/src/mapping.rs",
+    "start_line": 135,
+    "start_col": 1,
+    "end_line": 135,
+    "end_col": 45,
+    "code_snippet": "impl<'a, R: Resources> Drop for Guard<'a, R> {\n    fn drop(&mut self) {\n        unsafe { self.raw.release_access(); }\n    }\n}"
+}

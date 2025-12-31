@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rust2go-0.4.1/src/slot.rs",
+    "start_line": 34,
+    "start_col": 1,
+    "end_line": 34,
+    "end_col": 36,
+    "code_snippet": "impl<T, A> Drop for SlotInner<T, A> {\n    fn drop(&mut self) {\n        if self.state.load() & 0b100 != 0 {\n            unsafe { self.data.assume_init_drop() };\n        }\n    }\n}"
+}

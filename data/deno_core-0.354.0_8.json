@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deno_core-0.354.0/runtime/jsruntime.rs",
+    "start_line": 207,
+    "start_col": 1,
+    "end_line": 207,
+    "end_col": 32,
+    "code_snippet": "impl Drop for InnerIsolateState {\n  fn drop(&mut self) {\n    self.cleanup();\n    // SAFETY: We gotta drop these\n    unsafe {\n      ManuallyDrop::drop(&mut self.state.0);\n\n      if self.will_snapshot {\n        // Create the snapshot and just drop it.\n        #[allow(clippy::print_stderr)]\n        {\n          eprintln!(\"WARNING: v8::OwnedIsolate for snapshot was leaked\");\n        }\n      } else {\n        ManuallyDrop::drop(&mut self.v8_isolate);\n      }\n    }\n  }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/context/mod.rs",
+    "start_line": 686,
+    "start_col": 1,
+    "end_line": 686,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Context {\n    fn drop(&mut self) {\n        unsafe {\n            // this is the code of make_current duplicated here because we can't borrow\n            // `self` twice\n            if self.check_current_context {\n                let backend = self.backend.borrow();\n                if !backend.is_current() {\n                    backend.make_current();\n                }\n            }\n\n            let mut ctxt = CommandContext {\n                gl: &self.gl,\n                state: self.state.borrow_mut(),\n                version: &self.version,\n                extensions: &self.extensions,\n                capabilities: &self.capabilities,\n                report_debug_output_errors: &self.report_debug_output_errors,\n                vertex_array_objects: &self.vertex_array_objects,\n                framebuffer_objects: self.framebuffer_objects.as_ref().unwrap(),\n                samplers: self.samplers.borrow_mut(),\n                resident_texture_handles: self.resident_texture_handles.borrow_mut(),\n                resident_image_handles: self.resident_image_handles.borrow_mut(),\n                marker: PhantomData,\n            };\n\n            fbo::FramebuffersContainer::cleanup(&mut ctxt);\n            vertex_array_object::VertexAttributesSystem::cleanup(&mut ctxt);\n\n            for (_, s) in mem::replace(&mut *ctxt.samplers, HashMap::with_hasher(Default::default())) {\n                s.destroy(&mut ctxt);\n            }\n\n            // disabling callback\n            if ctxt.state.enabled_debug_output != Some(false) {\n                if ctxt.version >= &Version(Api::Gl, 4,5) || ctxt.extensions.gl_khr_debug {\n                    ctxt.gl.Disable(gl::DEBUG_OUTPUT);\n                } else if ctxt.extensions.gl_arb_debug_output {\n                    ctxt.gl.DebugMessageCallbackARB(None,\n                                                    ptr::null());\n                }\n\n                ctxt.state.enabled_debug_output = Some(false);\n                ctxt.gl.Finish();\n            }\n        }\n    }\n}"
+}

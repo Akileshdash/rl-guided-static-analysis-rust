@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "tachyonix-0.3.1/src/queue.rs",
+    "start_line": 266,
+    "start_col": 1,
+    "end_line": 266,
+    "end_col": 39,
+    "code_snippet": "unsafe impl<T: Send> Sync for Queue<T> {}"
+}

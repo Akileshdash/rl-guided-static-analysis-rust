@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::checkpoint`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 116,
+    "start_col": 5,
+    "end_line": 141,
+    "end_col": 6,
+    "code_snippet": "fn checkpoint(\n        &mut self,\n        db: &mut super::Sqlite3Db,\n        mode: super::CheckpointMode,\n        busy_handler: Option<&mut dyn BusyHandler>,\n        sync_flags: u32,\n        // temporary scratch buffer\n        buf: &mut [u8],\n        checkpoint_cb: Option<&mut dyn CheckpointCallback>,\n        in_wal: Option<&mut i32>,\n        backfilled: Option<&mut i32>,\n    ) -> super::Result<()> {\n        unsafe {\n            (*self.wrapper).checkpoint(\n                &mut *self.wrapped,\n                db,\n                mode,\n                busy_handler,\n                sync_flags,\n                buf,\n                checkpoint_cb,\n                in_wal,\n                backfilled,\n            )\n        }\n    }"
+}

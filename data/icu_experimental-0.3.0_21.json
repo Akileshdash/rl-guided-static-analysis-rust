@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<dimension::provider::currency_displayname::CurrencyDisplayname<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_experimental-0.3.0/src/dimension/provider/currency_displayname.rs",
+    "start_line": 34,
+    "start_col": 44,
+    "end_line": 34,
+    "end_col": 58,
+    "code_snippet": "#[derive(Debug, Clone, Default, PartialEq, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_experimental::dimension::provider::currency_displayname))]\n#[yoke(prove_covariance_manually)]\npub struct CurrencyDisplayname<'data> {\n    /// The display name for the currency.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub display_name: Cow<'data, str>,\n}"
+}

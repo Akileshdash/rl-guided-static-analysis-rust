@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<external_file::ExternalFileInnerWrapper<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "samply-symbols-0.24.1/src/external_file.rs",
+    "start_line": 135,
+    "start_col": 10,
+    "end_line": 135,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\nstruct ExternalFileInnerWrapper<'a>(Box<dyn ExternalFileInnerTrait + Send + 'a>);\n\ntrait ExternalFileInnerTrait {\n    fn lookup(\n        &self,\n        external_file_address: &ExternalFileAddressInFileRef,\n    ) -> Option<Vec<FrameDebugInfo>>;\n}"
+}

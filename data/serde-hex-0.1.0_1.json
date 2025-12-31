@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<u64 as SerHex<C>>::into_hex_raw`",
+    "file": "serde-hex-0.1.0/src/macros/local.rs",
+    "start_line": 16,
+    "start_col": 13,
+    "end_line": 23,
+    "end_col": 14,
+    "code_snippet": "fn into_hex_raw<D>(&self, mut dst: D) -> ::std::result::Result<(), Self::Error>\n            where\n                D: ::std::io::Write,\n            {\n                let bytes: [u8; $bytes] = unsafe { ::std::mem::transmute(self.to_be()) };\n                into_hex_bytearray!(bytes, dst, $bytes)?;\n                Ok(())\n            }"
+}

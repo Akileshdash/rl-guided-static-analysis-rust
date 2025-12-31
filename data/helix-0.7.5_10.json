@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `coercions::hash::<impl coercions::FromRuby for std::collections::HashMap<K, V>>::from_ruby`",
+    "file": "helix-0.7.5/src/coercions/hash.rs",
+    "start_line": 16,
+    "start_col": 5,
+    "end_line": 36,
+    "end_col": 6,
+    "code_snippet": "fn from_ruby(value: VALUE) -> CheckResult<Self::Checked> {\n        if unsafe { RB_TYPE_P(value, T_HASH) } {\n            let len = unsafe { RHASH_SIZE(value) };\n\n            let mut pairs = Vec::<(VALUE, VALUE)>::with_capacity(len as usize);\n            unsafe { rb_hash_foreach(value, rb_hash_collect, transmute(&mut pairs)) };\n\n            let mut checked = Vec::<(K::Checked, V::Checked)>::with_capacity(len as usize);\n\n            for (k, v) in pairs.into_iter() {\n                let k = K::from_ruby(k)?;\n                let v = V::from_ruby(v)?;\n\n                checked.push((k, v));\n            }\n\n            Ok(checked)\n        } else {\n            type_error!(\"a hash\");\n        }\n    }"
+}

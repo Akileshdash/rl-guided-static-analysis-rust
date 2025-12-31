@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "streamunordered-0.5.4/src/task.rs",
+    "start_line": 48,
+    "start_col": 1,
+    "end_line": 48,
+    "end_col": 32,
+    "code_snippet": "unsafe impl<S> Sync for Task<S> {}"
+}

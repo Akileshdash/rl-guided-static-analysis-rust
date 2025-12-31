@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "protobuf-4.32.0-rc.1/src/repeated.rs",
+    "start_line": 410,
+    "start_col": 1,
+    "end_line": 410,
+    "end_col": 48,
+    "code_snippet": "impl<T: ProxiedInRepeated> Drop for Repeated<T> {\n    fn drop(&mut self) {\n        // SAFETY: only called once\n        unsafe { T::repeated_free(Private, self) }\n    }\n}"
+}

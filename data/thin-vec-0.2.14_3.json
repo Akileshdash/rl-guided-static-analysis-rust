@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<ThinVec<T> as std::clone::Clone>::clone::clone_non_singleton`",
+    "file": "thin-vec-0.2.14/src/lib.rs",
+    "start_line": 1967,
+    "start_col": 9,
+    "end_line": 1983,
+    "end_col": 10,
+    "code_snippet": "fn clone_non_singleton<T: Clone>(this: &ThinVec<T>) -> ThinVec<T> {\n            let len = this.len();\n            let mut new_vec = ThinVec::<T>::with_capacity(len);\n            let mut data_raw = new_vec.data_raw();\n            for x in this.iter() {\n                unsafe {\n                    ptr::write(data_raw, x.clone());\n                    data_raw = data_raw.add(1);\n                }\n            }\n            unsafe {\n                // `this` is not the singleton, but `new_vec` will be if\n                // `this` is empty.\n                new_vec.set_len(len); // could be the singleton\n            }\n            new_vec\n        }"
+}

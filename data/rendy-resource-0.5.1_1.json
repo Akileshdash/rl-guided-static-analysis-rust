@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rendy-resource-0.5.1/src/escape.rs",
+    "start_line": 77,
+    "start_col": 1,
+    "end_line": 77,
+    "end_col": 27,
+    "code_snippet": "impl<T> Drop for Escape<T> {\n    fn drop(&mut self) {\n        unsafe {\n            // Read value from `ManuallyDrop` wrapper and send it over the channel.\n            match self.sender.send(read(&mut *self.value)) {\n                Ok(_) => {}\n                Err(_) => {\n                    log::error!(\"`Escape` was dropped after a `Terminal`?\");\n                }\n            }\n        }\n    }\n}"
+}

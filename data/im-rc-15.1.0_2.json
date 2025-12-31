@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `vector::focus::FocusMut::<'a, A>::triplet`",
+    "file": "im-rc-15.1.0/src/vector/focus.rs",
+    "start_line": 594,
+    "start_col": 5,
+    "end_line": 605,
+    "end_col": 6,
+    "code_snippet": "pub fn triplet<F, B>(&mut self, a: usize, b: usize, c: usize, mut f: F) -> B\n    where\n        F: FnMut(&mut A, &mut A, &mut A) -> B,\n    {\n        if a == b || b == c || a == c {\n            panic!(\"vector::FocusMut::triplet: indices cannot be equal!\");\n        }\n        let pa: *mut A = self.index_mut(a);\n        let pb: *mut A = self.index_mut(b);\n        let pc: *mut A = self.index_mut(c);\n        unsafe { f(&mut *pa, &mut *pb, &mut *pc) }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "safe_drive-0.4.3/src/topic/subscriber.rs",
+    "start_line": 562,
+    "start_col": 1,
+    "end_line": 562,
+    "end_col": 36,
+    "code_snippet": "unsafe impl<T> Sync for TakenMsg<T> {}\nunsafe impl<T> Send for TakenMsg<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<with_alloc::alloc_ringbuffer::AllocRingBuffer<T> as ringbuffer_trait::RingBuffer<T>>::fill_with`",
+    "file": "ringbuffer-0.16.0/src/with_alloc/alloc_ringbuffer.rs",
+    "start_line": 287,
+    "start_col": 5,
+    "end_line": 296,
+    "end_col": 6,
+    "code_snippet": "fn fill_with<F: FnMut() -> T>(&mut self, mut f: F) {\n        self.clear();\n\n        self.readptr = 0;\n        self.writeptr = self.capacity;\n\n        for i in 0..self.capacity {\n            unsafe { ptr::write(get_unchecked_mut(self, i), f()) };\n        }\n    }"
+}

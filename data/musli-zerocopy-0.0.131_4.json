@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "musli-zerocopy-0.0.131/src/buf/slice_mut.rs",
+    "start_line": 902,
+    "start_col": 1,
+    "end_line": 902,
+    "end_col": 34,
+    "code_snippet": "unsafe impl Send for SliceMut<'_> {}\n/// `SliceMut` are `Sync` since they are `Send` and the data they reference is"
+}

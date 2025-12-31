@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<KeyRef<K> as std::cmp::PartialEq>::eq`",
+    "file": "linked-hash-map-0.5.6/src/lib.rs",
+    "start_line": 78,
+    "start_col": 5,
+    "end_line": 80,
+    "end_col": 6,
+    "code_snippet": "fn eq(&self, other: &Self) -> bool {\n        unsafe { (*self.k).eq(&*other.k) }\n    }"
+}

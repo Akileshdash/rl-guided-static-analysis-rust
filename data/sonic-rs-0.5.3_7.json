@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute/SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `serde::de::Deserializer::<R>::deserialize_value`",
+    "file": "sonic-rs-0.5.3/src/serde/de.rs",
+    "start_line": 370,
+    "start_col": 5,
+    "end_line": 411,
+    "end_col": 6,
+    "code_snippet": "fn deserialize_value<V>(&mut self, visitor: V) -> Result<V::Value>\n    where\n        V: de::Visitor<'de>,\n    {\n        let mut val = Value::new();\n        if self.parser.read.index() == 0 {\n            // will parse the JSON inplace\n            let cfg = self.parser.cfg;\n            let json = self.parser.read.as_u8_slice();\n\n            // get n to check trailing characters in later\n            let n = if cfg.utf8_lossy && self.parser.read.next_invalid_utf8() != usize::MAX {\n                // repr the invalid utf8, not need to care about the invalid UTF8 char in non-string\n                // parts, it will cause errors when parsing.\n                val.parse_with_padding(String::from_utf8_lossy(json).as_bytes(), cfg)?\n            } else {\n                val.parse_with_padding(json, cfg)?\n            };\n            self.parser.read.eat(n);\n        } else {\n            let shared = unsafe {\n                if self.shared.is_none() {\n                    self.shared = Some(Arc::new(Shared::default()));\n                }\n                let shared = self.shared.as_mut().unwrap();\n                &mut *(Arc::as_ptr(shared) as *mut _)\n            };\n            // deserialize some json parts into `Value`, not use padding buffer, avoid the memory\n            // copy\n            val.parse_without_padding(shared, &mut self.scratch, &mut self.parser)?\n        };\n\n        let val = ManuallyDrop::new(val);\n        // #Safety\n        // the json is validate before parsing json, and we pass the document using visit_bytes\n        // here.\n        unsafe {\n            let binary =\n                &*slice_from_raw_parts(&val as *const _ as *const u8, std::mem::size_of::<Value>());\n            visitor.visit_bytes(binary)\n        }\n    }"
+}

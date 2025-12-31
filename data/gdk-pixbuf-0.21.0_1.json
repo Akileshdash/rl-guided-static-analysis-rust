@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `pixbuf::<impl auto::pixbuf::Pixbuf>::from_mut_slice`",
+    "file": "gdk-pixbuf-0.21.0/src/pixbuf.rs",
+    "start_line": 12,
+    "start_col": 5,
+    "end_line": 64,
+    "end_col": 6,
+    "code_snippet": "pub fn from_mut_slice<T: AsMut<[u8]>>(\n        data: T,\n        colorspace: Colorspace,\n        has_alpha: bool,\n        bits_per_sample: i32,\n        width: i32,\n        height: i32,\n        row_stride: i32,\n    ) -> Pixbuf {\n        unsafe extern \"C\" fn destroy<T: AsMut<[u8]>>(_: *mut c_uchar, data: *mut c_void) {\n            let _data: Box<T> = Box::from_raw(data as *mut T); // the data will be destroyed now\n        }\n        assert!(width > 0, \"width must be greater than 0\");\n        assert!(height > 0, \"height must be greater than 0\");\n        assert!(row_stride > 0, \"row_stride must be greater than 0\");\n        assert_eq!(\n            bits_per_sample, 8,\n            \"bits_per_sample == 8 is the only supported value\"\n        );\n\n        let width = width as usize;\n        let height = height as usize;\n        let row_stride = row_stride as usize;\n        let bits_per_sample = bits_per_sample as usize;\n\n        let n_channels = if has_alpha { 4 } else { 3 };\n        let last_row_len = width * (n_channels * bits_per_sample).div_ceil(8);\n\n        let mut data: Box<T> = Box::new(data);\n\n        let ptr = {\n            let data: &mut [u8] = (*data).as_mut();\n            assert!(\n                data.len() >= ((height - 1) * row_stride + last_row_len),\n                \"data.len() must fit the width, height, and row_stride\"\n            );\n            data.as_mut_ptr()\n        };\n\n        unsafe {\n            from_glib_full(ffi::gdk_pixbuf_new_from_data(\n                ptr,\n                colorspace.into_glib(),\n                has_alpha.into_glib(),\n                bits_per_sample as i32,\n                width as i32,\n                height as i32,\n                row_stride as i32,\n                Some(destroy::<T>),\n                Box::into_raw(data) as *mut _,\n            ))\n        }\n    }"
+}

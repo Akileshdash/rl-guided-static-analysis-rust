@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `backend::style_to_font`",
+    "file": "plotters-iced-0.11.0/src/backend/mod.rs",
+    "start_line": 307,
+    "start_col": 1,
+    "end_line": 332,
+    "end_col": 2,
+    "code_snippet": "fn style_to_font<S: BackendTextStyle>(style: &S) -> Font {\n    // iced font family requires static str\n    static mut FONTS: Lazy<HashSet<String>> = Lazy::new(HashSet::new);\n\n    Font {\n        family: match style.family() {\n            FontFamily::Serif => font::Family::Serif,\n            FontFamily::SansSerif => font::Family::SansSerif,\n            FontFamily::Monospace => font::Family::Monospace,\n            FontFamily::Name(s) => {\n                let s = unsafe {\n                    if !FONTS.contains(s) {\n                        FONTS.insert(String::from(s));\n                    }\n                    FONTS.get(s).unwrap().as_str()\n                };\n                font::Family::Name(s)\n            }\n        },\n        weight: match style.style() {\n            FontStyle::Bold => font::Weight::Bold,\n            _ => font::Weight::Normal,\n        },\n        ..Font::DEFAULT\n    }\n}"
+}

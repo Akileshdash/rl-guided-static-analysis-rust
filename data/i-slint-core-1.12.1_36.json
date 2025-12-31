@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `item_tree::ItemVisitor_vtable_mod::ItemVisitorVTable::new::visit_item`",
+    "file": "i-slint-core-1.12.1/item_tree.rs",
+    "start_line": 1047,
+    "start_col": 1,
+    "end_line": 1047,
+    "end_col": 10,
+    "code_snippet": "#[vtable]\n#[repr(C)]\n/// Object to be passed in visit_item_children method of the ItemTree.\npub struct ItemVisitorVTable {\n    /// Called for each child of the visited item\n    ///\n    /// The `item_tree` parameter is the ItemTree in which the item live which might not be the same\n    /// as the parent's ItemTree.\n    /// `index` is to be used again in the visit_item_children function of the ItemTree (the one passed as parameter)\n    /// and `item` is a reference to the item itself\n    visit_item: extern \"C\" fn(\n        VRefMut<ItemVisitorVTable>,\n        item_tree: &VRc<ItemTreeVTable, vtable::Dyn>,\n        index: u32,\n        item: Pin<VRef<ItemVTable>>,\n    ) -> VisitChildrenResult,\n    /// Destructor\n    drop: extern \"C\" fn(VRefMut<ItemVisitorVTable>),\n}"
+}

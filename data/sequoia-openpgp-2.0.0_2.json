@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sequoia-openpgp-2.0.0/src/crypto/s2k.rs",
+    "start_line": 528,
+    "start_col": 1,
+    "end_line": 528,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Blocks {\n    fn drop(&mut self) {\n        use std::alloc::Layout;\n\n        let l = Layout::array::<argon2::Block>(self.count)\n            .expect(\"was valid before\");\n        unsafe {\n            std::alloc::dealloc(self.blocks as *mut _, l)\n        };\n    }\n}"
+}

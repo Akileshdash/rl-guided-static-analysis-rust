@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ringbuffer-0.16.0/src/with_alloc/alloc_ringbuffer.rs",
+    "start_line": 150,
+    "start_col": 1,
+    "end_line": 150,
+    "end_col": 36,
+    "code_snippet": "impl<T> Drop for AllocRingBuffer<T> {\n    fn drop(&mut self) {\n        self.drain().for_each(drop);\n\n        let layout = alloc::alloc::Layout::array::<T>(self.size).unwrap();\n        unsafe {\n            alloc::alloc::dealloc(self.buf.cast(), layout);\n        }\n    }\n}"
+}

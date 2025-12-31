@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vec_mut_scan-0.5.0/src/lib.rs",
+    "start_line": 294,
+    "start_col": 1,
+    "end_line": 294,
+    "end_col": 55,
+    "code_snippet": "impl<'s, 'a, T: 'a> Drop for VecMutScanItem<'s, 'a, T> {\n    fn drop(&mut self) {\n        unsafe {\n            // Move the item at `scan.read` to `scan.write` i.e. move it over the gap (see diagrams\n            // above).\n            ptr::copy(\n                self.scan.base.add(self.scan.read),\n                self.scan.base.add(self.scan.write),\n                1,\n            );\n            // Advance the position without changing the width of the gap.\n            self.scan.read += 1;\n            self.scan.write += 1;\n        }\n    }\n}"
+}

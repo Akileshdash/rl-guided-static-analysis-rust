@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "may-0.3.51/src/sync/spsc.rs",
+    "start_line": 116,
+    "start_col": 1,
+    "end_line": 116,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Blocker {\n    fn drop(&mut self) {\n        if (self.handle.get() & 1) == 0 {\n            // let co = self.into_coroutine();\n            unreachable!()\n        } else {\n            let _thread: Box<Thread> = unsafe { Box::from_raw((self.handle.get() & !1) as *mut _) };\n        }\n    }\n}"
+}

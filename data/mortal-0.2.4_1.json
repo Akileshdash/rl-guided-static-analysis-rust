@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mortal-0.2.4/src/unix/terminal.rs",
+    "start_line": 300,
+    "start_col": 1,
+    "end_line": 300,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Terminal {\n    fn drop(&mut self) {\n        if let Err(e) = self.set_cursor_mode(CursorMode::Normal) {\n            eprintln!(\"failed to restore terminal: {}\", e);\n        }\n\n        if self.owned_fd {\n            unsafe { close_fd(self.out_fd); }\n        }\n    }\n}"
+}

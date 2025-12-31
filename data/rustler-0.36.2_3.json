@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rustler-0.36.2/src/resource/arc.rs",
+    "start_line": 225,
+    "start_col": 1,
+    "end_line": 227,
+    "end_col": 17,
+    "code_snippet": "impl<T> Drop for ResourceArc<T>\nwhere\n    T: Resource,\n{\n    /// When a `ResourceArc` is dropped, the reference count is decremented. If\n    /// there are no other references to the resource, the `T` value is dropped.\n    ///\n    /// However, note that in general, the Rust value in a resource is dropped\n    /// at an unpredictable time: whenever the VM decides to do garbage\n    /// collection.\n    fn drop(&mut self) {\n        unsafe { enif_release_resource(self.as_c_arg()) };\n    }\n}"
+}

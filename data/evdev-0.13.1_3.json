@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "evdev-0.13.1/src/lib.rs",
+    "start_line": 592,
+    "start_col": 1,
+    "end_line": 592,
+    "end_col": 23,
+    "code_snippet": "impl Drop for FFEffect {\n    fn drop(&mut self) {\n        let _ = unsafe { sys::eviocrmff(self.fd.as_raw_fd(), self.id as _) };\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "atomic-0.6.1/src/lib.rs",
+    "start_line": 73,
+    "start_col": 1,
+    "end_line": 73,
+    "end_col": 47,
+    "code_snippet": "unsafe impl<T: Copy + Send> Sync for Atomic<T> {}"
+}

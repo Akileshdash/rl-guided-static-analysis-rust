@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::lstm::LstmDataFloat32<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_segmenter-2.0.0/src/provider/lstm.rs",
+    "start_line": 128,
+    "start_col": 35,
+    "end_line": 128,
+    "end_col": 49,
+    "code_snippet": "#[derive(PartialEq, Debug, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize))]\n#[yoke(prove_covariance_manually)]\npub struct LstmDataFloat32<'data> {\n    /// Type of the model\n    pub(crate) model: ModelType,\n    /// The grapheme cluster dictionary used to train the model\n    pub(crate) dic: ZeroMap<'data, PotentialUtf8, u16>,\n    /// The embedding layer. Shape (dic.len + 1, e)\n    pub(crate) embedding: LstmMatrix2<'data>,\n    /// The forward layer's first matrix. Shape (h, 4, e)\n    pub(crate) fw_w: LstmMatrix3<'data>,\n    /// The forward layer's second matrix. Shape (h, 4, h)\n    pub(crate) fw_u: LstmMatrix3<'data>,\n    /// The forward layer's bias. Shape (h, 4)\n    pub(crate) fw_b: LstmMatrix2<'data>,\n    /// The backward layer's first matrix. Shape (h, 4, e)\n    pub(crate) bw_w: LstmMatrix3<'data>,\n    /// The backward layer's second matrix. Shape (h, 4, h)\n    pub(crate) bw_u: LstmMatrix3<'data>,\n    /// The backward layer's bias. Shape (h, 4)\n    pub(crate) bw_b: LstmMatrix2<'data>,\n    /// The output layer's weights. Shape (2, 4, h)\n    pub(crate) time_w: LstmMatrix3<'data>,\n    /// The output layer's bias. Shape (4)\n    pub(crate) time_b: LstmMatrix1<'data>,\n}"
+}

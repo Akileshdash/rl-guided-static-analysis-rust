@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "yffi-0.24.0/src/lib.rs",
+    "start_line": 2662,
+    "start_col": 1,
+    "end_line": 2662,
+    "end_col": 21,
+    "code_snippet": "impl Drop for YChunk {\n    fn drop(&mut self) {\n        if !self.fmt.is_null() {\n            drop(unsafe {\n                Vec::from_raw_parts(self.fmt, self.fmt_len as usize, self.fmt_len as usize)\n            });\n        }\n    }\n}"
+}

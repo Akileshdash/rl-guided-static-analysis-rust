@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `rich_structure::RichStructure::<'a>::_checksum`",
+    "file": "pelite-0.10.0/src/rich_structure.rs",
+    "start_line": 91,
+    "start_col": 2,
+    "end_line": 113,
+    "end_col": 3,
+    "code_snippet": "fn _checksum<I>(dos_stub: &[u32], records: I) -> u32 where I: Iterator<Item = RichRecord> {\n\t\tlet mut csum = mem::size_of_val(dos_stub) as u32;\n\n\t\tlet mut i = 0;\n\t\tfor dword in dos_stub {\n\t\t\t// Zero the e_lfanew field\n\t\t\tlet bytes = if i == 0x3c { [0; 4] }\n\t\t\telse { unsafe { *(dword as *const _ as *const [u8; 4]) } };\n\t\t\t// Accumulate\n\t\t\tcsum = u32::wrapping_add(csum, (bytes[0] as u32).rotate_left(i + 0));\n\t\t\tcsum = u32::wrapping_add(csum, (bytes[1] as u32).rotate_left(i + 1));\n\t\t\tcsum = u32::wrapping_add(csum, (bytes[2] as u32).rotate_left(i + 2));\n\t\t\tcsum = u32::wrapping_add(csum, (bytes[3] as u32).rotate_left(i + 3));\n\t\t\ti += 4;\n\t\t}\n\n\t\tfor record in records {\n\t\t\tlet value = (record.product as u32) << 16 | (record.build as u32);\n\t\t\tcsum = u32::wrapping_add(csum, value.rotate_left(record.count));\n\t\t}\n\n\t\tcsum\n\t}"
+}

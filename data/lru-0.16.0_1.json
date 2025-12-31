@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lru-0.16.0/src/lib.rs",
+    "start_line": 1577,
+    "start_col": 1,
+    "end_line": 1577,
+    "end_col": 41,
+    "code_snippet": "impl<K, V, S> Drop for LruCache<K, V, S> {\n    fn drop(&mut self) {\n        self.map.drain().for_each(|(_, node)| unsafe {\n            let mut node = *Box::from_raw(node.as_ptr());\n            ptr::drop_in_place((node).key.as_mut_ptr());\n            ptr::drop_in_place((node).val.as_mut_ptr());\n        });\n        // We rebox the head/tail, and because these are maybe-uninit\n        // they do not have the absent k/v dropped.\n\n        let _head = unsafe { *Box::from_raw(self.head) };\n        let _tail = unsafe { *Box::from_raw(self.tail) };\n    }\n}"
+}

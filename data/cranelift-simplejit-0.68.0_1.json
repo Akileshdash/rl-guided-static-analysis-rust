@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cranelift-simplejit-0.68.0/src/memory.rs",
+    "start_line": 111,
+    "start_col": 1,
+    "end_line": 111,
+    "end_col": 21,
+    "code_snippet": "impl Drop for PtrLen {\n    fn drop(&mut self) {\n        if !self.ptr.is_null() {\n            unsafe {\n                region::protect(self.ptr, self.len, region::Protection::READ_WRITE)\n                    .expect(\"unable to unprotect memory\");\n                libc::free(self.ptr as _);\n            }\n        }\n    }\n}"
+}

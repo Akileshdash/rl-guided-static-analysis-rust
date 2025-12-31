@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "lcms2-6.1.1/src/transform.rs",
+    "start_line": 48,
+    "start_col": 1,
+    "end_line": 48,
+    "end_col": 61,
+    "code_snippet": "unsafe impl<F, T, C: Send, Z> Send for Transform<F, T, C, Z> {}\nunsafe impl<F, T, C: Send> Sync for Transform<F, T, C, DisallowCache> {}"
+}

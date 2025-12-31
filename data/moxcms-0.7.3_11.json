@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `conversions::avx::a_curves3::ACurves3AvxFma::<'_, DEPTH>::transform_impl`",
+    "file": "moxcms-0.7.3/src/conversions/avx/a_curves3.rs",
+    "start_line": 64,
+    "start_col": 5,
+    "end_line": 86,
+    "end_col": 6,
+    "code_snippet": "unsafe fn transform_impl<Fetch: Fn(f32, f32, f32) -> AvxVectorSse>(\n        &self,\n        dst: &mut [f32],\n        fetch: Fetch,\n    ) -> Result<(), CmsError> {\n        unsafe {\n            let scale_value = (DEPTH - 1) as f32;\n\n            for dst in dst.chunks_exact_mut(3) {\n                let a0 = (dst[0] * scale_value).round().min(scale_value) as u16;\n                let a1 = (dst[1] * scale_value).round().min(scale_value) as u16;\n                let a2 = (dst[2] * scale_value).round().min(scale_value) as u16;\n                let b0 = self.curve0[a0 as usize];\n                let b1 = self.curve1[a1 as usize];\n                let b2 = self.curve2[a2 as usize];\n                let v = fetch(b0, b1, b2).v;\n                dst[0] = f32::from_bits(_mm_extract_ps::<0>(v) as u32);\n                dst[1] = f32::from_bits(_mm_extract_ps::<1>(v) as u32);\n                dst[2] = f32::from_bits(_mm_extract_ps::<2>(v) as u32);\n            }\n        }\n        Ok(())\n    }"
+}

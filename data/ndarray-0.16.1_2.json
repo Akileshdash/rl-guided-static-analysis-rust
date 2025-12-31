@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ndarray-0.16.1/src/partial.rs",
+    "start_line": 87,
+    "start_col": 1,
+    "end_line": 87,
+    "end_col": 28,
+    "code_snippet": "impl<T> Drop for Partial<T>\n{\n    fn drop(&mut self)\n    {\n        if !self.ptr.is_null() {\n            unsafe {\n                ptr::drop_in_place(alloc::slice::from_raw_parts_mut(self.ptr, self.len));\n            }\n        }\n    }\n}"
+}

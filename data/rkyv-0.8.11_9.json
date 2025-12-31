@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `impls::core::with::<impl with::SerializeWith<std::cell::Cell<F>, S> for with::Unsafe>::serialize_with`",
+    "file": "rkyv-0.8.11/src/impls/core/with/mod.rs",
+    "start_line": 722,
+    "start_col": 5,
+    "end_line": 727,
+    "end_col": 6,
+    "code_snippet": "fn serialize_with(\n        field: &Cell<F>,\n        serializer: &mut S,\n    ) -> Result<Self::Resolver, S::Error> {\n        unsafe { (*field.as_ptr()).serialize(serializer) }\n    }"
+}

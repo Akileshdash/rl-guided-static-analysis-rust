@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<windows::PdbSymbolMapInnerWrapper<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "samply-symbols-0.24.1/src/windows.rs",
+    "start_line": 233,
+    "start_col": 10,
+    "end_line": 233,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\npub struct PdbSymbolMapInnerWrapper<'data>(Box<dyn SymbolMapTrait + Send + 'data>);\n\nstruct PdbSymbolMapInner<'object> {\n    context: Box<dyn PdbAddr2lineContextTrait + Send + 'object>,\n    debug_id: DebugId,\n    path_mapper: Mutex<PathMapper<SrcSrvPathMapper<'object>>>,\n}"
+}

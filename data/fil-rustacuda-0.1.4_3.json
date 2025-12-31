@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fil-rustacuda-0.1.4/src/memory/locked.rs",
+    "start_line": 254,
+    "start_col": 1,
+    "end_line": 254,
+    "end_col": 45,
+    "code_snippet": "impl<T: DeviceCopy> Drop for LockedBuffer<T> {\n    fn drop(&mut self) {\n        if self.buf.is_null() {\n            return;\n        }\n\n        if self.capacity > 0 && mem::size_of::<T>() > 0 {\n            // No choice but to panic if this fails.\n            unsafe {\n                cuda_free_locked(self.buf).expect(\"Failed to deallocate CUDA page-locked memory.\");\n            }\n        }\n        self.capacity = 0;\n    }\n}"
+}

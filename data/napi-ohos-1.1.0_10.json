@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "napi-ohos-1.1.0/src/bindgen_runtime/js_values/buffer.rs",
+    "start_line": 302,
+    "start_col": 1,
+    "end_line": 302,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Buffer {\n  fn drop(&mut self) {\n    if let Some((ref_, env)) = self.raw {\n      if ref_.is_null() {\n        return;\n      }\n      // Buffer is sent to the other thread which is not the JavaScript thread\n      // This only happens with `napi4` feature enabled\n      // We send back the Buffer reference value into the `CustomGC` ThreadsafeFunction callback\n      // and destroy the reference in the thread where registered the `napi_register_module_v1`\n      #[cfg(all(feature = \"napi4\", not(feature = \"noop\")))]\n      {\n        if CUSTOM_GC_TSFN_DESTROYED.load(std::sync::atomic::Ordering::SeqCst) {\n          return;\n        }\n        // Check if the current thread is the JavaScript thread\n        if !THREADS_CAN_ACCESS_ENV.with(|cell| cell.get()) {\n          let status = unsafe {\n            sys::napi_call_threadsafe_function(\n              CUSTOM_GC_TSFN.load(std::sync::atomic::Ordering::SeqCst),\n              ref_.cast(),\n              1,\n            )\n          };\n          assert!(\n            status == sys::Status::napi_ok || status == sys::Status::napi_closing,\n            \"Call custom GC in Buffer::drop failed {}\",\n            Status::from(status)\n          );\n          return;\n        }\n      }\n      let mut ref_count = 0;\n      check_status_or_throw!(\n        env,\n        unsafe { sys::napi_reference_unref(env, ref_, &mut ref_count) },\n        \"Failed to unref Buffer reference in drop\"\n      );\n      debug_assert!(\n        ref_count == 0,\n        \"Buffer reference count in Buffer::drop is not zero\"\n      );\n      check_status_or_throw!(\n        env,\n        unsafe { sys::napi_delete_reference(env, ref_) },\n        \"Failed to delete Buffer reference in drop\"\n      );\n    } else {\n      unsafe { Vec::from_raw_parts(self.inner.as_ptr(), self.len, self.capacity) };\n    }\n  }\n}"
+}

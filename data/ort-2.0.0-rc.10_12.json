@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<util::OnceLock<T> as std::ops::Drop>::drop`",
+    "file": "ort-2.0.0-rc.10/src/util.rs",
+    "start_line": 305,
+    "start_col": 2,
+    "end_line": 315,
+    "end_col": 3,
+    "code_snippet": "fn drop(&mut self) {\n\t\t#[cfg(not(feature = \"std\"))]\n\t\tlet status = *self.status.get_mut() == STATUS_INITIALIZED;\n\t\t#[cfg(feature = \"std\")]\n\t\tlet status = self.once.is_completed();\n\t\tif status {\n\t\t\tunsafe {\n\t\t\t\tcore::ptr::drop_in_place((*self.data.get()).as_mut_ptr());\n\t\t\t}\n\t\t}\n\t}"
+}

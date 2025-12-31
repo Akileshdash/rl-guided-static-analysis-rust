@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<array::Array<T, N> as core::default::Default>::default`",
+    "file": "serde-big-array-0.5.1/src/array.rs",
+    "start_line": 38,
+    "start_col": 5,
+    "end_line": 56,
+    "end_col": 6,
+    "code_snippet": "fn default() -> Self {\n        // TODO use array::from_fn once the MSRV allows stuff from 1.63.0\n        let arr = {\n            let mut arr = PartiallyInitialized::<T, N>::new();\n            unsafe {\n                {\n                    let p = arr.0.as_mut().unwrap();\n                    for i in 0..N {\n                        let p = (p.as_mut_ptr() as *mut T).wrapping_add(i);\n                        core::ptr::write(p, Default::default());\n                        arr.1 += 1;\n                    }\n                }\n                let initialized = arr.0.take().unwrap().assume_init();\n                initialized\n            }\n        };\n        Self(arr)\n    }"
+}

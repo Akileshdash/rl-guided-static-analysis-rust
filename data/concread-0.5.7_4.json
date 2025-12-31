@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "concread-0.5.7/src/internals/hashmap/node.rs",
+    "start_line": 944,
+    "start_col": 1,
+    "end_line": 944,
+    "end_col": 65,
+    "code_snippet": "impl<K: Hash + Eq + Clone + Debug, V: Clone> Drop for Leaf<K, V> {\n    fn drop(&mut self) {\n        debug_assert_leaf!(self);\n        #[cfg(all(test, not(miri)))]\n        release_nid(self.nid);\n        // Due to the use of maybe uninit we have to drop any contained values.\n        unsafe {\n            for idx in 0..self.slots() {\n                ptr::drop_in_place(self.values[idx].as_mut_ptr());\n            }\n        }\n        // Done\n        unsafe {\n            (*self.ctrl.a).0 .0 = FLAG_DROPPED;\n        }\n        debug_assert!(unsafe { self.ctrl.a.0 .0 } & FLAG_MASK != FLAG_HASH_LEAF);\n        // #[cfg(test)]\n        // println!(\"set leaf {:?} to {:x}\", self.nid, self.meta.0);\n    }\n}"
+}

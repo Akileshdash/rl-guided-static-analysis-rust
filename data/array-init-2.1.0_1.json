@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "array-init-2.1.0/src/lib.rs",
+    "start_line": 279,
+    "start_col": 9,
+    "end_line": 279,
+    "end_col": 55,
+    "code_snippet": "impl<Item> Drop for UnsafeDropSliceGuard<Item> {\n            fn drop(self: &'_ mut Self) {\n                unsafe {\n                    // # Safety\n                    //\n                    //   - the contract of the struct guarantees that this is sound\n                    ptr::drop_in_place(slice::from_raw_parts_mut(\n                        self.base_ptr,\n                        self.initialized_count,\n                    ));\n                }\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nuclei-0.4.4/src/syscore/linux/iouring/fs/buffer.rs",
+    "start_line": 159,
+    "start_col": 1,
+    "end_line": 159,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Buffer {\n    fn drop(&mut self) {\n        if let Some(layout) = self.layout() {\n            unsafe {\n                dealloc(self.data.cast().as_ptr(), layout);\n            }\n        }\n    }\n}"
+}

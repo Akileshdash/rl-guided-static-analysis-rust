@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `surface::Surface::set_mime_data`",
+    "file": "cairo-rs-0.21.0/src/surface.rs",
+    "start_line": 128,
+    "start_col": 5,
+    "end_line": 158,
+    "end_col": 6,
+    "code_snippet": "pub fn set_mime_data<T: AsRef<[u8]> + 'static>(\n        &self,\n        mime_type: &str,\n        slice: T,\n    ) -> Result<(), Error> {\n        let b = Box::new(slice);\n        let (size, data) = {\n            let slice = (*b).as_ref();\n            (slice.len(), slice.as_ptr())\n        };\n\n        let user_data = Box::into_raw(b);\n\n        unsafe extern \"C\" fn unbox<T>(data: *mut c_void) {\n            let data: Box<T> = Box::from_raw(data as *mut T);\n            drop(data);\n        }\n\n        let status = unsafe {\n            let mime_type = CString::new(mime_type).unwrap();\n            ffi::cairo_surface_set_mime_data(\n                self.to_raw_none(),\n                mime_type.as_ptr(),\n                data,\n                size as c_ulong,\n                Some(unbox::<T>),\n                user_data as *mut _,\n            )\n        };\n        status_to_result(status)\n    }"
+}

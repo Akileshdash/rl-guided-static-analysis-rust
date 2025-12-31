@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<linked_hash_map::KeyRef<K> as std::borrow::Borrow<linked_hash_map::Qey<Q>>>::borrow`",
+    "file": "protobuf-codegen-pure-2.28.0/src/linked_hash_map.rs",
+    "start_line": 113,
+    "start_col": 5,
+    "end_line": 115,
+    "end_col": 6,
+    "code_snippet": "fn borrow(&self) -> &Qey<Q> {\n        Qey::from_ref(unsafe { (*self.k).borrow() })\n    }"
+}

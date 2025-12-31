@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<algo::dfs_dist::DfsDist<'_, D> as std::iter::Iterator>::next`",
+    "file": "graaf-0.111.0/src/algo/dfs_dist.rs",
+    "start_line": 197,
+    "start_col": 5,
+    "end_line": 219,
+    "end_col": 6,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item> {\n        let step @ (u, w) = self.stack.pop()?;\n        let visited_ptr = self.visited.as_mut_ptr();\n        let visited_u = unsafe { visited_ptr.add(u) };\n\n        unsafe {\n            if *visited_u {\n                return None;\n            }\n\n            *visited_u = true;\n        }\n\n        let w = w + 1;\n\n        for v in self.digraph.out_neighbors(u) {\n            if !unsafe { *visited_ptr.add(v) } {\n                self.stack.push((v, w));\n            }\n        }\n\n        Some(step)\n    }"
+}

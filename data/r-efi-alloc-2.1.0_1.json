@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "r-efi-alloc-2.1.0/src/global.rs",
+    "start_line": 198,
+    "start_col": 1,
+    "end_line": 198,
+    "end_col": 59,
+    "code_snippet": "impl<'alloc, 'bridge> Drop for Attachment<'alloc, 'bridge> {\n    fn drop(&mut self) {\n        unsafe {\n            self.bridge.raw_detach(self.allocator);\n        }\n    }\n}"
+}

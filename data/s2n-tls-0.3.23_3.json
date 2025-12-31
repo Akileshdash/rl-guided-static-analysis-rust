@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "s2n-tls-0.3.23/src/connection.rs",
+    "start_line": 1584,
+    "start_col": 1,
+    "end_line": 1584,
+    "end_col": 25,
+    "code_snippet": "impl Drop for Connection {\n    /// Corresponds to [s2n_connection_free].\n    fn drop(&mut self) {\n        // ignore failures since there's not much we can do about it\n        unsafe {\n            // clean up context\n            let _ = self.drop_context();\n\n            // cleanup config\n            let _ = self.drop_config();\n\n            // cleanup connection\n            let _ = s2n_connection_free(self.connection.as_ptr()).into_result();\n        }\n    }\n}"
+}

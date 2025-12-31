@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "conquer-once-0.4.0/src/cell.rs",
+    "start_line": 64,
+    "start_col": 1,
+    "end_line": 64,
+    "end_col": 63,
+    "code_snippet": "unsafe impl<T, B> Sync for OnceCell<T, B> where T: Send + Sync {}"
+}

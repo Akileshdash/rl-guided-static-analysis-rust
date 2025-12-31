@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/vm/stack_switching/stack/unix.rs",
+    "start_line": 285,
+    "start_col": 1,
+    "end_line": 285,
+    "end_col": 34,
+    "code_snippet": "impl Drop for VMContinuationStack {\n    fn drop(&mut self) {\n        unsafe {\n            match self.allocator {\n                Allocator::Mmap => {\n                    let ret = rustix::mm::munmap(self.top.sub(self.len) as _, self.len);\n                    debug_assert!(ret.is_ok());\n                }\n                Allocator::Custom => {} // It's the creator's responsibility to reclaim the memory.\n            }\n        }\n    }\n}"
+}

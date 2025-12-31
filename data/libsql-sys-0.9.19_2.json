@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 508,
+    "start_col": 1,
+    "end_line": 508,
+    "end_col": 56,
+    "code_snippet": "unsafe impl<A: Sync, B: Sync, W> Sync for Then<A, B, W> {}"
+}

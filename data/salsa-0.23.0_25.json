@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::sync::Arc<T> as update::Update>::maybe_update`",
+    "file": "salsa-0.23.0/src/update.rs",
+    "start_line": 388,
+    "start_col": 5,
+    "end_line": 408,
+    "end_col": 6,
+    "code_snippet": "unsafe fn maybe_update(old_pointer: *mut Self, new_arc: Self) -> bool {\n        let old_arc: &mut Arc<T> = unsafe { &mut *old_pointer };\n\n        if Arc::ptr_eq(old_arc, &new_arc) {\n            return false;\n        }\n\n        if let Some(inner) = Arc::get_mut(old_arc) {\n            match Arc::try_unwrap(new_arc) {\n                Ok(new_inner) => unsafe { T::maybe_update(inner, new_inner) },\n                Err(new_arc) => {\n                    // We can't unwrap the new arc, so we have to update the old one in place.\n                    *old_arc = new_arc;\n                    true\n                }\n            }\n        } else {\n            unsafe { *old_pointer = new_arc };\n            true\n        }\n    }"
+}

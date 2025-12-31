@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "i-slint-core-1.12.1/sharedvector.rs",
+    "start_line": 87,
+    "start_col": 1,
+    "end_line": 87,
+    "end_col": 33,
+    "code_snippet": "impl<T> Drop for SharedVector<T> {\n    fn drop(&mut self) {\n        unsafe {\n            if self\n                .inner\n                .cast::<SharedVectorHeader>()\n                .as_ref()\n                .refcount\n                .load(atomic::Ordering::Relaxed)\n                < 0\n            {\n                return;\n            }\n            if self.inner.as_ref().header.refcount.fetch_sub(1, atomic::Ordering::SeqCst) == 1 {\n                drop_inner(self.inner)\n            }\n        }\n    }\n}"
+}

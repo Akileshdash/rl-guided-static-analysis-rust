@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::savepoint`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 84,
+    "start_col": 5,
+    "end_line": 86,
+    "end_col": 6,
+    "code_snippet": "fn savepoint(&mut self, rollback_data: &mut [u32]) {\n        unsafe { (*self.wrapper).savepoint(&mut *self.wrapped, rollback_data) }\n    }"
+}

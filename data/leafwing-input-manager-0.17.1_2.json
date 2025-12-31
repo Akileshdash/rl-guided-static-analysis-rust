@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "leafwing-input-manager-0.17.1/src/user_input/updating.rs",
+    "start_line": 221,
+    "start_col": 1,
+    "end_line": 221,
+    "end_col": 40,
+    "code_snippet": "unsafe impl<T> Sync for EnabledInput<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `any_vec::AnyVec::<Traits, M>::into_raw_parts`",
+    "file": "any_vec-0.14.0/src/any_vec.rs",
+    "start_line": 237,
+    "start_col": 5,
+    "end_line": 256,
+    "end_col": 6,
+    "code_snippet": "pub fn into_raw_parts(self) -> RawParts<M>\n    where\n        M::Mem: MemRawParts\n    {\n        let this = ManuallyDrop::new(self);\n\n        let mem_builder = unsafe{ ptr::read(&this.raw.mem_builder) };\n        let mem = unsafe{ ptr::read(&this.raw.mem) };\n        let (mem_handle, element_layout, capacity) = mem.into_raw_parts();\n        RawParts{\n            mem_builder,\n            mem_handle,\n            capacity,\n            len: this.raw.len,\n            element_layout,\n            element_typeid: this.raw.type_id,\n            element_drop: this.raw.drop_fn,\n            element_clone: this.clone_fn()\n        }\n    }"
+}

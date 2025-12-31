@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "esp32h2-0.17.0/src/generic.rs",
+    "start_line": 6,
+    "start_col": 1,
+    "end_line": 6,
+    "end_col": 55,
+    "code_snippet": "unsafe impl<RB, const A: usize> Send for Periph<RB, A> {}\nimpl<RB, const A: usize> Periph<RB, A> {\n    #[doc = \"Pointer to the register block\"]\n    pub const PTR: *const RB = A as *const _;\n    #[doc = \"Return the pointer to the register block\"]\n    #[inline(always)]\n    pub const fn ptr() -> *const RB {\n        Self::PTR\n    }\n    #[doc = \" Steal an instance of this peripheral\"]\n    #[doc = \"\"]\n    #[doc = \" # Safety\"]\n    #[doc = \"\"]\n    #[doc = \" Ensure that the new instance of the peripheral cannot be used in a way\"]\n    #[doc = \" that may race with any existing instances, for example by only\"]\n    #[doc = \" accessing read-only or write-only registers, or by consuming the\"]\n    #[doc = \" original peripheral and using critical sections to coordinate\"]\n    #[doc = \" access between multiple new instances.\"]\n    #[doc = \"\"]\n    #[doc = \" Additionally, other software such as HALs may rely on only one\"]\n    #[doc = \" peripheral instance existing to ensure memory safety; ensure\"]\n    #[doc = \" no stolen instances are passed to such software.\"]\n    pub unsafe fn steal() -> Self {\n        Self {\n            _marker: marker::PhantomData,\n        }\n    }\n}"
+}

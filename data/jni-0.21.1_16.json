@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::alloc_object`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 898,
+    "start_col": 5,
+    "end_line": 909,
+    "end_col": 6,
+    "code_snippet": "pub fn alloc_object<'other_local, T>(&mut self, class: T) -> Result<JObject<'local>>\n    where\n        T: Desc<'local, JClass<'other_local>>,\n    {\n        let class = class.lookup(self)?;\n        let obj = jni_non_null_call!(self.internal, AllocObject, class.as_ref().as_raw());\n\n        // Ensure that `class` isn't dropped before the JNI call returns.\n        drop(class);\n\n        Ok(unsafe { JObject::from_raw(obj) })\n    }"
+}

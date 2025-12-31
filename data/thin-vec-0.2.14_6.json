@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `Drain::<'_, T>::fill`",
+    "file": "thin-vec-0.2.14/src/lib.rs",
+    "start_line": 2609,
+    "start_col": 5,
+    "end_line": 2626,
+    "end_col": 6,
+    "code_snippet": "unsafe fn fill<I: Iterator<Item = T>>(&mut self, replace_with: &mut I) -> bool {\n        let vec = unsafe { &mut *self.vec };\n        let range_start = vec.len();\n        let range_end = self.end;\n        let range_slice = unsafe {\n            slice::from_raw_parts_mut(vec.data_raw().add(range_start), range_end - range_start)\n        };\n\n        for place in range_slice {\n            if let Some(new_item) = replace_with.next() {\n                unsafe { ptr::write(place, new_item) };\n                vec.set_len(vec.len() + 1);\n            } else {\n                return false;\n            }\n        }\n        true\n    }"
+}

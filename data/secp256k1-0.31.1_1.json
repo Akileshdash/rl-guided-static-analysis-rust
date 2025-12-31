@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "secp256k1-0.31.1/src/lib.rs",
+    "start_line": 372,
+    "start_col": 1,
+    "end_line": 372,
+    "end_col": 39,
+    "code_snippet": "impl<C: Context> Drop for Secp256k1<C> {\n    fn drop(&mut self) {\n        unsafe {\n            let size = ffi::secp256k1_context_preallocated_clone_size(self.ctx.as_ptr());\n            ffi::secp256k1_context_preallocated_destroy(self.ctx);\n\n            C::deallocate(self.ctx.as_ptr() as _, size);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "zerovec-0.11.2/src/zerovec/mod.rs",
+    "start_line": 109,
+    "start_col": 1,
+    "end_line": 109,
+    "end_col": 69,
+    "code_snippet": "unsafe impl<'a, T: AsULE> Sync for ZeroVec<'a, T> where T::ULE: Sync {}"
+}

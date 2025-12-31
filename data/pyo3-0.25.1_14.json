@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `impl_::pyclass::pyo3_get_value_into_pyobject`",
+    "file": "pyo3-0.25.1/src/impl_/pyclass.rs",
+    "start_line": 1412,
+    "start_col": 1,
+    "end_line": 1431,
+    "end_col": 2,
+    "code_snippet": "fn pyo3_get_value_into_pyobject<ClassT, FieldT, Offset>(\n    py: Python<'_>,\n    obj: *mut ffi::PyObject,\n) -> PyResult<*mut ffi::PyObject>\nwhere\n    ClassT: PyClass,\n    for<'py> FieldT: IntoPyObject<'py> + Clone,\n    Offset: OffsetCalculator<ClassT, FieldT>,\n{\n    let _holder = unsafe { ensure_no_mutable_alias::<ClassT>(py, &obj)? };\n    let value = field_from_object::<ClassT, FieldT, Offset>(obj);\n\n    // SAFETY: Offset is known to describe the location of the value, and\n    // _holder is preventing mutable aliasing\n    Ok((unsafe { &*value })\n        .clone()\n        .into_pyobject(py)\n        .map_err(Into::into)?\n        .into_ptr())\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "array_map-0.4.0/src/map.rs",
+    "start_line": 19,
+    "start_col": 1,
+    "end_line": 19,
+    "end_col": 67,
+    "code_snippet": "unsafe impl<K, V: Sync, const N: usize> Sync for ArrayMap<K, V, N> {}\nimpl<K, V: Unpin, const N: usize> Unpin for ArrayMap<K, V, N> {}"
+}

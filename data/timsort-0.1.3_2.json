@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "timsort-0.1.3/src/merge.rs",
+    "start_line": 334,
+    "start_col": 1,
+    "end_line": 334,
+    "end_col": 57,
+    "code_snippet": "impl<'a, T, C: Comparator<T>> Drop for MergeHi<'a, T, C> {\n    /// Copy all remaining items in the temporary storage into the list.\n    /// If the comparator panics, the result will not be sorted, but will still\n    /// contain no duplicates or uninitialized spots.\n    fn drop(&mut self) {\n        unsafe {\n            // Make sure that the entire tmp storage is consumed. Since there are no uninitialized\n            // spaces before dest_pos, and no uninitialized space after first_pos, this will ensure\n            // that there are no uninitialized spaces inside the slice after we drop. Thus, the\n            // function is safe.\n            if self.second_pos >= 0 {\n                copy_nonoverlapping_backwards(\n                    md_as_inner(&self.tmp).get_unchecked(self.second_pos as usize),\n                    self.list.get_unchecked_mut(self.dest_pos as usize),\n                    self.second_pos as usize + 1,\n                );\n            }\n        }\n    }\n}"
+}

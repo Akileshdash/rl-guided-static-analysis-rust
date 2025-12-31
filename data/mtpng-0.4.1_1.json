@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `deflate::Deflate::<W>::deflate`",
+    "file": "mtpng-0.4.1/src/deflate.rs",
+    "start_line": 197,
+    "start_col": 5,
+    "end_line": 239,
+    "end_col": 6,
+    "code_snippet": "fn deflate(&mut self, data: &[u8], flush: Flush) -> IoResult {\n        self.init()?;\n        let mut buffer = [0u8; 128 * 1024];\n        let stream = &mut *self.stream;\n        stream.next_in = &data[0] as *const u8 as *mut u8;\n        stream.avail_in = data.len() as c_uint;\n        loop {\n            stream.next_out = &mut buffer[0] as *mut u8;\n            stream.avail_out = buffer.len() as c_uint;\n            let ret = unsafe {\n                deflate(stream, flush as c_int)\n            };\n            match ret {\n                Z_OK | Z_STREAM_END => {\n                    let end = buffer.len() - stream.avail_out as usize;\n                    self.output.write_all(&buffer[0 .. end])?;\n                    match ret {\n                        Z_OK => {\n                            if stream.avail_out == 0 {\n                                // Must call again; more output available.\n                                continue;\n                            } else {\n                                return Ok(());\n                            }\n                        },\n                        Z_STREAM_END => {\n                            self.finished = true;\n                            if stream.avail_out == 0 {\n                                // Must call again; more output available.\n                                continue;\n                            } else {\n                                return Ok(());\n                            }\n                        },\n                        _ => unreachable!(),\n                    }\n                },\n                Z_STREAM_ERROR => return Err(invalid_input(\"Inconsistent stream state\")),\n                Z_BUF_ERROR => return Err(other(\"No progress possible\")),\n                _ => return Err(other(\"Unexpected error\")),\n            }\n        }\n    }"
+}

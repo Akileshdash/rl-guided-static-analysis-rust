@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ringbuf-0.4.8/src/storage.rs",
+    "start_line": 194,
+    "start_col": 1,
+    "end_line": 194,
+    "end_col": 25,
+    "code_snippet": "impl<T> Drop for Heap<T> {\n    fn drop(&mut self) {\n        drop(unsafe { Box::from_raw(ptr::slice_from_raw_parts_mut(self.ptr, self.len)) });\n    }\n}"
+}

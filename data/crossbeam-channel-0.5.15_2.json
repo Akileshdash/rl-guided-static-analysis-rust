@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crossbeam-channel-0.5.15/src/channel.rs",
+    "start_line": 1150,
+    "start_col": 1,
+    "end_line": 1150,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for Receiver<T> {\n    fn drop(&mut self) {\n        unsafe {\n            match &self.flavor {\n                ReceiverFlavor::Array(chan) => chan.release(|c| c.disconnect()),\n                ReceiverFlavor::List(chan) => chan.release(|c| c.disconnect_receivers()),\n                ReceiverFlavor::Zero(chan) => chan.release(|c| c.disconnect()),\n                ReceiverFlavor::At(_) => {}\n                ReceiverFlavor::Tick(_) => {}\n                ReceiverFlavor::Never(_) => {}\n            }\n        }\n    }\n}"
+}

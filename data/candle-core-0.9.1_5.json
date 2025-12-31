@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<safetensors::SafeTensors_<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "candle-core-0.9.1/src/safetensors.rs",
+    "start_line": 265,
+    "start_col": 10,
+    "end_line": 265,
+    "end_col": 24,
+    "code_snippet": "#[derive(yoke::Yokeable)]\nstruct SafeTensors_<'a>(SafeTensors<'a>);\n\npub struct MmapedSafetensors {\n    safetensors: Vec<yoke::Yoke<SafeTensors_<'static>, memmap2::Mmap>>,\n    routing: Option<HashMap<String, usize>>,\n}"
+}

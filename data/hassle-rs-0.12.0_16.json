@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hassle-rs-0.12.0/src/ffi.rs",
+    "start_line": 322,
+    "start_col": 1,
+    "end_line": 324,
+    "end_col": 48,
+    "code_snippet": "interfaces! {\n    #[uuid(\"b04f5b50-2059-4f12-a8ff-a1e0cde1cc7e\")]\n    pub(crate) unsafe interface IDxcVersionInfo: IUnknown {\n        pub(crate) fn get_version(&self, major: *mut u32, minor: *mut u32) -> HRESULT;\n        pub(crate) fn get_flags(&self, flags: *mut u32) -> HRESULT;\n    }\n\n    #[uuid(\"fb6904c4-42f0-4b62-9c46-983af7da7c83\")]\n    pub(crate) unsafe interface IDxcVersionInfo2: IUnknown {\n        pub(crate) fn get_commit_info(\n            &self,\n            commit_count: *mut u32,\n            commit_hash: *mut *mut u8,\n        ) -> HRESULT;\n    }\n}"
+}

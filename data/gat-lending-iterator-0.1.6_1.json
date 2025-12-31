@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<adapters::skip_while::SkipWhile<I, P> as traits::lending_iterator::LendingIterator>::next`",
+    "file": "gat-lending-iterator-0.1.6/src/adapters/skip_while.rs",
+    "start_line": 40,
+    "start_col": 5,
+    "end_line": 56,
+    "end_col": 6,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item<'_>> {\n        if self.flag {\n            return self.iter.next()\n        }\n        loop {\n            // SAFETY: see https://docs.rs/polonius-the-crab/0.3.1/polonius_the_crab/#the-arcanemagic\n            let self_ = unsafe { &mut *(self as *mut Self) };\n            if let Some(item) = self_.iter.next() {\n                if !(self_.predicate)(&item) {\n                    self_.flag = true;\n                    return Some(item);\n                }\n            } else {\n                return None;\n            }\n        }\n    }"
+}

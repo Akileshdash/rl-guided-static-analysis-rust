@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<iter::GenericArrayIter<T, N> as core::clone::Clone>::clone`",
+    "file": "generic-array-1.2.0/src/iter.rs",
+    "start_line": 67,
+    "start_col": 5,
+    "end_line": 84,
+    "end_col": 6,
+    "code_snippet": "fn clone(&self) -> Self {\n        // This places all cloned elements at the start of the new array iterator,\n        // not at their original indices.\n\n        let mut array = unsafe { ptr::read(&self.array) };\n        let mut index_back = 0;\n\n        for (dst, src) in array.as_mut_slice().iter_mut().zip(self.as_slice()) {\n            unsafe { ptr::write(dst, src.clone()) };\n            index_back += 1;\n        }\n\n        GenericArrayIter {\n            array,\n            index: 0,\n            index_back,\n        }\n    }"
+}

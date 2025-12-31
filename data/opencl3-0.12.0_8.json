@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "opencl3-0.12.0/src/memory.rs",
+    "start_line": 319,
+    "start_col": 1,
+    "end_line": 319,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Image {\n    fn drop(&mut self) {\n        unsafe { memory::release_mem_object(self.get()).expect(\"Error: clReleaseMemObject\") };\n    }\n}"
+}

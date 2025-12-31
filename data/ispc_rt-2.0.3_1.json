@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ispc_rt-2.0.3/src/task.rs",
+    "start_line": 126,
+    "start_col": 1,
+    "end_line": 126,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Context {\n    /// Release memory for all the tasks in this context\n    ///\n    /// **Note:** that because we're not really able to associate a call to ISPCAlloc\n    /// with a specific Group care must be taken that the Context is not dropped\n    /// until ISPCSync has been called on its handle and all Groups within have\n    /// completed execution.\n    fn drop(&mut self) {\n        let mut mem = self.mem.lock().unwrap();\n        for tup in mem.drain(0..) {\n            let ptr = tup.0;\n            let layout = tup.1;\n            let m = ptr.load(atomic::Ordering::SeqCst);\n            unsafe { std::alloc::dealloc(m as *mut u8, layout) };\n        }\n    }\n}"
+}

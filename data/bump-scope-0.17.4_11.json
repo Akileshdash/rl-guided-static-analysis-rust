@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/bump_vec/drain.rs",
+    "start_line": 96,
+    "start_col": 9,
+    "end_line": 96,
+    "end_col": 67,
+    "code_snippet": "impl<T, A: BumpAllocator> Drop for DropGuard<'_, '_, T, A> {\n            fn drop(&mut self) {\n                if self.0.tail_len > 0 {\n                    unsafe {\n                        let source_vec = self.0.vec.as_mut();\n                        // memmove back untouched tail, update to new length\n                        let start = source_vec.len();\n                        let tail = self.0.tail_start;\n                        if tail != start {\n                            let src = source_vec.as_ptr().add(tail);\n                            let dst = source_vec.as_mut_ptr().add(start);\n                            ptr::copy(src, dst, self.0.tail_len);\n                        }\n                        source_vec.set_len(start + self.0.tail_len);\n                    }\n                }\n            }\n        }"
+}

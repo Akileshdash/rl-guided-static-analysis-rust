@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<W as Packer>::pack_all`",
+    "file": "bytepack-0.4.1/src/lib.rs",
+    "start_line": 1055,
+    "start_col": 5,
+    "end_line": 1061,
+    "end_col": 6,
+    "code_snippet": "fn pack_all<T: Packed>(&mut self, t: &[T]) -> Result<()> {\n        // safe because we build a slice of exactly t.len() * size_of::<T> bytes\n        unsafe {\n            self.write_all(slice::from_raw_parts(transmute::<*const T, *const u8>(t.as_ptr()), t.len() * size_of::<T>()))?;\n        }\n        return Ok(());\n    }"
+}

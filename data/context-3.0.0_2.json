@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "context-3.0.0/src/stack.rs",
+    "start_line": 236,
+    "start_col": 1,
+    "end_line": 236,
+    "end_col": 38,
+    "code_snippet": "impl Drop for ProtectedFixedSizeStack {\n    fn drop(&mut self) {\n        let page_size = sys::page_size();\n        let guard = (self.0.bottom() as usize - page_size) as *mut c_void;\n        let size_with_guard = self.0.len() + page_size;\n        unsafe {\n            sys::deallocate_stack(guard, size_with_guard);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "embassy-sync-0.7.0/src/rwlock.rs",
+    "start_line": 51,
+    "start_col": 1,
+    "end_line": 51,
+    "end_col": 72,
+    "code_snippet": "unsafe impl<M: RawMutex + Sync, T: ?Sized + Send> Sync for RwLock<M, T> {}"
+}

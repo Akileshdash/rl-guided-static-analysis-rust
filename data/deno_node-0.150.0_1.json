@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deno_node-0.150.0/ops/vm.rs",
+    "start_line": 275,
+    "start_col": 1,
+    "end_line": 275,
+    "end_col": 32,
+    "code_snippet": "impl Drop for ContextifyContext {\n  fn drop(&mut self) {\n    if !self.microtask_queue.is_null() {\n      // SAFETY: If this isn't null, it is a valid MicrotaskQueue.\n      unsafe {\n        std::ptr::drop_in_place(self.microtask_queue);\n      }\n    }\n  }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ordinal-map-0.1.8/src/array_builder.rs",
+    "start_line": 14,
+    "start_col": 1,
+    "end_line": 14,
+    "end_col": 52,
+    "code_snippet": "impl<T, const S: usize> Drop for ArrayBuilder<T, S> {\n    fn drop(&mut self) {\n        for i in 0..self.filled {\n            unsafe {\n                self.array[i].assume_init_drop();\n            }\n        }\n    }\n}"
+}

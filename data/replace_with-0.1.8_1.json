@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "replace_with-0.1.8/src/lib.rs",
+    "start_line": 137,
+    "start_col": 1,
+    "end_line": 137,
+    "end_col": 37,
+    "code_snippet": "impl<F: FnOnce()> Drop for OnDrop<F> {\n\t#[inline(always)]\n\tfn drop(&mut self) {\n\t\t(unsafe { ptr::read(&*self.0) })();\n\t}\n}"
+}

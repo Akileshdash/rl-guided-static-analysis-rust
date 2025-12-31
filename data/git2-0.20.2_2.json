@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "git2-0.20.2/src/odb.rs",
+    "start_line": 506,
+    "start_col": 1,
+    "end_line": 506,
+    "end_col": 42,
+    "code_snippet": "impl<'repo> Drop for OdbPackwriter<'repo> {\n    fn drop(&mut self) {\n        unsafe {\n            let writepack = &*self.raw;\n            match writepack.free {\n                Some(free) => free(self.raw),\n                None => (),\n            };\n\n            drop(Box::from_raw(self.progress_payload_ptr));\n        }\n    }\n}"
+}

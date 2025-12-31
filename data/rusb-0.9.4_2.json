@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `hotplug::HotplugBuilder::register`",
+    "file": "rusb-0.9.4/src/hotplug.rs",
+    "start_line": 125,
+    "start_col": 5,
+    "end_line": 168,
+    "end_col": 6,
+    "code_snippet": "pub fn register<U: UsbContext, T: Borrow<U>>(\n        self,\n        context: T,\n        callback: Box<dyn Hotplug<U>>,\n    ) -> crate::Result<Registration<U>> {\n        let mut handle: libusb_hotplug_callback_handle = 0;\n        let mut call_back = Box::new(CallbackData {\n            context: context.borrow().clone(),\n            hotplug: callback,\n        });\n\n        let hotplug_flags = if self.enumerate {\n            LIBUSB_HOTPLUG_ENUMERATE\n        } else {\n            LIBUSB_HOTPLUG_NO_FLAGS\n        };\n\n        let user_data = &mut *call_back as *mut _ as *mut _;\n\n        let n = unsafe {\n            libusb_hotplug_register_callback(\n                context.borrow().as_raw(),\n                LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED | LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT,\n                hotplug_flags,\n                self.vendor_id\n                    .map(c_int::from)\n                    .unwrap_or(LIBUSB_HOTPLUG_MATCH_ANY),\n                self.product_id\n                    .map(c_int::from)\n                    .unwrap_or(LIBUSB_HOTPLUG_MATCH_ANY),\n                self.class\n                    .map(c_int::from)\n                    .unwrap_or(LIBUSB_HOTPLUG_MATCH_ANY),\n                hotplug_callback::<U>,\n                user_data,\n                &mut handle,\n            )\n        };\n        if n < 0 {\n            Err(error::from_libusb(n))\n        } else {\n            Ok(Registration { handle, call_back })\n        }\n    }"
+}

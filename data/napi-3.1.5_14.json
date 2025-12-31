@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "napi-3.1.5/src/threadsafe_function.rs",
+    "start_line": 203,
+    "start_col": 1,
+    "end_line": 220,
+    "end_col": 4,
+    "code_snippet": "unsafe impl<\n    T: 'static,\n    Return: FromNapiValue,\n    CallJsBackArgs: 'static + JsValuesTupleIntoVec,\n    ErrorStatus: AsRef<str> + From<Status>,\n    const CalleeHandled: bool,\n    const Weak: bool,\n    const MaxQueueSize: usize,\n  > Sync\n  for ThreadsafeFunction<\n    T,\n    Return,\n    CallJsBackArgs,\n    ErrorStatus,\n    { CalleeHandled },\n    { Weak },"
+}

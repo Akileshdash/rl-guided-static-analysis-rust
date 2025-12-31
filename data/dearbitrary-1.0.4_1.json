@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dearbitrary-1.0.4/src/lib.rs",
+    "start_line": 314,
+    "start_col": 1,
+    "end_line": 314,
+    "end_col": 50,
+    "code_snippet": "impl<T, const N: usize> Drop for ArrayGuard<T, N> {\n    fn drop(&mut self) {\n        debug_assert!(self.initialized <= N);\n        let initialized_part = core::ptr::slice_from_raw_parts_mut(self.dst, self.initialized);\n        unsafe {\n            core::ptr::drop_in_place(initialized_part);\n        }\n    }\n}"
+}

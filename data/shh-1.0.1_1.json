@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "shh-1.0.1/src/lib.rs",
+    "start_line": 218,
+    "start_col": 1,
+    "end_line": 218,
+    "end_col": 48,
+    "code_snippet": "unsafe impl<I: Divert<D>, D> Send for Shh<I, D> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "binary-heap-plus-0.5.0/src/binary_heap.rs",
+    "start_line": 356,
+    "start_col": 1,
+    "end_line": 356,
+    "end_col": 50,
+    "code_snippet": "impl<T, C: Compare<T>> Drop for PeekMut<'_, T, C> {\n    fn drop(&mut self) {\n        if self.sift {\n            // SAFETY: PeekMut is only instantiated for non-empty heaps.\n            unsafe { self.heap.sift_down(0) };\n        }\n    }\n}"
+}

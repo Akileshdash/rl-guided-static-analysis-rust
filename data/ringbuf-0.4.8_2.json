@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ringbuf-0.4.8/src/wrap/direct.rs",
+    "start_line": 148,
+    "start_col": 1,
+    "end_line": 148,
+    "end_col": 70,
+    "code_snippet": "impl<R: RbRef, const P: bool, const C: bool> Drop for Direct<R, P, C> {\n    fn drop(&mut self) {\n        unsafe { self.close() };\n    }\n}"
+}

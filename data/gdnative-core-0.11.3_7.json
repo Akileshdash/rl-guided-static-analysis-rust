@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "gdnative-core-0.11.3/src/export/user_data.rs",
+    "start_line": 721,
+    "start_col": 1,
+    "end_line": 721,
+    "end_col": 34,
+    "code_snippet": "unsafe impl<T> Sync for Aether<T> {}"
+}

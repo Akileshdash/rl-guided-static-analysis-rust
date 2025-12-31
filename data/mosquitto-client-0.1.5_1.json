@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `Mosquitto::tls_set`",
+    "file": "mosquitto-client-0.1.5/src/lib.rs",
+    "start_line": 575,
+    "start_col": 5,
+    "end_line": 593,
+    "end_col": 6,
+    "code_snippet": "pub fn tls_set<P1,P2,P3>(&self, cafile: P1, certfile: P2, keyfile: P3, passphrase: Option<&str>) -> Result<()>\n    where P1: AsRef<Path>, P2: AsRef<Path>, P3: AsRef<Path> {\n        Error::result(\"tls_set\",unsafe {\n            // Yes, this is awful\n            let callback = if let Some(passphrase) = passphrase {\n                PASSWORD_PTR = cs(passphrase).into_raw();\n                PASSWORD_SIZE = passphrase.len();\n                true\n            } else {\n                false\n            };\n            mosquitto_tls_set(self.mosq,\n                cpath(cafile.as_ref()).as_ptr(),null() as *const c_char,\n                cpath(certfile.as_ref()).as_ptr(),cpath(keyfile.as_ref()).as_ptr(),\n                if callback {Some(mosq_password_callback)} else {None}\n            )\n        })\n\n    }"
+}

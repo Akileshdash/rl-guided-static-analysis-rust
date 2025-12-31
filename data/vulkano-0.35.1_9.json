@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkano-0.35.1/src/memory/allocator/mod.rs",
+    "start_line": 1771,
+    "start_col": 1,
+    "end_line": 1771,
+    "end_col": 46,
+    "code_snippet": "impl<S> Drop for DeviceMemoryPoolGuard<'_, S> {\n    fn drop(&mut self) {\n        // SAFETY: Enforced by the caller of `DeviceMemoryPoolGuard::new`.\n        unsafe { self.pool.blocks.force_unlock() };\n    }\n}"
+}

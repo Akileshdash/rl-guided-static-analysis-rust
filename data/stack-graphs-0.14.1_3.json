@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "stack-graphs-0.14.1/src/arena.rs",
+    "start_line": 157,
+    "start_col": 1,
+    "end_line": 157,
+    "end_col": 34,
+    "code_snippet": "unsafe impl<T> Send for Handle<T> {}\nunsafe impl<T> Sync for Handle<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<relativetime::provider::RelativeTimePatternData<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_experimental-0.3.0/src/relativetime/provider.rs",
+    "start_line": 151,
+    "start_col": 35,
+    "end_line": 151,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, Clone, PartialEq, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_experimental::relativetime::provider))]\n#[yoke(prove_covariance_manually)]\npub struct RelativeTimePatternData<'data> {\n    /// Mapping for relative times with unique names.\n    /// Example.\n    /// In English, \"-1\" corresponds to \"yesterday\", \"1\" corresponds to \"tomorrow\".\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub relatives: ZeroMap<'data, i8, str>,\n    /// How to display times in the past.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub past: PluralElementsPackedCow<'data, SinglePlaceholderPattern>,\n    /// How to display times in the future.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub future: PluralElementsPackedCow<'data, SinglePlaceholderPattern>,\n}"
+}

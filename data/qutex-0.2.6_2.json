@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "qutex-0.2.6/src/qrw_lock.rs",
+    "start_line": 182,
+    "start_col": 1,
+    "end_line": 182,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for WriteGuard<T> {\n    fn drop(&mut self) {\n        unsafe { self.lock.release_write_lock() }\n    }\n}"
+}

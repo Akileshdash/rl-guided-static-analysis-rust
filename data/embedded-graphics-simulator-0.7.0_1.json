@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "embedded-graphics-simulator-0.7.0/src/window/sdl_window.rs",
+    "start_line": 196,
+    "start_col": 1,
+    "end_line": 196,
+    "end_col": 31,
+    "code_snippet": "#[ouroboros::self_referencing]\nstruct SdlWindowTexture {\n    texture_creator: TextureCreator<WindowContext>,\n    #[borrows(texture_creator)]\n    #[covariant]\n    texture: Texture<'this>,\n}"
+}

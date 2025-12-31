@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jobsteal-0.5.1/src/iter/vec.rs",
+    "start_line": 16,
+    "start_col": 1,
+    "end_line": 16,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for NoDropVec<T> {\n\tfn drop(&mut self) {\n\t\tunsafe { self.inner.set_len(0) }\n\t}\n}"
+}

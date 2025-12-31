@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/resource.rs",
+    "start_line": 1570,
+    "start_col": 1,
+    "end_line": 1570,
+    "end_col": 26,
+    "code_snippet": "impl Drop for TextureView {\n    fn drop(&mut self) {\n        if let Some(raw) = self.raw.take() {\n            resource_log!(\"Destroy raw {}\", self.error_ident());\n            unsafe {\n                self.device.raw().destroy_texture_view(raw);\n            }\n        }\n    }\n}"
+}

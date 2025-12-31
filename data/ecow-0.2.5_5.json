@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `vec::EcoVec::<T>::clear`",
+    "file": "ecow-0.2.5/src/vec.rs",
+    "start_line": 173,
+    "start_col": 5,
+    "end_line": 207,
+    "end_col": 6,
+    "code_snippet": "pub fn clear(&mut self) {\n        // Nothing to do if it's empty.\n        if self.is_empty() {\n            return;\n        }\n\n        // If there are other vectors that reference the same backing\n        // allocation, we just create a new, empty vector.\n        if !self.is_unique() {\n            // If another vector was dropped in the meantime, this vector could\n            // have become unique, but we don't care, creating a new one\n            // is safe nonetheless. Note that this runs the vector's drop\n            // impl and reduces the ref-count.\n            *self = Self::new();\n            return;\n        }\n\n        unsafe {\n            let prev = self.len;\n            self.len = 0;\n\n            // Safety:\n            // - We set the length to zero first in case a drop panics, so we\n            //   leak rather than double dropping.\n            // - We have unique ownership of the backing allocation, so we can\n            //   keep it and clear it. In particular, no other vector can have\n            //   gained shared ownership in the meantime since `is_unique()`,\n            //   as this is the only live vector available for cloning and we\n            //   hold a mutable reference to it.\n            // - The pointer returned by `data_mut()` is valid for `capacity`\n            //   writes, we have the invariant `prev <= capacity` and thus,\n            //   `data_mut()` is valid for `prev` writes.\n            ptr::drop_in_place(ptr::slice_from_raw_parts_mut(self.data_mut(), prev));\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<OnDrop<F> as std::ops::Drop>::drop`",
+    "file": "replace_with-0.1.8/src/lib.rs",
+    "start_line": 139,
+    "start_col": 2,
+    "end_line": 141,
+    "end_col": 3,
+    "code_snippet": "fn drop(&mut self) {\n\t\t(unsafe { ptr::read(&*self.0) })();\n\t}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "aligned-vec-0.6.4/src/raw.rs",
+    "start_line": 16,
+    "start_col": 1,
+    "end_line": 16,
+    "end_col": 45,
+    "code_snippet": "impl<T, A: Alignment> Drop for ARawVec<T, A> {\n    #[inline]\n    fn drop(&mut self) {\n        // this can't overflow since we already have this much stored in a slice\n        let size_bytes = self.capacity * size_of::<T>();\n        if size_bytes > 0 {\n            // SAFETY: memory was allocated with alloc::alloc::alloc\n            unsafe {\n                dealloc(\n                    self.ptr.as_ptr() as *mut u8,\n                    Layout::from_size_align_unchecked(\n                        size_bytes,\n                        self.align.alignment(align_of::<T>()),\n                    ),\n                )\n            }\n        }\n    }\n}"
+}

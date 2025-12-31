@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `box_handle::PoolBox::<A>::clone_from`",
+    "file": "refpool-0.4.3/src/box_handle.rs",
+    "start_line": 105,
+    "start_col": 5,
+    "end_line": 115,
+    "end_col": 6,
+    "code_snippet": "pub fn clone_from(pool: &Pool<A>, value: &A) -> Self\n    where\n        A: PoolClone,\n    {\n        let mut handle = pool.pop();\n        unsafe {\n            value.clone_uninit(data_ptr(&mut handle));\n            assume_init(handle)\n        }\n        .into_box()\n    }"
+}

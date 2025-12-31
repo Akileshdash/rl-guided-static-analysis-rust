@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "tentacle-0.7.2/src/channel/queue.rs",
+    "start_line": 89,
+    "start_col": 1,
+    "end_line": 89,
+    "end_col": 39,
+    "code_snippet": "unsafe impl<T: Send> Sync for Queue<T> {}"
+}

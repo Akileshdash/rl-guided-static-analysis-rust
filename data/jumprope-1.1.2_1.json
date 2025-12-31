@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jumprope-1.1.2/src/jumprope.rs",
+    "start_line": 1048,
+    "start_col": 1,
+    "end_line": 1048,
+    "end_col": 23,
+    "code_snippet": "impl Drop for JumpRope {\n    fn drop(&mut self) {\n        let mut node = self.head.first_next().node;\n        unsafe {\n            while !node.is_null() {\n                let next = (*node).first_next().node;\n                // Node::free(node);\n                drop(Box::from_raw(node));\n                node = next;\n            }\n        }\n    }\n}"
+}

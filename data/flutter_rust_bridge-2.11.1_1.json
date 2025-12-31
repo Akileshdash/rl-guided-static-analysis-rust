@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "flutter_rust_bridge-2.11.1/src/dart_opaque/boxes/thread_box.rs",
+    "start_line": 42,
+    "start_col": 1,
+    "end_line": 42,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T: Debug> Sync for ThreadBox<T> {}"
+}

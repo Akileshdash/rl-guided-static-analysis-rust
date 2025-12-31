@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "tower-grpc-0.1.1/src/metadata/map.rs",
+    "start_line": 1394,
+    "start_col": 1,
+    "end_line": 1394,
+    "end_col": 65,
+    "code_snippet": "unsafe impl<'a, VE: ValueEncoding> Sync for ValueIterMut<'a, VE> {}\nunsafe impl<'a, VE: ValueEncoding> Send for ValueIterMut<'a, VE> {}"
+}

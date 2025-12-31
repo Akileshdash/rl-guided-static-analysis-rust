@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<algo::dijkstra_pred::DijkstraPred<'_, D> as std::iter::Iterator>::next`",
+    "file": "graaf-0.111.0/src/algo/dijkstra_pred.rs",
+    "start_line": 460,
+    "start_col": 5,
+    "end_line": 480,
+    "end_col": 6,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item> {\n        let (Reverse(distance), step @ (_, v)) = self.heap.pop()?;\n        let dist_ptr = self.dist.as_mut_ptr();\n\n        for (x, w) in self.digraph.out_neighbors_weighted(v) {\n            let distance = distance + w;\n            let dist_x = unsafe { dist_ptr.add(x) };\n\n            if distance < unsafe { *dist_x } {\n                unsafe { *dist_x = distance };\n\n                self.heap.push((Reverse(distance), (Some(v), x)));\n            }\n        }\n\n        if distance == unsafe { *dist_ptr.add(v) } {\n            return Some(step);\n        }\n\n        None\n    }"
+}

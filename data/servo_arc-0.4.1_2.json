@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "servo_arc-0.4.1/lib.rs",
+    "start_line": 700,
+    "start_col": 1,
+    "end_line": 700,
+    "end_col": 38,
+    "code_snippet": "impl<H, T> Drop for HeaderSlice<H, T> {\n    fn drop(&mut self) {\n        unsafe {\n            let mut ptr = self.data_mut();\n            for _ in 0..self.len {\n                std::ptr::drop_in_place(ptr);\n                ptr = ptr.offset(1);\n            }\n        }\n    }\n}"
+}

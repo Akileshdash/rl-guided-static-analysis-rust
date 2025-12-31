@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hassle-rs-0.12.0/src/wrapper.rs",
+    "start_line": 193,
+    "start_col": 1,
+    "end_line": 193,
+    "end_col": 48,
+    "code_snippet": "impl<T: Class> Drop for LocalClassAllocation<T> {\n    fn drop(&mut self) {\n        // Check if we are the only remaining reference to this object\n        assert_eq!(\n            unsafe { self.0.dec_ref_count() },\n            0,\n            \"COM object is still referenced\"\n        );\n        // Now that we're the last one to give up our refcount, it is safe\n        // for the internal object to get dropped.\n    }\n}"
+}

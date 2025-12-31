@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vec-strings-0.4.8/src/small_array_box.rs",
+    "start_line": 191,
+    "start_col": 1,
+    "end_line": 191,
+    "end_col": 71,
+    "code_snippet": "impl<T, const INLINE_LEN: usize> Drop for SmallArrayBox<T, INLINE_LEN> {\n    fn drop(&mut self) {\n        let len = self.len;\n\n        if len <= INLINE_LEN {\n            let inline_storage = unsafe { self.storage.inline_storage.deref_mut() };\n\n            inline_storage[..len].iter_mut().for_each(|elem| {\n                let ptr = elem.as_mut_ptr();\n                unsafe {\n                    ptr.drop_in_place();\n                }\n            });\n        } else {\n            let ptr = unsafe { self.storage.ptr }.as_ptr();\n            let slice = unsafe { from_raw_parts_mut(ptr, len) };\n            drop(unsafe { Box::from_raw(slice) });\n        }\n    }\n}"
+}

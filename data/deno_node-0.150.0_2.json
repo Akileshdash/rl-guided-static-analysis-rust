@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<ops::crypto::x509::CertificateView<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "deno_node-0.150.0/ops/crypto/x509.rs",
+    "start_line": 74,
+    "start_col": 10,
+    "end_line": 74,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\nstruct CertificateView<'a> {\n  cert: X509Certificate<'a>,\n}"
+}

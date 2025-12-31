@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "atomic_refcell-0.1.13/src/lib.rs",
+    "start_line": 384,
+    "start_col": 1,
+    "end_line": 384,
+    "end_col": 79,
+    "code_snippet": "unsafe impl<'b, T: ?Sized> Sync for AtomicRef<'b, T> where for<'a> &'a T: Sync {}\nunsafe impl<'b, T: ?Sized> Send for AtomicRef<'b, T> where for<'a> &'a T: Send {}"
+}

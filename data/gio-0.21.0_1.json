@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gio-0.21.0/src/socket.rs",
+    "start_line": 171,
+    "start_col": 1,
+    "end_line": 171,
+    "end_col": 36,
+    "code_snippet": "impl Drop for SocketControlMessages {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            let _: Slice<SocketControlMessage> =\n                Slice::from_glib_full_num(self.ptr as *mut _, self.len as usize);\n        }\n    }\n}"
+}

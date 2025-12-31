@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cpython-0.7.2/src/objects/object.rs",
+    "start_line": 61,
+    "start_col": 1,
+    "end_line": 61,
+    "end_col": 23,
+    "code_snippet": "impl Drop for PyObject {\n    fn drop(&mut self) {\n        let _gil_guard = Python::acquire_gil();\n        unsafe {\n            ffi::Py_DECREF(self.ptr.as_ptr());\n        }\n    }\n}"
+}

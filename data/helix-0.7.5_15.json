@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `coercions::tuples::<impl coercions::FromRuby for (A, B, C, D)>::from_ruby`",
+    "file": "helix-0.7.5/src/coercions/tuples.rs",
+    "start_line": 24,
+    "start_col": 13,
+    "end_line": 39,
+    "end_col": 14,
+    "code_snippet": "fn from_ruby(value: VALUE) -> CheckResult<Self::Checked> {\n                if unsafe { sys::RB_TYPE_P(value, sys::T_ARRAY) } {\n                    // Make sure we can actually do the conversions for the values.\n                    let len = unsafe { sys::RARRAY_LEN(value) };\n\n                    if len != $count {\n                        type_error!(value, format!(\"an array with {} {}\", $count, { if $count == 1 { \"element\" } else { \"elements\" } }))\n                    }\n\n                    extract_tuple_elements_from_ruby!(value, (0), $($name),*);\n\n                    Ok(($($name,)*))\n                } else {\n                    type_error!(value, \"an array\")\n                }\n            }"
+}

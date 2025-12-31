@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "glib-0.21.0/src/object.rs",
+    "start_line": 4057,
+    "start_col": 1,
+    "end_line": 4057,
+    "end_col": 42,
+    "code_snippet": "unsafe impl<T: IsClass> Sync for Class<T> {}"
+}

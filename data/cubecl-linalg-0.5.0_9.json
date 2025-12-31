@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `matmul::components::global::args::TensorInput::<EI, EO, MA>::shape`",
+    "file": "cubecl-linalg-0.5.0/src/matmul/components/global/args.rs",
+    "start_line": 333,
+    "start_col": 5,
+    "end_line": 340,
+    "end_col": 6,
+    "code_snippet": "pub fn shape(&self, axis: u32) -> u32 {\n        unsafe {\n            match comptime![&self.ident] {\n                TensorInputIdent::Lhs => MA::shape_lhs(&(*self.state), axis),\n                TensorInputIdent::Rhs => MA::shape_rhs(&(*self.state), axis),\n            }\n        }\n    }"
+}

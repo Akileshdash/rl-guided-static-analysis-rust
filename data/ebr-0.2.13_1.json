@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ebr-0.2.13/src/lib.rs",
+    "start_line": 384,
+    "start_col": 1,
+    "end_line": 384,
+    "end_col": 51,
+    "code_snippet": "impl<T, const SLOTS: usize> Drop for Bag<T, SLOTS> {\n    fn drop(&mut self) {\n        for index in 0..self.len {\n            unsafe {\n                self.garbage[index].as_mut_ptr().drop_in_place();\n            }\n        }\n    }\n}"
+}

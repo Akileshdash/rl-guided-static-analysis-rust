@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gdnative-core-0.11.3/src/core_types/access.rs",
+    "start_line": 210,
+    "start_col": 1,
+    "end_line": 213,
+    "end_col": 21,
+    "code_snippet": "impl<G> Drop for Owned<G>\nwhere\n    G: Guard + WritePtr,\n    G::Target: Copy,\n{\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            let mut dst = self.guard.read_ptr() as *mut G::Target;\n            for o in self.owned.iter() {\n                ptr::write_unaligned(dst, *o);\n                dst = dst.add(1);\n            }\n        }\n    }\n}"
+}

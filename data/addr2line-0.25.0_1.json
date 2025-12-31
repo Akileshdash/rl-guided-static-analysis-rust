@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `loader::Loader::borrow_internal`",
+    "file": "addr2line-0.25.0/src/loader.rs",
+    "start_line": 82,
+    "start_col": 5,
+    "end_line": 91,
+    "end_col": 6,
+    "code_snippet": "fn borrow_internal<'a, F, T>(&'a self, f: F) -> T\n    where\n        F: FnOnce(&'a LoaderInternal<'a>, &'a Arena<Vec<u8>>, &'a Arena<Mmap>) -> T,\n    {\n        // Do not leak the static lifetime.\n        let internal = unsafe {\n            core::mem::transmute::<&LoaderInternal<'static>, &'a LoaderInternal<'a>>(&self.internal)\n        };\n        f(internal, &self.arena_data, &self.arena_mmap)\n    }"
+}

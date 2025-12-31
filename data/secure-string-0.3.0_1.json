@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "secure-string-0.3.0/src/secure_types/boxed.rs",
+    "start_line": 87,
+    "start_col": 1,
+    "end_line": 89,
+    "end_col": 13,
+    "code_snippet": "impl<T> Drop for SecureBox<T>\nwhere\n    T: Copy,\n{\n    #[cfg_attr(feature = \"pre\", pre::pre)]\n    fn drop(&mut self) {\n        // Make sure that the box does not need to be dropped after this function, because it may\n        // see an invalid type, if `T` does not support an all-zero byte-pattern\n        // Instead we manually destruct the box and only handle the potentially invalid values\n        // behind the pointer\n        let ptr = Box::into_raw(self.content.take().unwrap());\n\n        // There is no need to worry about dropping the contents, because `T: Copy` and `Copy`\n        // types cannot implement `Drop`\n\n        unsafe {\n            std::slice::from_raw_parts_mut::<MaybeUninit<u8>>(ptr as *mut MaybeUninit<u8>, std::mem::size_of::<T>()).zeroize();\n        }\n\n        memlock::munlock(ptr, 1);\n\n        // Deallocate only non-zero-sized types, because otherwise it's UB\n        if std::mem::size_of::<T>() != 0 {\n            // Safety:\n            // This way to manually deallocate is advertised in the documentation of `Box::into_raw`.\n            // The box was allocated with the global allocator and a layout of `T` and is thus\n            // deallocated using the same allocator and layout here.\n            unsafe { std::alloc::dealloc(ptr as *mut u8, std::alloc::Layout::new::<T>()) };\n        }\n    }\n}"
+}

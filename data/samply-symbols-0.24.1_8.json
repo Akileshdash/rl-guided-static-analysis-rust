@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<elf::ElfObjectsWrapper<'static, T> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "samply-symbols-0.24.1/src/elf.rs",
+    "start_line": 269,
+    "start_col": 10,
+    "end_line": 269,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\nstruct ElfObjectsWrapper<'data, T: FileContents>(Box<dyn ElfObjectsTrait<T> + Send + Sync + 'data>);\n\ntrait ElfObjectsTrait<T: FileContents> {\n    fn make_inner(&self) -> Result<ObjectSymbolMapInnerWrapper<'_, T>, Error>;\n}"
+}

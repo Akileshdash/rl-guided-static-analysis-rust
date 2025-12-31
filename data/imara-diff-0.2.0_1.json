@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "imara-diff-0.2.0/src/myers.rs",
+    "start_line": 41,
+    "start_col": 1,
+    "end_line": 41,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Myers {\n    fn drop(&mut self) {\n        unsafe { drop(Box::from_raw(self.kvec.as_ptr())) }\n    }\n}"
+}

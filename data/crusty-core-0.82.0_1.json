@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `task_scheduler::TaskScheduler::<JS, TS, P>::schedule_filter`",
+    "file": "crusty-core-0.82.0/src/task_scheduler.rs",
+    "start_line": 44,
+    "start_col": 2,
+    "end_line": 76,
+    "end_col": 3,
+    "code_snippet": "fn schedule_filter(&mut self, task: &mut Task) -> task_filters::Result {\n\t\tlet action = if task.link.redirect > 0 { \"[scheduling redirect]\" } else { \"[scheduling]\" };\n\n\t\tlet _span = span!(task = %task).entered();\n\t\tfor filter in &mut self.task_filters {\n\t\t\tmatch filter.accept(&mut self.job.ctx, self.task_seq_num, task) {\n\t\t\t\tOk(task_filters::Action::Accept) => continue,\n\t\t\t\tOk(task_filters::Action::Skip) => {\n\t\t\t\t\tif task.is_root() {\n\t\t\t\t\t\tinfo!(action = \"skip\", filter_name = %filter.name(), action);\n\t\t\t\t\t} else {\n\t\t\t\t\t\tdebug!(action = \"skip\", filter_name = %filter.name(), action);\n\t\t\t\t\t}\n\t\t\t\t\treturn Ok(task_filters::Action::Skip)\n\t\t\t\t}\n\t\t\t\tErr(ExtError::Term { reason }) => {\n\t\t\t\t\tif task.is_root() {\n\t\t\t\t\t\tinfo!(action = \"term\", filter_name = %filter.name(), reason = reason, action);\n\t\t\t\t\t} else {\n\t\t\t\t\t\tdebug!(action = \"term\", filter_name = %filter.name(), reason = reason, action);\n\t\t\t\t\t}\n\t\t\t\t\treturn Err(ExtError::Term { reason })\n\t\t\t\t}\n\t\t\t\tErr(ExtError::Other(err)) => {\n\t\t\t\t\tdebug!(filter_name = %filter.name(), \"error during task filtering: {:#}\", err);\n\t\t\t\t\tcontinue\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\tdebug!(action = \"scheduled\", action);\n\t\tOk(task_filters::Action::Accept)\n\t}"
+}

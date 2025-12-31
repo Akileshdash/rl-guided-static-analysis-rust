@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bitcode-0.6.6/src/fast.rs",
+    "start_line": 22,
+    "start_col": 1,
+    "end_line": 22,
+    "end_col": 28,
+    "code_snippet": "impl<T> Drop for FastVec<T> {\n    fn drop(&mut self) {\n        unsafe {\n            drop(Vec::from(core::ptr::read(self)));\n        }\n    }\n}"
+}

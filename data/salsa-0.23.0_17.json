@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `table::PageView::<'p, T>::allocate`",
+    "file": "salsa-0.23.0/src/table.rs",
+    "start_line": 304,
+    "start_col": 5,
+    "end_line": 330,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn allocate<V>(&self, page: PageIndex, value: V) -> Result<Id, V>\n    where\n        V: FnOnce(Id) -> T,\n    {\n        let _guard = self.0.allocation_lock.lock();\n        let index = self.0.allocated.load(Ordering::Acquire);\n        if index >= PAGE_LEN {\n            return Err(value);\n        }\n\n        // Initialize entry `index`\n        let id = make_id(page, SlotIndex::new(index));\n        let data = self.0.data.cast::<PageDataEntry<T>>();\n\n        // SAFETY: `index` is also guaranteed to be in bounds as per the check above.\n        let entry = unsafe { &*data.as_ptr().add(index) };\n\n        // SAFETY: We acquired the allocation lock, so we have unique access to the UnsafeCell\n        // interior\n        unsafe { (*entry.get()).write(value(id)) };\n\n        // Update the length (this must be done after initialization as otherwise an uninitialized\n        // read could occur!)\n        self.0.allocated.store(index + 1, Ordering::Release);\n\n        Ok(id)\n    }"
+}

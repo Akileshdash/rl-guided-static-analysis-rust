@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<windows::PdbObjectWrapper<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "samply-symbols-0.24.1/src/windows.rs",
+    "start_line": 174,
+    "start_col": 10,
+    "end_line": 174,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\npub struct PdbObjectWrapper<'data>(Box<dyn PdbObjectTrait + Send + 'data>);\n\nimpl<FC: FileContents + 'static> PdbObjectTrait for PdbObject<'_, FC> {\n    fn make_pdb_symbol_map(&self) -> Result<PdbSymbolMapInner<'_>, Error> {\n        let context = self.make_context()?;\n\n        let path_mapper = match &self.srcsrv_stream {\n            Some(srcsrv_stream) => Some(SrcSrvPathMapper::new(srcsrv::SrcSrvStream::parse(\n                srcsrv_stream.deref(),\n            )?)),\n            None => None,\n        };\n        let path_mapper = PathMapper::new_with_maybe_extra_mapper(path_mapper);\n\n        let symbol_map = PdbSymbolMapInner {\n            context,\n            debug_id: self.debug_id,\n            path_mapper: Mutex::new(path_mapper),\n        };\n        Ok(symbol_map)\n    }\n}"
+}

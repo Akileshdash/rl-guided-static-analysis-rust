@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `runtime::vm::traphandlers::<impl runtime::vm::traphandlers::call_thread_state::CallThreadState>::test_if_trap`",
+    "file": "wasmtime-35.0.0/src/runtime/vm/traphandlers.rs",
+    "start_line": 709,
+    "start_col": 5,
+    "end_line": 751,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn test_if_trap(\n        &self,\n        regs: TrapRegisters,\n        faulting_addr: Option<usize>,\n        call_handler: impl Fn(&SignalHandler) -> bool,\n    ) -> TrapTest {\n        // If we haven't even started to handle traps yet, bail out.\n        if self.jmp_buf.get().is_null() {\n            return TrapTest::NotWasm;\n        }\n\n        // First up see if any instance registered has a custom trap handler,\n        // in which case run them all. If anything handles the trap then we\n        // return that the trap was handled.\n        let _ = &call_handler;\n        #[cfg(all(has_native_signals, not(miri)))]\n        if let Some(handler) = self.signal_handler {\n            if unsafe { call_handler(&*handler) } {\n                return TrapTest::HandledByEmbedder;\n            }\n        }\n\n        // If this fault wasn't in wasm code, then it's not our problem\n        let Some((code, text_offset)) = lookup_code(regs.pc) else {\n            return TrapTest::NotWasm;\n        };\n\n        // If the fault was at a location that was not marked as potentially\n        // trapping, then that's a bug in Cranelift/Winch/etc. Don't try to\n        // catch the trap and pretend this isn't wasm so the program likely\n        // aborts.\n        let Some(trap) = code.lookup_trap_code(text_offset) else {\n            return TrapTest::NotWasm;\n        };\n\n        // If all that passed then this is indeed a wasm trap, so return the\n        // `jmp_buf` passed to `wasmtime_longjmp` to resume.\n        self.set_jit_trap(regs, faulting_addr, trap);\n        TrapTest::Trap {\n            #[cfg(has_host_compiler_backend)]\n            jmp_buf: self.take_jmp_buf(),\n        }\n    }"
+}

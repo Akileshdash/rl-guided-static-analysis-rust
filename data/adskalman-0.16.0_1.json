@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `KalmanFilterNoControl::<'a, R, SS, OS>::smooth_step`",
+    "file": "adskalman-0.16.0/src/lib.rs",
+    "start_line": 462,
+    "start_col": 5,
+    "end_line": 493,
+    "end_col": 6,
+    "code_snippet": "fn smooth_step(\n        &self,\n        smooth_future: &StateAndCovariance<R, SS>,\n        filt: &StateAndCovariance<R, SS>,\n    ) -> Result<StateAndCovariance<R, SS>, Error> {\n        let prior = self.transition_model.predict(filt);\n\n        let v_chol = match na::linalg::Cholesky::new(prior.covariance().clone()) {\n            Some(v) => v,\n            None => {\n                return Err(Error::CovarianceNotPositiveSemiDefinite);\n            }\n        };\n        let inv_prior_covariance: Matrix<R, SS, SS, _> = v_chol.inverse();\n        trace!(\n            \"inv_prior_covariance {}\",\n            pretty_print!(inv_prior_covariance)\n        );\n\n        // J = dot(Vfilt, dot(A.T, inv(Vpred)))  # smoother gain matrix\n        let j = filt.covariance() * (self.transition_model.FT() * inv_prior_covariance);\n\n        // xsmooth = xfilt + dot(J, xsmooth_future - xpred)\n        let residuals = smooth_future.state() - prior.state();\n        let state = filt.state() + &j * residuals;\n\n        // Vsmooth = Vfilt + dot(J, dot(Vsmooth_future - Vpred, J.T))\n        let covar_residuals = smooth_future.covariance() - prior.covariance();\n        let covariance = filt.covariance() + &j * (covar_residuals * j.transpose());\n\n        Ok(StateAndCovariance::new(state, covariance))\n    }"
+}

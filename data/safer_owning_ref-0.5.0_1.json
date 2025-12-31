@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "safer_owning_ref-0.5.0/src/lib.rs",
+    "start_line": 1140,
+    "start_col": 1,
+    "end_line": 1141,
+    "end_col": 41,
+    "code_snippet": "unsafe impl<'t, O, T: ?Sized> Send for OwningRef<'t, O, T>\n    where O: Send, for<'a> (&'a T): Send {}\nunsafe impl<'t, O, T: ?Sized> Sync for OwningRef<'t, O, T>"
+}

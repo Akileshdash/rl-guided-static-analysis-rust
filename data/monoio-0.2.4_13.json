@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<io::util::split::OwnedWriteHalf<Inner> as io::async_rent_cancelable::CancelableAsyncWriteRent>::cancelable_flush`",
+    "file": "monoio-0.2.4/src/io/util/split.rs",
+    "start_line": 167,
+    "start_col": 5,
+    "end_line": 170,
+    "end_col": 6,
+    "code_snippet": "fn cancelable_flush(&mut self, c: CancelHandle) -> impl Future<Output = std::io::Result<()>> {\n        let stream = unsafe { &mut *self.0.get() };\n        stream.cancelable_flush(c)\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deno_core-0.354.0/arena/unique_arena.rs",
+    "start_line": 335,
+    "start_col": 1,
+    "end_line": 335,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for ArenaUnique<T> {\n  fn drop(&mut self) {\n    unsafe {\n      let this = self.ptr.as_mut();\n      if this.raw_arena.allocated() == 0 {\n        Self::drop_data(self.ptr);\n      } else {\n        this.alive = false;\n      }\n    }\n  }\n}"
+}

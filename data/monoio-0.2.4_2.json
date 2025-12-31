@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "monoio-0.2.4/src/driver/uring/mod.rs",
+    "start_line": 562,
+    "start_col": 1,
+    "end_line": 562,
+    "end_col": 28,
+    "code_snippet": "impl Drop for IoUringDriver {\n    fn drop(&mut self) {\n        trace!(\"MONOIO DEBUG[IoUringDriver]: drop\");\n\n        // Dealloc leaked memory\n        unsafe { std::ptr::drop_in_place(self.timespec) };\n\n        #[cfg(feature = \"sync\")]\n        unsafe {\n            std::ptr::drop_in_place(self.eventfd_read_dst)\n        };\n\n        // Deregister thread id\n        #[cfg(feature = \"sync\")]\n        {\n            use crate::driver::thread::{unregister_unpark_handle, unregister_waker_sender};\n            unregister_unpark_handle(self.thread_id);\n            unregister_waker_sender(self.thread_id);\n        }\n    }\n}"
+}

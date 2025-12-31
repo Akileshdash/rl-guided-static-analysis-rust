@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "fragile-2.0.1/src/sticky.rs",
+    "start_line": 285,
+    "start_col": 1,
+    "end_line": 285,
+    "end_col": 34,
+    "code_snippet": "unsafe impl<T> Sync for Sticky<T> {}"
+}

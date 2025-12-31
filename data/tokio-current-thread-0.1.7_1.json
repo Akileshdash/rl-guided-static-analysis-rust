@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tokio-current-thread-0.1.7/src/scheduler.rs",
+    "start_line": 527,
+    "start_col": 1,
+    "end_line": 527,
+    "end_col": 26,
+    "code_snippet": "impl<U> Drop for Inner<U> {\n    fn drop(&mut self) {\n        // Once we're in the destructor for `Inner` we need to clear out the\n        // mpsc queue of nodes if there's anything left in there.\n        //\n        // Note that each node has a strong reference count associated with it\n        // which is owned by the mpsc queue. All nodes should have had their\n        // items dropped already by the `Scheduler` destructor above,\n        // so we're just pulling out nodes and dropping their refcounts.\n        unsafe {\n            loop {\n                match self.dequeue(None) {\n                    Dequeue::Empty => break,\n                    Dequeue::Yield => unreachable!(),\n                    Dequeue::Inconsistent => abort(\"inconsistent in drop\"),\n                    Dequeue::Data(ptr) => drop(ptr2arc(ptr)),\n                }\n            }\n        }\n    }\n}"
+}

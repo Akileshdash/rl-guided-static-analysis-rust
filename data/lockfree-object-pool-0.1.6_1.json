@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lockfree-object-pool-0.1.6/src/linear_owned_reusable.rs",
+    "start_line": 77,
+    "start_col": 1,
+    "end_line": 77,
+    "end_col": 40,
+    "code_snippet": "impl<T> Drop for LinearOwnedReusable<T> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            // SAFETY: there exists only this `LinearOwnedReusable` with this page_id\n            let page = self.page.as_ref().unwrap();\n            (self.pool.get_reset_callback())(page.get_mut(&self.page_id));\n            page.free(&self.page_id);\n        }\n    }\n}"
+}

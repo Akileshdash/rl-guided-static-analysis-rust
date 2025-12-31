@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `environment::thread_join`",
+    "file": "ort-2.0.0-rc.10/src/environment.rs",
+    "start_line": 219,
+    "start_col": 1,
+    "end_line": 225,
+    "end_col": 2,
+    "code_snippet": "pub(crate) unsafe extern \"system\" fn thread_join<T: ThreadManager + Any>(ort_custom_thread_handle: ort_sys::OrtCustomThreadHandle) {\n\tlet handle = unsafe { Box::from_raw(ort_custom_thread_handle.cast_mut().cast::<<T as ThreadManager>::Thread>()) };\n\tif let Err(e) = <T as ThreadManager>::join(*handle) {\n\t\tcrate::error!(\"Failed to join thread using manager: {e}\");\n\t\tlet _ = e;\n\t}\n}"
+}

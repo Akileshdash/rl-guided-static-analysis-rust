@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "ringbuf-0.4.8/src/storage.rs",
+    "start_line": 63,
+    "start_col": 1,
+    "end_line": 63,
+    "end_col": 49,
+    "code_snippet": "unsafe impl<T> Sync for Ref<'_, T> where T: Send {}\nunsafe impl<T> Storage for Ref<'_, T> {\n    type Item = T;\n    #[inline]\n    fn as_mut_ptr(&self) -> *mut MaybeUninit<T> {\n        self.ptr\n    }\n    #[inline]\n    fn len(&self) -> usize {\n        self.len\n    }\n}"
+}

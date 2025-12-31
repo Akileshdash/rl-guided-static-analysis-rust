@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "cubecl-runtime-0.6.0/src/tune/function_tunable.rs",
+    "start_line": 60,
+    "start_col": 1,
+    "end_line": 61,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<F: AsFunctionTunable<Marker> + Sync, Marker> Sync\n    for FunctionTunableResultMap<F, Marker>\n{\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `yield_now::yield_with`",
+    "file": "may-0.3.51/src/yield_now.rs",
+    "start_line": 21,
+    "start_col": 1,
+    "end_line": 40,
+    "end_col": 2,
+    "code_snippet": "pub fn yield_with<T: EventSource>(resource: &T) {\n    let cancel = current_cancel_data();\n    // if cancel detected in user space\n    // no need to get into kernel any more\n    if unlikely(cancel.is_canceled()) {\n        co_set_para(std::io::Error::other(\"Canceled\"));\n        return resource.yield_back(cancel);\n    }\n\n    let r = unsafe {\n        std::mem::transmute::<*const (dyn EventSource + '_), *mut (dyn EventSource + 'static)>(\n            resource as &dyn EventSource,\n        )\n    };\n    let es = EventSubscriber::new(r);\n    co_yield_with(es);\n\n    resource.yield_back(cancel);\n    cancel.clear();\n}"
+}

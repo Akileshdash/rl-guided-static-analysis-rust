@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dashu-int-0.4.1/src/repr.rs",
+    "start_line": 520,
+    "start_col": 1,
+    "end_line": 520,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Repr {\n    fn drop(&mut self) {\n        let cap = self.capacity();\n        if cap > 2 {\n            // SAFETY: the data is heap allocated when abs(capacity) > 2 (invariant of Repr)\n            unsafe {\n                Buffer::deallocate_raw(NonNull::new_unchecked(self.data.heap.0), cap);\n            }\n        }\n    }\n}"
+}

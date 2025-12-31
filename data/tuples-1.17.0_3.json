@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tuples-1.17.0/src/./gen/tuple_iter.rs",
+    "start_line": 340,
+    "start_col": 1,
+    "end_line": 340,
+    "end_col": 35,
+    "code_snippet": "impl<T> Drop for Tuple4IntoIter<T> {\n    fn drop(&mut self) {\n        let slice = unsafe { self.0.get_unchecked_mut(self.1.clone()) };\n        let slice = unsafe { &mut *(slice as *mut [MaybeUninit<T>] as *mut [T]) };\n        unsafe { core::ptr::drop_in_place(slice) }\n    }\n}"
+}

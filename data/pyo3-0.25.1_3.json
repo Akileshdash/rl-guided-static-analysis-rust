@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pyo3-0.25.1/src/instance.rs",
+    "start_line": 541,
+    "start_col": 1,
+    "end_line": 541,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for Bound<'_, T> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe { ffi::Py_DECREF(self.as_ptr()) }\n    }\n}"
+}

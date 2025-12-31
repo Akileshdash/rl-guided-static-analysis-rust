@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "syd-3.37.1/src/compat.rs",
+    "start_line": 790,
+    "start_col": 1,
+    "end_line": 790,
+    "end_col": 22,
+    "code_snippet": "impl Drop for DirIter {\n    fn drop(&mut self) {\n        #[allow(clippy::disallowed_methods)]\n        let layout = Layout::from_size_align(self.memsiz, DIRENT_ALIGN).unwrap();\n\n        // SAFETY: Deallocate buffer.\n        unsafe { dealloc(self.buffer.as_ptr(), layout) };\n    }\n}"
+}

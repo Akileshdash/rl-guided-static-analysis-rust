@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `collections::bounded_stack::BoundedStack::<T>::clear`",
+    "file": "cao-lang-0.2.6/src/collections/bounded_stack.rs",
+    "start_line": 83,
+    "start_col": 5,
+    "end_line": 90,
+    "end_col": 6,
+    "code_snippet": "pub fn clear(&mut self) {\n        if std::mem::needs_drop::<T>() {\n            for i in 0..self.head {\n                unsafe { drop_in_place(self.storage.get_unchecked_mut(i).as_mut_ptr()) }\n            }\n        }\n        self.head = 0;\n    }"
+}

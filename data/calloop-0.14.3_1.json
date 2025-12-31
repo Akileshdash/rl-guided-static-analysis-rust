@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "calloop-0.14.3/src/io.rs",
+    "start_line": 183,
+    "start_col": 1,
+    "end_line": 183,
+    "end_col": 36,
+    "code_snippet": "impl<F: AsFd> Drop for Async<'_, F> {\n    fn drop(&mut self) {\n        self.inner.kill(&self.dispatcher);\n        // restore flags\n        let _ = set_nonblocking(\n            unsafe { BorrowedFd::borrow_raw(self.dispatcher.borrow().fd) },\n            self.was_nonblocking,\n        );\n    }\n}"
+}

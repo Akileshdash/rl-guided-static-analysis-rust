@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<DiscardOnDrop<A> as std::ops::Drop>::drop`",
+    "file": "discard-1.0.4/src/lib.rs",
+    "start_line": 189,
+    "start_col": 5,
+    "end_line": 205,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        // This only gets called if there is still a valid `A` inside the `ManuallyDrop`,\n        // since in `leak()` we prevent `drop()` from being called.\n        //\n        // Similar to `leak()`, we want to move `A` out of `self` but again we can't,\n        // this time because we only have a mutable reference, not a value.\n        //\n        // The solution is the same though, use `std::ptr::read()` to do the move,\n        // the `A` will get dropped by `.discard()` and since we wrapped it in `ManuallyDrop`,\n        // it won't be dropped again at the end of this function.\n        //\n        // TODO verify that this is completely safe\n        unsafe {\n            let value: A = ::std::ptr::read(self.0.deref());\n            value.discard();\n        }\n    }"
+}

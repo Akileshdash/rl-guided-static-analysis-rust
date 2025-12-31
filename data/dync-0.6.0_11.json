@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<value::Value<B, V> as std::cmp::PartialEq>::eq`",
+    "file": "dync-0.6.0/src/value.rs",
+    "start_line": 342,
+    "start_col": 5,
+    "end_line": 348,
+    "end_col": 6,
+    "code_snippet": "fn eq(&self, other: &Self) -> bool {\n        if self.type_id != other.type_id {\n            return false;\n        }\n        // SAFETY: Checked that the two types are the same above.\n        unsafe { self.vtable.eq_fn()(self.bytes.get_bytes_ref(), other.bytes.get_bytes_ref()) }\n    }"
+}

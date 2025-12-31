@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `migrations::maybe_apply`",
+    "file": "re_sorbet-0.24.0/src/migrations/mod.rs",
+    "start_line": 82,
+    "start_col": 1,
+    "end_line": 99,
+    "end_col": 2,
+    "code_snippet": "fn maybe_apply<M: Migration>(\n    batch_version: &semver::Version,\n    mut batch: RecordBatch,\n) -> RecordBatch {\n    if batch_version < &M::TARGET_VERSION {\n        re_log::debug_once!(\n            \"Migrating record batch from Sorbet 'v{batch_version}' to 'v{}'.\",\n            M::TARGET_VERSION\n        );\n        batch = M::migrate(batch);\n        batch\n            .schema_metadata_mut()\n            .insert(\"sorbet:version\".to_owned(), M::TARGET_VERSION.to_string());\n        batch\n    } else {\n        batch\n    }\n}"
+}

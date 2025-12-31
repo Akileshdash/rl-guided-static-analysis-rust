@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bastion-executor-0.4.2/src/run_queue.rs",
+    "start_line": 160,
+    "start_col": 1,
+    "end_line": 160,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Inner<T> {\n    fn drop(&mut self) {\n        // Load the back index, front index, and buffer.\n        let b = self.back.load(Ordering::Relaxed);\n        let f = self.front.load(Ordering::Relaxed);\n\n        unsafe {\n            let buffer = self.buffer.load(Ordering::Relaxed, epoch::unprotected());\n\n            // Go through the buffer from front to back and drop all tasks in the queue.\n            let mut i = f;\n            while i != b {\n                ptr::drop_in_place(buffer.deref().at(i));\n                i = i.wrapping_add(1);\n            }\n\n            // Free the memory allocated by the buffer.\n            buffer.into_owned().into_box().dealloc();\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `trim_lists_to_normalized_offsets::trim_lists_to_normalized_offsets_list`",
+    "file": "polars-compute-0.49.1/src/trim_lists_to_normalized_offsets.rs",
+    "start_line": 24,
+    "start_col": 1,
+    "end_line": 53,
+    "end_col": 2,
+    "code_snippet": "pub fn trim_lists_to_normalized_offsets_list<O: Offset>(\n    arr: &ListArray<O>,\n) -> Option<ListArray<O>> {\n    let offsets = arr.offsets();\n    let values = arr.values();\n\n    let len = offsets.range().to_usize();\n\n    let (values, offsets) = if values.len() == len {\n        let values = trim_lists_to_normalized_offsets(values.as_ref())?;\n        (values, offsets.clone())\n    } else {\n        let first_idx = *offsets.first();\n        let v = offsets.iter().map(|x| *x - first_idx).collect::<Vec<_>>();\n        let offsets = unsafe { OffsetsBuffer::<O>::new_unchecked(v.into()) };\n        let values = values.sliced(first_idx.to_usize(), len);\n        let values = trim_lists_to_normalized_offsets(values.as_ref()).unwrap_or(values);\n        (values, offsets)\n    };\n\n    assert_eq!(offsets.first().to_usize(), 0);\n    assert_eq!(values.len(), offsets.range().to_usize());\n\n    Some(ListArray::new(\n        arr.dtype().clone(),\n        offsets,\n        values,\n        arr.validity().cloned(),\n    ))\n}"
+}

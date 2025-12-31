@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rusqlite-0.37.0/src/cache.rs",
+    "start_line": 91,
+    "start_col": 1,
+    "end_line": 91,
+    "end_col": 34,
+    "code_snippet": "impl Drop for CachedStatement<'_> {\n    #[inline]\n    fn drop(&mut self) {\n        if let Some(stmt) = self.stmt.take() {\n            self.cache.cache_stmt(unsafe { stmt.into_raw() });\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `with_shared::with_shared_mut_ref::with_shared_mut_ref`",
+    "file": "multiversx-chain-vm-0.16.1/src/with_shared/with_shared_mut_ref.rs",
+    "start_line": 16,
+    "start_col": 1,
+    "end_line": 53,
+    "end_col": 2,
+    "code_snippet": "pub fn with_shared_mut_ref<T, F, R>(t: &mut T, f: F) -> R\nwhere\n    T: Clone,\n    F: FnOnce(Rc<T>) -> R,\n{\n    unsafe {\n        // forcefully extract the owned object from the mut ref (unsafe)\n        let obj = std::ptr::read(t);\n\n        // wrap the owned object\n        let obj_rc = Rc::new(obj);\n\n        // the main action\n        let result = f(obj_rc.clone());\n\n        // unwrapping the owned object\n        match Rc::try_unwrap(obj_rc) {\n            Ok(obj) => {\n                // Rc unwrapped successfully\n                // no need to write the owned object back to the location given by the pointer t,\n                // because it could not have changed in the mean time, it is already there\n\n                // though readonly, the object might have changed via cells,\n                // so it needs to be copied back\n                std::ptr::write(t, obj);\n            }\n            Err(obj_rc) => {\n                // could not unwrap, this means there are still references to obj elsewhere\n                // to avoid memory corruption, we perform a clone of the contents\n                let obj = (*obj_rc).clone();\n                std::ptr::write(t, obj);\n                panic!(\"failed to recover owned object from Rc\")\n            }\n        }\n\n        result\n    }\n}"
+}

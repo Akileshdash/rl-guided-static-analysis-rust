@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nusb-0.2.0/src/transfer/buffer.rs",
+    "start_line": 263,
+    "start_col": 1,
+    "end_line": 263,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Buffer {\n    fn drop(&mut self) {\n        match self.allocator {\n            Allocator::Default => unsafe {\n                drop(Vec::from_raw_parts(\n                    self.ptr,\n                    self.len as usize,\n                    self.capacity as usize,\n                ));\n            },\n            #[cfg(any(target_os = \"linux\", target_os = \"android\"))]\n            Allocator::Mmap => unsafe {\n                rustix::mm::munmap(self.ptr as *mut _, self.capacity as usize).unwrap();\n            },\n        }\n    }\n}"
+}

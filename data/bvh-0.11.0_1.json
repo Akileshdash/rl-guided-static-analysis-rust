@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "bvh-0.11.0/src/bvh/bvh_node.rs",
+    "start_line": 441,
+    "start_col": 1,
+    "end_line": 441,
+    "end_col": 38,
+    "code_snippet": "unsafe impl<S> Sync for Shapes<'_, S> {}"
+}

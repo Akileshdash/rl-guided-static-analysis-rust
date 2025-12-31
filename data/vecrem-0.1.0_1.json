@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vecrem-0.1.0/src/lib.rs",
+    "start_line": 289,
+    "start_col": 1,
+    "end_line": 289,
+    "end_col": 33,
+    "code_snippet": "impl<T> Drop for Removing<'_, T> {\n    fn drop(&mut self) {\n        unsafe {\n            let len = self.len();\n\n            if len != 0 {\n                // Copy the tail\n                // [A, B, -, -, -, C, D, E, F] => [A, B, C, D, E, F, D*, E*, F*]\n                // * logically this memory is uninitialized i.e. it's a move\n                ptr::copy(self.curr_mut(), self.slot_mut(), len);\n            }\n\n            // Slot points to the first uninitialized element\n            self.vec.set_len(self.slot + len)\n        }\n    }\n}"
+}

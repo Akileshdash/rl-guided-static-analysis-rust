@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::ExemplarCharactersData<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_locale-2.0.0/src/provider.rs",
+    "start_line": 472,
+    "start_col": 39,
+    "end_line": 472,
+    "end_col": 53,
+    "code_snippet": "#[derive(Debug, Eq, PartialEq, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(\n    feature = \"datagen\", \n    derive(serde::Serialize, databake::Bake),\n    databake(path = icu_locale::provider),\n)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\npub struct ExemplarCharactersData<'data>(\n    #[cfg_attr(feature = \"serde\", serde(borrow))] pub CodePointInversionListAndStringList<'data>,\n);\n\nicu_provider::data_struct!(\n    ExemplarCharactersData<'_>,\n    #[cfg(feature = \"datagen\")]\n);"
+}

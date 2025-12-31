@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `sealbox::SealBoxSlice::<E>::from_slice`",
+    "file": "syd-3.37.1/src/sealbox.rs",
+    "start_line": 294,
+    "start_col": 5,
+    "end_line": 351,
+    "end_col": 6,
+    "code_snippet": "pub fn from_slice(slice: &[E]) -> Result<Self, Errno>\n    where\n        E: Clone,\n    {\n        let len = slice.len();\n\n        #[allow(clippy::cast_possible_truncation)]\n        #[allow(clippy::cast_sign_loss)]\n        let page = sysconf(SysconfVar::PAGE_SIZE)?.ok_or(Errno::EINVAL)? as usize;\n\n        if len == 0 {\n            // SAFETY: Zero-size, map a guard page.\n            let nn = NonZeroUsize::new(page).ok_or(Errno::EINVAL)?;\n            // SAFETY: `nn` is page-aligned.\n            let map_ptr =\n                unsafe { mmap_anonymous(None, nn, ProtFlags::PROT_NONE, MapFlags::MAP_PRIVATE) }?;\n            return Ok(SealBoxSlice {\n                map_ptr,\n                map_len: page,\n                len: 0,\n                _marker: PhantomData,\n            });\n        }\n\n        let elem_size = mem::size_of::<E>();\n        if elem_size == 0 {\n            return Err(Errno::EINVAL);\n        }\n        let data_size = elem_size.checked_mul(len).ok_or(Errno::EINVAL)?;\n\n        let map_len = data_size\n            .checked_next_multiple_of(page)\n            .ok_or(Errno::EINVAL)?;\n        let nn = NonZeroUsize::new(map_len).ok_or(Errno::EINVAL)?;\n\n        // SAFETY: valid `length` and flags guaranteed.\n        let map_ptr = unsafe {\n            mmap_anonymous(\n                None,\n                nn,\n                ProtFlags::PROT_READ | ProtFlags::PROT_WRITE,\n                MapFlags::MAP_PRIVATE,\n            )?\n        };\n\n        let dst = map_ptr.cast::<E>().as_ptr();\n        for (idx, item) in slice.iter().enumerate() {\n            // SAFETY: `map_ptr` is writable for `data_size` bytes.\n            unsafe { ptr::write(dst.add(idx), item.clone()) };\n        }\n\n        Ok(SealBoxSlice {\n            map_ptr,\n            map_len,\n            len,\n            _marker: PhantomData,\n        })\n    }"
+}

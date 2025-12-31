@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "skl-0.22.17/src/generic/list.rs",
+    "start_line": 59,
+    "start_col": 1,
+    "end_line": 65,
+    "end_col": 11,
+    "code_snippet": "unsafe impl<K, V, C, A, R> Send for SkipList<K, V, C, A, R>\nwhere\n  K: ?Sized,\n  V: ?Sized,\n  A: Allocator + Send,\n  R: RefCounter + Send,\n  C: Send,\n{\n}"
+}

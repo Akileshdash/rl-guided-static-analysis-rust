@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "futures-test-0.3.31/src/assert_unmoved.rs",
+    "start_line": 20,
+    "start_col": 15,
+    "end_line": 20,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop, !Unpin)]\n#[derive(Debug, Clone)]\n#[must_use = \"futures do nothing unless you `.await` or poll them\"]\npub struct AssertUnmoved<T> {\n    #[pin]\n    inner: T,\n    this_addr: usize,\n}"
+}

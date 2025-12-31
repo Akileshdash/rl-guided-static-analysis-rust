@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "subst-0.3.8/src/non_aliasing.rs",
+    "start_line": 28,
+    "start_col": 1,
+    "end_line": 28,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for NonAliasing<T> {\n\tfn drop(&mut self) {\n\t\t// SAFETY: We always initialize `inner` in the constructor,\n\t\t// the API only exposes `assume_init_ref()`,\n\t\t// and we're in the destructor, so nobody is going to call assume_init_read() again.\n\t\tunsafe {\n\t\t\tdrop(self.inner.assume_init_read())\n\t\t}\n\t}\n}"
+}

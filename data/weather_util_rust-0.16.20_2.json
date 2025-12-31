@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "weather_util_rust-0.16.20/src/config.rs",
+    "start_line": 150,
+    "start_col": 1,
+    "end_line": 150,
+    "end_col": 27,
+    "code_snippet": "impl Drop for TestEnvs<'_> {\n    fn drop(&mut self) {\n        for (key, val) in &self.envs {\n            if let Some(val) = val {\n                unsafe {\n                    set_var(key, val);\n                }\n            } else {\n                unsafe {\n                    remove_var(key);\n                }\n            }\n        }\n    }\n}"
+}

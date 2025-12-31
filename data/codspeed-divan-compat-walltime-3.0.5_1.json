@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "codspeed-divan-compat-walltime-3.0.5/src/bench/defer.rs",
+    "start_line": 26,
+    "start_col": 1,
+    "end_line": 26,
+    "end_col": 37,
+    "code_snippet": "impl<I, O> Drop for DeferStore<I, O> {\n    #[inline]\n    fn drop(&mut self) {\n        // SAFETY: The correct variant is used based on `ONLY_INPUTS`.\n        unsafe {\n            if Self::ONLY_INPUTS {\n                ManuallyDrop::drop(&mut self.inputs)\n            } else {\n                ManuallyDrop::drop(&mut self.slots)\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::mem::MaybeUninit<T> as firmware::driver::operation::boxed::DDatagram>::dyn_operation_generator`",
+    "file": "autd3-driver-36.0.0-alpha.0/src/firmware/driver/operation/boxed.rs",
+    "start_line": 61,
+    "start_col": 5,
+    "end_line": 77,
+    "end_col": 6,
+    "code_snippet": "fn dyn_operation_generator(\n        &mut self,\n        geometry: &Geometry,\n        env: &Environment,\n        filter: &DeviceFilter,\n        limits: &FirmwareLimits,\n    ) -> Result<Box<dyn DOperationGenerator>, AUTDDriverError> {\n        let mut tmp = MaybeUninit::<T>::uninit();\n        std::mem::swap(&mut tmp, self);\n        let d = unsafe { tmp.assume_init() };\n        Ok(Box::new(d.operation_generator(\n            unsafe { std::mem::transmute(geometry) },\n            env,\n            filter,\n            limits,\n        )?))\n    }"
+}

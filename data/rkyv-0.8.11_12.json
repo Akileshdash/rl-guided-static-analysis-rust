@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `collections::swiss_table::table::ArchivedHashTable::<T>::get_entry_raw`",
+    "file": "rkyv-0.8.11/src/collections/swiss_table/table.rs",
+    "start_line": 132,
+    "start_col": 5,
+    "end_line": 189,
+    "end_col": 6,
+    "code_snippet": "unsafe fn get_entry_raw<C>(\n        this: *mut Self,\n        hash: u64,\n        cmp: C,\n    ) -> Option<NonNull<T>>\n    where\n        C: Fn(&T) -> bool,\n    {\n        let is_empty = unsafe { (*this).is_empty() };\n        if is_empty {\n            return None;\n        }\n\n        let capacity = unsafe { (*this).capacity() };\n        let probe_cap = Self::probe_cap(capacity);\n        let control_count = Self::control_count(probe_cap);\n\n        let h2_hash = h2(hash);\n        let mut probe_seq = Self::probe_seq(hash, capacity);\n\n        let bucket_mask = Self::bucket_mask(control_count);\n\n        loop {\n            let mut any_empty = false;\n\n            for i in 0..MAX_GROUP_WIDTH / Group::WIDTH {\n                let pos = probe_seq.pos + i * Group::WIDTH;\n\n                let group =\n                    unsafe { Group::read(Self::control_raw(this, pos)) };\n\n                for bit in group.match_byte(h2_hash) {\n                    let index = (pos + bit) % capacity;\n                    let bucket_ptr = unsafe { Self::bucket_raw(this, index) };\n                    let bucket = unsafe { bucket_ptr.as_ref() };\n\n                    // Opt: These can be marked as likely true on nightly.\n                    if cmp(bucket) {\n                        return Some(bucket_ptr);\n                    }\n                }\n\n                // Opt: These can be marked as likely true on nightly.\n                any_empty = any_empty || group.match_empty().any_bit_set();\n            }\n\n            if any_empty {\n                return None;\n            }\n\n            loop {\n                probe_seq.move_next(bucket_mask);\n                if probe_seq.pos < probe_cap {\n                    break;\n                }\n            }\n        }\n    }"
+}

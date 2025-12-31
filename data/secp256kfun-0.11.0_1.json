@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `poly::lagrange_basis_poly`",
+    "file": "secp256kfun-0.11.0/src/poly.rs",
+    "start_line": 272,
+    "start_col": 1,
+    "end_line": 301,
+    "end_col": 2,
+    "code_snippet": "pub fn lagrange_basis_poly(\n    x_j: Scalar<Public, impl ZeroChoice>,\n    x_ms: impl IntoIterator<Item = Scalar<Public, impl ZeroChoice>>,\n) -> Vec<Scalar<Public, Zero>> {\n    // the identity polynomial\n    let mut result = vec![s!(1).public().mark_zero()];\n    for x_m in x_ms.into_iter() {\n        if x_m == x_j {\n            continue;\n        }\n        // Basis polynomial calculated from the product of these indices coefficients:\n        //  l_j(x) = Product[ (x-x_m)/(x_j-x_m), j!=m ]\n        //  l_j(x) = Product[ a_m*x + b_m, j!=m], where a_m = 1/(x_j-x_m) and b_m = -x_m*a_m.\n\n        // coefficient of x\n        let a_m = s!(x_j - x_m)\n            .non_zero()\n            .expect(\"x_m == x_j excluded\")\n            .invert()\n            .mark_zero()\n            .public();\n        // coefficient of 1\n        let b_m = s!(-x_m * a_m).mark_zero().public();\n\n        // we want to figure out (a_m * x + b_m) * result\n        result = scalar::mul(&result[..], &[b_m, a_m]);\n    }\n\n    result\n}"
+}

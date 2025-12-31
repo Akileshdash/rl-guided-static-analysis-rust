@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<IpRangeIter<'a, N> as std::iter::Iterator>::next`",
+    "file": "iprange-0.6.7/src/lib.rs",
+    "start_line": 397,
+    "start_col": 5,
+    "end_line": 415,
+    "end_col": 6,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item> {\n        while let Some(elem) = self.queue.pop_front() {\n            // Get the front element of the queue.\n            // If it is a leaf, it represents a network.\n            // SAFETY: IpRangeIter has an PhantomData<'a N> so the IpNet must\n            // exist when this iterator exists.\n            let node = unsafe { &*elem.node() };\n            if node.is_leaf() {\n                return Some(elem.build());\n            }\n            for &i in &[0, 1] {\n                if let Some(child) = node.children[i as usize].as_ref() {\n                    // Push the child nodes into the queue\n                    self.queue.push_back(elem.transit(child, i != 0));\n                }\n            }\n        }\n        None\n    }"
+}

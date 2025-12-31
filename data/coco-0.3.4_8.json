@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "coco-0.3.4/src/deque.rs",
+    "start_line": 518,
+    "start_col": 1,
+    "end_line": 518,
+    "end_col": 41,
+    "code_snippet": "unsafe impl<T: Send> Sync for Stealer<T> {}"
+}

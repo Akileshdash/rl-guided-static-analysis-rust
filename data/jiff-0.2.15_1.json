@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jiff-0.2.15/src/tz/timezone.rs",
+    "start_line": 2342,
+    "start_col": 5,
+    "end_line": 2342,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Repr {\n        #[inline]\n        fn drop(&mut self) {\n            // This `match` is written in an exhaustive fashion so that if\n            // a new tag is added, it should be explicitly considered here.\n            match self.tag() {\n                // These are all `Copy` and have no destructor.\n                Repr::UTC\n                | Repr::UNKNOWN\n                | Repr::FIXED\n                | Repr::STATIC_TZIF => {}\n                #[cfg(feature = \"alloc\")]\n                Repr::ARC_TZIF => {\n                    let ptr = self.ptr.map_addr(|addr| addr & !Repr::BITS);\n                    // SAFETY: Getting a `ARC_TZIF` tag is only possible when\n                    // `self.ptr` was constructed from a valid and aligned\n                    // (to at least 4 bytes) `Arc<TzifOwned>`. We've removed\n                    // the tag bits above, so we must now have the original\n                    // pointer.\n                    unsafe {\n                        Arc::decrement_strong_count(ptr.cast::<TzifOwned>());\n                    }\n                }\n                #[cfg(feature = \"alloc\")]\n                Repr::ARC_POSIX => {\n                    let ptr = self.ptr.map_addr(|addr| addr & !Repr::BITS);\n                    // SAFETY: Getting a `ARC_POSIX` tag is only possible when\n                    // `self.ptr` was constructed from a valid and aligned (to\n                    // at least 4 bytes) `Arc<PosixTimeZoneOwned>`. We've\n                    // removed the tag bits above, so we must now have the\n                    // original pointer.\n                    unsafe {\n                        Arc::decrement_strong_count(\n                            ptr.cast::<PosixTimeZoneOwned>(),\n                        );\n                    }\n                }\n                _ => {\n                    debug_assert!(false, \"drop: invalid time zone repr tag!\");\n                    // SAFETY: The constructors for `Repr` guarantee that the\n                    // tag is always one of the values matched above.\n                    unsafe {\n                        core::hint::unreachable_unchecked();\n                    }\n                }\n            }\n        }\n    }"
+}

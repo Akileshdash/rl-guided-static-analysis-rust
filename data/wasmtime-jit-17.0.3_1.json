@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-jit-17.0.3/src/code_memory.rs",
+    "start_line": 38,
+    "start_col": 1,
+    "end_line": 38,
+    "end_col": 25,
+    "code_snippet": "impl Drop for CodeMemory {\n    fn drop(&mut self) {\n        // Drop `unwind_registration` before `self.mmap`\n        unsafe {\n            ManuallyDrop::drop(&mut self.unwind_registration);\n            ManuallyDrop::drop(&mut self.mmap);\n        }\n    }\n}"
+}

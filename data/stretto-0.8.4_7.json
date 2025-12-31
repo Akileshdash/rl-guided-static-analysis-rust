@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "stretto-0.8.4/src/policy.rs",
+    "start_line": 237,
+    "start_col": 1,
+    "end_line": 237,
+    "end_col": 70,
+    "code_snippet": "unsafe impl<S: BuildHasher + Clone + 'static> Sync for PolicyInner<S> {}"
+}

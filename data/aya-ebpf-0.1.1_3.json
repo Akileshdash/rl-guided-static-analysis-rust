@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "aya-ebpf-0.1.1/src/maps/hash_map.rs",
+    "start_line": 243,
+    "start_col": 1,
+    "end_line": 243,
+    "end_col": 50,
+    "code_snippet": "unsafe impl<K, V> Sync for LruPerCpuHashMap<K, V> {}"
+}

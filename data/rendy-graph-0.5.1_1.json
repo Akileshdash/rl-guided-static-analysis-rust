@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<node::render::group::simple::SimpleRenderGroup<B, P> as node::render::group::RenderGroup<B, T>>::dispose`",
+    "file": "rendy-graph-0.5.1/src/node/render/group/simple.rs",
+    "start_line": 392,
+    "start_col": 5,
+    "end_line": 404,
+    "end_col": 6,
+    "code_snippet": "fn dispose(self: Box<Self>, factory: &mut Factory<B>, aux: &T) {\n        self.pipeline.dispose(factory, aux);\n\n        unsafe {\n            factory\n                .device()\n                .destroy_graphics_pipeline(self.graphics_pipeline);\n            factory\n                .device()\n                .destroy_pipeline_layout(self.pipeline_layout);\n            drop(self.set_layouts);\n        }\n    }"
+}

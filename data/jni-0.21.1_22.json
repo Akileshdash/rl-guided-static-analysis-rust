@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::get_boolean_array_region`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 1832,
+    "start_col": 5,
+    "end_line": 1848,
+    "end_col": 6,
+    "code_snippet": "pub fn get_boolean_array_region<'other_local>(\n        &self,\n        array: impl AsRef<JBooleanArray<'other_local>>,\n        start: jsize,\n        buf: &mut [jboolean],\n    ) -> Result<()> {\n        non_null!(array.as_ref(), \"get_boolean_array_region array argument\");\n        jni_void_call!(\n            self.internal,\n            GetBooleanArrayRegion,\n            array.as_ref().as_raw(),\n            start,\n            buf.len() as jsize,\n            buf.as_mut_ptr()\n        );\n        Ok(())\n    }"
+}

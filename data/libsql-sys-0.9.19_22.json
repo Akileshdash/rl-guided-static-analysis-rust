@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::set_db`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 151,
+    "start_col": 5,
+    "end_line": 153,
+    "end_col": 6,
+    "code_snippet": "fn set_db(&mut self, db: &mut super::Sqlite3Db) {\n        unsafe { (*self.wrapper).set_db(&mut *self.wrapped, db) }\n    }"
+}

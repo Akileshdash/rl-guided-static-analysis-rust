@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<R as Unpacker>::unpack`",
+    "file": "bytepack-0.4.1/src/lib.rs",
+    "start_line": 984,
+    "start_col": 5,
+    "end_line": 992,
+    "end_col": 6,
+    "code_snippet": "fn unpack<T: Packed>(&mut self) -> Result<T> {\n        let mut res: T;\n        // safe because we build a slice of exactly size_of::<T> bytes\n        unsafe {\n            res = zeroed();\n            self.read_exact(slice::from_raw_parts_mut(transmute::<&mut T, *mut u8>(&mut res), size_of::<T>()))?;\n        }\n        return Ok(res);\n    }"
+}

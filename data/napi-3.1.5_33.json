@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `bindgen_runtime::js_values::buffer::BufferSlice::<'env>::from_external`",
+    "file": "napi-3.1.5/src/bindgen_runtime/js_values/buffer.rs",
+    "start_line": 106,
+    "start_col": 3,
+    "end_line": 161,
+    "end_col": 4,
+    "code_snippet": "pub unsafe fn from_external<T: 'env, F: FnOnce(Env, T)>(\n    env: &Env,\n    data: *mut u8,\n    len: usize,\n    finalize_hint: T,\n    finalize_callback: F,\n  ) -> Result<Self> {\n    let mut buf = ptr::null_mut();\n    if data.is_null() || std::ptr::eq(data, EMPTY_VEC.as_ptr()) {\n      return Err(Error::new(\n        Status::InvalidArg,\n        \"Borrowed data should not be null\".to_owned(),\n      ));\n    }\n    #[cfg(all(debug_assertions, not(windows)))]\n    {\n      let is_existed = BUFFER_DATA.with(|buffer_data| {\n        let buffer = buffer_data.lock().expect(\"Unlock buffer data failed\");\n        buffer.contains(&data)\n      });\n      if is_existed {\n        panic!(\"Share the same data between different buffers is not allowed, see: https://github.com/nodejs/node/issues/32463#issuecomment-631974747\");\n      }\n    }\n    let hint_ptr = Box::into_raw(Box::new((finalize_hint, finalize_callback)));\n    let mut status = unsafe {\n      sys::napi_create_external_buffer(\n        env.0,\n        len,\n        data.cast(),\n        Some(crate::env::raw_finalize_with_custom_callback::<T, F>),\n        hint_ptr.cast(),\n        &mut buf,\n      )\n    };\n    status = if status == sys::Status::napi_no_external_buffers_allowed {\n      let (hint, finalize) = *Box::from_raw(hint_ptr);\n      let status =\n        unsafe { sys::napi_create_buffer_copy(env.0, len, data.cast(), ptr::null_mut(), &mut buf) };\n      finalize(*env, hint);\n      status\n    } else {\n      status\n    };\n    check_status!(status, \"Failed to create buffer slice from data\")?;\n\n    Ok(Self {\n      inner: if len == 0 {\n        &mut []\n      } else {\n        unsafe { slice::from_raw_parts_mut(buf.cast(), len) }\n      },\n      raw_value: buf,\n      env: env.0,\n    })\n  }"
+}

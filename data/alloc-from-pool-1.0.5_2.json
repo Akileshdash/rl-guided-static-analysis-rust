@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "alloc-from-pool-1.0.5/src/pool_value.rs",
+    "start_line": 65,
+    "start_col": 1,
+    "end_line": 65,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for PoolValue<T> {\n    fn drop(&mut self) {\n        if !self.ptr.is_null() {\n            let ptr = self.ptr;\n            self.ptr = std::ptr::null_mut();\n            unsafe {\n                UnsafeCell::raw_get(self.slots)\n                    .as_mut()\n                    .unwrap_unchecked()\n                    .push(Box::from_raw(ptr))\n            }\n        }\n    }\n}"
+}

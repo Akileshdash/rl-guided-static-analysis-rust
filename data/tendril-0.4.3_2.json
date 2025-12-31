@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "tendril-0.4.3/src/tendril.rs",
+    "start_line": 208,
+    "start_col": 1,
+    "end_line": 211,
+    "end_col": 25,
+    "code_snippet": "unsafe impl<F, A> Send for Tendril<F, A>\nwhere\n    F: fmt::Format,\n    A: Atomicity + Sync,\n{\n}"
+}

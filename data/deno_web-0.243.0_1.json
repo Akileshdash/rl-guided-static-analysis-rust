@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `stream_resource::BoundedBufferChannelInner::drain`",
+    "file": "deno_web-0.243.0/stream_resource.rs",
+    "start_line": 147,
+    "start_col": 3,
+    "end_line": 158,
+    "end_col": 4,
+    "code_snippet": "fn drain(&mut self, mut f: impl FnMut(V8Slice<u8>)) {\n    while self.ring_producer != self.ring_consumer {\n      // SAFETY: We know the ring indexes are valid\n      let res = unsafe { std::ptr::read(self.next_unsafe()) };\n      self.ring_consumer = (self.ring_consumer + 1) % BUFFER_CHANNEL_SIZE;\n      f(res);\n    }\n    self.current_size = 0;\n    self.ring_producer = 0;\n    self.ring_consumer = 0;\n    self.len = 0;\n  }"
+}

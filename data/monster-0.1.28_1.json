@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `incubation::owning_ref_mut::OwningRefMut::<T, R>::new`",
+    "file": "monster-0.1.28/src/incubation/owning_ref_mut.rs",
+    "start_line": 31,
+    "start_col": 5,
+    "end_line": 40,
+    "end_col": 6,
+    "code_snippet": "pub fn new<F: FnOnce(&'a mut T) -> R>(mut owned: Box<T>, f: F) -> OwningRefMut<T, R> {\n        unsafe {\n            let raw_owned = owned.deref_mut() as *mut _;\n            let borrow = f(&mut *raw_owned);\n            OwningRefMut {\n                _owned: owned,\n                borrow: Some(borrow)\n            }\n        }\n    }"
+}

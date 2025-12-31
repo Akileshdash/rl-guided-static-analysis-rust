@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gfx_core-0.9.2/src/command.rs",
+    "start_line": 250,
+    "start_col": 1,
+    "end_line": 250,
+    "end_col": 51,
+    "code_snippet": "impl<'a, R: Resources> Drop for AccessGuard<'a, R> {\n    fn drop(&mut self) {\n        for buffer in self.inner.mapped_reads().chain(self.inner.mapped_writes()) {\n            unsafe {\n                buffer.mapping().unwrap().release_access();\n            }\n        }\n    }\n}"
+}

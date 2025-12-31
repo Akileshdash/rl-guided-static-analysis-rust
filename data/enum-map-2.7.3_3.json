@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "enum-map-2.7.3/src/lib.rs",
+    "start_line": 487,
+    "start_col": 9,
+    "end_line": 489,
+    "end_col": 29,
+    "code_snippet": "impl<K, V> Drop for DropOnPanic<K, V>\n        where\n            K: EnumArray<V>,\n        {\n            fn drop(&mut self) {\n                unsafe {\n                    ptr::drop_in_place(&mut self.map.as_mut_slice()[self.position..]);\n                }\n            }\n        }"
+}

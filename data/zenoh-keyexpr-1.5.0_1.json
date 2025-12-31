@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "zenoh-keyexpr-1.5.0/src/key_expr/format/support.rs",
+    "start_line": 230,
+    "start_col": 1,
+    "end_line": 230,
+    "end_col": 52,
+    "code_snippet": "impl<T, const N: usize> Drop for PartialSlice<T, N> {\n    fn drop(&mut self) {\n        for i in 0..self.n as usize {\n            unsafe { core::mem::MaybeUninit::assume_init_drop(&mut self.buffer[i]) }\n        }\n    }\n}"
+}

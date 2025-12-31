@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mbox-0.7.1/src/mbox.rs",
+    "start_line": 106,
+    "start_col": 1,
+    "end_line": 106,
+    "end_col": 40,
+    "code_snippet": "impl<T: ?Sized + Free> Drop for MBox<T> {\n    fn drop(&mut self) {\n        // SAFETY: the pointer is assumed to be obtained from `malloc()`.\n        unsafe { T::free(self.0.as_non_null_ptr()) };\n    }\n}"
+}

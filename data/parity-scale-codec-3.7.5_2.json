@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `codec::encode_slice_no_len`",
+    "file": "parity-scale-codec-3.7.5/src/codec.rs",
+    "start_line": 835,
+    "start_col": 1,
+    "end_line": 868,
+    "end_col": 2,
+    "code_snippet": "pub(crate) fn encode_slice_no_len<T: Encode, W: Output + ?Sized>(slice: &[T], dest: &mut W) {\n\tmacro_rules! encode_to {\n\t\t( u8, $slice:ident, $dest:ident ) => {{\n\t\t\tlet typed = unsafe { mem::transmute::<&[T], &[u8]>(&$slice[..]) };\n\t\t\t$dest.write(&typed)\n\t\t}};\n\t\t( i8, $slice:ident, $dest:ident ) => {{\n\t\t\t// `i8` has the same size as `u8`. We can just convert it here and write to the\n\t\t\t// dest buffer directly.\n\t\t\tlet typed = unsafe { mem::transmute::<&[T], &[u8]>(&$slice[..]) };\n\t\t\t$dest.write(&typed)\n\t\t}};\n\t\t( $ty:ty, $slice:ident, $dest:ident ) => {{\n\t\t\tif cfg!(target_endian = \"little\") {\n\t\t\t\tlet typed = unsafe { mem::transmute::<&[T], &[$ty]>(&$slice[..]) };\n\t\t\t\t$dest.write(<[$ty] as AsByteSlice<$ty>>::as_byte_slice(typed))\n\t\t\t} else {\n\t\t\t\tfor item in $slice.iter() {\n\t\t\t\t\titem.encode_to(dest);\n\t\t\t\t}\n\t\t\t}\n\t\t}};\n\t}\n\n\twith_type_info! {\n\t\t<T as Encode>::TYPE_INFO,\n\t\tencode_to(slice, dest),\n\t\t{\n\t\t\tfor item in slice.iter() {\n\t\t\t\titem.encode_to(dest);\n\t\t\t}\n\t\t},\n\t}\n}"
+}

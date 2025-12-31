@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "arc-swap-1.7.1/src/strategy/hybrid.rs",
+    "start_line": 102,
+    "start_col": 1,
+    "end_line": 102,
+    "end_col": 45,
+    "code_snippet": "impl<T: RefCnt> Drop for HybridProtection<T> {\n    #[inline]\n    fn drop(&mut self) {\n        match self.debt.take() {\n            // We have our own copy of Arc, so we don't need a protection. Do nothing (but release\n            // the Arc below).\n            None => (),\n            // If we owed something, just return the debt. We don't have a pointer owned, so\n            // nothing to release.\n            Some(debt) => {\n                let ptr = T::as_ptr(&self.ptr);\n                if debt.pay::<T>(ptr) {\n                    return;\n                }\n                // But if the debt was already paid for us, we need to release the pointer, as we\n                // were effectively already in the Unprotected mode.\n            }\n        }\n        // Equivalent to T::dec(ptr)\n        unsafe { ManuallyDrop::drop(&mut self.ptr) };\n    }\n}"
+}

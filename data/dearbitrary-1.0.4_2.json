@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `try_create_array`",
+    "file": "dearbitrary-1.0.4/src/lib.rs",
+    "start_line": 324,
+    "start_col": 1,
+    "end_line": 343,
+    "end_col": 2,
+    "code_snippet": "fn try_create_array<F, T, const N: usize>(mut cb: F) -> Result<[T; N]>\nwhere\n    F: FnMut(usize) -> Result<T>,\n{\n    let mut array: mem::MaybeUninit<[T; N]> = mem::MaybeUninit::uninit();\n    let array_ptr = array.as_mut_ptr();\n    let dst = array_ptr as _;\n    let mut guard: ArrayGuard<T, N> = ArrayGuard {\n        dst,\n        initialized: 0,\n    };\n    unsafe {\n        for (idx, value_ptr) in (*array.as_mut_ptr()).iter_mut().enumerate() {\n            core::ptr::write(value_ptr, cb(idx)?);\n            guard.initialized += 1;\n        }\n        mem::forget(guard);\n        Ok(array.assume_init())\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "opencl3-0.12.0/src/kernel.rs",
+    "start_line": 57,
+    "start_col": 1,
+    "end_line": 57,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Kernel {\n    fn drop(&mut self) {\n        unsafe { release_kernel(self.kernel).expect(\"Error: clReleaseKernel\") };\n    }\n}"
+}

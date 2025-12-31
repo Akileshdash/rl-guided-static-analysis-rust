@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "oneshot-uniffi-0.1.6/src/lib.rs",
+    "start_line": 964,
+    "start_col": 1,
+    "end_line": 964,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for Receiver<T> {\n    fn drop(&mut self) {\n        // SAFETY: since the receiving side is still alive the sender would have observed that and\n        // left deallocating the channel allocation to us.\n        let channel = unsafe { self.channel_ptr.as_ref() };\n\n        // Set the channel state to disconnected and read what state the receiver was in\n        match channel.state.swap(DISCONNECTED, Acquire) {\n            // The sender has not sent anything, nor is it dropped.\n            EMPTY => (),\n            // The sender already sent something. We must drop it, and free the channel.\n            MESSAGE => {\n                // SAFETY: we are in the message state so the message is initialized\n                unsafe { channel.drop_message() };\n\n                // SAFETY: see safety comment at top of function\n                unsafe { dealloc(self.channel_ptr) };\n            }\n            // The receiver has been polled.\n            #[cfg(feature = \"async\")]\n            RECEIVING => {\n                // TODO: figure this out when async is fixed\n                unsafe { channel.drop_waker() };\n            }\n            // The sender was already dropped. We are responsible for freeing the channel.\n            DISCONNECTED => {\n                // SAFETY: see safety comment at top of function\n                unsafe { dealloc(self.channel_ptr) };\n            }\n            _ => unreachable!(),\n        }\n    }\n}"
+}

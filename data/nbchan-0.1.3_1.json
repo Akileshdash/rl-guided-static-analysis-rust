@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nbchan-0.1.3/src/queue.rs",
+    "start_line": 97,
+    "start_col": 1,
+    "end_line": 97,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for QueueHead<T> {\n    fn drop(&mut self) {\n        let tail = self.tail.swap(ptr::null_mut(), Ordering::SeqCst);\n        while self.head != tail {\n            let _ = self.dequeue();\n        }\n        mem::drop(unsafe { Box::from_raw(self.head) });\n    }\n}"
+}

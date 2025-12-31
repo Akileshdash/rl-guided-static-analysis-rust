@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `map::bucket_array_ref::BucketArrayRef::<'a, K, V, S>::modify_entry_and`",
+    "file": "cht-0.5.0/src/map/bucket_array_ref.rs",
+    "start_line": 241,
+    "start_col": 5,
+    "end_line": 283,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn modify_entry_and<F: FnMut(&K, &V) -> V, G: FnOnce(&K, &V) -> T, T>(\n        &self,\n        key: K,\n        hash: u64,\n        mut on_modify: F,\n        with_old_entry: G,\n    ) -> Option<T> {\n        let guard = &crossbeam_epoch::pin();\n        let current_ref = self.get(guard);\n        let mut bucket_array_ref = current_ref;\n        let mut key_or_owned_bucket = KeyOrOwnedBucket::Key(key);\n\n        let result;\n\n        loop {\n            match bucket_array_ref.modify(guard, hash, key_or_owned_bucket, on_modify) {\n                Ok(previous_bucket_ptr) => {\n                    if let Some(previous_bucket_ref) = unsafe { previous_bucket_ptr.as_ref() } {\n                        let Bucket {\n                            key,\n                            maybe_value: value,\n                        } = previous_bucket_ref;\n                        result = Some(with_old_entry(key, unsafe { &*value.as_ptr() }));\n\n                        unsafe { bucket::defer_destroy_bucket(guard, previous_bucket_ptr) };\n                    } else {\n                        result = None;\n                    }\n\n                    break;\n                }\n                Err((kb, f)) => {\n                    key_or_owned_bucket = kb;\n                    on_modify = f;\n                    bucket_array_ref = bucket_array_ref.rehash(guard, self.build_hasher);\n                }\n            }\n        }\n\n        self.swing(guard, current_ref, bucket_array_ref);\n\n        result\n    }"
+}

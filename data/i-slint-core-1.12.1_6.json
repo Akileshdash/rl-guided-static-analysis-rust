@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "i-slint-core-1.12.1/properties.rs",
+    "start_line": 1410,
+    "start_col": 1,
+    "end_line": 1410,
+    "end_col": 58,
+    "code_snippet": "impl<DirtyHandler> Drop for PropertyTracker<DirtyHandler> {\n    fn drop(&mut self) {\n        unsafe {\n            DependencyListHead::drop(self.holder.dependencies.as_ptr() as *mut DependencyListHead);\n        }\n    }\n}"
+}

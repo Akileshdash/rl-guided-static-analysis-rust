@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `pk::Pk::encrypt_with_label`",
+    "file": "mbedtls-0.13.3/src/pk/mod.rs",
+    "start_line": 894,
+    "start_col": 5,
+    "end_line": 928,
+    "end_col": 6,
+    "code_snippet": "pub fn encrypt_with_label<F: Random>(\n        &mut self,\n        plain: &[u8],\n        cipher: &mut [u8],\n        rng: &mut F,\n        label: &[u8],\n    ) -> Result<usize> {\n        if self.pk_type() != Type::Rsa {\n            return Err(codes::PkTypeMismatch.into());\n        }\n        let ctx = self.inner.pk_ctx as *mut rsa_context;\n        if unsafe { (*ctx).padding != RSA_PKCS_V21 } {\n            return Err(codes::RsaInvalidPadding.into());\n        }\n        let olen = self.len() / 8;\n        if cipher.len() < olen {\n            return Err(codes::RsaOutputTooLarge.into());\n        }\n\n        unsafe {\n            rsa_rsaes_oaep_encrypt(\n                ctx,\n                Some(F::call),\n                rng.data_ptr(),\n                RSA_PUBLIC,\n                label.as_ptr(),\n                label.len(),\n                plain.len(),\n                plain.as_ptr(),\n                cipher.as_mut_ptr(),\n            )\n            .into_result()?;\n        }\n        Ok(olen)\n    }"
+}

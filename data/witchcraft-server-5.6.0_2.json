@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "witchcraft-server-5.6.0/src/service/endpoint_metrics.rs",
+    "start_line": 99,
+    "start_col": 15,
+    "end_line": 99,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\npub struct EndpointMetricsBody<B> {\n    #[pin]\n    inner: B,\n    start_time: Instant,\n    response: Option<Arc<Timer>>,\n}"
+}

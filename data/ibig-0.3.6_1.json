@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ibig-0.3.6/src/memory.rs",
+    "start_line": 53,
+    "start_col": 1,
+    "end_line": 53,
+    "end_col": 31,
+    "code_snippet": "impl Drop for MemoryAllocation {\n    fn drop(&mut self) {\n        if self.layout.size() != 0 {\n            // Safe because the memory was allocated with the same layout.\n            unsafe { alloc::alloc::dealloc(self.start, self.layout) };\n        }\n    }\n}"
+}

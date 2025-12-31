@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::set_attr`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 875,
+    "start_col": 5,
+    "end_line": 875,
+    "end_col": 84,
+    "code_snippet": "fn set_attr(&self, attribute: &str, _new_value: Value<'v>) -> crate::Result<()> {\n        ValueError::unsupported(self, &format!(\".{}=\", attribute))\n    }"
+}

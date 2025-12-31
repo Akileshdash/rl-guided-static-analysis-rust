@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "xous-api-ticktimer-0.9.65/src/lib.rs",
+    "start_line": 170,
+    "start_col": 1,
+    "end_line": 170,
+    "end_col": 24,
+    "code_snippet": "impl Drop for Ticktimer {\n    fn drop(&mut self) {\n        // de-allocate myself. It's unsafe because we are responsible to make sure nobody else is using the\n        // connection.\n        if REFCOUNT.fetch_sub(1, Ordering::Relaxed) == 1 {\n            unsafe {\n                xous::disconnect(self.conn).unwrap();\n            }\n        }\n    }\n}"
+}

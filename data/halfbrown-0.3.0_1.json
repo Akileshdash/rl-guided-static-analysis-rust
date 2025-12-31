@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "halfbrown-0.3.0/src/vecmap/raw_entry.rs",
+    "start_line": 50,
+    "start_col": 1,
+    "end_line": 54,
+    "end_col": 13,
+    "code_snippet": "unsafe impl<K, V, const N: usize, S> Sync for RawOccupiedEntryMut<'_, K, V, N, S>\nwhere\n    K: Sync,\n    V: Sync,\n    S: Send,\n{\n}"
+}

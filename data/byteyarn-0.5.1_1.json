@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "byteyarn-0.5.1/src/boxed.rs",
+    "start_line": 731,
+    "start_col": 1,
+    "end_line": 733,
+    "end_col": 28,
+    "code_snippet": "impl<Buf> Drop for YarnBox<'_, Buf>\nwhere\n  Buf: crate::Buf + ?Sized,\n{\n  fn drop(&mut self) {\n    unsafe { self.raw.destroy(buf_trait::layout_of(self.as_slice())) }\n  }\n}"
+}

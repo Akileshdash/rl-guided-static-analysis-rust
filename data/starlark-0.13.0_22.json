@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::iterate`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 530,
+    "start_col": 5,
+    "end_line": 530,
+    "end_col": 89,
+    "code_snippet": "unsafe fn iterate(&self, _me: Value<'v>, heap: &'v Heap) -> crate::Result<Value<'v>> {\n        Ok(heap.alloc_tuple(&self.iterate_collect(heap)?))\n    }"
+}

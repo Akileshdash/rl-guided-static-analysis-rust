@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<adapters::filter_map::FilterMap<I, F> as traits::lending_iterator::LendingIterator>::next`",
+    "file": "gat-lending-iterator-0.1.6/src/adapters/filter_map.rs",
+    "start_line": 43,
+    "start_col": 5,
+    "end_line": 56,
+    "end_col": 6,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item<'_>> {\n        loop {\n            // SAFETY: see https://docs.rs/polonius-the-crab/0.3.1/polonius_the_crab/#the-arcanemagic\n            let self_ = unsafe { &mut *(self as *mut Self) };\n            if let Some(item) = self_.iter.next() {\n                let output = (self_.f)(item).into_option();\n                if output.is_some() {\n                    return output;\n                }\n            } else {\n                return None;\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fmu-runner-0.4.3/src/fmu.rs",
+    "start_line": 621,
+    "start_col": 1,
+    "end_line": 621,
+    "end_col": 52,
+    "code_snippet": "impl<C: Borrow<FmuLibrary>> Drop for FmuInstance<C> {\n    fn drop(&mut self) {\n        unsafe { self.lib.borrow().fmi.fmi2FreeInstance(self.instance) };\n    }\n}"
+}

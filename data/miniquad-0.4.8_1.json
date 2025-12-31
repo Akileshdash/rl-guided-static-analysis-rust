@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `native::gl::load_gl_funcs`",
+    "file": "miniquad-0.4.8/src/native/gl.rs",
+    "start_line": 328,
+    "start_col": 9,
+    "end_line": 335,
+    "end_col": 10,
+    "code_snippet": "pub fn load_gl_funcs<T: FnMut(&str) -> Option<unsafe extern \"C\" fn() -> ()>>(mut getprocaddr: T) {\n            $(\n                unsafe {\n                    let fn_name = stringify!($fn);\n                    __pfns::$fn = ::std::mem::transmute_copy(&getprocaddr(fn_name));\n                }\n            )*\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::collect_repr`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 358,
+    "start_col": 5,
+    "end_line": 358,
+    "end_col": 51,
+    "code_snippet": "fn collect_repr(&self, collector: &mut String) {\n        // Rust won't return Err when writing to a String, so safe unwrap\n        write!(collector, \"{}\", self).unwrap()\n    }"
+}

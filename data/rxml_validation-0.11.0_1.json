@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<strings::NcName as std::iter::FromIterator<std::boxed::Box<strings::NcNameStr>>>::from_iter`",
+    "file": "rxml_validation-0.11.0/src/strings.rs",
+    "start_line": 633,
+    "start_col": 4,
+    "end_line": 641,
+    "end_col": 5,
+    "code_snippet": "fn from_iter<I: IntoIterator<Item = Box<$borrowed>>>(iter: I) -> Self {\n\t\t\t\tlet mut buf = <$string>::with_capacity(0);\n\t\t\t\tfor item in iter {\n\t\t\t\t\tbuf.push_str(&item.0);\n\t\t\t\t}\n\t\t\t\tunsafe {\n\t\t\t\t\tSelf::from_native_unchecked(buf)\n\t\t\t\t}\n\t\t\t}"
+}

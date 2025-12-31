@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<algo::bfs_pred::BfsPred<'_, D> as std::iter::Iterator>::next`",
+    "file": "graaf-0.111.0/src/algo/bfs_pred.rs",
+    "start_line": 582,
+    "start_col": 5,
+    "end_line": 599,
+    "end_col": 6,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item> {\n        let step @ (_, v) = self.queue.pop_front()?;\n        let visited_ptr = self.visited.as_mut_ptr();\n\n        for u in self.digraph.out_neighbors(v) {\n            let visited_u = unsafe { visited_ptr.add(u) };\n\n            unsafe {\n                if !*visited_u {\n                    *visited_u = true;\n\n                    self.queue.push_back((Some(v), u));\n                }\n            }\n        }\n\n        Some(step)\n    }"
+}

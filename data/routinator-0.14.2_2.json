@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "routinator-0.14.2/src/utils/archive.rs",
+    "start_line": 1545,
+    "start_col": 5,
+    "end_line": 1545,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Mmap {\n        fn drop(&mut self) {\n            unsafe {\n                let _  = munmap(self.ptr, self.len); // XXX Error handling?\n            }\n        }\n    }"
+}

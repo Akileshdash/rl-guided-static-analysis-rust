@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `algorithm::good_thomas_algorithm::GoodThomasAlgorithmSmall::<T>::perform_fft_immut`",
+    "file": "rustfft-6.4.0/src/algorithm/good_thomas_algorithm.rs",
+    "start_line": 419,
+    "start_col": 5,
+    "end_line": 449,
+    "end_col": 6,
+    "code_snippet": "fn perform_fft_immut(\n        &self,\n        input: &[Complex<T>],\n        output: &mut [Complex<T>],\n        scratch: &mut [Complex<T>],\n    ) {\n        // These asserts are for the unsafe blocks down below. we're relying on the optimizer to get rid of this assert\n        assert_eq!(self.len(), input.len());\n        assert_eq!(self.len(), output.len());\n\n        let (input_map, output_map) = self.input_output_map.split_at(self.len());\n\n        // copy the input using our reordering mapping\n        for (output_element, &input_index) in output.iter_mut().zip(input_map.iter()) {\n            *output_element = input[input_index];\n        }\n\n        // run FFTs of size `width`\n        self.width_size_fft.process_with_scratch(output, scratch);\n\n        // transpose\n        unsafe { array_utils::transpose_small(self.width, self.height, output, scratch) };\n\n        // run FFTs of size 'height'\n        self.height_size_fft.process_with_scratch(scratch, output);\n\n        // copy to the output, using our output redordeing mapping\n        for (input_element, &output_index) in scratch.iter().zip(output_map.iter()) {\n            output[output_index] = *input_element;\n        }\n    }"
+}

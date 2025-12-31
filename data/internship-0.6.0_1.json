@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "internship-0.6.0/src/handle.rs",
+    "start_line": 157,
+    "start_col": 1,
+    "end_line": 157,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Handle {\n    #[inline]\n    fn drop(&mut self) {\n        if self.is_inline() {\n            return;\n        }\n\n        let mut rc = self.get_rc();\n\n        if Rc::strong_count(&rc) == 2 {\n            POOL.with(|pool| {\n                pool.borrow_mut().remove(&*rc);\n            });\n        }\n\n        unsafe {\n            mem::ManuallyDrop::drop(&mut rc);\n        }\n    }\n}"
+}

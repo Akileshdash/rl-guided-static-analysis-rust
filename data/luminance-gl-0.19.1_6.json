@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "luminance-gl-0.19.1/src/gl33/tess.rs",
+    "start_line": 105,
+    "start_col": 1,
+    "end_line": 107,
+    "end_col": 16,
+    "code_snippet": "impl<I> Drop for TessRaw<I>\nwhere\n  I: TessIndex,\n{\n  fn drop(&mut self) {\n    unsafe {\n      self.state.borrow_mut().unbind_vertex_array();\n      gl::DeleteVertexArrays(1, &self.vao);\n    }\n  }\n}"
+}

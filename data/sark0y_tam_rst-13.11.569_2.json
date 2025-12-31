@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `prox::del_prox_tree`",
+    "file": "sark0y_tam_rst-13.11.569/src/prox.tree.rs",
+    "start_line": 125,
+    "start_col": 1,
+    "end_line": 142,
+    "end_col": 2,
+    "code_snippet": "pub fn del_prox_tree ( tree: &mut *mut tree_of_prox) {\n    unsafe {\n        if *tree == std::ptr::null_mut () { return }\n        if (*(**tree).kids).len() == 0 { std::ptr::drop_in_place ( *tree ); }\n        let mut tmp: *mut tree_of_prox;\n        while *tree != std::ptr::null_mut () && (*(**tree).kids).len() > 0 {\n            tmp = *tree;\n            *tree = (*(**tree).kids).pop().unwrap();\n            if *tree == std::ptr::null_mut () { *tree = tmp; }\n            if (*(**tree).kids).len () == 0{\n                if (**tree).up != std::ptr::null_mut (){ *tree = (**tree).up; } else { *tree = std::ptr::null_mut (); } \n                 std::ptr::drop_in_place ( (*tmp).proxid_of_kid );\n                 std::ptr::drop_in_place ( (*tmp).kids );\n                 std::ptr::drop_in_place ( tmp );\n            }\n        } \n    }\n}"
+}

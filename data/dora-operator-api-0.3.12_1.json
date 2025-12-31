@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `raw::dora_on_event`",
+    "file": "dora-operator-api-0.3.12/src/raw.rs",
+    "start_line": 31,
+    "start_col": 1,
+    "end_line": 80,
+    "end_col": 2,
+    "code_snippet": "pub unsafe fn dora_on_event<O: DoraOperator>(\n    event: &mut RawEvent,\n    send_output: &SendOutput,\n    operator_context: *mut std::ffi::c_void,\n) -> OnEventResult {\n    let mut output_sender = DoraOutputSender(send_output);\n\n    let operator: &mut O = unsafe { &mut *operator_context.cast() };\n\n    let event_variant = if let Some(input) = &mut event.input {\n        let Some(data_array) = input.data_array.take() else {\n            return OnEventResult {\n                result: DoraResult::from_error(\"data already taken\".to_string()),\n                status: DoraStatus::Continue,\n            };\n        };\n        let data = unsafe { arrow::ffi::from_ffi(data_array, &input.schema) };\n\n        match data {\n            Ok(data) => Event::Input {\n                id: &input.id,\n                data: arrow::array::make_array(data).into(),\n            },\n            Err(err) => Event::InputParseError {\n                id: &input.id,\n                error: format!(\"{err}\"),\n            },\n        }\n    } else if let Some(input_id) = &event.input_closed {\n        Event::InputClosed { id: input_id }\n    } else if event.stop {\n        Event::Stop\n    } else {\n        // ignore unknown events\n        return OnEventResult {\n            result: DoraResult { error: None },\n            status: DoraStatus::Continue,\n        };\n    };\n    match operator.on_event(&event_variant, &mut output_sender) {\n        Ok(status) => OnEventResult {\n            result: DoraResult { error: None },\n            status,\n        },\n        Err(error) => OnEventResult {\n            result: DoraResult::from_error(error),\n            status: DoraStatus::Stop,\n        },\n    }\n}"
+}

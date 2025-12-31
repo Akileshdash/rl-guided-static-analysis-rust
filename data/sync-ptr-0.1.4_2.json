@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "sync-ptr-0.1.4/src/lib.rs",
+    "start_line": 214,
+    "start_col": 1,
+    "end_line": 214,
+    "end_col": 40,
+    "code_snippet": "unsafe impl<T> Sync for SyncConstPtr<T> {}\nunsafe impl<T> Send for SyncConstPtr<T> {}"
+}

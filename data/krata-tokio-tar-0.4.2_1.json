@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "krata-tokio-tar-0.4.2/src/entry.rs",
+    "start_line": 955,
+    "start_col": 1,
+    "end_line": 955,
+    "end_col": 24,
+    "code_snippet": "impl Drop for Guard<'_> {\n    fn drop(&mut self) {\n        unsafe {\n            self.buf.set_len(self.len);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nng-1.0.1/src/aio.rs",
+    "start_line": 522,
+    "start_col": 1,
+    "end_line": 522,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Inner\n{\n\t#[allow(clippy::let_underscore_drop)]\n\tfn drop(&mut self)\n\t{\n\t\t// It is possible for this to be dropping while the pointer is null. The\n\t\t// Inner struct is created before the pointer is allocated and it will be\n\t\t// dropped with a null pointer if the NNG allocation fails.\n\t\tlet aiop = self.handle.load(Ordering::Acquire);\n\t\tif !aiop.is_null() {\n\t\t\t// If the callback has started, it will not be able to upgrade the weak pointer\n\t\t\t// to a strong one and so it will just return from the callback. Otherwise, the\n\t\t\t// NNG call to stop the AIO will wait until all callbacks have completed and it\n\t\t\t// will prevent any more operations from starting.\n\t\t\t//\n\t\t\t// I think the call to free will do the same thing as the stop, but the online\n\t\t\t// docs aren't super clear, the header has a comment saying that the AIO must\n\t\t\t// not be running an operation when free is called, and the source doesn't\n\t\t\t// clearly (to my understanding of the code) show that it is being done. Plus,\n\t\t\t// the manual does suggest cases where stopping first is good.\n\t\t\tunsafe {\n\t\t\t\tnng_sys::nng_aio_stop(aiop);\n\t\t\t\tnng_sys::nng_aio_free(aiop);\n\n\t\t\t\t// Now that we know nothing is in the callback, we can free it.\n\t\t\t\tlet _ = Box::from_raw(self.callback.load(Ordering::Relaxed));\n\t\t\t}\n\t\t}\n\t}\n}"
+}

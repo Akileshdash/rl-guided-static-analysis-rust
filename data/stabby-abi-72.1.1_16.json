@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/future.rs",
+    "start_line": 74,
+    "start_col": 9,
+    "end_line": 74,
+    "end_col": 39,
+    "code_snippet": "impl Drop for StableWakerInner {\n            fn drop(&mut self) {\n                unsafe { (self.drop.as_mut_unchecked())(self.waker.as_mut_unchecked()) }\n            }\n        }"
+}

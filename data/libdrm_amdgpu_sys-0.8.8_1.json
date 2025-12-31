@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "libdrm_amdgpu_sys-0.8.8/amdgpu/context.rs",
+    "start_line": 100,
+    "start_col": 1,
+    "end_line": 100,
+    "end_col": 28,
+    "code_snippet": "impl Drop for ContextHandle {\n    fn drop(&mut self) {\n        unsafe { self.free().unwrap(); }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<io::util::split::OwnedWriteHalf<T> as std::ops::Drop>::drop`",
+    "file": "monoio-0.2.4/src/io/util/split.rs",
+    "start_line": 209,
+    "start_col": 5,
+    "end_line": 217,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        let write = unsafe { &mut *self.0.get() };\n        // Notes:: shutdown is an async function but rust currently does not support async drop\n        // this drop will only execute sync part of `shutdown` function.\n        #[allow(unused_must_use)]\n        {\n            write.shutdown();\n        }\n    }"
+}

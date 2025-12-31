@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `machine::loader::<impl machine::Machine>::pop_load_state_payload`",
+    "file": "scryer-prolog-0.9.4/src/machine/loader.rs",
+    "start_line": 1772,
+    "start_col": 5,
+    "end_line": 1798,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn pop_load_state_payload(&mut self) {\n        let load_state_payload = self\n            .machine_st\n            .store(self.machine_st.deref(self.machine_st.registers[1]));\n\n        // unlike in loader_from_heap_evacuable,\n        // pop_load_state_payload is allowed to fail to find a\n        // LoadStatePayload in the heap, as a Rust-side\n        // top-level command may have failed to write the\n        // load state payload back to the heap.\n\n        read_heap_cell!(load_state_payload,\n            (HeapCellValueTag::Cons, cons_ptr) => {\n                match_untyped_arena_ptr!(cons_ptr,\n                    (ArenaHeaderTag::LiveLoadState, payload) => {\n                        unsafe {\n                            std::ptr::drop_in_place(\n                                payload.as_ptr() as *mut LiveLoadState,\n                            );\n                        }\n                    }\n                    _ => {}\n                );\n            }\n            _ => {}\n        );\n    }"
+}

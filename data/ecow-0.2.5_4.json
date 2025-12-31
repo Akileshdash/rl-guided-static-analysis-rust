@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ecow-0.2.5/src/dynamic.rs",
+    "start_line": 235,
+    "start_col": 1,
+    "end_line": 235,
+    "end_col": 25,
+    "code_snippet": "impl Drop for DynamicVec {\n    #[inline]\n    fn drop(&mut self) {\n        if let VariantMut::Spilled(spilled) = self.variant_mut() {\n            unsafe {\n                // Safety: We are guaranteed to have a valid `EcoVec`.\n                ptr::drop_in_place(spilled);\n            }\n        }\n    }\n}"
+}

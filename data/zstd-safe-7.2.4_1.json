@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "zstd-safe-7.2.4/src/lib.rs",
+    "start_line": 1886,
+    "start_col": 1,
+    "end_line": 1886,
+    "end_col": 72,
+    "code_snippet": "impl<'a, 'b, C: WriteBuf + ?Sized> Drop for OutBufferWrapper<'a, 'b, C> {\n    fn drop(&mut self) {\n        // Safe because we guarantee that data until `self.buf.pos` has been written.\n        unsafe { self.parent.set_pos(self.buf.pos) };\n    }\n}"
+}

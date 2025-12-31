@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `unknown::IUnknown_Vtbl::new::QueryInterface`",
+    "file": "windows-core-0.61.2/src/unknown.rs",
+    "start_line": 155,
+    "start_col": 9,
+    "end_line": 164,
+    "end_col": 10,
+    "code_snippet": "unsafe extern \"system\" fn QueryInterface<T: IUnknownImpl, const OFFSET: isize>(\n            this: *mut c_void,\n            iid: *const GUID,\n            interface: *mut *mut c_void,\n        ) -> HRESULT {\n            unsafe {\n                let this = (this as *mut *mut c_void).offset(OFFSET) as *mut T;\n                (*this).QueryInterface(iid, interface)\n            }\n        }"
+}

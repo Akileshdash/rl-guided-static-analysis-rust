@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `StoreProxy::<'store>::with_value`",
+    "file": "token_store-0.1.2/src/lib.rs",
+    "start_line": 314,
+    "start_col": 5,
+    "end_line": 332,
+    "end_col": 6,
+    "code_snippet": "pub fn with_value<V: Any + 'static, T, F>(&mut self, token: &Token<V>, f: F) -> T\n    where\n        F: FnOnce(&mut StoreProxy, &mut V) -> T,\n    {\n        if self.borrowed.contains(&token.id) {\n            panic!(\"Attempted to borrow twice the same value from the Store!\");\n        }\n        let value_ptr = { self.store.get_mut(token) as *mut V };\n        let value = unsafe { &mut *value_ptr };\n        let mut deeper_proxy = StoreProxy {\n            store: &mut *self.store,\n            borrowed: {\n                let mut my_borrowed = self.borrowed.clone().into_owned();\n                my_borrowed.push(token.id);\n                Cow::Owned(my_borrowed)\n            },\n        };\n        f(&mut deeper_proxy, value)\n    }"
+}

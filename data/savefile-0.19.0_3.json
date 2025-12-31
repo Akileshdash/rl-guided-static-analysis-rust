@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "savefile-0.19.0/src/lib.rs",
+    "start_line": 5702,
+    "start_col": 1,
+    "end_line": 5702,
+    "end_col": 65,
+    "code_snippet": "unsafe impl<T, D: ValueConstructor<T>> Send for AbiRemoved<T, D> {}\n/// Removed is a zero-sized type. It contains a PhantomData<*const T>, which means"
+}

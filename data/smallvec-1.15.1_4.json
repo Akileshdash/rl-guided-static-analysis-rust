@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `SmallVec::<A>::from_elem`",
+    "file": "smallvec-1.15.1/src/lib.rs",
+    "start_line": 1827,
+    "start_col": 5,
+    "end_line": 1844,
+    "end_col": 6,
+    "code_snippet": "pub fn from_elem(elem: A::Item, n: usize) -> Self {\n        if n > Self::inline_capacity() {\n            vec![elem; n].into()\n        } else {\n            let mut v = SmallVec::<A>::new();\n            unsafe {\n                let (ptr, len_ptr, _) = v.triple_mut();\n                let ptr = ptr.as_ptr();\n                let mut local_len = SetLenOnDrop::new(len_ptr);\n\n                for i in 0..n {\n                    ::core::ptr::write(ptr.add(i), elem.clone());\n                    local_len.increment_len(1);\n                }\n            }\n            v\n        }\n    }"
+}

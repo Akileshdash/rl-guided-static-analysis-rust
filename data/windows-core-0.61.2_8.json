@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `imp::com_bindings::IWeakReferenceSource_Vtbl::new::GetWeakReference`",
+    "file": "windows-core-0.61.2/src/imp/com_bindings.rs",
+    "start_line": 230,
+    "start_col": 9,
+    "end_line": 248,
+    "end_col": 10,
+    "code_snippet": "unsafe extern \"system\" fn GetWeakReference<\n            Identity: IWeakReferenceSource_Impl,\n            const OFFSET: isize,\n        >(\n            this: *mut core::ffi::c_void,\n            weakreference: *mut *mut core::ffi::c_void,\n        ) -> windows_core::HRESULT {\n            unsafe {\n                let this: &Identity =\n                    &*((this as *const *const ()).offset(OFFSET) as *const Identity);\n                match IWeakReferenceSource_Impl::GetWeakReference(this) {\n                    Ok(ok__) => {\n                        weakreference.write(core::mem::transmute(ok__));\n                        windows_core::HRESULT(0)\n                    }\n                    Err(err) => err.into(),\n                }\n            }\n        }"
+}

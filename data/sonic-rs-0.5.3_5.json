@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "sonic-rs-0.5.3/src/util/reborrow.rs",
+    "start_line": 20,
+    "start_col": 1,
+    "end_line": 20,
+    "end_col": 71,
+    "code_snippet": "unsafe impl<'a, T> Sync for DormantMutRef<'a, T> where &'a mut T: Sync {}\nunsafe impl<'a, T> Send for DormantMutRef<'a, T> where &'a mut T: Send {}"
+}

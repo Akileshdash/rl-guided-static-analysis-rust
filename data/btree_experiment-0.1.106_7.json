@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<vecs::ShortVec<T> as std::clone::Clone>::clone`",
+    "file": "btree_experiment-0.1.106/src/vecs.rs",
+    "start_line": 290,
+    "start_col": 5,
+    "end_line": 311,
+    "end_col": 6,
+    "code_snippet": "fn clone(&self) -> Self {\n        let mut c = Self::new();\n        c.set_alloc(self.alloc as usize);\n        let mut n = self.len;\n        if n > 0 {\n            unsafe {\n                let mut src = self.v.p.as_ptr();\n                let mut dest = c.v.p.as_ptr();\n                loop {\n                    dest.write((*src).clone());\n                    c.len += 1;\n                    n -= 1;\n                    if n == 0 {\n                        break;\n                    }\n                    src = src.add(1);\n                    dest = dest.add(1);\n                }\n            }\n        }\n        c\n    }"
+}

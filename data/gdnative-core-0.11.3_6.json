@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "gdnative-core-0.11.3/src/export/user_data.rs",
+    "start_line": 720,
+    "start_col": 1,
+    "end_line": 720,
+    "end_col": 34,
+    "code_snippet": "unsafe impl<T> Send for Aether<T> {}\nunsafe impl<T> Sync for Aether<T> {}"
+}

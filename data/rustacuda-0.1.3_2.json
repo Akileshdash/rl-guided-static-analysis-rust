@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rustacuda-0.1.3/src/memory/device/device_buffer.rs",
+    "start_line": 248,
+    "start_col": 1,
+    "end_line": 248,
+    "end_col": 33,
+    "code_snippet": "impl<T> Drop for DeviceBuffer<T> {\n    fn drop(&mut self) {\n        if self.buf.is_null() {\n            return;\n        }\n\n        if self.capacity > 0 && mem::size_of::<T>() > 0 {\n            // No choice but to panic if this fails.\n            let ptr = mem::replace(&mut self.buf, DevicePointer::null());\n            unsafe {\n                cuda_free(ptr).expect(\"Failed to deallocate CUDA Device memory.\");\n            }\n        }\n        self.capacity = 0;\n    }\n}"
+}

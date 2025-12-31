@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ssl::callbacks::raw_cookie_verify`",
+    "file": "variant-ssl-0.17.3/src/ssl/callbacks.rs",
+    "start_line": 567,
+    "start_col": 1,
+    "end_line": 586,
+    "end_col": 2,
+    "code_snippet": "pub extern \"C\" fn raw_cookie_verify<F>(\n    ssl: *mut ffi::SSL,\n    cookie: CookiePtr,\n    cookie_len: c_uint,\n) -> c_int\nwhere\n    F: Fn(&mut SslRef, &[u8]) -> bool + 'static + Sync + Send,\n{\n    unsafe {\n        let ssl = SslRef::from_ptr_mut(ssl);\n        let callback = ssl\n            .ssl_context()\n            .ex_data(SslContext::cached_ex_index::<F>())\n            .expect(\"BUG: cookie verify callback missing\") as *const F;\n        #[allow(clippy::unnecessary_cast)]\n        let slice =\n            util::from_raw_parts(cookie as *const c_uchar as *const u8, cookie_len as usize);\n        (*callback)(ssl, slice) as c_int\n    }\n}"
+}

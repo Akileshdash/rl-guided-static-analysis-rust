@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ouroboros_examples-0.18.5/src/lib.rs",
+    "start_line": 21,
+    "start_col": 1,
+    "end_line": 21,
+    "end_col": 20,
+    "code_snippet": "#[self_referencing]\n/// A simple struct which contains an `i32` and a `&'this i32`.\npub struct DataAndRef {\n    data: i32,\n    #[borrows(data)]\n    data_ref: &'this i32,\n}"
+}

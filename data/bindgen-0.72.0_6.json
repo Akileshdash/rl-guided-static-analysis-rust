@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bindgen-0.72.0/clang.rs",
+    "start_line": 2396,
+    "start_col": 1,
+    "end_line": 2396,
+    "end_col": 25,
+    "code_snippet": "impl Drop for EvalResult {\n    fn drop(&mut self) {\n        unsafe { clang_EvalResult_dispose(self.x) };\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<breakpad::symbol_map::BreakpadSymbolMapInnerWrapper<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "samply-symbols-0.24.1/src/breakpad/symbol_map.rs",
+    "start_line": 92,
+    "start_col": 10,
+    "end_line": 92,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\npub struct BreakpadSymbolMapInnerWrapper<'a>(Box<dyn SymbolMapTrait + Send + Sync + 'a>);\n\nstruct BreakpadSymbolMapInner<'a, T: FileContents> {\n    data: &'a FileContentsWrapper<T>,\n    index: &'a BreakpadIndex,\n    cache: Mutex<BreakpadSymbolMapCache<'a, T>>,\n}"
+}

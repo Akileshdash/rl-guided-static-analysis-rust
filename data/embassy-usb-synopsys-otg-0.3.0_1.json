@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "embassy-usb-synopsys-otg-0.3.0/src/otg_v1.rs",
+    "start_line": 41,
+    "start_col": 1,
+    "end_line": 41,
+    "end_col": 51,
+    "code_snippet": "unsafe impl<T: Copy, A: Access> Sync for Reg<T, A> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "scopeguard-1.2.0/src/lib.rs",
+    "start_line": 465,
+    "start_col": 1,
+    "end_line": 468,
+    "end_col": 17,
+    "code_snippet": "impl<T, F, S> Drop for ScopeGuard<T, F, S>\nwhere\n    F: FnOnce(T),\n    S: Strategy,\n{\n    fn drop(&mut self) {\n        // This is OK because the fields are `ManuallyDrop`s\n        // which will not be dropped by the compiler.\n        let (value, dropfn) = unsafe { (ptr::read(&*self.value), ptr::read(&*self.dropfn)) };\n        if S::should_run() {\n            dropfn(value);\n        }\n    }\n}"
+}

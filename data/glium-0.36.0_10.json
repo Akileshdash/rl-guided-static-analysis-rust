@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/texture/any.rs",
+    "start_line": 911,
+    "start_col": 1,
+    "end_line": 911,
+    "end_col": 25,
+    "code_snippet": "impl Drop for TextureAny {\n    fn drop(&mut self) {\n        let mut ctxt = self.context.make_current();\n\n        // removing FBOs which contain this texture\n        fbo::FramebuffersContainer::purge_texture(&mut ctxt, self.id);\n\n        // resetting the bindings\n        for tex_unit in ctxt.state.texture_units.iter_mut() {\n            if tex_unit.texture == self.id {\n                tex_unit.texture = 0;\n            }\n        }\n\n        if self.owned {\n            unsafe { ctxt.gl.DeleteTextures(1, [ self.id ].as_ptr()); }\n        }\n    }\n}"
+}

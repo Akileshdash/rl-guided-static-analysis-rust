@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "pyo3-0.25.1/src/impl_/pyclass/lazy_type_object.rs",
+    "start_line": 251,
+    "start_col": 1,
+    "end_line": 251,
+    "end_col": 42,
+    "code_snippet": "unsafe impl<T> Sync for LazyTypeObject<T> {}"
+}

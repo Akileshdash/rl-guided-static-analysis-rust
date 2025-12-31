@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "miniserde-0.1.42/src/de/impls.rs",
+    "start_line": 528,
+    "start_col": 9,
+    "end_line": 528,
+    "end_col": 72,
+    "code_snippet": "impl<'a, T: 'a, const N: usize> Drop for ArrayBuilder<'a, T, N> {\n            fn drop(&mut self) {\n                for element in &mut self.array[..self.len] {\n                    unsafe { ptr::drop_in_place(element.assume_init_mut()) };\n                }\n            }\n        }"
+}

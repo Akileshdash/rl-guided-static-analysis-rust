@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "concurrent_arena-0.1.11/src/bucket.rs",
+    "start_line": 310,
+    "start_col": 1,
+    "end_line": 311,
+    "end_col": 39,
+    "code_snippet": "impl<T: Send + Sync, const BITARRAY_LEN: usize, const LEN: usize> Drop\n    for ArenaArc<T, BITARRAY_LEN, LEN>\n{\n    fn drop(&mut self) {\n        let entry = Self::get_entry(self);\n\n        // According to [Boost documentation][1], decreasing refcount must be done\n        // using Release to ensure the write to the value happens before the\n        // reference is dropped.\n        //\n        // [1]: https://www.boost.org/doc/libs/1_77_0/doc/html/atomic/usage_examples.html\n        let prev_counter = entry.counter.fetch_sub(1, Ordering::Release);\n        let prev_refcnt = prev_counter & MAX_REFCNT;\n\n        debug_assert_ne!(prev_refcnt, 0);\n\n        if prev_refcnt == 1 {\n            debug_assert_eq!(prev_counter, REMOVED_MASK | 1);\n\n            // This is the last reference, drop the value.\n\n            // According to [Boost documentation][1], an Acquire fence must be used\n            // before dropping value to ensure that all write to the value happens\n            // before it is dropped.\n            fence(Ordering::Acquire);\n\n            // Now entry.counter == 0\n\n            // Safety: `entry.val` can only be accessed by this thread now.\n            let option = unsafe { &mut *entry.val.get() };\n            *option = None;\n\n            // Make sure drop is written to memory before\n            // the entry is reused again.\n            entry.counter.store(0, Ordering::Release);\n\n            // Safety:\n            //\n            // `Self::get_index(self)` <= `LEN` == `BITARRAY_LEN / usize::BITS`\n            unsafe { self.bucket.bitset.deallocate(Self::get_index(self)) };\n        }\n    }\n}"
+}

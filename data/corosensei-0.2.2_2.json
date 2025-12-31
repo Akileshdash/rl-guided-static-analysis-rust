@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "corosensei-0.2.2/src/stack/unix.rs",
+    "start_line": 85,
+    "start_col": 1,
+    "end_line": 85,
+    "end_col": 27,
+    "code_snippet": "impl Drop for DefaultStack {\n    fn drop(&mut self) {\n        unsafe {\n            // De-register the stack first.\n            ManuallyDrop::drop(&mut self.valgrind);\n\n            let mmap = self.base.get() - self.mmap_len;\n            let ret = libc::munmap(mmap as _, self.mmap_len);\n            debug_assert_eq!(ret, 0);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "coco-0.3.4/src/epoch/garbage.rs",
+    "start_line": 368,
+    "start_col": 1,
+    "end_line": 368,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Garbage {\n    fn drop(&mut self) {\n        unsafe {\n            epoch::unprotected(|scope| {\n                // Load the pending bag, then destroy it and all it's objects.\n                let pending = self.pending.load(Relaxed, scope).as_raw();\n                if !pending.is_null() {\n                    (*pending).destroy_all_objects();\n                    drop(Vec::from_raw_parts(pending as *mut Bag, 0, 1));\n                }\n\n                // Destroy all bags and objects in the queue.\n                let mut head = self.head.load(Relaxed, scope).as_raw();\n                loop {\n                    // Load the next bag and destroy the current head.\n                    let next = (*head).next.load(Relaxed, scope).as_raw();\n                    drop(Vec::from_raw_parts(head as *mut Bag, 0, 1));\n\n                    // If the next node is null, we've reached the end of the queue.\n                    if next.is_null() {\n                        break;\n                    }\n\n                    // Move one step forward.\n                    head = next;\n\n                    // Destroy all objects in this bag.\n                    // The bag itself will be destroyed in the next iteration of the loop.\n                    (*head).destroy_all_objects();\n                }\n            })\n        }\n    }\n}"
+}

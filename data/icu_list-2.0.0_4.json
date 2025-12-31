@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::serde_dfa::SerdeDFA<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_list-2.0.0/src/provider/serde_dfa.rs",
+    "start_line": 20,
+    "start_col": 24,
+    "end_line": 20,
+    "end_col": 38,
+    "code_snippet": "#[derive(Clone, Debug, yoke::Yokeable, zerofrom::ZeroFrom)]\npub struct SerdeDFA<'data> {\n    // Safety: These always represent a valid DFA (DFA::from_bytes(dfa_bytes).is_ok())\n    dfa_bytes: VarZeroCow<'data, [u8]>,\n    #[cfg(feature = \"serde_human\")]\n    pattern: Option<alloc::borrow::Cow<'data, str>>,\n}"
+}

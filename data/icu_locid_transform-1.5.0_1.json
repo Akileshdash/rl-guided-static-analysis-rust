@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::directionality::ScriptDirectionV1<'static> as icu_provider::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_locid_transform-1.5.0/src/provider/directionality.rs",
+    "start_line": 9,
+    "start_col": 1,
+    "end_line": 13,
+    "end_col": 4,
+    "code_snippet": "#[icu_provider::data_struct(marker(\n    ScriptDirectionV1Marker,\n    \"locid_transform/script_dir@1\",\n    singleton\n))]\n#[derive(Debug, PartialEq, Clone)]\n#[cfg_attr(\n    feature = \"datagen\",\n    derive(serde::Serialize, databake::Bake),\n    databake(path = icu_locid_transform::provider),\n)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n/// This directionality data is used to determine the script directionality of a locale.\n///\n/// <div class=\"stab unstable\">\n/// \ud83d\udea7 This code is considered unstable; it may change at any time, in breaking or non-breaking ways,\n/// including in SemVer minor releases. While the serde representation of data structs is guaranteed\n/// to be stable, their Rust representation might not be. Use with caution.\n/// </div>\n#[yoke(prove_covariance_manually)]\npub struct ScriptDirectionV1<'data> {\n    /// Scripts in right-to-left direction.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub rtl: ZeroVec<'data, UnvalidatedScript>,\n    /// Scripts in left-to-right direction.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub ltr: ZeroVec<'data, UnvalidatedScript>,\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `impls::<impl types::StateRefMut<'a, V, S>>::load_value`",
+    "file": "concordium-std-10.1.0/src/impls.rs",
+    "start_line": 1208,
+    "start_col": 5,
+    "end_line": 1216,
+    "end_col": 6,
+    "code_snippet": "fn load_value(&self) -> V\n    where\n        V: DeserialWithState<S>, {\n        // Safe to unwrap below, since the entry can only be `None`, using methods which\n        // are consuming self.\n        let entry = unsafe { &mut *self.entry.get() };\n        entry.move_to_start();\n        V::deserial_with_state(&self.state_api, entry).unwrap_abort()\n    }"
+}

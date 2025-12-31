@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "cao-lang-0.2.6/src/collections/hash_map.rs",
+    "start_line": 38,
+    "start_col": 1,
+    "end_line": 38,
+    "end_col": 68,
+    "code_snippet": "unsafe impl<K, V, A: Allocator + Send> Send for CaoHashMap<K, V, A> {}\nunsafe impl<K, V, A: Allocator + Send> Sync for CaoHashMap<K, V, A> {}"
+}

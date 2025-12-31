@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `plane::Plane::<T>::copy_from_raw_u8`",
+    "file": "v_frame-0.3.9/src/plane.rs",
+    "start_line": 352,
+    "start_col": 5,
+    "end_line": 399,
+    "end_col": 6,
+    "code_snippet": "pub fn copy_from_raw_u8(\n        &mut self,\n        source: &[u8],\n        source_stride: usize,\n        source_bytewidth: usize,\n    ) {\n        let stride = self.cfg.stride;\n\n        assert!(stride != 0);\n        assert!(source_stride != 0);\n\n        for (self_row, source_row) in self\n            .data_origin_mut()\n            .chunks_exact_mut(stride)\n            .zip(source.chunks_exact(source_stride))\n        {\n            match source_bytewidth {\n                1 => {\n                    for (self_pixel, source_pixel) in self_row.iter_mut().zip(source_row.iter()) {\n                        *self_pixel = T::cast_from(*source_pixel);\n                    }\n                }\n                2 => {\n                    assert!(\n                        size_of::<T>() == 2,\n                        \"source bytewidth ({}) cannot fit in Plane<u8>\",\n                        source_bytewidth\n                    );\n\n                    debug_assert!(T::type_enum() == PixelType::U16);\n\n                    // SAFETY: because of the assert it is safe to assume that T == u16\n                    let self_row: &mut [u16] = unsafe { std::mem::transmute(self_row) };\n                    // SAFETY: we reinterpret the slice of bytes as a slice of elements of\n                    // [u8; 2] to allow for more efficient codegen with from_le_bytes\n                    let source_row: &[[u8; 2]] = unsafe {\n                        std::slice::from_raw_parts(source_row.as_ptr().cast(), source_row.len() / 2)\n                    };\n\n                    for (self_pixel, bytes) in self_row.iter_mut().zip(source_row) {\n                        *self_pixel = u16::from_le_bytes(*bytes);\n                    }\n                }\n\n                _ => {}\n            }\n        }\n    }"
+}

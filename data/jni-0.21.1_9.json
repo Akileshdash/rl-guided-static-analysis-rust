@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::is_assignable_from`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 350,
+    "start_col": 5,
+    "end_line": 367,
+    "end_col": 6,
+    "code_snippet": "pub fn is_assignable_from<'other_local_1, 'other_local_2, T, U>(\n        &mut self,\n        class1: T,\n        class2: U,\n    ) -> Result<bool>\n    where\n        T: Desc<'local, JClass<'other_local_1>>,\n        U: Desc<'local, JClass<'other_local_2>>,\n    {\n        let class1 = class1.lookup(self)?;\n        let class2 = class2.lookup(self)?;\n        Ok(jni_unchecked!(\n            self.internal,\n            IsAssignableFrom,\n            class1.as_ref().as_raw(),\n            class2.as_ref().as_raw()\n        ) == sys::JNI_TRUE)\n    }"
+}

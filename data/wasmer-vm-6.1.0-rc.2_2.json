@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmer-vm-6.1.0-rc.2/src/instance/mod.rs",
+    "start_line": 1005,
+    "start_col": 1,
+    "end_line": 1005,
+    "end_col": 25,
+    "code_snippet": "impl Drop for VMInstance {\n    fn drop(&mut self) {\n        let instance_ptr = self.instance.as_ptr();\n\n        unsafe {\n            // Need to drop all the actual Instance members\n            instance_ptr.drop_in_place();\n            // And then free the memory allocated for the Instance itself\n            std::alloc::dealloc(instance_ptr as *mut u8, self.instance_layout);\n        }\n    }\n}"
+}

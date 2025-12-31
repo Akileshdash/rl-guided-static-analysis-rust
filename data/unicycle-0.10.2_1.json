@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "unicycle-0.10.2/src/lock.rs",
+    "start_line": 173,
+    "start_col": 1,
+    "end_line": 173,
+    "end_col": 37,
+    "code_snippet": "impl Drop for LockExclusiveGuard<'_> {\n    fn drop(&mut self) {\n        // SAFETY: lock is held by the guard correctly.\n        unsafe { self.lock.unlock_exclusive_immediate() }\n    }\n}"
+}

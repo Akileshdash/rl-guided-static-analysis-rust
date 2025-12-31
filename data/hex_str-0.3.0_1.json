@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `hex_string_n::try_parse`",
+    "file": "hex_str-0.3.0/src/hex_string_n.rs",
+    "start_line": 180,
+    "start_col": 1,
+    "end_line": 210,
+    "end_col": 2,
+    "code_snippet": "fn try_parse<const N: usize>(\n    bytes: impl AsRef<[u8]>,\n    conversion_fn: impl Fn(u8, u8) -> Option<u8>,\n) -> Result<HexStringN<N>, HexStringNError> {\n    let bytes = bytes.as_ref();\n    if bytes.len() % 2 != 0 || bytes.len() / 2 != N {\n        return Err(HexStringNError::InvalidLength {\n            expected: N * 2,\n            encountered: bytes.len(),\n        });\n    }\n\n    let mut ret: Box<[MaybeUninit<u8>; N]> = unsafe { Box::new_uninit().assume_init() };\n    let mut i = 0;\n    let mut j = 1;\n    for v in &mut *ret {\n        let a = unsafe { *bytes.get_unchecked(i) };\n        let b = unsafe { *bytes.get_unchecked(j) };\n        conversion_fn(a, b)\n            .ok_or(HexStringNError::InvalidByte { a, b, index: i })\n            .map(|w| v.write(w))?;\n\n        // if len == usize::MAX, this will overflow after the last iteration\n        // which is fine\n        i = i.wrapping_add(2);\n        j = j.wrapping_add(2);\n    }\n\n    let ret: Box<[u8; N]> = unsafe { std::mem::transmute(ret) };\n    Ok(HexStringN::new(ret))\n}"
+}

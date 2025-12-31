@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `graphics::image::OpaqueImage_vtable_mod::OpaqueImageVTable::new::drop_in_place`",
+    "file": "i-slint-core-1.12.1/graphics/image.rs",
+    "start_line": 24,
+    "start_col": 1,
+    "end_line": 24,
+    "end_col": 18,
+    "code_snippet": "#[vtable::vtable]\n#[repr(C)]\npub struct OpaqueImageVTable {\n    drop_in_place: extern \"C\" fn(VRefMut<OpaqueImageVTable>) -> Layout,\n    dealloc: extern \"C\" fn(&OpaqueImageVTable, ptr: *mut u8, layout: Layout),\n    /// Returns the image size\n    size: extern \"C\" fn(VRef<OpaqueImageVTable>) -> IntSize,\n    /// Returns a cache key\n    cache_key: extern \"C\" fn(VRef<OpaqueImageVTable>) -> ImageCacheKey,\n}"
+}

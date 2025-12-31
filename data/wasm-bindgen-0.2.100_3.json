@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasm-bindgen-0.2.100/src/lib.rs",
+    "start_line": 1178,
+    "start_col": 1,
+    "end_line": 1178,
+    "end_col": 22,
+    "code_snippet": "impl Drop for JsValue {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            // We definitely should never drop anything in the stack area\n            debug_assert!(self.idx >= JSIDX_OFFSET, \"free of stack slot {}\", self.idx);\n\n            // Otherwise if we're not dropping one of our reserved values,\n            // actually call the intrinsic. See #1054 for eventually removing\n            // this branch.\n            if self.idx >= JSIDX_RESERVED {\n                __wbindgen_object_drop_ref(self.idx);\n            }\n        }\n    }\n}"
+}

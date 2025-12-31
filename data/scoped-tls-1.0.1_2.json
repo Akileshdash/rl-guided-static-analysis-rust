@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ScopedKey::<T>::with`",
+    "file": "scoped-tls-1.0.1/src/lib.rs",
+    "start_line": 164,
+    "start_col": 5,
+    "end_line": 173,
+    "end_col": 6,
+    "code_snippet": "pub fn with<F, R>(&'static self, f: F) -> R\n        where F: FnOnce(&T) -> R\n    {\n        let val = self.inner.with(|c| c.get());\n        assert!(!val.is_null(), \"cannot access a scoped thread local \\\n                                 variable without calling `set` first\");\n        unsafe {\n            f(&*(val as *const T))\n        }\n    }"
+}

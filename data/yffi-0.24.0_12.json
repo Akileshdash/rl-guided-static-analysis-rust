@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "yffi-0.24.0/src/lib.rs",
+    "start_line": 5371,
+    "start_col": 1,
+    "end_line": 5371,
+    "end_col": 30,
+    "code_snippet": "impl Drop for YEventKeyChange {\n    fn drop(&mut self) {\n        unsafe {\n            ystring_destroy(self.key as *mut _);\n            youtput_destroy(self.old_value as *mut _);\n            youtput_destroy(self.new_value as *mut _);\n        }\n    }\n}"
+}

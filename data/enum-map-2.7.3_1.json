@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "enum-map-2.7.3/src/iter.rs",
+    "start_line": 238,
+    "start_col": 1,
+    "end_line": 238,
+    "end_col": 49,
+    "code_snippet": "impl<K: EnumArray<V>, V> Drop for IntoIter<K, V> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            ptr::drop_in_place(&mut self.map.as_mut_slice()[self.alive.clone()]);\n        }\n    }\n}"
+}

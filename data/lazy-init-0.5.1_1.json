@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "lazy-init-0.5.1/src/lib.rs",
+    "start_line": 124,
+    "start_col": 1,
+    "end_line": 127,
+    "end_col": 20,
+    "code_snippet": "unsafe impl<T, U> Sync for LazyTransform<T, U>\nwhere\n    T: Send,\n    U: Send + Sync,\n{\n}"
+}

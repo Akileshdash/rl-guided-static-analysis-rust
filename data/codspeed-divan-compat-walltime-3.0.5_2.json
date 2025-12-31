@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "codspeed-divan-compat-walltime-3.0.5/src/util/mod.rs",
+    "start_line": 24,
+    "start_col": 5,
+    "end_line": 24,
+    "end_col": 40,
+    "code_snippet": "impl<F: FnOnce()> Drop for Defer<F> {\n        #[inline]\n        fn drop(&mut self) {\n            let f = unsafe { ManuallyDrop::take(&mut self.0) };\n\n            f();\n        }\n    }"
+}

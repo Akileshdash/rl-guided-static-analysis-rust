@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "boa_string-0.20.0/src/builder.rs",
+    "start_line": 394,
+    "start_col": 1,
+    "end_line": 394,
+    "end_col": 42,
+    "code_snippet": "impl<D: Copy> Drop for JsStringBuilder<D> {\n    /// Set cold since [`JsStringBuilder`] should be created to build `JsString`\n    #[cold]\n    #[inline]\n    fn drop(&mut self) {\n        if self.is_allocated() {\n            // SAFETY:\n            // Allocation check has been made above.\n            let layout = unsafe { self.current_layout() };\n            // SAFETY:\n            // layout: All the checks for the validity of the layout have already been made on `allocate_inner`.\n            // `NonNull` verified for us that the pointer returned by `alloc` is valid,\n            // meaning we can free its pointed memory.\n            unsafe {\n                dealloc(self.inner.as_ptr().cast(), layout);\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "oracle-0.6.3/src/row.rs",
+    "start_line": 180,
+    "start_col": 1,
+    "end_line": 180,
+    "end_col": 64,
+    "code_snippet": "unsafe impl<T> Send for ResultSet<'static, T> where T: RowValue {}"
+}

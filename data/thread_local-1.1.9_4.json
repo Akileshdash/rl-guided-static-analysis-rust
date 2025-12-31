@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<Entry<T> as std::ops::Drop>::drop`",
+    "file": "thread_local-1.1.9/src/lib.rs",
+    "start_line": 119,
+    "start_col": 5,
+    "end_line": 125,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        unsafe {\n            if *self.present.get_mut() {\n                ptr::drop_in_place((*self.value.get()).as_mut_ptr());\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async_singleflight-0.5.2/src/lib.rs",
+    "start_line": 310,
+    "start_col": 15,
+    "end_line": 310,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\nstruct UnaryLeader<T: Clone, F> {\n    #[pin]\n    fut: F,\n    tx: watch::Sender<UnaryState<T>>,\n}"
+}

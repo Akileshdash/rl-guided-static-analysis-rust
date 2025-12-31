@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<unsafe_cell_type::U<T> as std::ops::Add>::add`",
+    "file": "fast-able-1.18.6/src/unsafe_cell_type.rs",
+    "start_line": 96,
+    "start_col": 5,
+    "end_line": 100,
+    "end_col": 6,
+    "code_snippet": "fn add(self, rhs: Self) -> Self::Output {\n        let v1 = unsafe { &*self._inner.get() };\n        let v2 = unsafe { &*rhs._inner.get() };\n        Self::Output::new(v1.clone() + v2.clone())\n    }"
+}

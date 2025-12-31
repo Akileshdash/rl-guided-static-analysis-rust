@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "solana_rbpf-0.8.5/src/jit.rs",
+    "start_line": 151,
+    "start_col": 1,
+    "end_line": 151,
+    "end_col": 25,
+    "code_snippet": "impl Drop for JitProgram {\n    fn drop(&mut self) {\n        let pc_loc_table_size = round_to_page_size(self.pc_section.len() * 8, self.page_size);\n        let code_size = round_to_page_size(self.text_section.len(), self.page_size);\n        if pc_loc_table_size + code_size > 0 {\n            unsafe {\n                let _ = free_pages(\n                    self.pc_section.as_ptr() as *mut u8,\n                    pc_loc_table_size + code_size,\n                );\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::is_same_object`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 396,
+    "start_col": 5,
+    "end_line": 411,
+    "end_col": 6,
+    "code_snippet": "pub fn is_same_object<'other_local_1, 'other_local_2, O, T>(\n        &self,\n        ref1: O,\n        ref2: T,\n    ) -> Result<bool>\n    where\n        O: AsRef<JObject<'other_local_1>>,\n        T: AsRef<JObject<'other_local_2>>,\n    {\n        Ok(jni_unchecked!(\n            self.internal,\n            IsSameObject,\n            ref1.as_ref().as_raw(),\n            ref2.as_ref().as_raw()\n        ) == sys::JNI_TRUE)\n    }"
+}

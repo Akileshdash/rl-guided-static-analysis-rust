@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `impls::core::with::<impl with::ArchiveWith<std::cell::Cell<F>> for with::Unsafe>::resolve_with`",
+    "file": "rkyv-0.8.11/src/impls/core/with/mod.rs",
+    "start_line": 707,
+    "start_col": 5,
+    "end_line": 714,
+    "end_col": 6,
+    "code_snippet": "fn resolve_with(\n        field: &Cell<F>,\n        resolver: Self::Resolver,\n        out: Place<Self::Archived>,\n    ) {\n        let value = unsafe { &*field.as_ptr() };\n        F::resolve(value, resolver, out);\n    }"
+}

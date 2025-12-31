@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "pcre2-0.2.9/src/pool.rs",
+    "start_line": 329,
+    "start_col": 5,
+    "end_line": 329,
+    "end_col": 61,
+    "code_snippet": "unsafe impl<T: Send, F: Send + Sync> Sync for Pool<T, F> {}"
+}

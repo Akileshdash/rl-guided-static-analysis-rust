@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `LazyTransform::<T, U>::get_or_create`",
+    "file": "lazy-init-0.5.1/src/lib.rs",
+    "start_line": 79,
+    "start_col": 5,
+    "end_line": 107,
+    "end_col": 6,
+    "code_snippet": "pub fn get_or_create<F>(&self, f: F) -> &U\n    where\n        F: FnOnce(T) -> U,\n    {\n        // In addition to being correct, this pattern is vouched for by Hans Boehm\n        // (http://schd.ws/hosted_files/cppcon2016/74/HansWeakAtomics.pdf Page 27)\n        if !self.initialized.load(Ordering::Acquire) {\n            // We *may* not be initialized. We have to block to be certain.\n            let _lock = self.lock.lock().unwrap();\n            if !self.initialized.load(Ordering::Relaxed) {\n                // Ok, we're definitely uninitialized.\n                // Safe to fiddle with the UnsafeCell now, because we're locked,\n                // and there can't be any outstanding references.\n                let value = unsafe { &mut *self.value.get() };\n                let this = match value.take().unwrap() {\n                    ThisOrThat::This(t) => t,\n                    ThisOrThat::That(_) => panic!(), // Can't already be initialized!\n                };\n                *value = Some(ThisOrThat::That(f(this)));\n                self.initialized.store(true, Ordering::Release);\n            } else {\n                // We raced, and someone else initialized us. We can fall\n                // through now.\n            }\n        }\n\n        // We're initialized, our value is immutable, no synchronization needed.\n        self.extract().unwrap()\n    }"
+}

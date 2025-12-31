@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "byteyarn-0.5.1/src/raw.rs",
+    "start_line": 618,
+    "start_col": 1,
+    "end_line": 618,
+    "end_col": 25,
+    "code_snippet": "impl Drop for AlignedBox {\n  fn drop(&mut self) {\n    let len = self.data.len();\n    if len == 0 {\n      return;\n    }\n\n    let ptr =\n      ManuallyDrop::new(mem::replace(&mut self.data, [].into())).as_mut_ptr();\n\n    unsafe {\n      alloc::dealloc(\n        ptr,\n        alloc::Layout::from_size_align_unchecked(len, self.align),\n      )\n    }\n  }\n}"
+}

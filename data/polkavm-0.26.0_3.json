@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "polkavm-0.26.0/src/linker.rs",
+    "start_line": 571,
+    "start_col": 1,
+    "end_line": 571,
+    "end_col": 45,
+    "code_snippet": "unsafe impl<T> Sync for UnsafePhantomData<T> {}"
+}

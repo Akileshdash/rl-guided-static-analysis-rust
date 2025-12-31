@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sync::map_index::SyncIndexMap::<K, V>::get_mut`",
+    "file": "dark-std-0.2.16/src/sync/map_index.rs",
+    "start_line": 164,
+    "start_col": 5,
+    "end_line": 186,
+    "end_col": 6,
+    "code_snippet": "pub fn get_mut(&self, k: &K) -> Option<HashMapRefMut<'_, K, V>>\n        where\n            K: Hash + Eq + Clone,\n    {\n        let get_mut_lock = self.lock.lock();\n        let m = unsafe { &mut *self.locks.get() };\n        if m.contains_key(k) == false {\n            let g = ReentrantMutex::new(());\n            m.insert(k.clone(), g);\n        }\n        let g = m.get(k).unwrap();\n        let v = HashMapRefMut {\n            k: unsafe { std::mem::transmute(&k) },\n            m: self,\n            _g: g.lock(),\n            value: {\n                let m = unsafe { &mut *self.dirty.get() };\n                m.get_mut(k)?\n            },\n        };\n        drop(get_mut_lock);\n        Some(v)\n    }"
+}

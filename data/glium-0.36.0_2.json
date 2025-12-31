@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/buffer/alloc.rs",
+    "start_line": 917,
+    "start_col": 1,
+    "end_line": 917,
+    "end_col": 48,
+    "code_snippet": "impl<'a, D: ?Sized> Drop for MappingImpl<'a, D> {\n    fn drop(&mut self) {\n        match *self {\n            MappingImpl::PersistentMapping { buffer, offset_bytes, data, needs_flushing } => {\n                let mut ctxt = buffer.context.make_current();\n                unsafe {\n                    if needs_flushing {\n                        flush_range(&mut ctxt, buffer.id, buffer.ty,\n                                    offset_bytes .. offset_bytes + mem::size_of_val(&*data));\n                    }\n                }\n            },\n\n            MappingImpl::TemporaryBuffer { original_buffer, original_buffer_offset,\n                                                temporary_buffer, temporary_buffer_data,\n                                                needs_flushing } =>\n            {\n                let mut ctxt = original_buffer.context.make_current();\n                original_buffer.barrier_for_buffer_update(&mut ctxt);\n\n                unsafe {\n                    if needs_flushing {\n                        flush_range(&mut ctxt, temporary_buffer, original_buffer.ty,\n                                    0 .. mem::size_of_val(&*temporary_buffer_data));\n                    }\n                    unmap_buffer(&mut ctxt, temporary_buffer, original_buffer.ty);\n                    if needs_flushing {\n                        copy_buffer(&mut ctxt, temporary_buffer, 0, original_buffer.id,\n                                    original_buffer_offset, mem::size_of_val(&*temporary_buffer_data)).unwrap();\n                    }\n\n                    destroy_buffer(&mut ctxt, temporary_buffer);\n                }\n            },\n\n            MappingImpl::RegularMapping { ref mut buffer, data, needs_flushing } => {\n                let mut ctxt = buffer.context.make_current();\n\n                unsafe {\n                    if needs_flushing {\n                        flush_range(&mut ctxt, buffer.id, buffer.ty,\n                                    0 .. mem::size_of_val(&*data));\n                    }\n                    unmap_buffer(&mut ctxt, buffer.id, buffer.ty);\n                }\n\n                buffer.mapped.set(false);\n            },\n        }\n    }\n}"
+}

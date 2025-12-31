@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "futures-intrusive-0.5.0/src/channel/mpmc.rs",
+    "start_line": 384,
+    "start_col": 1,
+    "end_line": 387,
+    "end_col": 26,
+    "code_snippet": "unsafe impl<MutexType: RawMutex + Sync, T: Send, A> Sync\n    for GenericChannel<MutexType, T, A>\nwhere\n    A: RingBuf<Item = T>,\n{\n}"
+}

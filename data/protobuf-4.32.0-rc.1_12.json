@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "protobuf-4.32.0-rc.1/src/repeated.rs",
+    "start_line": 384,
+    "start_col": 1,
+    "end_line": 384,
+    "end_col": 55,
+    "code_snippet": "unsafe impl<T: ProxiedInRepeated> Sync for Repeated<T> {}"
+}

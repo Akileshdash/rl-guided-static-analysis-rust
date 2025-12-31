@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "taos-optin-0.12.4/src/types/mod.rs",
+    "start_line": 410,
+    "start_col": 1,
+    "end_line": 410,
+    "end_col": 25,
+    "code_snippet": "impl Drop for TaosBindV2 {\n    fn drop(&mut self) {\n        unsafe { self.free() }\n    }\n}"
+}

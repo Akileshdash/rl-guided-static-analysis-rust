@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/Transmute",
+    "description": "Potential unsafe dataflow issue in `<cipher::block::OpeningKey<C> as cipher::OpeningKey>::decrypt_packet_length`",
+    "file": "russh-0.53.0/src/cipher/block.rs",
+    "start_line": 92,
+    "start_col": 5,
+    "end_line": 116,
+    "end_col": 6,
+    "code_snippet": "fn decrypt_packet_length(\n        &self,\n        _sequence_number: u32,\n        encrypted_packet_length: &[u8],\n    ) -> [u8; 4] {\n        let mut first_block = [0u8; 16];\n        // Fine because of self.packet_length_to_read_for_block_length()\n        #[allow(clippy::indexing_slicing)]\n        first_block.copy_from_slice(&encrypted_packet_length[..16]);\n\n        if self.mac.is_etm() {\n            // Fine because of self.packet_length_to_read_for_block_length()\n            #[allow(clippy::unwrap_used, clippy::indexing_slicing)]\n            encrypted_packet_length[..4].try_into().unwrap()\n        } else {\n            // Work around uncloneable Aes<>\n            let mut cipher: C = unsafe { std::ptr::read(&self.cipher as *const C) };\n\n            cipher.decrypt_data(&mut first_block);\n\n            // Fine because of self.packet_length_to_read_for_block_length()\n            #[allow(clippy::unwrap_used, clippy::indexing_slicing)]\n            first_block[..4].try_into().unwrap()\n        }\n    }"
+}

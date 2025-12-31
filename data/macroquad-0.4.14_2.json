@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "macroquad-0.4.14/src/experimental/scene.rs",
+    "start_line": 42,
+    "start_col": 1,
+    "end_line": 42,
+    "end_col": 43,
+    "code_snippet": "unsafe impl<T: 'static> Send for Handle<T> {}"
+}

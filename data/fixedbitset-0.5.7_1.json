@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fixedbitset-0.5.7/src/lib.rs",
+    "start_line": 1051,
+    "start_col": 1,
+    "end_line": 1051,
+    "end_col": 26,
+    "code_snippet": "impl Drop for FixedBitSet {\n    fn drop(&mut self) {\n        // SAFETY: The data pointer and capacity were created from a Vec initially. The block\n        // len is identical to that of the original.\n        drop(unsafe {\n            Vec::from_raw_parts(self.data.as_ptr(), self.simd_block_len(), self.capacity)\n        });\n    }\n}"
+}

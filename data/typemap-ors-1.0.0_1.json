@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `VacantEntry::<'a, K, A>::insert`",
+    "file": "typemap-ors-1.0.0/src/lib.rs",
+    "start_line": 294,
+    "start_col": 5,
+    "end_line": 303,
+    "end_col": 6,
+    "code_snippet": "pub fn insert(self, value: K::Value) -> &'a mut K::Value\n    where\n        K::Value: Any + Implements<A>,\n    {\n        unsafe {\n            self.data\n                .insert(value.into_object())\n                .downcast_mut_unchecked()\n        }\n    }"
+}

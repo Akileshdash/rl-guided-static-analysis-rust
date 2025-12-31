@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mltg-0.22.1/src/context.rs",
+    "start_line": 143,
+    "start_col": 1,
+    "end_line": 143,
+    "end_col": 32,
+    "code_snippet": "impl<'a> Drop for LockGuard<'a> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            self.multithread.Leave();\n        }\n    }\n}"
+}

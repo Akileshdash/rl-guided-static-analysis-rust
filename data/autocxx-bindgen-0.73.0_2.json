@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "autocxx-bindgen-0.73.0/clang.rs",
+    "start_line": 1092,
+    "start_col": 1,
+    "end_line": 1092,
+    "end_col": 25,
+    "code_snippet": "impl Drop for ClangToken {\n    fn drop(&mut self) {\n        unsafe { clang_disposeString(self.spelling) }\n    }\n}"
+}

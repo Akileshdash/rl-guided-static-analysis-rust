@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "wasmi_arena-0.5.0/src/lib.rs",
+    "start_line": 60,
+    "start_col": 1,
+    "end_line": 60,
+    "end_col": 57,
+    "code_snippet": "unsafe impl<Idx, T> Send for Arena<Idx, T> where T: Send {}"
+}

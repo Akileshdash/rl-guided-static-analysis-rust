@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<*mut T as Hash>::hash`",
+    "file": "forest_hash_utils-0.1.0/src/lib.rs",
+    "start_line": 155,
+    "start_col": 5,
+    "end_line": 165,
+    "end_col": 6,
+    "code_snippet": "fn hash<H: Hasher>(&self, state: &mut H) {\n        if mem::size_of::<Self>() == mem::size_of::<usize>() {\n            // Thin pointer\n            state.write_usize(*self as *const () as usize);\n        } else {\n            // Fat pointer\n            let (a, b) = unsafe { *(self as *const Self as *const (usize, usize)) };\n            state.write_usize(a);\n            state.write_usize(b);\n        }\n    }"
+}

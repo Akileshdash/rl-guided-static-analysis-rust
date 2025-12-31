@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<pycell::impl_::PyClassObject<T> as pycell::impl_::PyClassObjectLayout<T>>::tp_dealloc`",
+    "file": "pyo3-0.25.1/src/pycell/impl_.rs",
+    "start_line": 346,
+    "start_col": 5,
+    "end_line": 357,
+    "end_col": 6,
+    "code_snippet": "unsafe fn tp_dealloc(py: Python<'_>, slf: *mut ffi::PyObject) {\n        // Safety: Python only calls tp_dealloc when no references to the object remain.\n        let class_object = unsafe { &mut *(slf.cast::<PyClassObject<T>>()) };\n        if class_object.contents.thread_checker.can_drop(py) {\n            unsafe { ManuallyDrop::drop(&mut class_object.contents.value) };\n        }\n        class_object.contents.dict.clear_dict(py);\n        unsafe {\n            class_object.contents.weakref.clear_weakrefs(slf, py);\n            <T::BaseType as PyClassBaseType>::LayoutAsBase::tp_dealloc(py, slf)\n        }\n    }"
+}

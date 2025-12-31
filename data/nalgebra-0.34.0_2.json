@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `base::ops::<impl base::matrix::Matrix<T, R1, C1, SA>>::kronecker`",
+    "file": "nalgebra-0.34.0/src/base/ops.rs",
+    "start_line": 800,
+    "start_col": 5,
+    "end_line": 836,
+    "end_col": 6,
+    "code_snippet": "pub fn kronecker<R2: Dim, C2: Dim, SB>(\n        &self,\n        rhs: &Matrix<T, R2, C2, SB>,\n    ) -> OMatrix<T, DimProd<R1, R2>, DimProd<C1, C2>>\n    where\n        T: ClosedMulAssign,\n        R1: DimMul<R2>,\n        C1: DimMul<C2>,\n        SB: Storage<T, R2, C2>,\n        DefaultAllocator: Allocator<DimProd<R1, R2>, DimProd<C1, C2>>,\n    {\n        let (nrows1, ncols1) = self.shape_generic();\n        let (nrows2, ncols2) = rhs.shape_generic();\n\n        let mut res = Matrix::uninit(nrows1.mul(nrows2), ncols1.mul(ncols2));\n        let mut data_res = res.data.ptr_mut();\n\n        unsafe {\n            for j1 in 0..ncols1.value() {\n                for j2 in 0..ncols2.value() {\n                    for i1 in 0..nrows1.value() {\n                        let coeff = self.get_unchecked((i1, j1)).clone();\n\n                        for i2 in 0..nrows2.value() {\n                            *data_res = MaybeUninit::new(\n                                coeff.clone() * rhs.get_unchecked((i2, j2)).clone(),\n                            );\n                            data_res = data_res.offset(1);\n                        }\n                    }\n                }\n            }\n\n            // SAFETY: the result matrix has been initialized by the loop above.\n            res.assume_init()\n        }\n    }"
+}

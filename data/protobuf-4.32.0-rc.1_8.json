@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "protobuf-4.32.0-rc.1/src/map.rs",
+    "start_line": 69,
+    "start_col": 1,
+    "end_line": 69,
+    "end_col": 68,
+    "code_snippet": "unsafe impl<K: Proxied, V: ProxiedInMapValue<K>> Sync for Map<K, V> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<iterator::CppIterator<T1, T2> as std::iter::DoubleEndedIterator>::next_back`",
+    "file": "cpp_core-0.6.0/src/iterator.rs",
+    "start_line": 61,
+    "start_col": 5,
+    "end_line": 73,
+    "end_col": 6,
+    "code_snippet": "fn next_back(&mut self) -> Option<Self::Item> {\n        unsafe {\n            if self.begin == self.end.as_ref() {\n                None\n            } else {\n                let inner = &mut *self.end.as_mut_raw_ptr();\n                inner.dec();\n                let inner = &mut *self.end.as_mut_raw_ptr();\n                let value = inner.indirection();\n                Some(value)\n            }\n        }\n    }"
+}

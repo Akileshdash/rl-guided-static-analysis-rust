@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<boxed::Box<[T], A> as core::clone::Clone>::clone`",
+    "file": "allocator_api-0.6.0/src/liballoc/boxed.rs",
+    "start_line": 710,
+    "start_col": 5,
+    "end_line": 756,
+    "end_col": 6,
+    "code_snippet": "fn clone(&self) -> Self {\n        let mut new = BoxBuilder {\n            data: RawVec::with_capacity_in(self.len(), self.a.clone()),\n            len: 0,\n        };\n\n        let mut target = new.data.ptr();\n\n        for item in self.iter() {\n            unsafe {\n                ptr::write(target, item.clone());\n                target = target.offset(1);\n            };\n\n            new.len += 1;\n        }\n\n        return unsafe { new.into_box() };\n\n        // Helper type for responding to panics correctly.\n        struct BoxBuilder<T, A: Alloc> {\n            data: RawVec<T, A>,\n            len: usize,\n        }\n\n        impl<T, A: Alloc> BoxBuilder<T, A> {\n            unsafe fn into_box(self) -> Box<[T], A> {\n                let raw = ptr::read(&self.data);\n                mem::forget(self);\n                raw.into_box()\n            }\n        }\n\n        impl<T, A: Alloc> Drop for BoxBuilder<T, A> {\n            fn drop(&mut self) {\n                let mut data = self.data.ptr();\n                let max = unsafe { data.add(self.len) };\n\n                while data != max {\n                    unsafe {\n                        ptr::read(data);\n                        data = data.offset(1);\n                    }\n                }\n            }\n        }\n    }"
+}

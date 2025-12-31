@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "salsa-0.23.0/src/interned.rs",
+    "start_line": 103,
+    "start_col": 1,
+    "end_line": 103,
+    "end_col": 48,
+    "code_snippet": "unsafe impl<C: Configuration> Sync for Value<C> {}"
+}

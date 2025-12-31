@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `LruCache::<K, V, S>::pop`",
+    "file": "lru-0.16.0/src/lib.rs",
+    "start_line": 1141,
+    "start_col": 5,
+    "end_line": 1162,
+    "end_col": 6,
+    "code_snippet": "pub fn pop<Q>(&mut self, k: &Q) -> Option<V>\n    where\n        K: Borrow<Q>,\n        Q: Hash + Eq + ?Sized,\n    {\n        match self.map.remove(KeyWrapper::from_ref(k)) {\n            None => None,\n            Some(old_node) => {\n                let mut old_node = unsafe {\n                    let mut old_node = *Box::from_raw(old_node.as_ptr());\n                    ptr::drop_in_place(old_node.key.as_mut_ptr());\n\n                    old_node\n                };\n\n                self.detach(&mut old_node);\n\n                let LruEntry { key: _, val, .. } = old_node;\n                unsafe { Some(val.assume_init()) }\n            }\n        }\n    }"
+}

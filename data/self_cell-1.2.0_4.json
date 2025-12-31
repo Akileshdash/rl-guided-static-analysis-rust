@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "self_cell-1.2.0/src/unsafe_self_cell.rs",
+    "start_line": 125,
+    "start_col": 1,
+    "end_line": 130,
+    "end_col": 27,
+    "code_snippet": "unsafe impl<ContainedIn, Owner, DependentStatic> Send\n    for UnsafeSelfCell<ContainedIn, Owner, DependentStatic>\nwhere\n    // Only derive Send if Owner and DependentStatic is also Send\n    Owner: Send,\n    DependentStatic: Send,\n{\n}"
+}

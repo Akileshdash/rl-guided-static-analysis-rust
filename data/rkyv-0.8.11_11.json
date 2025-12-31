@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `niche::option_box::_::<impl bytecheck::CheckBytes<C> for niche::option_box::Repr<T>>::check_bytes`",
+    "file": "rkyv-0.8.11/src/niche/option_box.rs",
+    "start_line": 59,
+    "start_col": 9,
+    "end_line": 72,
+    "end_col": 10,
+    "code_snippet": "unsafe fn check_bytes(\n            value: *const Self,\n            context: &mut C,\n        ) -> Result<(), C::Error> {\n            // SAFETY: `Repr<T>` is a `#[repr(C)]` union of an `ArchivedBox<T>`\n            // and a `RelPtr<T>`, and so is guaranteed to be aligned and point\n            // to enough bytes for a `RelPtr<T>`.\n            unsafe {\n                RelPtr::check_bytes(value.cast::<RelPtr<T>>(), context)?;\n            }\n\n            // verify with null check\n            Self::verify(unsafe { &*value }, context)\n        }"
+}

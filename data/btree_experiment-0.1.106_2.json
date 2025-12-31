@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "btree_experiment-0.1.106/src/lib.rs",
+    "start_line": 2856,
+    "start_col": 1,
+    "end_line": 2856,
+    "end_col": 67,
+    "code_snippet": "unsafe impl<'a, K, V, A: AllocTuning> Sync for Cursor<'a, K, V, A> {}"
+}

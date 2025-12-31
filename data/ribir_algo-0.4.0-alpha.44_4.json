@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<frame_cache::FrameDrain<'a, K, V> as std::iter::Iterator>::next`",
+    "file": "ribir_algo-0.4.0-alpha.44/src/frame_cache.rs",
+    "start_line": 857,
+    "start_col": 3,
+    "end_line": 874,
+    "end_col": 4,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item> {\n    if !self.cursor.is_null() {\n      unsafe {\n        let old_key = KeyRef { k: &(*(*self.cursor).key.as_ptr()) };\n\n        self.cache.map.remove(&old_key).unwrap();\n        let v = *Box::from_raw(self.cursor);\n\n        let LruEntry { mut key, val, next, .. } = v;\n        ptr::drop_in_place(key.as_mut_ptr());\n\n        self.cursor = next;\n        Some(val.assume_init())\n      }\n    } else {\n      None\n    }\n  }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sdl3-0.14.36/src/sdl3/audio.rs",
+    "start_line": 1414,
+    "start_col": 1,
+    "end_line": 1414,
+    "end_col": 46,
+    "code_snippet": "impl<CB> Drop for AudioStreamWithCallback<CB> {\n    fn drop(&mut self) {\n        // `base_stream` will be dropped automatically.\n        if !self.c_userdata.is_null() {\n            unsafe {\n                // Drop the callback box\n                let _ = Box::from_raw(self.c_userdata as *mut CB);\n            }\n            self.c_userdata = std::ptr::null_mut();\n        }\n    }\n}"
+}

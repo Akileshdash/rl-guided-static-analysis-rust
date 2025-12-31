@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "array-bin-ops-0.1.6/src/iter.rs",
+    "start_line": 11,
+    "start_col": 1,
+    "end_line": 11,
+    "end_col": 45,
+    "code_snippet": "impl<T, const N: usize> Drop for Slice<T, N> {\n    #[inline(always)]\n    fn drop(&mut self) {\n        // SAFETY:\n        // The slice guarantees that `alive` is all initialised and that the other data is uninit\n        unsafe {\n            drop_in_place(slice_assume_init_mut(&mut self.array[self.alive.clone()]));\n        }\n    }\n}"
+}

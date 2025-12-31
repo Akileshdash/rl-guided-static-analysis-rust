@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ort-2.0.0-rc.10/src/util.rs",
+    "start_line": 550,
+    "start_col": 1,
+    "end_line": 550,
+    "end_col": 46,
+    "code_snippet": "impl<'a, 'p> Drop for AllocatedString<'a, 'p> {\n\tfn drop(&mut self) {\n\t\tlet ptr = self.data.as_ptr();\n\t\tif !ptr::eq(ptr, EMPTY_DANGLING.as_ptr()) {\n\t\t\tunsafe { self.allocator.free(ptr.cast_mut()) };\n\t\t}\n\t}\n}"
+}

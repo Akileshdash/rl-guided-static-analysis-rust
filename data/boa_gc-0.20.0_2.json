@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::boxed::Box<T> as trace::Trace>::trace`",
+    "file": "boa_gc-0.20.0/src/trace.rs",
+    "start_line": 299,
+    "start_col": 5,
+    "end_line": 304,
+    "end_col": 6,
+    "code_snippet": "unsafe fn trace(&self, tracer: &mut Tracer) {\n        // SAFETY: The implementor must ensure that `trace` is correctly implemented.\n        unsafe {\n            Trace::trace(&**self, tracer);\n        }\n    }"
+}

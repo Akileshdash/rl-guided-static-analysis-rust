@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ribir_core-0.4.0-alpha.44/src/local_sender.rs",
+    "start_line": 53,
+    "start_col": 1,
+    "end_line": 53,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for LocalSender<T> {\n  fn drop(&mut self) {\n    self.assert_same_thread();\n    let _drop = unsafe { Box::from_raw(self.data) };\n  }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "st3-0.4.1/src/lifo.rs",
+    "start_line": 251,
+    "start_col": 1,
+    "end_line": 251,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Queue<T> {\n    fn drop(&mut self) {\n        let head = self.head.load(Relaxed);\n        let push_count = self.push_count.load(Relaxed);\n        let pop_count = unpack(self.pop_count_and_head.load(Relaxed)).0;\n        let tail = push_count.wrapping_sub(pop_count);\n\n        let count = tail.wrapping_sub(head);\n        for offset in 0..count {\n            drop(unsafe { self.read_at(head.wrapping_add(offset)) });\n        }\n    }\n}"
+}

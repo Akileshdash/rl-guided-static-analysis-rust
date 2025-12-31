@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "speedy-0.8.7/src/readable_impl.rs",
+    "start_line": 577,
+    "start_col": 9,
+    "end_line": 577,
+    "end_col": 65,
+    "code_snippet": "impl< 'a, T, const N: usize > Drop for State< 'a, T, N > {\n            fn drop( &mut self ) {\n                if !core::mem::needs_drop::< T >() {\n                    return;\n                }\n\n                for item in &mut self.slice[ ..self.count ] {\n                    unsafe {\n                        item.assume_init_drop();\n                    }\n                }\n            }\n        }"
+}

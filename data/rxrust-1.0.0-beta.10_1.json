@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "rxrust-1.0.0-beta.10/src/type_hint.rs",
+    "start_line": 19,
+    "start_col": 1,
+    "end_line": 19,
+    "end_col": 36,
+    "code_snippet": "unsafe impl<T> Send for TypeHint<T> {}"
+}

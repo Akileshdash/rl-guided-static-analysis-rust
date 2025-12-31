@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ort-2.0.0-rc.10/src/memory.rs",
+    "start_line": 246,
+    "start_col": 1,
+    "end_line": 246,
+    "end_col": 33,
+    "code_snippet": "impl Drop for AllocatedBlock<'_> {\n\tfn drop(&mut self) {\n\t\tunsafe { self.allocator.free(self.ptr) };\n\t}\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "s2n-tls-0.3.23/src/config.rs",
+    "start_line": 139,
+    "start_col": 1,
+    "end_line": 139,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Config {\n    /// Corresponds to [s2n_config_free].\n    fn drop(&mut self) {\n        let context = self.context();\n        let count = context.refcount.fetch_sub(1, Ordering::Release);\n        debug_assert!(count > 0, \"refcount should not drop below 1 instance\");\n\n        // only free the config if this is the last instance\n        if count != 1 {\n            return;\n        }\n\n        // Safety\n        //\n        // The use of Ordering and fence mirrors the `Arc` implementation in\n        // the standard library.\n        //\n        // This fence is needed to prevent reordering of use of the data and\n        // deletion of the data.  Because it is marked `Release`, the decreasing\n        // of the reference count synchronizes with this `Acquire` fence. This\n        // means that use of the data happens before decreasing the reference\n        // count, which happens before this fence, which happens before the\n        // deletion of the data.\n        // https://github.com/rust-lang/rust/blob/e012a191d768adeda1ee36a99ef8b92d51920154/library/alloc/src/sync.rs#L1637\n        std::sync::atomic::fence(Ordering::Acquire);\n\n        // This is the last instance so free the context.\n        let context = unsafe {\n            // SAFETY: The reference count is verified to be 1, so this is the\n            // last instance of the config, and the only reference to the context.\n            Box::from_raw(self.context_mut())\n        };\n        drop(context);\n\n        let _ = unsafe { s2n_config_free(self.0.as_ptr()).into_result() };\n    }\n}"
+}

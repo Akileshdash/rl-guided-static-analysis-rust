@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "moka-cht-0.4.2/src/map.rs",
+    "start_line": 780,
+    "start_col": 1,
+    "end_line": 780,
+    "end_col": 40,
+    "code_snippet": "impl<K, V, S> Drop for HashMap<K, V, S> {\n    fn drop(&mut self) {\n        let guard = unsafe { &crossbeam_epoch::unprotected() };\n        atomic::fence(Ordering::Acquire);\n\n        let mut current_ptr = self.bucket_array.load(Ordering::Relaxed, guard);\n\n        while let Some(current_ref) = unsafe { current_ptr.as_ref() } {\n            let next_ptr = current_ref.next.load(Ordering::Relaxed, guard);\n\n            for this_bucket_ptr in current_ref\n                .buckets\n                .iter()\n                .map(|b| b.load(Ordering::Relaxed, guard))\n                .filter(|p| !p.is_null())\n                .filter(|p| next_ptr.is_null() || p.tag() & bucket::TOMBSTONE_TAG == 0)\n            {\n                // only delete tombstones from the newest bucket array\n                // the only way this becomes a memory leak is if there was a panic during a rehash,\n                // in which case i'm going to say that running destructors and freeing memory is\n                // best-effort, and my best effort is to not do it\n                unsafe { bucket::defer_acquire_destroy(guard, this_bucket_ptr) };\n            }\n\n            unsafe { bucket::defer_acquire_destroy(guard, current_ptr) };\n\n            current_ptr = next_ptr;\n        }\n    }\n}"
+}

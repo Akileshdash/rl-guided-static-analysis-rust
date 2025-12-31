@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "ort-2.0.0-rc.10/src/session/run_options.rs",
+    "start_line": 196,
+    "start_col": 1,
+    "end_line": 196,
+    "end_col": 51,
+    "code_snippet": "unsafe impl Sync for RunOptions<NoSelectedOutputs> {}"
+}

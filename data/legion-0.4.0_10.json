@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "legion-0.4.0/src/internals/query/view/try_write.rs",
+    "start_line": 32,
+    "start_col": 1,
+    "end_line": 32,
+    "end_col": 36,
+    "code_snippet": "unsafe impl<T> Sync for TryWrite<T> {}"
+}

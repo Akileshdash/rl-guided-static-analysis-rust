@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "meio-0.97.0/src/ids.rs",
+    "start_line": 65,
+    "start_col": 1,
+    "end_line": 65,
+    "end_col": 32,
+    "code_snippet": "unsafe impl<T> Sync for IdOf<T> {}"
+}

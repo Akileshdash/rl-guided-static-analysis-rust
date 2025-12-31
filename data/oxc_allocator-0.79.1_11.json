@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `vec2::Vec::<'a, T, A>::extend_desugared`",
+    "file": "oxc_allocator-0.79.1/src/vec2/mod.rs",
+    "start_line": 2207,
+    "start_col": 5,
+    "end_line": 2239,
+    "end_col": 6,
+    "code_snippet": "fn extend_desugared<I: Iterator<Item = T>>(&mut self, mut iterator: I) {\n        // This is the case for a general iterator.\n        //\n        // This function should be the moral equivalent of:\n        //\n        //      for item in iterator {\n        //          self.push(item);\n        //      }\n        while let Some(element) = iterator.next() {\n            let len = self.len_usize();\n            if len == self.capacity_usize() {\n                // This reallocation path is rarely taken, especially with prior reservation,\n                // so mark it `#[cold]` and `#[inline(never)]` helps the compiler optimize the\n                // common case, and prevents this cold path from being inlined to the `while` loop,\n                // which increases the execution instructions and hits the performance.\n                #[cold]\n                #[inline(never)]\n                fn reserve_slow<T, A: Alloc>(v: &mut Vec<T, A>, iterator: &impl Iterator) {\n                    let (lower, _) = iterator.size_hint();\n                    v.reserve(lower.saturating_add(1));\n                }\n\n                reserve_slow(self, &iterator);\n            }\n            unsafe {\n                ptr::write(self.as_mut_ptr().add(len), element);\n                // Since next() executes user code which can panic we have to bump the length\n                // after each step.\n                // NB can't overflow since we would have had to alloc the address space\n                self.set_len(len + 1);\n            }\n        }\n    }"
+}

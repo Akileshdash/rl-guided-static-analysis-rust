@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sources::registry::http_remote::tls::with`",
+    "file": "cargo-0.89.0/src/cargo/sources/registry/http_remote.rs",
+    "start_line": 874,
+    "start_col": 5,
+    "end_line": 883,
+    "end_col": 6,
+    "code_snippet": "pub(super) fn with<R>(f: impl FnOnce(Option<&Downloads<'_>>) -> R) -> R {\n        let ptr = PTR.with(|p| p.get());\n        if ptr == 0 {\n            f(None)\n        } else {\n            // Safety: * `ptr` is only set by `set` below which ensures the type is correct.\n            let ptr = unsafe { &*(ptr as *const Downloads<'_>) };\n            f(Some(ptr))\n        }\n    }"
+}

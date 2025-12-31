@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-tempfile-0.7.0/src/tempdir.rs",
+    "start_line": 354,
+    "start_col": 1,
+    "end_line": 354,
+    "end_col": 22,
+    "code_snippet": "impl Drop for TempDir {\n    fn drop(&mut self) {\n        // Ensure all directory handles are closed before we attempt to delete the directory itself via core.\n        drop(unsafe { ManuallyDrop::take(&mut self.dir) });\n        drop(unsafe { ManuallyDrop::take(&mut self.core) });\n    }\n}"
+}

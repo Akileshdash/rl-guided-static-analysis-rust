@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `StackVec::<A>::from_elem`",
+    "file": "stackvector-1.1.1/src/lib.rs",
+    "start_line": 796,
+    "start_col": 5,
+    "end_line": 808,
+    "end_col": 6,
+    "code_snippet": "pub fn from_elem(elem: A::Item, n: usize) -> Self {\n        assert!(n <= A::size());\n        let mut v = StackVec::<A>::new();\n        unsafe {\n            let ptr = v.as_mut_ptr();\n            let mut local_len = SetLenOnDrop::new(&mut v.length);\n            for i in 0..n as isize {\n                ptr::write(ptr.offset(i), elem.clone());\n                local_len.increment_len(1);\n            }\n        }\n        v\n    }"
+}

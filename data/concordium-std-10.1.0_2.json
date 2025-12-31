@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `impls::<impl types::StateBox<T, S>>::get_location`",
+    "file": "concordium-std-10.1.0/src/impls.rs",
+    "start_line": 1377,
+    "start_col": 5,
+    "end_line": 1387,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn get_location(&self) -> &[u8] {\n        match unsafe { &*self.inner.get() } {\n            StateBoxInner::Loaded {\n                entry,\n                ..\n            } => entry.get_key(),\n            StateBoxInner::Reference {\n                prefix,\n            } => &prefix[..],\n        }\n    }"
+}

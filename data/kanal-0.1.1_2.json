@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "kanal-0.1.1/src/future.rs",
+    "start_line": 246,
+    "start_col": 1,
+    "end_line": 246,
+    "end_col": 38,
+    "code_snippet": "impl<T> Drop for ReceiveFuture<'_, T> {\n    fn drop(&mut self) {\n        if self.state.is_waiting() {\n            // try to cancel recv signal\n            if !acquire_internal(self.internal).cancel_recv_signal(&self.sig) {\n                // a sender got signal ownership, receiver should wait until the response\n                if self.sig.async_blocking_wait() {\n                    // got ownership of data that is not going to be used ever again, so drop it\n                    if needs_drop::<T>() {\n                        // Safety: data is not moved it's safe to drop it\n                        unsafe {\n                            self.drop_local_data();\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
+}

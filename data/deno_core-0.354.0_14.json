@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `async_cell::internal::<impl async_cell::AsyncRefCell<T>>::poll_waiter`",
+    "file": "deno_core-0.354.0/async_cell.rs",
+    "start_line": 315,
+    "start_col": 5,
+    "end_line": 343,
+    "end_col": 6,
+    "code_snippet": "fn poll_waiter<M: BorrowModeTrait>(\n      &self,\n      id: usize,\n      cx: &mut Context,\n    ) -> Poll<()> {\n      let borrow_count = self.borrow_count.get();\n      let turn = self.turn.get();\n      if id < turn {\n        // This waiter made it to the front of the line; we reserved a borrow\n        // for it, woke its Waker, and removed the waiter from the queue.\n        // Assertion: BorrowCount::remove() will panic if `mode` is incorrect.\n        let _ = borrow_count.remove(M::borrow_mode());\n        Poll::Ready(())\n      } else {\n        // This waiter is still in line and has not yet been woken.\n        // TODO(piscisaureus): safety comment\n        #[allow(clippy::undocumented_unsafe_blocks)]\n        let waiters = unsafe { &mut *self.waiters.as_ptr() };\n        // Sanity check: id cannot be higher than the last queue element.\n        assert!(id < turn + waiters.len());\n        // Sanity check: since we always call wake_waiters() when the queue head\n        // is updated, it should be impossible to add it to the current borrow.\n        assert!(id > turn || borrow_count.try_add(M::borrow_mode()).is_none());\n        // Save or update the waiter's Waker.\n        let waiter_mut = waiters[id - turn].as_mut().unwrap();\n        waiter_mut.set_waker(cx.waker());\n        Poll::Pending\n      }\n    }"
+}

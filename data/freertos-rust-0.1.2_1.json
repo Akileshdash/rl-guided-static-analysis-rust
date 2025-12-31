@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "freertos-rust-0.1.2/src/timers.rs",
+    "start_line": 182,
+    "start_col": 1,
+    "end_line": 182,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Timer {\n    #[allow(unused_must_use)]\n    fn drop(&mut self) {\n        if self.detached == true { return; }\n\n        unsafe {\n            if let Ok(callback_ptr) = self.get_id() {\n                // free the memory\n                Box::from_raw(callback_ptr as *mut Box<dyn Fn(Timer)>);\n            }\n            \n            // todo: configurable timeout?\n            freertos_rs_timer_delete(self.handle, Duration::ms(1000).to_ticks());\n        }\n    }\n}"
+}

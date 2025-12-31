@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "streamunordered-0.5.4/src/lib.rs",
+    "start_line": 940,
+    "start_col": 1,
+    "end_line": 940,
+    "end_col": 36,
+    "code_snippet": "impl<S> Drop for StreamUnordered<S> {\n    fn drop(&mut self) {\n        // When a `StreamUnordered` is dropped we want to drop all streams\n        // associated with it. At the same time though there may be tons of\n        // wakers flying around which contain `Task<S>` references\n        // inside them. We'll let those naturally get deallocated.\n        unsafe {\n            while !self.head_all.get_mut().is_null() {\n                let head = *self.head_all.get_mut();\n                let task = self.unlink(head);\n                self.release_task(task);\n            }\n        }\n\n        // Note that at this point we could still have a bunch of tasks in the\n        // ready to run queue. None of those tasks, however, have streams\n        // associated with them so they're safe to destroy on any thread. At\n        // this point the `StreamUnordered` struct, the owner of the one strong\n        // reference to the ready to run queue will drop the strong reference.\n        // At that point whichever thread releases the strong refcount last (be\n        // it this thread or some other thread as part of an `upgrade`) will\n        // clear out the ready to run queue and free all remaining tasks.\n        //\n        // While that freeing operation isn't guaranteed to happen here, it's\n        // guaranteed to happen \"promptly\" as no more \"blocking work\" will\n        // happen while there's a strong refcount held.\n    }\n}"
+}

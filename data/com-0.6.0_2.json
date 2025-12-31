@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "com-0.6.0/src/interfaces/iunknown.rs",
+    "start_line": 9,
+    "start_col": 1,
+    "end_line": 12,
+    "end_col": 34,
+    "code_snippet": "interfaces! {\n    /// [IUnknown](https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown) COM interface\n    #[uuid(\"00000000-0000-0000-C000-000000000046\")]\n    pub unsafe interface IUnknown {\n        /// The COM [`QueryInterface` Method]\n        ///\n        /// This method normally should not be called directly. Interfaces that implement\n        /// `IUnknown` also implement [`IUnknown::query_interface`] which is a safe wrapper around\n        /// `IUnknown::QueryInterface`.\n        ///\n        /// [`QueryInterface` Method]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-queryinterface(refiid_void)\n        /// [`IUnknown::query_interface`]: trait.IUnknown.html#method.query_interface\n        pub unsafe fn QueryInterface(&self, riid: *const GUID, ppv: *mut *mut c_void) -> HRESULT;\n\n        /// The COM [`AddRef` Method]\n        ///\n        /// This method normally should not be called directly. This method is used by\n        /// the `Clone` implementation of interfaces to implement the reference counting mechanism.\n        ///\n        /// [`AddRef` Method]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-addref\n        pub unsafe fn AddRef(&self) -> u32;\n\n        /// The COM [`Release` Method]\n        ///\n        /// This method normally should not be called directly. This method is used by\n        /// the `Drop` implementation of interfaces to implement the reference counting mechanism.\n        ///\n        /// [`Release` Method]: https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iunknown-release\n        /// [`ComPtr`]: struct.ComPtr.html\n        pub unsafe fn Release(&self) -> u32;\n    }\n\n}"
+}

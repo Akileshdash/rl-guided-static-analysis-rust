@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cross-0.2.5/src/temp.rs",
+    "start_line": 75,
+    "start_col": 1,
+    "end_line": 75,
+    "end_col": 23,
+    "code_snippet": "impl Drop for TempFile {\n    fn drop(&mut self) {\n        // SAFETY: safe if we only modify the stack via `TempFile`.\n        unsafe {\n            pop_tempfile();\n        }\n    }\n}"
+}

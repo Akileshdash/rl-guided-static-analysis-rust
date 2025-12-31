@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "may_queue-0.1.23/src/mpsc_list.rs",
+    "start_line": 100,
+    "start_col": 1,
+    "end_line": 100,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Queue<T> {\n    fn drop(&mut self) {\n        while self.pop().is_some() {}\n        // release the stub\n        let _: Box<Node<T>> = unsafe { Box::from_raw(*self.tail.get()) };\n    }\n}"
+}

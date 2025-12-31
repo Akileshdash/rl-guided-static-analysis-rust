@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "signal-hook-0.3.18/src/iterator/exfiltrator/raw.rs",
+    "start_line": 23,
+    "start_col": 1,
+    "end_line": 23,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Slot {\n    fn drop(&mut self) {\n        let ptr = self.0.load(Ordering::Acquire);\n        if !ptr.is_null() {\n            drop(unsafe { Box::from_raw(ptr) });\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "hybrid-array-0.3.1/src/lib.rs",
+    "start_line": 796,
+    "start_col": 1,
+    "end_line": 796,
+    "end_col": 64,
+    "code_snippet": "unsafe impl<T, U: ArraySize> Sync for Array<T, U> where T: Sync {}"
+}

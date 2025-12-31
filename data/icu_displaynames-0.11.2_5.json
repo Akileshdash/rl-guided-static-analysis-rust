@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::LanguageDisplayNamesV1<'static> as icu_provider::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_displaynames-0.11.2/src/provider.rs",
+    "start_line": 81,
+    "start_col": 1,
+    "end_line": 81,
+    "end_col": 88,
+    "code_snippet": "#[icu_provider::data_struct(LanguageDisplayNamesV1Marker = \"displaynames/languages@1\")]\n#[derive(Debug, PartialEq, Clone, Default)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(\n    feature = \"datagen\",\n    derive(serde::Serialize, databake::Bake),\n    databake(path = icu_displaynames::provider),\n)]\n#[yoke(prove_covariance_manually)]\n/// LanguageDisplayNames provides mapping between languages and display names.\npub struct LanguageDisplayNamesV1<'data> {\n    /// Mapping for language to display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub names: ZeroMap<'data, UnvalidatedLanguage, str>,\n    /// Mapping for language to short display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub short_names: ZeroMap<'data, UnvalidatedLanguage, str>,\n    /// Mapping for language to long display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub long_names: ZeroMap<'data, UnvalidatedLanguage, str>,\n    /// Mapping for language to menu variant display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub menu_names: ZeroMap<'data, UnvalidatedLanguage, str>,\n}"
+}

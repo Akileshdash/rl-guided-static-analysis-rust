@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "acpi-5.2.0/src/managed_slice.rs",
+    "start_line": 43,
+    "start_col": 1,
+    "end_line": 45,
+    "end_col": 18,
+    "code_snippet": "impl<T, A> Drop for ManagedSlice<'_, T, A>\nwhere\n    A: Allocator,\n{\n    fn drop(&mut self) {\n        unsafe {\n            let slice_ptr = NonNull::new_unchecked(self.slice.as_ptr().cast_mut().cast::<u8>());\n            let slice_layout =\n                Layout::from_size_align_unchecked(mem::size_of_val(self.slice), mem::align_of_val(self.slice));\n            self.allocator.deallocate(slice_ptr, slice_layout);\n        }\n    }\n}"
+}

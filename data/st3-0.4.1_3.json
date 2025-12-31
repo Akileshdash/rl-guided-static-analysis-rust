@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "st3-0.4.1/src/lifo.rs",
+    "start_line": 611,
+    "start_col": 1,
+    "end_line": 611,
+    "end_col": 47,
+    "code_snippet": "unsafe impl<'a, T: Send> Sync for Drain<'a, T> {}"
+}

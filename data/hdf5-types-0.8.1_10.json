@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<(D, E, F, G, H, I, J, K, L) as h5type::H5Type>::type_descriptor`",
+    "file": "hdf5-types-0.8.1/src/h5type.rs",
+    "start_line": 318,
+    "start_col": 13,
+    "end_line": 325,
+    "end_col": 14,
+    "code_snippet": "fn type_descriptor() -> TypeDescriptor {\n                let origin: *const Self = ptr::null();\n                let mut fields = Vec::new();\n                impl_tuple!(@parse_fields [] origin fields | $t, $($tt),*);\n                let size = mem::size_of::<Self>();\n                fields.sort_by_key(|f| f.offset);\n                TypeDescriptor::Compound(CompoundType { fields, size })\n            }"
+}

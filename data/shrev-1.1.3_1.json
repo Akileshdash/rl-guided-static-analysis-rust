@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "shrev-1.1.3/src/storage.rs",
+    "start_line": 553,
+    "start_col": 1,
+    "end_line": 553,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for RingBuffer<T> {\n    fn drop(&mut self) {\n        unsafe {\n            self.data.clean(self.last_index + 1);\n        }\n    }\n}"
+}

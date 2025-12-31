@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vapoursynth-0.4.0/src/frame.rs",
+    "start_line": 71,
+    "start_col": 1,
+    "end_line": 71,
+    "end_col": 34,
+    "code_snippet": "impl<'core> Drop for Frame<'core> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            API::get_cached().free_frame(self);\n        }\n    }\n}"
+}

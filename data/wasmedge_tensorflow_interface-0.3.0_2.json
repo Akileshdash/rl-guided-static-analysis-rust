@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmedge_tensorflow_interface-0.3.0/src/lib.rs",
+    "start_line": 218,
+    "start_col": 1,
+    "end_line": 218,
+    "end_col": 28,
+    "code_snippet": "impl Drop for TFLiteSession {\n    fn drop(&mut self) {\n        unsafe {\n            generated_tflite::delete_session(self.context).unwrap();\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "embassy-sync-0.7.0/src/lazy_lock.rs",
+    "start_line": 97,
+    "start_col": 1,
+    "end_line": 97,
+    "end_col": 35,
+    "code_snippet": "impl<T, F> Drop for LazyLock<T, F> {\n    fn drop(&mut self) {\n        if self.init.load(Ordering::Acquire) {\n            unsafe { ManuallyDrop::drop(&mut self.data.get_mut().value) };\n        } else {\n            unsafe { ManuallyDrop::drop(&mut self.data.get_mut().f) };\n        }\n    }\n}"
+}

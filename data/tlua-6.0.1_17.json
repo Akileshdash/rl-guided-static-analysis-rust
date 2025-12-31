@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<functions_write::Function<Z, (C, D, E, F, G, H, I, J, K, M, N), R> as PushInto<L>>::push_into_lua`",
+    "file": "tlua-6.0.1/src/functions_write.rs",
+    "start_line": 226,
+    "start_col": 13,
+    "end_line": 256,
+    "end_col": 14,
+    "code_snippet": "fn push_into_lua(self, lua: L) -> Result<PushGuard<L>, (Void, L)> {\n                unsafe {\n                    // pushing the function pointer as a userdata\n                    let ud = ffi::lua_newuserdata(lua.as_lua(), mem::size_of::<Self>() as _);\n                    ptr::write(ud.cast(), self);\n\n                    if std::mem::needs_drop::<Self>() {\n                        // Creating a metatable.\n                        ffi::lua_newtable(lua.as_lua());\n\n                        // Index \"__gc\" in the metatable calls the object's destructor.\n                        lua.as_lua().push(\"__gc\").forget_internal();\n                        ffi::lua_pushcfunction(lua.as_lua(), wrap_gc::<Self>);\n                        ffi::lua_settable(lua.as_lua(), -3);\n\n                        ffi::lua_setmetatable(lua.as_lua(), -2);\n                    }\n\n                    // pushing wrapper as a closure\n                    ffi::lua_pushcclosure(lua.as_lua(), wrapper::<Self, _, R>, 1);\n                    return Ok(PushGuard::new(lua, 1));\n\n                    extern \"C-unwind\" fn wrap_gc<T>(lua: LuaState) -> i32 {\n                        unsafe {\n                            let obj = ffi::lua_touserdata(lua, -1);\n                            ptr::drop_in_place(obj.cast::<T>());\n                            0\n                        }\n                    }\n                }\n            }"
+}

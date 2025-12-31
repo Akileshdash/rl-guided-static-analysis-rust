@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "protobuf-4.32.0-rc.1/src/map.rs",
+    "start_line": 77,
+    "start_col": 1,
+    "end_line": 77,
+    "end_col": 61,
+    "code_snippet": "impl<K: Proxied, V: ProxiedInMapValue<K>> Drop for Map<K, V> {\n    fn drop(&mut self) {\n        // SAFETY:\n        // - `drop` is only called once.\n        // - 'map_free` is only called here.\n        unsafe { V::map_free(Private, self) }\n    }\n}"
+}

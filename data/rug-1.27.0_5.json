@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `<misc::VecLike<T> as std::ops::Drop>::drop`",
+    "file": "rug-1.27.0/src/misc.rs",
+    "start_line": 479,
+    "start_col": 5,
+    "end_line": 490,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        // if capacity is zero, ptr is dangling\n        if self.cap == 0 {\n            return;\n        }\n        unsafe {\n            let s = ptr::slice_from_raw_parts_mut(self.ptr, self.len);\n            self.len = 0;\n            ptr::drop_in_place(s);\n            libc::free(self.ptr.cast());\n        }\n    }"
+}

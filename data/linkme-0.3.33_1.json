@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "linkme-0.3.33/src/distributed_slice.rs",
+    "start_line": 146,
+    "start_col": 1,
+    "end_line": 146,
+    "end_col": 37,
+    "code_snippet": "unsafe impl<T> Sync for StaticPtr<T> {}"
+}

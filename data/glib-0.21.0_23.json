@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `collections::slist::SList::<T>::retain`",
+    "file": "glib-0.21.0/src/collections/slist.rs",
+    "start_line": 348,
+    "start_col": 5,
+    "end_line": 363,
+    "end_col": 6,
+    "code_snippet": "pub fn retain(&mut self, mut f: impl FnMut(&T) -> bool) {\n        if let Some(head) = self.ptr {\n            unsafe {\n                let mut ptr = head.as_ptr();\n                while !ptr.is_null() {\n                    let item = &*((*ptr).data as *const ffi::gpointer as *const T);\n                    let next = (*ptr).next;\n                    if !f(item) {\n                        ptr::drop_in_place(&mut (*ptr).data as *mut ffi::gpointer as *mut T);\n                        self.ptr = ptr::NonNull::new(ffi::g_slist_delete_link(head.as_ptr(), ptr));\n                    }\n                    ptr = next;\n                }\n            }\n        }\n    }"
+}

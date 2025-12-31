@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "any_vec-0.14.0/src/ops/drain.rs",
+    "start_line": 50,
+    "start_col": 1,
+    "end_line": 50,
+    "end_col": 65,
+    "code_snippet": "impl<'a, AnyVecPtr: IAnyVecRawPtr> Drop for Drain<'a, AnyVecPtr>\n{\n    fn drop(&mut self) {\n        use any_vec_ptr::utils::*;\n\n        // 1. drop the rest of the elements\n        unsafe{\n            drop_elements_range(\n                self.iter.any_vec_ptr,\n                self.iter.index,\n                self.iter.end\n            );\n        }\n\n        // 2. mem move\n        unsafe{\n            let elements_left = self.original_len - self.iter.end;\n            move_elements_at(\n                self.iter.any_vec_ptr,\n                self.iter.end,\n                self.start,\n                elements_left\n            );\n        }\n\n        // 3. len\n        let distance = self.iter.end - self.start;\n        let any_vec_raw = unsafe{ self.iter.any_vec_ptr.any_vec_raw_mut() };\n        any_vec_raw.len = self.original_len - distance;\n    }\n}"
+}

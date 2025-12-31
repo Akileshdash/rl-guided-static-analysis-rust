@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "actix-0.13.5/src/address/channel.rs",
+    "start_line": 813,
+    "start_col": 1,
+    "end_line": 813,
+    "end_col": 43,
+    "code_snippet": "impl<A: Actor> Drop for AddressReceiver<A> {\n    fn drop(&mut self) {\n        // close\n        self.inner.set_closed();\n\n        // Wake up any threads waiting as they'll see that we've closed the\n        // channel and will continue on their merry way.\n        while let Some(task) = unsafe { self.inner.parked_queue.pop_spin() } {\n            task.lock().notify();\n        }\n\n        // Drain the channel of all pending messages\n        loop {\n            match self.next_message() {\n                Poll::Ready(Some(_)) => {}\n                Poll::Ready(None) => break,\n                Poll::Pending => {\n                    let state = decode_state(self.inner.state.load(SeqCst));\n\n                    // If the channel is closed, then there is no need to park.\n                    if state.is_closed() {\n                        break;\n                    }\n\n                    // TODO: Spinning isn't ideal, it might be worth\n                    // investigating using a condvar or some other strategy\n                    // here. That said, if this case is hit, then another thread\n                    // is about to push the value into the queue and this isn't\n                    // the only spinlock in the impl right now.\n                    thread::yield_now();\n                }\n            }\n        }\n    }\n}"
+}

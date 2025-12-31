@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "bevy_utils-0.16.1/src/synccell.rs",
+    "start_line": 55,
+    "start_col": 1,
+    "end_line": 55,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T: ?Sized> Sync for SyncCell<T> {}"
+}

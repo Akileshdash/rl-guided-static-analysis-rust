@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "evdev-0.13.1/src/uinput.rs",
+    "start_line": 526,
+    "start_col": 1,
+    "end_line": 526,
+    "end_col": 28,
+    "code_snippet": "impl Drop for FFUploadEvent {\n    fn drop(&mut self) {\n        unsafe {\n            let _ = sys::ui_end_ff_upload(self.fd.as_raw_fd(), &self.request);\n        }\n    }\n}"
+}

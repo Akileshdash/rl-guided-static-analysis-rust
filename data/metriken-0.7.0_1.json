@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "metriken-0.7.0/src/lazy.rs",
+    "start_line": 49,
+    "start_col": 1,
+    "end_line": 49,
+    "end_col": 68,
+    "code_snippet": "unsafe impl<T, F: Send> Sync for Lazy<T, F> where OnceCell<T>: Sync {}"
+}

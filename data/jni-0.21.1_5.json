@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jni-0.21.1/src/wrapper/objects/auto_elements_critical.rs",
+    "start_line": 130,
+    "start_col": 1,
+    "end_line": 131,
+    "end_col": 68,
+    "code_snippet": "impl<'local, 'other_local, 'array, 'env, T: TypeArray> Drop\n    for AutoElementsCritical<'local, 'other_local, 'array, 'env, T>\n{\n    fn drop(&mut self) {\n        // Safety: `self.mode` is valid and the array has not yet been released.\n        let res = unsafe { self.release_primitive_array_critical(self.mode as i32) };\n\n        match res {\n            Ok(()) => {}\n            Err(e) => error!(\"error releasing primitive array: {:#?}\", e),\n        }\n    }\n}"
+}

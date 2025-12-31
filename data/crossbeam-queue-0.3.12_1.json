@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crossbeam-queue-0.3.12/src/array_queue.rs",
+    "start_line": 448,
+    "start_col": 1,
+    "end_line": 448,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for ArrayQueue<T> {\n    fn drop(&mut self) {\n        if mem::needs_drop::<T>() {\n            // Get the index of the head.\n            let head = *self.head.get_mut();\n            let tail = *self.tail.get_mut();\n\n            let hix = head & (self.one_lap - 1);\n            let tix = tail & (self.one_lap - 1);\n\n            let len = if hix < tix {\n                tix - hix\n            } else if hix > tix {\n                self.cap - hix + tix\n            } else if tail == head {\n                0\n            } else {\n                self.cap\n            };\n\n            // Loop over all slots that hold a message and drop them.\n            for i in 0..len {\n                // Compute the index of the next slot holding a message.\n                let index = if hix + i < self.cap {\n                    hix + i\n                } else {\n                    hix + i - self.cap\n                };\n\n                unsafe {\n                    debug_assert!(index < self.buffer.len());\n                    let slot = self.buffer.get_unchecked_mut(index);\n                    (*slot.value.get()).assume_init_drop();\n                }\n            }\n        }\n    }\n}"
+}

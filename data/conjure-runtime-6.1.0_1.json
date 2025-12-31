@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "conjure-runtime-6.1.0/src/service/node/limiter/deficit_semaphore.rs",
+    "start_line": 155,
+    "start_col": 15,
+    "end_line": 155,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\npub struct Acquire {\n    semaphore: Arc<DeficitSemaphore>,\n    node: Option<Node>,\n    #[pin]\n    _p: PhantomPinned,\n}"
+}

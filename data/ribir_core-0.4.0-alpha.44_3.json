@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `widget_tree::widget_id::WidgetId::wrap_node`",
+    "file": "ribir_core-0.4.0-alpha.44/src/widget_tree/widget_id.rs",
+    "start_line": 259,
+    "start_col": 3,
+    "end_line": 269,
+    "end_col": 4,
+    "code_snippet": "pub(crate) fn wrap_node(\n    self, tree: &mut WidgetTree,\n    f: impl FnOnce(Box<dyn RenderQueryable>) -> Box<dyn RenderQueryable>,\n  ) {\n    let node = self.get_node_mut(tree).unwrap();\n    unsafe {\n      let data = Box::from_raw(&mut **node as *mut _);\n      let copied = std::mem::replace(node, f(data));\n      std::mem::forget(copied)\n    }\n  }"
+}

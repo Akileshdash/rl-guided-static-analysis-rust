@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `packet::signature::types::Signature::verify_subkey_binding`",
+    "file": "pgp-0.16.0/src/packet/signature/types.rs",
+    "start_line": 518,
+    "start_col": 5,
+    "end_line": 560,
+    "end_col": 6,
+    "code_snippet": "pub fn verify_subkey_binding<P, K>(&self, signer: &P, signee: &K) -> Result<()>\n    where\n        P: PublicKeyTrait + Serialize,\n        K: PublicKeyTrait + Serialize,\n    {\n        debug!(\n            \"verifying subkey binding: {:#?} - {:#?} - {:#?}\",\n            self, signer, signee,\n        );\n\n        let InnerSignature::Known {\n            ref config,\n            ref signed_hash_value,\n            ref signature,\n        } = self.inner\n        else {\n            unsupported_err!(\"signature version {:?}\", self.version());\n        };\n\n        Self::check_signature_key_version_alignment(&signer, config)?;\n        Self::check_signature_hash_strength(config)?;\n\n        let mut hasher = config.hash_alg.new_hasher()?;\n\n        if let SignatureVersionSpecific::V6 { salt } = &config.version_specific {\n            hasher.update(salt.as_ref())\n        }\n\n        serialize_for_hashing(signer, &mut hasher)?; // primary\n        serialize_for_hashing(signee, &mut hasher)?; // subkey\n\n        let len = config.hash_signature_data(&mut hasher)?;\n        hasher.update(&config.trailer(len)?);\n\n        let hash = &hasher.finalize()[..];\n        ensure_eq!(\n            signed_hash_value,\n            &hash[0..2],\n            \"subkey binding: invalid signed hash value\"\n        );\n\n        signer.verify_signature(config.hash_alg, hash, signature)\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "monoio-0.2.4/src/driver/shared_fd.rs",
+    "start_line": 523,
+    "start_col": 1,
+    "end_line": 523,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Inner {\n    fn drop(&mut self) {\n        let fd = self.fd;\n        let state = unsafe { &mut *self.state.get() };\n        #[allow(unreachable_patterns)]\n        match state {\n            #[cfg(all(target_os = \"linux\", feature = \"iouring\"))]\n            State::Uring(UringState::Init) | State::Uring(UringState::Waiting(..)) => {\n                if super::op::Op::close(fd).is_err() {\n                    let _ = unsafe { std::fs::File::from_raw_fd(fd) };\n                };\n            }\n            #[cfg(feature = \"legacy\")]\n            State::Legacy(idx) => drop_legacy(fd, *idx),\n            #[cfg(all(target_os = \"linux\", feature = \"iouring\", feature = \"poll-io\"))]\n            State::Uring(UringState::Legacy(idx)) => drop_uring_legacy(fd, *idx),\n            _ => {}\n        }\n    }\n}"
+}

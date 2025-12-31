@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "may_queue-0.1.23/src/spsc.rs",
+    "start_line": 302,
+    "start_col": 1,
+    "end_line": 302,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Queue<T> {\n    fn drop(&mut self) {\n        //  pop all the element to make sure the queue is empty\n        while !self.bulk_pop().is_empty() {}\n        let head = self.head.block.load(Ordering::Relaxed);\n        let tail = self.tail.block.load(Ordering::Relaxed);\n        assert_eq!(head, tail);\n\n        #[cfg(feature = \"inner_cache\")]\n        let mut first = self.first.load(Ordering::Relaxed);\n        #[cfg(feature = \"inner_cache\")]\n        while first != tail {\n            let next = unsafe { &*first }.next.load(Ordering::Relaxed);\n            let _ = unsafe { Box::from_raw(first) };\n            first = next;\n        }\n\n        let _unused_block = unsafe { Box::from_raw(head) };\n    }\n}"
+}

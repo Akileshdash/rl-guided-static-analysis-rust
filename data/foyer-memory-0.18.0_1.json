@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<eviction::lru::Lru<K, V, P> as eviction::Eviction>::push`",
+    "file": "foyer-memory-0.18.0/src/eviction/lru.rs",
+    "start_line": 157,
+    "start_col": 5,
+    "end_line": 177,
+    "end_col": 6,
+    "code_snippet": "fn push(&mut self, record: Arc<Record<Self>>) {\n        let state = unsafe { &mut *record.state().get() };\n\n        strict_assert!(!state.link.is_linked());\n\n        record.set_in_eviction(true);\n\n        match record.properties().hint().unwrap_or_default() {\n            Hint::Normal => {\n                state.in_high_priority_pool = true;\n                self.high_priority_weight += record.weight();\n                self.high_priority_list.push_back(record);\n\n                self.may_overflow_high_priority_pool();\n            }\n            Hint::Low => {\n                state.in_high_priority_pool = false;\n                self.list.push_back(record);\n            }\n        }\n    }"
+}

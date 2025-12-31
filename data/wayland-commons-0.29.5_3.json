@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wayland-commons-0.29.5/src/lib.rs",
+    "start_line": 217,
+    "start_col": 1,
+    "end_line": 217,
+    "end_col": 40,
+    "code_snippet": "impl<T: ?Sized> Drop for ThreadGuard<T> {\n    fn drop(&mut self) {\n        // We can only actually perform the drop if we are on the right thread\n        // otherwise it may be racy, so we just leak the value\n        if self.thread == ::std::thread::current().id() {\n            unsafe { std::mem::ManuallyDrop::drop(&mut self.val) }\n        }\n    }\n}"
+}

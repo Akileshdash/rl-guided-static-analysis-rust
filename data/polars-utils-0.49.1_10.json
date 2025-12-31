@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `parma::raw::RawTable::<K, V>::gc`",
+    "file": "polars-utils-0.49.1/src/parma/raw/mod.rs",
+    "start_line": 626,
+    "start_col": 5,
+    "end_line": 648,
+    "end_col": 6,
+    "code_snippet": "pub unsafe fn gc<F: FnOnce()>(&self, drop_guard: F) {\n        let mut freelist_head = self\n            .freelist_head\n            .swap(core::ptr::null_mut(), Ordering::Acquire);\n        let old_allocs = core::mem::take(&mut self.alloc_lock.lock().unwrap().old_allocs);\n        drop_guard();\n\n        unsafe {\n            while !freelist_head.is_null() {\n                let state = *(*EntryHeader::state_ptr(freelist_head)).get_mut();\n                if state.addr() & INIT_BIT != 0 {\n                    core::ptr::drop_in_place(EntryHeader::val_ptr(freelist_head));\n                }\n                K::drop_in_place(EntryHeader::key_ptr(freelist_head));\n                EntryHeader::free(freelist_head);\n                freelist_head = state.map_addr(|a| a & !(INIT_BIT | WAIT_BIT | DELETE_BIT));\n            }\n\n            for alloc in old_allocs {\n                AllocHeader::free(alloc);\n            }\n        }\n    }"
+}

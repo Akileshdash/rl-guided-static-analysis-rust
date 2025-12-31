@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hvm-2.0.22/src/hvm.rs",
+    "start_line": 531,
+    "start_col": 1,
+    "end_line": 531,
+    "end_col": 27,
+    "code_snippet": "impl<'a> Drop for GNet<'a> {\n  fn drop(&mut self) {\n    let nlay = Layout::array::<APair>(self.nlen).unwrap();\n    let vlay = Layout::array::<APair>(self.vlen).unwrap();\n    unsafe {\n      dealloc(self.node.as_mut_ptr() as *mut u8, nlay);\n      dealloc(self.vars.as_mut_ptr() as *mut u8, vlay);\n    }\n  }\n\n}"
+}

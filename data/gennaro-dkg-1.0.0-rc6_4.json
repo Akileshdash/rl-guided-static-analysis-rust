@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "gennaro-dkg-1.0.0-rc6/src/participant.rs",
+    "start_line": 97,
+    "start_col": 1,
+    "end_line": 100,
+    "end_col": 62,
+    "code_snippet": "unsafe impl<I, G> Sync for Participant<I, G>\nwhere\n    I: ParticipantImpl<G> + Default,\n    G: GroupHasher + SumOfProducts + GroupEncoding + Default,\n{\n}"
+}

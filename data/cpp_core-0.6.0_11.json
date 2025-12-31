@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ops_impls::<impl std::ops::BitXor<U> for ptr::Ptr<T>>::bitxor`",
+    "file": "cpp_core-0.6.0/src/ops_impls.rs",
+    "start_line": 27,
+    "start_col": 13,
+    "end_line": 29,
+    "end_col": 14,
+    "code_snippet": "fn $func(self, rhs: U) -> Self::Output {\n                unsafe { (*self.as_raw_ptr()).$func(rhs) }\n            }"
+}

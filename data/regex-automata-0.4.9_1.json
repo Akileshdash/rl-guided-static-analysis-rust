@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "regex-automata-0.4.9/src/util/lazy.rs",
+    "start_line": 213,
+    "start_col": 5,
+    "end_line": 213,
+    "end_col": 35,
+    "code_snippet": "impl<T, F> Drop for Lazy<T, F> {\n        fn drop(&mut self) {\n            let ptr = *self.data.get_mut();\n            if !ptr.is_null() {\n                // SAFETY: We just checked that 'ptr' is not null. And since\n                // we have exclusive access, there are no races to worry about.\n                drop(unsafe { Box::from_raw(ptr) });\n            }\n        }\n    }"
+}

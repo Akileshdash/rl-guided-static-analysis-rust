@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "eyre-0.6.12/src/ptr.rs",
+    "start_line": 122,
+    "start_col": 1,
+    "end_line": 122,
+    "end_col": 72,
+    "code_snippet": "unsafe impl<'a, T: ?Sized> Sync for MutPtr<'a, T> where &'a mut T: Sync {}"
+}

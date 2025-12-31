@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "zerocopy-0.8.26/src/util/mod.rs",
+    "start_line": 30,
+    "start_col": 1,
+    "end_line": 30,
+    "end_col": 55,
+    "code_snippet": "unsafe impl<T: ?Sized> Send for SendSyncPhantomData<T> {}\n// SAFETY: `SendSyncPhantomData` does not enable any behavior which isn't sound"
+}

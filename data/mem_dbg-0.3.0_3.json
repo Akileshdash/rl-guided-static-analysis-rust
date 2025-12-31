@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `impl_mem_dbg::<impl MemDbgImpl for std::cell::Cell<T>>::_mem_dbg_rec_on`",
+    "file": "mem_dbg-0.3.0/src/impl_mem_dbg.rs",
+    "start_line": 370,
+    "start_col": 5,
+    "end_line": 382,
+    "end_col": 6,
+    "code_snippet": "fn _mem_dbg_rec_on(\n        &self,\n        writer: &mut impl core::fmt::Write,\n        total_size: usize,\n        max_depth: usize,\n        prefix: &mut String,\n        is_last: bool,\n        flags: DbgFlags,\n    ) -> core::fmt::Result {\n        unsafe {\n            (*self.as_ptr())._mem_dbg_rec_on(writer, total_size, max_depth, prefix, is_last, flags)\n        }\n    }"
+}

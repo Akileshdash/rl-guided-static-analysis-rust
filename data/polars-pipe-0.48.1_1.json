@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<executors::sinks::group_by::aggregates::mean::MeanAgg<K> as executors::sinks::group_by::aggregates::interface::AggregateFn>::pre_agg_ordered`",
+    "file": "polars-pipe-0.48.1/src/executors/sinks/group_by/aggregates/mean.rs",
+    "start_line": 64,
+    "start_col": 5,
+    "end_line": 93,
+    "end_col": 6,
+    "code_snippet": "fn pre_agg_ordered(\n        &mut self,\n        _chunk_idx: IdxSize,\n        offset: IdxSize,\n        length: IdxSize,\n        values: &Series,\n    ) {\n        // we must cast because mean might be a different dtype\n        let arr = unsafe {\n            let arr = values.chunks().get_unchecked(0);\n            arr.sliced_unchecked(offset as usize, length as usize)\n        };\n        let dtype = K::PolarsType::get_static_dtype().to_arrow(CompatLevel::newest());\n        let arr = polars_compute::cast::cast_unchecked(arr.as_ref(), &dtype).unwrap();\n        let arr = unsafe {\n            arr.as_any()\n                .downcast_ref::<PrimitiveArray<K>>()\n                .unwrap_unchecked()\n        };\n        match (wrapping_sum_arr(arr), self.sum) {\n            (val, Some(sum)) => {\n                self.sum = Some(sum + val);\n                self.count += (arr.len() - arr.null_count()) as IdxSize;\n            },\n            (val, None) => {\n                self.sum = Some(val);\n                self.count += (arr.len() - arr.null_count()) as IdxSize;\n            },\n        }\n    }"
+}

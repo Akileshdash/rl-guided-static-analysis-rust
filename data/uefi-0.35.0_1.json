@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "uefi-0.35.0/src/boot.rs",
+    "start_line": 1485,
+    "start_col": 1,
+    "end_line": 1485,
+    "end_col": 33,
+    "code_snippet": "impl Drop for ProtocolsPerHandle {\n    fn drop(&mut self) {\n        let _ = unsafe { free_pool(self.protocols.cast::<u8>()) };\n    }\n}"
+}

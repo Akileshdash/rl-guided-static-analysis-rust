@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "unicycle-0.10.2/src/wake_set.rs",
+    "start_line": 158,
+    "start_col": 1,
+    "end_line": 158,
+    "end_col": 28,
+    "code_snippet": "impl Drop for SharedWakeSet {\n    fn drop(&mut self) {\n        let wake_set = self.wake_set.load(Ordering::Acquire);\n        debug_assert!(!wake_set.is_null());\n\n        // Safety: At this point, there are no other ways to access the\n        // `SharedWakeSet`, so we are not racing against someone trying to call\n        // wake. Nor are we racing against `Unordered` dropping the wake set\n        // since this is the active set which has been swapped in exclusively.\n        unsafe {\n            drop(Box::from_raw(wake_set));\n        }\n    }\n}"
+}

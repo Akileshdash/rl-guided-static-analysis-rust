@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ribir_core-0.4.0-alpha.44/src/window.rs",
+    "start_line": 1039,
+    "start_col": 1,
+    "end_line": 1039,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Window {\n  // Safety: We retain ownership of the box in the constructor and release it\n  // here.\n  fn drop(&mut self) { let _release_tree = unsafe { Box::from_raw(self.tree.as_ptr()) }; }\n}"
+}

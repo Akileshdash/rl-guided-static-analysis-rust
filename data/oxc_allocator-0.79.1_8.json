@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "oxc_allocator-0.79.1/src/hash_map.rs",
+    "start_line": 56,
+    "start_col": 1,
+    "end_line": 56,
+    "end_col": 45,
+    "code_snippet": "unsafe impl<K, V> Sync for HashMap<'_, K, V> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::boxed::Box<T> as update::Update>::maybe_update`",
+    "file": "salsa-0.23.0/src/update.rs",
+    "start_line": 357,
+    "start_col": 5,
+    "end_line": 361,
+    "end_col": 6,
+    "code_snippet": "unsafe fn maybe_update(old_pointer: *mut Self, new_box: Self) -> bool {\n        let old_box: &mut Box<T> = unsafe { &mut *old_pointer };\n\n        unsafe { T::maybe_update(&mut **old_box, *new_box) }\n    }"
+}

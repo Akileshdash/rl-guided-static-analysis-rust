@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<rc::ArchivedRc<T, F> as bytecheck::CheckBytes<__C>>::check_bytes`",
+    "file": "rkyv-0.8.11/src/rc.rs",
+    "start_line": 49,
+    "start_col": 12,
+    "end_line": 49,
+    "end_col": 33,
+    "code_snippet": "derive(bytecheck::CheckBytes),\n    bytecheck(verify)\n)]\npub struct ArchivedRc<T: ArchivePointee + ?Sized, F> {\n    ptr: RelPtr<T>,\n    _phantom: PhantomData<F>,\n}"
+}

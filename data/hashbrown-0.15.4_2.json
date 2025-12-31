@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hashbrown-0.15.4/src/raw/mod.rs",
+    "start_line": 3892,
+    "start_col": 1,
+    "end_line": 3892,
+    "end_col": 49,
+    "code_snippet": "impl<T, A: Allocator> Drop for RawIntoIter<T, A> {\n    #[cfg_attr(feature = \"inline-more\", inline)]\n    fn drop(&mut self) {\n        unsafe {\n            // Drop all remaining elements\n            self.iter.drop_elements();\n\n            // Free the table\n            if let Some((ptr, layout, ref alloc)) = self.allocation {\n                alloc.deallocate(ptr, layout);\n            }\n        }\n    }\n}"
+}

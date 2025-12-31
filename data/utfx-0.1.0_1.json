@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "utfx-0.1.0/src/ucstring.rs",
+    "start_line": 1432,
+    "start_col": 1,
+    "end_line": 1432,
+    "end_col": 36,
+    "code_snippet": "impl<C: UChar> Drop for UCString<C> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            *self.inner.get_unchecked_mut(0) = UChar::NUL;\n        }\n    }\n}"
+}

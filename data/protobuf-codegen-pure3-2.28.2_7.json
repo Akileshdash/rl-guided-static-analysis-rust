@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<linked_hash_map::LinkedHashMap<K, V, S> as std::iter::IntoIterator>::into_iter`",
+    "file": "protobuf-codegen-pure3-2.28.2/src/linked_hash_map.rs",
+    "start_line": 1288,
+    "start_col": 5,
+    "end_line": 1312,
+    "end_col": 6,
+    "code_snippet": "fn into_iter(mut self) -> IntoIter<K, V> {\n        let (head, tail) = if !self.head.is_null() {\n            unsafe { ((*self.head).prev, (*self.head).next) }\n        } else {\n            (ptr::null_mut(), ptr::null_mut())\n        };\n        let len = self.len();\n\n        if !self.head.is_null() {\n            unsafe { drop_empty_node(self.head) }\n        }\n        self.clear_free_list();\n        // drop the HashMap but not the LinkedHashMap\n        unsafe {\n            ptr::drop_in_place(&mut self.map);\n        }\n        mem::forget(self);\n\n        IntoIter {\n            head: head,\n            tail: tail,\n            remaining: len,\n            marker: marker::PhantomData,\n        }\n    }"
+}

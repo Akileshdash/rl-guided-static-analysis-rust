@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "heed-0.22.0/src/envs/env.rs",
+    "start_line": 616,
+    "start_col": 1,
+    "end_line": 616,
+    "end_col": 31,
+    "code_snippet": "unsafe impl<T> Send for Env<T> {}\nunsafe impl<T> Sync for Env<T> {}"
+}

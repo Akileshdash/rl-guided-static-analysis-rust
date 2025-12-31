@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "seckey-0.12.1/src/bytes.rs",
+    "start_line": 143,
+    "start_col": 1,
+    "end_line": 143,
+    "end_col": 23,
+    "code_snippet": "impl Drop for SecBytes {\n    fn drop(&mut self) {\n        unsafe {\n            #[cfg(feature = \"use_os\")]\n            mprotect(self.ptr, Prot::ReadWrite);\n\n            alloc::free(self.ptr, self.len);\n        }\n    }\n}"
+}

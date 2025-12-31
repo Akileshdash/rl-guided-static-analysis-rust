@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::vec::Vec<T> as canonical::Deserialize>::decode_dynamic`",
+    "file": "fuel-types-0.62.0/src/canonical.rs",
+    "start_line": 338,
+    "start_col": 5,
+    "end_line": 358,
+    "end_col": 6,
+    "code_snippet": "fn decode_dynamic<I: Input + ?Sized>(&mut self, buffer: &mut I) -> Result<(), Error> {\n        for _ in 0..self.capacity() {\n            // Bytes - Vec<u8> it a separate case without unpadding for each element.\n            // It should unpadded at the end if is not % ALIGN\n            if T::UNALIGNED_BYTES {\n                let byte = buffer.read_byte()?;\n                // SAFETY: `UNALIGNED_BYTES` implemented set for `u8`.\n                let _self =\n                    unsafe { ::core::mem::transmute::<&mut Vec<T>, &mut Vec<u8>>(self) };\n                _self.push(byte);\n            } else {\n                self.push(T::decode(buffer)?);\n            }\n        }\n\n        if T::UNALIGNED_BYTES {\n            buffer.skip(alignment_bytes(self.capacity()))?;\n        }\n\n        Ok(())\n    }"
+}

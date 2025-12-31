@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `allocator::dynamic::DynamicAllocator::<B>::free_chunk`",
+    "file": "rendy-memory-0.5.2/src/allocator/dynamic.rs",
+    "start_line": 449,
+    "start_col": 5,
+    "end_line": 469,
+    "end_col": 6,
+    "code_snippet": "fn free_chunk(&mut self, device: &B::Device, chunk: Chunk<B>, block_size: u64) -> u64 {\n        log::trace!(\"Free chunk: {:#?}\", chunk);\n        assert!(chunk.is_unused(block_size));\n        match chunk.flavor {\n            ChunkFlavor::Dedicated(boxed, _) => {\n                let size = boxed.size();\n                unsafe {\n                    if self\n                        .memory_properties\n                        .contains(gfx_hal::memory::Properties::CPU_VISIBLE)\n                    {\n                        log::trace!(\"Unmap memory: {:#?}\", boxed);\n                        device.unmap_memory(boxed.raw());\n                    }\n                    device.free_memory(boxed.into_raw());\n                }\n                size\n            }\n            ChunkFlavor::Dynamic(dynamic_block) => self.free(device, dynamic_block),\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `bench_fn`",
+    "file": "canbench-rs-0.2.1/src/lib.rs",
+    "start_line": 591,
+    "start_col": 1,
+    "end_line": 641,
+    "end_col": 2,
+    "code_snippet": "pub fn bench_fn<R>(f: impl FnOnce() -> R) -> BenchResult {\n    reset();\n\n    let is_tracing_enabled = TRACING_BUFFER.with_borrow(|p| !p.is_empty());\n\n    if !is_tracing_enabled {\n        let start_heap = heap_size();\n        let start_stable_memory = ic_cdk::api::stable_size();\n        let start_instructions = instruction_count();\n        f();\n        let instructions = instruction_count() - start_instructions;\n        let stable_memory_increase = ic_cdk::api::stable_size() - start_stable_memory;\n        let heap_increase = heap_size() - start_heap;\n\n        let total = MeasurementInternal {\n            start_instructions,\n            calls: 1,\n            instructions,\n            heap_increase,\n            stable_memory_increase,\n        }\n        .into();\n        let scopes: std::collections::BTreeMap<_, _> = get_scopes_measurements()\n            .into_iter()\n            .map(|(k, v)| (k.to_string(), v))\n            .collect();\n\n        BenchResult { total, scopes }\n    } else {\n        // The first 4 bytes are a flag to indicate if tracing is enabled. It will be read by the\n        // tracing function (instrumented code) to decide whether to trace or not.\n        let tracing_started_flag_address = TRACING_BUFFER.with_borrow_mut(|p| p.as_mut_ptr());\n        unsafe {\n            // Ideally, we'd like to reverse the following 2 statements, but it might be possible\n            // for the compiler not to inline `ic_cdk::api::performance_counter` which would be\n            // problematic as `performance_counter` would be traced itself. Perhaps we can call\n            // ic0.performance_counter directly.\n            INSTRUCTIONS_START = ic_cdk::api::performance_counter(0) as i64;\n            *tracing_started_flag_address = 1;\n        }\n        f();\n        unsafe {\n            *tracing_started_flag_address = 0;\n            INSTRUCTIONS_END = ic_cdk::api::performance_counter(0) as i64;\n        }\n\n        // Only the traces are meaningful, and it's written to `TRACING_BUFFER` and will be\n        // collected in the tracing query method.\n        BenchResult::default()\n    }\n}"
+}

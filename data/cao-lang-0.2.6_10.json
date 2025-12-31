@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `collections::handle_table::HandleTable::<T, A>::_insert`",
+    "file": "cao-lang-0.2.6/src/collections/handle_table.rs",
+    "start_line": 490,
+    "start_col": 5,
+    "end_line": 509,
+    "end_col": 6,
+    "code_snippet": "fn _insert(&mut self, key: Handle, value: T) -> &mut T {\n        let ind = self.find_ind(key);\n\n        debug_assert!(ind < self.capacity);\n\n        let is_new_key = unsafe { (*self.handles.as_ptr().add(ind)).0 == 0 };\n        self.count += is_new_key as usize;\n\n        if std::mem::needs_drop::<T>() && !is_new_key {\n            unsafe {\n                std::ptr::drop_in_place(self.values.as_ptr().add(ind));\n            }\n        }\n\n        unsafe {\n            std::ptr::write(self.handles.as_ptr().add(ind), key);\n            std::ptr::write(self.values.as_ptr().add(ind), value);\n            &mut *self.values.as_ptr().add(ind)\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wit-bindgen-rt-0.43.0/src/lib.rs",
+    "start_line": 167,
+    "start_col": 1,
+    "end_line": 167,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Cleanup {\n    fn drop(&mut self) {\n        unsafe {\n            for i in 0..self.layout.size() {\n                *self.ptr.add(i).as_ptr() = 0xff;\n            }\n            alloc::alloc::dealloc(self.ptr.as_ptr(), self.layout);\n        }\n    }\n}"
+}

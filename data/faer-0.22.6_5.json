@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "faer-0.22.6/src/sort.rs",
+    "start_line": 148,
+    "start_col": 1,
+    "end_line": 148,
+    "end_col": 39,
+    "code_snippet": "impl<P: Ptr> Drop for InsertionHole<P> {\n\t#[inline(always)]\n\tfn drop(&mut self) {\n\t\t// SAFETY: This is a helper class. Please refer to its usage for correctness. Namely, one\n\t\t// must be sure that `src` and `dst` does not overlap as required by\n\t\t// `ptr::copy_nonoverlapping` and are both valid for writes.\n\t\tunsafe {\n\t\t\tP::copy_nonoverlapping(self.src, self.dest, 1);\n\t\t}\n\t}\n}"
+}

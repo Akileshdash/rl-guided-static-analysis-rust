@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "parking_lot-0.12.4/src/once.rs",
+    "start_line": 276,
+    "start_col": 9,
+    "end_line": 276,
+    "end_col": 41,
+    "code_snippet": "impl<'a> Drop for PanicGuard<'a> {\n            fn drop(&mut self) {\n                // Mark the state as poisoned, unlock it and unpark all threads.\n                let once = self.0;\n                let state = once.0.swap(POISON_BIT, Ordering::Release);\n                if state & PARKED_BIT != 0 {\n                    let addr = once as *const _ as usize;\n                    unsafe {\n                        parking_lot_core::unpark_all(addr, DEFAULT_UNPARK_TOKEN);\n                    }\n                }\n            }\n        }"
+}

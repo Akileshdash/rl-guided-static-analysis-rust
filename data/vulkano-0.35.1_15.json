@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::boxed::Box<F> as sync::future::GpuFuture>::signal_finished`",
+    "file": "vulkano-0.35.1/src/sync/future/mod.rs",
+    "start_line": 412,
+    "start_col": 5,
+    "end_line": 414,
+    "end_col": 6,
+    "code_snippet": "unsafe fn signal_finished(&self) {\n        unsafe { (**self).signal_finished() }\n    }"
+}

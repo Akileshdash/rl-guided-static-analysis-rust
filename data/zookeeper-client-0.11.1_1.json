@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "zookeeper-client-0.11.1/src/client/mod.rs",
+    "start_line": 1521,
+    "start_col": 1,
+    "end_line": 1521,
+    "end_col": 30,
+    "code_snippet": "impl Drop for OwnedLockClient {\n    fn drop(&mut self) {\n        let client = unsafe { ManuallyDrop::take(&mut self.client) };\n        let path = std::mem::take(&mut self.lock);\n        client.delete_background(path);\n    }\n}"
+}

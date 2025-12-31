@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "dync-0.6.0/src/slice.rs",
+    "start_line": 746,
+    "start_col": 1,
+    "end_line": 746,
+    "end_col": 72,
+    "code_snippet": "unsafe impl<'a, V: ?Sized + HasDrop + HasSync> Sync for SliceMut<'a, V> {}"
+}

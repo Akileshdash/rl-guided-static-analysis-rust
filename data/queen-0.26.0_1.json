@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "queen-0.26.0/src/util/lock.rs",
+    "start_line": 18,
+    "start_col": 1,
+    "end_line": 18,
+    "end_col": 38,
+    "code_snippet": "unsafe impl<T: Send> Sync for Lock<T> {}"
+}

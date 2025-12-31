@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "par-iter-2.0.0/src/slice/sort.rs",
+    "start_line": 38,
+    "start_col": 1,
+    "end_line": 38,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for InsertionHole<T> {\n    fn drop(&mut self) {\n        // SAFETY: This is a helper class. Please refer to its usage for correctness.\n        // Namely, one must be sure that `src` and `dst` does not overlap as\n        // required by `ptr::copy_nonoverlapping` and are both valid for writes.\n        unsafe {\n            ptr::copy_nonoverlapping(self.src, self.dest, 1);\n        }\n    }\n}"
+}

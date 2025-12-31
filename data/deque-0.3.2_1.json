@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deque-0.3.2/src/lib.rs",
+    "start_line": 249,
+    "start_col": 1,
+    "end_line": 249,
+    "end_col": 32,
+    "code_snippet": "impl<T: Send> Drop for Deque<T> {\n    fn drop(&mut self) {\n        let t = self.top.load(Relaxed);\n        let b = self.bottom.load(Relaxed);\n        let a = self.array.load(Relaxed);\n\n        // Free whatever is leftover in the deque, and then free the buffer.\n        // This will also free all linked buffers.\n        let mut i = t;\n        while i != b {\n            unsafe { (*a).get(i) };\n            i = i.wrapping_add(1);\n        }\n        unsafe { Box::from_raw(a) };\n    }\n}"
+}

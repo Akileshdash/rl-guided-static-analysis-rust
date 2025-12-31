@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::undo`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 80,
+    "start_col": 5,
+    "end_line": 82,
+    "end_col": 6,
+    "code_snippet": "fn undo<U: super::UndoHandler>(&mut self, handler: Option<&mut U>) -> super::Result<()> {\n        unsafe { (*self.wrapper).undo(&mut *self.wrapped, handler) }\n    }"
+}

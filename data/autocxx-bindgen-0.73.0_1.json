@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "autocxx-bindgen-0.73.0/clang.rs",
+    "start_line": 1032,
+    "start_col": 1,
+    "end_line": 1032,
+    "end_col": 28,
+    "code_snippet": "impl Drop for RawTokens<'_> {\n    fn drop(&mut self) {\n        if !self.tokens.is_null() {\n            unsafe {\n                clang_disposeTokens(\n                    self.tu,\n                    self.tokens,\n                    self.token_count as c_uint,\n                );\n            }\n        }\n    }\n}"
+}

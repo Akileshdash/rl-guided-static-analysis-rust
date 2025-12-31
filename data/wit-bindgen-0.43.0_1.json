@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wit-bindgen-0.43.0/src/pre_wit_bindgen_0_20_0.rs",
+    "start_line": 251,
+    "start_col": 1,
+    "end_line": 251,
+    "end_col": 43,
+    "code_snippet": "impl<T: WasmResource> Drop for Resource<T> {\n    fn drop(&mut self) {\n        unsafe {\n            match self.handle.load(Relaxed) {\n                // If this handle was \"taken\" then don't do anything in the\n                // destructor.\n                u32::MAX => {}\n\n                // ... but otherwise do actually destroy it with the imported\n                // component model intrinsic as defined through `T`.\n                other => T::drop(other),\n            }\n        }\n    }\n}"
+}

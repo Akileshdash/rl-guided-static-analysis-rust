@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tinyset-0.5.2/src/setu64.rs",
+    "start_line": 1394,
+    "start_col": 1,
+    "end_line": 1394,
+    "end_col": 21,
+    "code_snippet": "impl Drop for SetU64 {\n    fn drop(&mut self) {\n        if self.0 as usize > 0 {\n            // make it drop by moving it out\n            let c = self.capacity();\n            if c == 0 {\n            } else {\n                unsafe {\n                    std::alloc::dealloc(self.0 as *mut u8, layout_for_capacity(c));\n                }\n            }\n        }\n    }\n}"
+}

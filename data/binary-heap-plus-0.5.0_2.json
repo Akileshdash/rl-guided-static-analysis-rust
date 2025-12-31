@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "binary-heap-plus-0.5.0/src/binary_heap.rs",
+    "start_line": 1453,
+    "start_col": 1,
+    "end_line": 1453,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for Hole<'_, T> {\n    #[inline]\n    fn drop(&mut self) {\n        // fill the hole again\n        unsafe {\n            let pos = self.pos;\n            ptr::copy_nonoverlapping(&*self.elt, self.data.get_unchecked_mut(pos), 1);\n        }\n    }\n}"
+}

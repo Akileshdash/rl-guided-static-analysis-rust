@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pyo3-0.25.1/src/gil.rs",
+    "start_line": 310,
+    "start_col": 1,
+    "end_line": 310,
+    "end_col": 25,
+    "code_snippet": "impl Drop for SuspendGIL {\n    fn drop(&mut self) {\n        GIL_COUNT.with(|c| c.set(self.count));\n        unsafe {\n            ffi::PyEval_RestoreThread(self.tstate);\n\n            // Update counts of PyObjects / Py that were cloned or dropped while the GIL was released.\n            #[cfg(not(pyo3_disable_reference_pool))]\n            if let Some(pool) = Lazy::get(&POOL) {\n                pool.update_counts(Python::assume_gil_acquired());\n            }\n        }\n    }\n}"
+}

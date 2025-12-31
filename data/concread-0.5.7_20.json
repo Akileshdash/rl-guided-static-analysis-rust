@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `internals::bptree::node::Node::<K, V>::new_branch`",
+    "file": "concread-0.5.7/src/internals/bptree/node.rs",
+    "start_line": 198,
+    "start_col": 5,
+    "end_line": 247,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn new_branch(\n        txid: u64,\n        l: *mut Node<K, V>,\n        r: *mut Node<K, V>,\n    ) -> *mut Branch<K, V> {\n        // println!(\"Req new branch\");\n        debug_assert!(!l.is_null());\n        debug_assert!(!r.is_null());\n        debug_assert!(Node::verify_raw(l));\n        debug_assert!(Node::verify_raw(r));\n        debug_assert!(txid < (TXID_MASK >> TXID_SHF));\n        let x: Box<CachePadded<Branch<K, V>>> = Box::new(CachePadded::new(Branch {\n            // This sets the default (key) count to 1, since we take an l/r\n            meta: Meta((txid << TXID_SHF) | FLAG_BRANCH | 1),\n            #[cfg(feature = \"skinny\")]\n            key: [\n                MaybeUninit::new(unsafe { &*Node::min_raw(r) }.clone()),\n                MaybeUninit::uninit(),\n                MaybeUninit::uninit(),\n            ],\n            #[cfg(not(feature = \"skinny\"))]\n            key: [\n                MaybeUninit::new(unsafe { &*Node::min_raw(r) }.clone()),\n                MaybeUninit::uninit(),\n                MaybeUninit::uninit(),\n                MaybeUninit::uninit(),\n                MaybeUninit::uninit(),\n                MaybeUninit::uninit(),\n                MaybeUninit::uninit(),\n            ],\n            #[cfg(feature = \"skinny\")]\n            nodes: [l, r, ptr::null_mut(), ptr::null_mut()],\n            #[cfg(not(feature = \"skinny\"))]\n            nodes: [\n                l,\n                r,\n                ptr::null_mut(),\n                ptr::null_mut(),\n                ptr::null_mut(),\n                ptr::null_mut(),\n                ptr::null_mut(),\n                ptr::null_mut(),\n            ],\n            #[cfg(all(test, not(miri)))]\n            nid: alloc_nid(),\n        }));\n        let output = Box::into_raw(x) as *mut Branch<K, V>;\n        debug_assert!(Self::verify_raw(output as *const _));\n        output\n    }"
+}

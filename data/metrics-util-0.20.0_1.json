@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "metrics-util-0.20.0/src/storage/bucket.rs",
+    "start_line": 138,
+    "start_col": 1,
+    "end_line": 138,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Block<T> {\n    fn drop(&mut self) {\n        while !self.is_quiesced() {}\n\n        // SAFETY:\n        // The value of `len` is only updated once a slot has been fully written, guaranteeing the\n        // slot is initialized.  Thus, we're only touching initialized slots here.\n        unsafe {\n            let len = self.len();\n            for i in 0..len {\n                self.slots.get_unchecked(i).assume_init_ref().get().drop_in_place();\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "taos-optin-0.12.4/src/tmq/raw.rs",
+    "start_line": 556,
+    "start_col": 5,
+    "end_line": 556,
+    "end_col": 25,
+    "code_snippet": "impl Drop for Topics {\n        fn drop(&mut self) {\n            unsafe {\n                self.api.destroy(self.as_ptr());\n            }\n        }\n    }"
+}

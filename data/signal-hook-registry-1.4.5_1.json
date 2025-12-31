@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "signal-hook-registry-1.4.5/src/half_lock.rs",
+    "start_line": 219,
+    "start_col": 1,
+    "end_line": 219,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for HalfLock<T> {\n    fn drop(&mut self) {\n        // During drop we are sure there are no other borrows of the data so we are free to just\n        // drop it. Also, the drop impl won't be called in practice in our case, as it is used\n        // solely as a global variable, but we provide it for completeness and tests anyway.\n        //\n        // unsafe: the pointer in there is always valid, we just take the last instance out.\n        unsafe {\n            // Acquire should be enough.\n            let data = Box::from_raw(self.data.load(Ordering::SeqCst));\n            drop(data);\n        }\n    }\n}"
+}

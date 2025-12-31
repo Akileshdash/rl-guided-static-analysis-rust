@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rowan-0.15.17/src/cursor.rs",
+    "start_line": 180,
+    "start_col": 1,
+    "end_line": 180,
+    "end_col": 26,
+    "code_snippet": "impl Drop for SyntaxToken {\n    #[inline]\n    fn drop(&mut self) {\n        if self.data().dec_rc() {\n            unsafe { free(self.ptr) }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `shift_head`",
+    "file": "pdqsort-1.0.3/src/lib.rs",
+    "start_line": 84,
+    "start_col": 1,
+    "end_line": 113,
+    "end_col": 2,
+    "code_snippet": "fn shift_head<T, F>(v: &mut [T], is_less: &mut F)\n    where F: FnMut(&T, &T) -> bool\n{\n    let len = v.len();\n    unsafe {\n        // If the first two elements are out-of-order...\n        if len >= 2 && is_less(v.get_unchecked(1), v.get_unchecked(0)) {\n            // Read the first element into a stack-allocated variable. If a following comparison\n            // operation panics, `hole` will get dropped and automatically write the element back\n            // into the slice.\n            let mut tmp = NoDrop { value: Some(ptr::read(v.get_unchecked(0))) };\n            let mut hole = CopyOnDrop {\n                src: tmp.value.as_mut().unwrap(),\n                dest: v.get_unchecked_mut(1),\n            };\n            ptr::copy_nonoverlapping(v.get_unchecked(1), v.get_unchecked_mut(0), 1);\n\n            for i in 2..len {\n                if !is_less(v.get_unchecked(i), tmp.value.as_ref().unwrap()) {\n                    break;\n                }\n\n                // Move `i`-th element one place to the left, thus shifting the hole to the right.\n                ptr::copy_nonoverlapping(v.get_unchecked(i), v.get_unchecked_mut(i - 1), 1);\n                hole.dest = v.get_unchecked_mut(i);\n            }\n            // `hole` gets dropped and thus copies `tmp` into the remaining hole in `v`.\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `vec2::Vec::<'a, T, A>::extend_with`",
+    "file": "oxc_allocator-0.79.1/src/vec2/mod.rs",
+    "start_line": 2010,
+    "start_col": 5,
+    "end_line": 2038,
+    "end_col": 6,
+    "code_snippet": "fn extend_with<E: ExtendWith<T>>(&mut self, n: usize, mut value: E) {\n        self.reserve(n);\n\n        // std library version of this method updates `len` after writing each element,\n        // because `value.next()` or `value.last()` could panic.\n        // If that happens, `len` needs to contain all the elements written so far,\n        // so they get dropped when the `Vec` is dropped.\n        // But our `Vec` requires that `T` is not `Drop`, so we don't need to worry about that.\n        unsafe {\n            let mut ptr = self.as_mut_ptr().add(self.len_usize());\n\n            // Write all elements except the last one\n            for _ in 1..n {\n                ptr::write(ptr, value.next());\n                ptr = ptr.offset(1);\n            }\n\n            if n > 0 {\n                // We can write the last element directly without cloning needlessly\n                ptr::write(ptr, value.last());\n            }\n\n            // `n` and `self.len() + n` must both be `<= u32::MAX`, otherwise `self.reserve(n)` above\n            // would have panicked. So `n as u32` cannot truncate `n`, and `len + n` cannot wrap.\n            #[expect(clippy::cast_possible_truncation)]\n            let n = n as u32;\n            self.buf.increase_len(n);\n        }\n    }"
+}

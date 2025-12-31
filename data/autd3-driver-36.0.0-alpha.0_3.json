@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<O as firmware::driver::operation::boxed::DOperation>::required_size`",
+    "file": "autd3-driver-36.0.0-alpha.0/src/firmware/driver/operation/boxed.rs",
+    "start_line": 145,
+    "start_col": 5,
+    "end_line": 147,
+    "end_col": 6,
+    "code_snippet": "fn required_size(&self, device: &Device) -> usize {\n        O::required_size(self, unsafe { std::mem::transmute(device) })\n    }"
+}

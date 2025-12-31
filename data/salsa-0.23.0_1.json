@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "salsa-0.23.0/src/function/delete.rs",
+    "start_line": 47,
+    "start_col": 1,
+    "end_line": 47,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for SharedBox<T> {\n    fn drop(&mut self) {\n        // SAFETY: Guaranteed by the caller of `DeletedEntries::push`.\n        unsafe { drop(Box::from_raw(self.0.as_ptr())) };\n    }\n}"
+}

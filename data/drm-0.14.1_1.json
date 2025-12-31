@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "drm-0.14.1/src/control/dumbbuffer.rs",
+    "start_line": 66,
+    "start_col": 1,
+    "end_line": 66,
+    "end_col": 34,
+    "code_snippet": "impl<'a> Drop for DumbMapping<'a> {\n    fn drop(&mut self) {\n        unsafe {\n            rustix::mm::munmap(self.map.as_mut_ptr() as *mut _, self.map.len())\n                .expect(\"Unmap failed\");\n        }\n    }\n}"
+}

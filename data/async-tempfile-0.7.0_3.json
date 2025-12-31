@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-tempfile-0.7.0/src/tempfile.rs",
+    "start_line": 441,
+    "start_col": 1,
+    "end_line": 441,
+    "end_col": 27,
+    "code_snippet": "impl Drop for TempFileCore {\n    fn drop(&mut self) {\n        // Ensure we don't drop borrowed files.\n        if self.ownership != Ownership::Owned {\n            return;\n        }\n\n        // Closing the file handle first, as otherwise the file might not be deleted.\n        drop(unsafe { ManuallyDrop::take(&mut self.file) });\n\n        // TODO: Use asynchronous variant if running in an async context.\n        // Note that if TempFile is used from the executor's handle,\n        //      this may block the executor itself.\n        let _ = std::fs::remove_file(&self.path);\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::has_attr`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 614,
+    "start_col": 5,
+    "end_line": 614,
+    "end_col": 64,
+    "code_snippet": "fn has_attr(&self, attribute: &str, heap: &'v Heap) -> bool {\n        self.get_attr(attribute, heap).is_some()\n    }"
+}

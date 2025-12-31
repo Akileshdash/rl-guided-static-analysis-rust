@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glib-0.21.0/src/shared.rs",
+    "start_line": 471,
+    "start_col": 1,
+    "end_line": 471,
+    "end_col": 68,
+    "code_snippet": "impl<T, MM: SharedMemoryManager<Target = T>> Drop for Shared<T, MM> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            MM::unref(self.inner.as_ptr());\n        }\n    }\n}"
+}

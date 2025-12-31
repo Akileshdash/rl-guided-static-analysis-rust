@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mapr-0.8.0/src/unix.rs",
+    "start_line": 238,
+    "start_col": 1,
+    "end_line": 238,
+    "end_col": 24,
+    "code_snippet": "impl Drop for MmapInner {\n    fn drop(&mut self) {\n        let alignment = self.ptr as usize % page_size();\n        unsafe {\n            assert!(\n                libc::munmap(\n                    self.ptr.offset(-(alignment as isize)),\n                    (self.len + alignment) as libc::size_t\n                ) == 0,\n                \"unable to unmap mmap: {}\",\n                io::Error::last_os_error()\n            );\n        }\n    }\n}"
+}

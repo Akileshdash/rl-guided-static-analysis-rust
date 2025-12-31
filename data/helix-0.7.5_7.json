@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `coercions::option::<impl coercions::FromRuby for std::option::Option<T>>::from_ruby`",
+    "file": "helix-0.7.5/src/coercions/option.rs",
+    "start_line": 7,
+    "start_col": 5,
+    "end_line": 13,
+    "end_col": 6,
+    "code_snippet": "fn from_ruby(value: VALUE) -> CheckResult<Option<T::Checked>> {\n        if unsafe { value == Qnil } {\n            Ok(None)\n        } else {\n            T::from_ruby(value).map(|c| Some(c))\n        }\n    }"
+}

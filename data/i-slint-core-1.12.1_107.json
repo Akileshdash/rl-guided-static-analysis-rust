@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `items::SwipeGestureHandlerVTable::bounding_rect`",
+    "file": "i-slint-core-1.12.1/items.rs",
+    "start_line": 178,
+    "start_col": 35,
+    "end_line": 178,
+    "end_col": 37,
+    "code_snippet": "pub bounding_rect: extern \"C\" fn(\n        core::pin::Pin<VRef<ItemVTable>>,\n        window_adapter: &WindowAdapterRc,\n        self_rc: &ItemRc,\n        geometry: LogicalRect,\n    ) -> LogicalRect,\n\n    pub clips_children: extern \"C\" fn(core::pin::Pin<VRef<ItemVTable>>) -> bool,\n}\n\n/// Alias for `vtable::VRef<ItemVTable>` which represent a pointer to a `dyn Item` with\n/// the associated vtable\npub type ItemRef<'a> = vtable::VRef<'a, ItemVTable>;\n\n#[repr(C)]\n#[derive(FieldOffsets, Default, SlintElement)]\n#[pin]\n/// The implementation of an empty items that does nothing\npub struct Empty {\n    pub cached_rendering_data: CachedRenderingData,\n}"
+}

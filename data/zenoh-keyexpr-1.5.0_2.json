@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `keyexpr_tree::impls::hashmap_impl::<impl keyexpr_tree::traits::IEntry<'a, 'b, T> for std::collections::hash_map::Entry<'a, key_expr::owned::OwnedKeyExpr, T>>::get_or_insert_with`",
+    "file": "zenoh-keyexpr-1.5.0/src/keyexpr_tree/impls/hashmap_impl.rs",
+    "start_line": 58,
+    "start_col": 5,
+    "end_line": 66,
+    "end_col": 6,
+    "code_snippet": "fn get_or_insert_with<F: FnOnce(&'b keyexpr) -> T>(self, f: F) -> &'a mut T {\n        match self {\n            Entry::Vacant(entry) => {\n                let value = unsafe { f(core::mem::transmute::<&keyexpr, &keyexpr>(entry.key())) };\n                entry.insert(value)\n            }\n            Entry::Occupied(v) => v.into_mut(),\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bytes-1.10.1/src/bytes_mut.rs",
+    "start_line": 1123,
+    "start_col": 1,
+    "end_line": 1123,
+    "end_col": 23,
+    "code_snippet": "impl Drop for BytesMut {\n    fn drop(&mut self) {\n        let kind = self.kind();\n\n        if kind == KIND_VEC {\n            unsafe {\n                let off = self.get_vec_pos();\n\n                // Vector storage, free the vector\n                let _ = rebuild_vec(self.ptr.as_ptr(), self.len, self.cap, off);\n            }\n        } else if kind == KIND_ARC {\n            unsafe { release_shared(self.data) };\n        }\n    }\n}"
+}

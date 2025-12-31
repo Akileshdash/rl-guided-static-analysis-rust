@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ocl-0.19.7/src/async/order_lock.rs",
+    "start_line": 151,
+    "start_col": 1,
+    "end_line": 151,
+    "end_col": 30,
+    "code_snippet": "impl<V> Drop for ReadGuard<V> {\n    fn drop(&mut self) {\n        print_debug(self.order_lock.id(), \"dropping and releasing ReadGuard\");\n        unsafe { Self::release_components(self) }\n    }\n}"
+}

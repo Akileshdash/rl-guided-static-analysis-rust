@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/store.rs",
+    "start_line": 2344,
+    "start_col": 1,
+    "end_line": 2344,
+    "end_col": 26,
+    "code_snippet": "impl Drop for StoreOpaque {\n    fn drop(&mut self) {\n        // NB it's important that this destructor does not access `self.data`.\n        // That is deallocated by `Drop for Store<T>` above.\n\n        unsafe {\n            let allocator = self.engine.allocator();\n            let ondemand = OnDemandInstanceAllocator::default();\n            let store_id = self.id();\n\n            #[cfg(feature = \"gc\")]\n            if let Some(gc_store) = self.gc_store.take() {\n                let gc_alloc_index = gc_store.allocation_index;\n                log::trace!(\"store {store_id:?} is deallocating GC heap {gc_alloc_index:?}\");\n                debug_assert!(self.engine.features().gc_types());\n                let (mem_alloc_index, mem) =\n                    allocator.deallocate_gc_heap(gc_alloc_index, gc_store.gc_heap);\n                allocator.deallocate_memory(None, mem_alloc_index, mem);\n            }\n\n            for (id, instance) in self.instances.iter_mut() {\n                log::trace!(\"store {store_id:?} is deallocating {id:?}\");\n                if let StoreInstanceKind::Dummy = instance.kind {\n                    ondemand.deallocate_module(&mut instance.handle);\n                } else {\n                    allocator.deallocate_module(&mut instance.handle);\n                }\n            }\n\n            #[cfg(feature = \"component-model\")]\n            {\n                for _ in 0..self.num_component_instances {\n                    allocator.decrement_component_instance_count();\n                }\n            }\n        }\n    }\n}"
+}

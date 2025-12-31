@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::radd`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 670,
+    "start_col": 5,
+    "end_line": 670,
+    "end_col": 89,
+    "code_snippet": "fn radd(&self, _lhs: Value<'v>, _heap: &'v Heap) -> Option<crate::Result<Value<'v>>> {\n        None\n    }"
+}

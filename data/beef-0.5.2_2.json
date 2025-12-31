@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "beef-0.5.2/src/generic.rs",
+    "start_line": 539,
+    "start_col": 1,
+    "end_line": 543,
+    "end_col": 20,
+    "code_snippet": "unsafe impl<T, U> Send for Cow<'_, T, U>\nwhere\n    U: Capacity,\n    T: Beef + Sync + ?Sized,\n    T::Owned: Send,\n{\n}"
+}

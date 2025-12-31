@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "graphblas_sparse_linear_algebra-0.54.3/src/collections/sparse_scalar/sparse_scalar.rs",
+    "start_line": 38,
+    "start_col": 1,
+    "end_line": 38,
+    "end_col": 51,
+    "code_snippet": "unsafe impl<T: ValueType> Send for SparseScalar<T> {}\nunsafe impl<T: ValueType> Sync for SparseScalar<T> {}"
+}

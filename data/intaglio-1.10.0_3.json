@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "intaglio-1.10.0/src/internal.rs",
+    "start_line": 411,
+    "start_col": 5,
+    "end_line": 411,
+    "end_col": 39,
+    "code_snippet": "impl<T: ?Sized> Drop for PinBox<T> {\n        fn drop(&mut self) {\n            // SAFETY: `PinBox` acts like `Box`.\n            unsafe {\n                drop(Box::from_raw(self.ptr.as_ptr()));\n            }\n        }\n    }"
+}

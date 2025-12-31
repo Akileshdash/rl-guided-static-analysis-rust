@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gfx-memory-0.2.2/src/mapping.rs",
+    "start_line": 36,
+    "start_col": 1,
+    "end_line": 36,
+    "end_col": 58,
+    "code_snippet": "impl<'a, 'b, T, B: Backend> Drop for Writer<'a, 'b, T, B> {\n    fn drop(&mut self) {\n        if let Some(f) = self.flush.take() {\n            unsafe {\n                f.device\n                    .flush_mapped_memory_ranges(iter::once((f.memory, f.segment)))\n                    .expect(\"Should flush successfully\")\n            };\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `connection::busy_callback`",
+    "file": "sqlite-0.37.0/src/connection.rs",
+    "start_line": 376,
+    "start_col": 1,
+    "end_line": 381,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn busy_callback<F>(callback: *mut c_void, attempts: c_int) -> c_int\nwhere\n    F: FnMut(usize) -> bool,\n{\n    unsafe { c_int::from((*(callback as *mut F))(attempts as usize)) }\n}"
+}

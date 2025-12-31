@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "memzero-0.1.0/src/lib.rs",
+    "start_line": 32,
+    "start_col": 1,
+    "end_line": 32,
+    "end_col": 41,
+    "code_snippet": "impl<T: AsMut<[u8]>> Drop for Memzero<T> {\n\tfn drop(&mut self) {\n\t\tunsafe {\n\t\t\tfor byte_ref in self.mem.as_mut() {\n\t\t\t\tptr::write_volatile(byte_ref, 0)\n\t\t\t}\n\t\t}\n\t}\n}"
+}

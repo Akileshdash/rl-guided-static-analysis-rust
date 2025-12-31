@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "opendal-0.54.0/src/raw/oio/list/flat_list.rs",
+    "start_line": 71,
+    "start_col": 1,
+    "end_line": 71,
+    "end_col": 52,
+    "code_snippet": "unsafe impl<A: Access, L> Sync for FlatLister<A, L> {}"
+}

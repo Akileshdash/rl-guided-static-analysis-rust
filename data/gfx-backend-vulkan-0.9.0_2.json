@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gfx-backend-vulkan-0.9.0/src/lib.rs",
+    "start_line": 890,
+    "start_col": 1,
+    "end_line": 890,
+    "end_col": 24,
+    "code_snippet": "impl Drop for RawDevice {\n    fn drop(&mut self) {\n        if !self.handle_is_external {\n            unsafe {\n                self.raw.destroy_device(None);\n            }\n        }\n    }\n}"
+}

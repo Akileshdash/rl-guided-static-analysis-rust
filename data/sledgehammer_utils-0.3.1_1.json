@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sledgehammer_utils-0.3.1/src/lib.rs",
+    "start_line": 248,
+    "start_col": 1,
+    "end_line": 248,
+    "end_col": 75,
+    "code_snippet": "impl<T, H, const N: usize, const N2: usize> Drop for ConstLru<T, H, N, N2> {\n    fn drop(&mut self) {\n        // Drop any entries that were allocated\n        for entry in self.entries.iter_mut().take(self.free_after as usize) {\n            unsafe {\n                entry.assume_init_drop();\n            }\n        }\n    }\n}"
+}

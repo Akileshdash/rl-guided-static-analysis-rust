@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `lru::raw::<impl core::borrow::Borrow<lru::raw::KeyWrapper<Q>> for KeyRef<K>>::borrow`",
+    "file": "caches-0.3.0/src/lru/raw.rs",
+    "start_line": 75,
+    "start_col": 5,
+    "end_line": 78,
+    "end_col": 6,
+    "code_snippet": "fn borrow(&self) -> &KeyWrapper<Q> {\n        let key = unsafe { &*self.k }.borrow();\n        KeyWrapper::from_ref(key)\n    }"
+}

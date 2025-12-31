@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rust-gmp-kzen-0.5.1/src/mpz.rs",
+    "start_line": 156,
+    "start_col": 1,
+    "end_line": 156,
+    "end_col": 18,
+    "code_snippet": "impl Drop for Mpz {\n    fn drop(&mut self) {\n        unsafe {\n            let size_limbs = __gmpz_size(&mut self.mpz);\n            let dst = self.mpz._mp_d as *mut c_int;\n            for i in 0..size_limbs{\n                /*\n                 * A note on safety of this:\n                 * \n                 *   1. In gmp source the mp_limb_t is defined as unsigned long so c_int will never \n                 *      be more than that on any platform.\n                 *\n                 *   2. Memory for the array(_mp_d) is guaranteed to be allocated by gmp in limb sizes.\n                 *      So we can be sure that we are not writing what we should not.\n                 *\n                 *    Also I think we should be having something in the gmp library itself to do this kind of a thing.\n                 *    The process for that is in flight. If that is accepted we can use that here.\n                */\n                std::ptr::write_volatile(dst.add(i as usize) as *mut c_int, 0);\n            }\n            __gmpz_clear(&mut self.mpz);\n        }\n\n        atomic::fence(atomic::Ordering::SeqCst);\n        atomic::compiler_fence(atomic::Ordering::SeqCst);\n    }\n}"
+}

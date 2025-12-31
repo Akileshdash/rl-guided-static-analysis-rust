@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sailfish-0.9.1/src/runtime/buffer.rs",
+    "start_line": 251,
+    "start_col": 1,
+    "end_line": 251,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Buffer {\n    fn drop(&mut self) {\n        if self.capacity != 0 {\n            // SAFETY: when `self.capacity > 0`, `self.capacity` is the same value\n            // used for allocate the block of memory pointed by `self.data`.\n            unsafe {\n                let layout = Layout::from_size_align_unchecked(self.capacity, 1);\n                dealloc(self.data, layout);\n            }\n        }\n    }\n}"
+}

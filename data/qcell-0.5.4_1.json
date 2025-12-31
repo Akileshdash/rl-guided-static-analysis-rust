@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "qcell-0.5.4/src/tcell.rs",
+    "start_line": 342,
+    "start_col": 1,
+    "end_line": 342,
+    "end_col": 61,
+    "code_snippet": "unsafe impl<Q, T: Send + Sync + ?Sized> Sync for TCell<Q, T> {}"
+}

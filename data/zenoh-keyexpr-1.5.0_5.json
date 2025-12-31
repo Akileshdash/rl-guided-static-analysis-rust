@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<keyexpr_tree::arc_tree::KeArcTree<Weight, Token, Wildness, Children> as keyexpr_tree::traits::ITokenKeyExprTree<'a, Weight, Token>>::node`",
+    "file": "zenoh-keyexpr-1.5.0/src/keyexpr_tree/arc_tree.rs",
+    "start_line": 149,
+    "start_col": 5,
+    "end_line": 160,
+    "end_col": 6,
+    "code_snippet": "fn node(&'a self, token: &'a Token, at: &keyexpr) -> Option<Self::Node> {\n        let inner = ketree_borrow(&self.inner, token);\n        let mut chunks = at.chunks_impl();\n        let mut node = inner.children.child_at(chunks.next().unwrap())?;\n        for chunk in chunks {\n            let as_node: &Arc<\n                TokenCell<KeArcTreeNode<Weight, Weak<()>, Wildness, Children, Token>, Token>,\n            > = node.as_node();\n            node = unsafe { (*as_node.get()).children.child_at(chunk)? };\n        }\n        Some((node.as_node(), token))\n    }"
+}

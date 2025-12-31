@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "netxserver-2.2.0/src/server/async_token_manager.rs",
+    "start_line": 20,
+    "start_col": 1,
+    "end_line": 20,
+    "end_col": 74,
+    "code_snippet": "unsafe impl<T: ICreateController + 'static> Sync for AsyncTokenManager<T> {}"
+}

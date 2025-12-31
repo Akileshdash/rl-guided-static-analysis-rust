@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "crossbeam-utils-0.8.21/src/thread.rs",
+    "start_line": 490,
+    "start_col": 1,
+    "end_line": 490,
+    "end_col": 48,
+    "code_snippet": "unsafe impl<T> Sync for ScopedJoinHandle<'_, T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "syd-3.37.1/src/sealbox.rs",
+    "start_line": 1648,
+    "start_col": 1,
+    "end_line": 1648,
+    "end_col": 61,
+    "code_snippet": "unsafe impl<K: Send, V: Sync> Sync for SealableHashMap<K, V> {}"
+}

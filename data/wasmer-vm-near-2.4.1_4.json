@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `trap::traphandlers::tls::set`",
+    "file": "wasmer-vm-near-2.4.1/src/trap/traphandlers.rs",
+    "start_line": 376,
+    "start_col": 5,
+    "end_line": 395,
+    "end_col": 6,
+    "code_snippet": "pub fn set<R>(state: &CallThreadState, closure: impl FnOnce() -> R) -> Result<R, Trap> {\n        struct Reset<'a>(&'a CallThreadState);\n\n        impl Drop for Reset<'_> {\n            #[inline]\n            fn drop(&mut self) {\n                raw::replace(self.0.prev.replace(ptr::null()))\n                    .expect(\"tls should be previously initialized\");\n            }\n        }\n\n        // Note that this extension of the lifetime to `'static` should be\n        // safe because we only ever access it below with an anonymous\n        // lifetime, meaning `'static` never leaks out of this module.\n        let ptr = unsafe { mem::transmute::<*const CallThreadState, _>(state) };\n        let prev = raw::replace(ptr)?;\n        state.prev.set(prev);\n        let _reset = Reset(state);\n        Ok(closure())\n    }"
+}

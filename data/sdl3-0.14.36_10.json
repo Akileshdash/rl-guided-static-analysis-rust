@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sdl3-0.14.36/src/sdl3/timer.rs",
+    "start_line": 82,
+    "start_col": 1,
+    "end_line": 82,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Timer {\n    #[inline]\n    #[doc(alias = \"SDL_RemoveTimer\")]\n    fn drop(&mut self) {\n        unsafe {\n            sys::timer::SDL_RemoveTimer(self.raw);\n            if let Some(callback_ptr) = self.callback.take() {\n                // Reclaim the Box and drop it.\n                let _ = Box::from_raw(callback_ptr.as_ptr());\n            }\n        }\n    }\n}"
+}

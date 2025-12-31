@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `resize::MemoryRange::<T>::init`",
+    "file": "matreex-0.33.1/src/resize.rs",
+    "start_line": 865,
+    "start_col": 5,
+    "end_line": 877,
+    "end_col": 6,
+    "code_snippet": "unsafe fn init(self, value: T)\n    where\n        T: Clone,\n    {\n        let mut to_init = self.start;\n        unsafe {\n            for _ in 1..self.len.get() {\n                ptr::write(to_init, value.clone());\n                to_init = to_init.add(1);\n            }\n            ptr::write(to_init, value);\n        }\n    }"
+}

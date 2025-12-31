@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crossbeam-epoch-0.9.18/src/atomic.rs",
+    "start_line": 1200,
+    "start_col": 1,
+    "end_line": 1200,
+    "end_col": 46,
+    "code_snippet": "impl<T: ?Sized + Pointable> Drop for Owned<T> {\n    fn drop(&mut self) {\n        let (raw, _) = decompose_tag::<T>(self.data);\n        unsafe {\n            T::drop(raw);\n        }\n    }\n}"
+}

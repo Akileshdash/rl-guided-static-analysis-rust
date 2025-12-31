@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "wasmi_arena-0.5.0/src/component_vec.rs",
+    "start_line": 19,
+    "start_col": 1,
+    "end_line": 19,
+    "end_col": 64,
+    "code_snippet": "unsafe impl<Idx, T> Sync for ComponentVec<Idx, T> where T: Sync {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "conqueue-0.4.0/src/lib.rs",
+    "start_line": 63,
+    "start_col": 1,
+    "end_line": 63,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for QueueSender<T> {\n    fn drop(&mut self) {\n        let mut in_queue = Arc::new(AtomicPtr::default());\n\n        mem::swap(&mut in_queue, &mut self.in_queue);\n\n        if let Ok(head) = Arc::try_unwrap(in_queue) {\n            let head = head.swap(ptr::null_mut(), Ordering::SeqCst);\n\n            if !head.is_null() {\n                unsafe { Box::from_raw(head) };\n            }\n        }\n    }\n}"
+}

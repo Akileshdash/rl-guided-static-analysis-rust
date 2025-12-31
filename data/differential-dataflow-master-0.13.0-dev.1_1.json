@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `consolidation::consolidate_slice`",
+    "file": "differential-dataflow-master-0.13.0-dev.1/src/consolidation.rs",
+    "start_line": 35,
+    "start_col": 1,
+    "end_line": 80,
+    "end_col": 2,
+    "code_snippet": "pub fn consolidate_slice<T: Ord, R: Semigroup>(slice: &mut [(T, R)]) -> usize {\n\n    // We could do an insertion-sort like initial scan which builds up sorted, consolidated runs.\n    // In a world where there are not many results, we may never even need to call in to merge sort.\n    slice.sort_by(|x,y| x.0.cmp(&y.0));\n\n    let slice_ptr = slice.as_mut_ptr();\n\n    // Counts the number of distinct known-non-zero accumulations. Indexes the write location.\n    let mut offset = 0;\n    for index in 1 .. slice.len() {\n\n        // The following unsafe block elides various bounds checks, using the reasoning that `offset`\n        // is always strictly less than `index` at the beginning of each iteration. This is initially\n        // true, and in each iteration `offset` can increase by at most one (whereas `index` always\n        // increases by one). As `index` is always in bounds, and `offset` starts at zero, it too is\n        // always in bounds.\n        //\n        // LLVM appears to struggle to optimize out Rust's split_at_mut, which would prove disjointness\n        // using run-time tests.\n        unsafe {\n\n            assert!(offset < index);\n\n            // LOOP INVARIANT: offset < index\n            let ptr1 = slice_ptr.add(offset);\n            let ptr2 = slice_ptr.add(index);\n\n            if (*ptr1).0 == (*ptr2).0 {\n                (*ptr1).1.plus_equals(&(*ptr2).1);\n            }\n            else {\n                if !(*ptr1).1.is_zero() {\n                    offset += 1;\n                }\n                let ptr1 = slice_ptr.add(offset);\n                std::ptr::swap(ptr1, ptr2);\n            }\n        }\n    }\n    if offset < slice.len() && !slice[offset].1.is_zero() {\n        offset += 1;\n    }\n\n    offset\n}"
+}

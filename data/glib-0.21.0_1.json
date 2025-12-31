@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glib-0.21.0/src/boxed.rs",
+    "start_line": 546,
+    "start_col": 1,
+    "end_line": 546,
+    "end_col": 75,
+    "code_snippet": "impl<T: 'static, MM: BoxedMemoryManager<Target = T>> Drop for Boxed<T, MM> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            MM::free(self.inner.as_ptr());\n        }\n    }\n}"
+}

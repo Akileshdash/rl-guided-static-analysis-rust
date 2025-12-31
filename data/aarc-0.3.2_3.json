@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "aarc-0.3.2/src/smart_ptrs.rs",
+    "start_line": 118,
+    "start_col": 1,
+    "end_line": 118,
+    "end_col": 33,
+    "code_snippet": "impl<T: 'static> Drop for Arc<T> {\n    fn drop(&mut self) {\n        let birth_era = unsafe { self.ptr.as_ref().birth_era };\n        retire(self.ptr.cast(), decrement_strong_count::<T>, birth_era);\n    }\n}"
+}

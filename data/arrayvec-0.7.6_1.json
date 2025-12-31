@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "arrayvec-0.7.6/src/arrayvec.rs",
+    "start_line": 482,
+    "start_col": 9,
+    "end_line": 482,
+    "end_col": 71,
+    "code_snippet": "impl<T, const CAP: usize> Drop for BackshiftOnDrop<'_, T, CAP> {\n            fn drop(&mut self) {\n                if self.deleted_cnt > 0 {\n                    unsafe {\n                        ptr::copy(\n                            self.v.as_ptr().add(self.processed_len),\n                            self.v.as_mut_ptr().add(self.processed_len - self.deleted_cnt),\n                            self.original_len - self.processed_len\n                        );\n                    }\n                }\n                unsafe {\n                    self.v.set_len(self.original_len - self.deleted_cnt);\n                }\n            }\n        }"
+}

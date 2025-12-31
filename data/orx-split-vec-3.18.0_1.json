@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "orx-split-vec-3.18.0/src/concurrent_pinned_vec.rs",
+    "start_line": 28,
+    "start_col": 1,
+    "end_line": 28,
+    "end_col": 75,
+    "code_snippet": "impl<T, G: GrowthWithConstantTimeAccess> Drop for ConcurrentSplitVec<T, G> {\n    fn drop(&mut self) {\n        fn take_fragment<T>(_fragment: Fragment<T>) {}\n        unsafe { self.process_into_fragments(self.pinned_vec_len, &mut take_fragment) };\n        self.zero();\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "safe_drive-0.4.3/src/topic/publisher.rs",
+    "start_line": 265,
+    "start_col": 1,
+    "end_line": 265,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for Publisher<T> {\n    fn drop(&mut self) {\n        let (node, publisher) = (&mut self.node, &mut self.publisher);\n        let guard = rcl::MT_UNSAFE_FN.lock();\n        let _ = guard.rcl_publisher_fini(publisher.as_ref() as *const _ as *mut _, unsafe {\n            node.as_ptr_mut()\n        });\n    }\n}"
+}

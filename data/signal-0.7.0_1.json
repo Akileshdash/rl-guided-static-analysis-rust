@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "signal-0.7.0/src/trap.rs",
+    "start_line": 125,
+    "start_col": 1,
+    "end_line": 125,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Trap {\n    fn drop(&mut self) {\n        unsafe {\n            for &(sig, ref sigact) in self.oldsigs.iter() {\n                sigaction(sig, sigact).unwrap();\n            }\n            pthread_sigmask(SigmaskHow::SIG_SETMASK, Some(&self.oldset), None)\n                .unwrap();\n        }\n    }\n}"
+}

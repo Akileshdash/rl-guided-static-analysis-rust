@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `buffer::BufferWindow::fill_buf`",
+    "file": "jomini-0.28.0/src/buffer.rs",
+    "start_line": 84,
+    "start_col": 5,
+    "end_line": 111,
+    "end_col": 6,
+    "code_snippet": "pub fn fill_buf(&mut self, mut reader: impl Read) -> Result<usize, BufferError> {\n        let carry_over = self.window_len();\n        if carry_over >= self.buf.len() {\n            return Ok(0);\n        }\n\n        // Copy over the unconsumed bytes to the start of the buffer\n        if carry_over != 0 {\n            if carry_over >= self.buf.len() {\n                return Err(BufferError::BufferFull);\n            }\n            self.buf.copy_within(self.consumed_data().., 0);\n        }\n\n        self.prior_reads += self.consumed_data();\n        self.start = self.buf.as_ptr();\n        self.end = unsafe { self.buf.as_ptr().add(carry_over) };\n\n        // Have the reader start filling in bytes after unconsumed bytes\n        match reader.read(&mut self.buf[carry_over..]) {\n            Ok(r) => {\n                self.start = self.buf.as_ptr();\n                self.end = unsafe { self.end.add(r) };\n                Ok(r)\n            }\n            Err(e) => Err(BufferError::Io(e)),\n        }\n    }"
+}

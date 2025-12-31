@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hybrid-array-0.3.1/src/from_fn.rs",
+    "start_line": 92,
+    "start_col": 1,
+    "end_line": 92,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for Guard<'_, T> {\n    fn drop(&mut self) {\n        debug_assert!(self.initialized <= self.array_mut.len());\n\n        // SAFETY: the loop only iterates over initialized items\n        unsafe {\n            let p: *mut T = self.array_mut.as_mut_ptr().cast();\n\n            for i in 0..self.initialized {\n                ptr::drop_in_place(p.add(i));\n            }\n        }\n    }\n}"
+}

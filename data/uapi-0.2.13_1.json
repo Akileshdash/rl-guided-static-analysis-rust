@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `socket::recvmsg`",
+    "file": "uapi-0.2.13/src/socket/mod.rs",
+    "start_line": 278,
+    "start_col": 1,
+    "end_line": 320,
+    "end_col": 2,
+    "code_snippet": "pub fn recvmsg<\n    'b,\n    'c,\n    D: MaybeUninitIovecMut + ?Sized,\n    C: Pod + ?Sized,\n    T: SockAddr + ?Sized,\n>(\n    sockfd: c::c_int,\n    msghdr: &mut MsghdrMut<'b, 'c, '_, D, C, T>,\n    flags: c::c_int,\n) -> Result<(InitializedIovec<'b>, usize, &'c [u8])> {\n    let mut sockaddr_len = 0;\n    let (sockaddr_ptr, _) = opt_to_sockaddr_mut(&mut msghdr.name, &mut sockaddr_len)?;\n    let iov = unsafe { ptr::read(&msghdr.iov).as_iovec_mut() };\n\n    let mut c_msghdr: c::msghdr = pod_zeroed();\n    c_msghdr.msg_iov = black_box_id(iov.as_mut_ptr() as *mut _);\n    c_msghdr.msg_iovlen = iov.len().try_into().unwrap_or(Integer::MAX_VALUE);\n    if let Some(ref mut c) = msghdr.control {\n        c_msghdr.msg_control = black_box_id(*c as *mut _ as *mut _);\n        c_msghdr.msg_controllen = mem::size_of_val(*c)\n            .try_into()\n            .unwrap_or(Integer::MAX_VALUE);\n    }\n    c_msghdr.msg_name = sockaddr_ptr as *mut _;\n    c_msghdr.msg_namelen = sockaddr_len;\n\n    let res = unsafe { c::recvmsg(sockfd, &mut c_msghdr, flags) };\n    map_err!(res)?;\n\n    let ctrl = match msghdr.control {\n        Some(ref mut c) => unsafe {\n            as_maybe_uninit_bytes_mut2(ptr::read(c))[..c_msghdr.msg_controllen as usize]\n                .slice_assume_init_mut()\n        },\n        _ => &mut [],\n    };\n    msghdr.flags = c_msghdr.msg_flags;\n\n    let iov = unsafe { InitializedIovec::new(iov, res as usize) };\n\n    Ok((iov, c_msghdr.msg_namelen as usize, ctrl))\n}"
+}

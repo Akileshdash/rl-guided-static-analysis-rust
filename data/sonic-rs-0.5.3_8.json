@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `parser::Parser::<R>::parse_escaped_utf8`",
+    "file": "sonic-rs-0.5.3/src/parser.rs",
+    "start_line": 817,
+    "start_col": 5,
+    "end_line": 867,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn parse_escaped_utf8(&mut self) -> Result<u32> {\n        let point1 = if let Some(asc) = self.read.next_n(4) {\n            unsafe { hex_to_u32_nocheck(&*(asc.as_ptr() as *const _ as *const [u8; 4])) }\n        } else {\n            return perr!(self, EofWhileParsing);\n        };\n\n        // only check surrogate here, and we will check the code pointer later when use\n        // `codepoint_to_utf8`\n        if (0xD800..0xDC00).contains(&point1) {\n            // parse the second utf8 code point of surrogate\n            let point2 = if let Some(asc) = self.read.next_n(6) {\n                if asc[0] != b'\\\\' || asc[1] != b'u' {\n                    if self.cfg.utf8_lossy {\n                        return Ok(0xFFFD);\n                    } else {\n                        // invalid surrogate\n                        return perr!(self, InvalidSurrogateUnicodeCodePoint);\n                    }\n                }\n                unsafe { hex_to_u32_nocheck(&*(asc.as_ptr().add(2) as *const _ as *const [u8; 4])) }\n            } else if self.cfg.utf8_lossy {\n                return Ok(0xFFFD);\n            } else {\n                // invalid surrogate\n                return perr!(self, InvalidSurrogateUnicodeCodePoint);\n            };\n\n            /* calcute the real code point */\n            let low_bit = point2.wrapping_sub(0xdc00);\n            if (low_bit >> 10) != 0 {\n                if self.cfg.utf8_lossy {\n                    return Ok(0xFFFD);\n                } else {\n                    // invalid surrogate\n                    return perr!(self, InvalidSurrogateUnicodeCodePoint);\n                }\n            }\n\n            Ok((((point1 - 0xd800) << 10) | low_bit).wrapping_add(0x10000))\n        } else if (0xDC00..0xE000).contains(&point1) {\n            if self.cfg.utf8_lossy {\n                Ok(0xFFFD)\n            } else {\n                // invalid surrogate\n                perr!(self, InvalidSurrogateUnicodeCodePoint)\n            }\n        } else {\n            Ok(point1)\n        }\n    }"
+}

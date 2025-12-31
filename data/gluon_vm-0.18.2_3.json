@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gluon_vm-0.18.2/src/core/mod.rs",
+    "start_line": 744,
+    "start_col": 13,
+    "end_line": 744,
+    "end_col": 61,
+    "code_snippet": "impl<U: Default> Drop for FillRemainingOnDrop<U> {\n                fn drop(&mut self) {\n                    unsafe {\n                        while self.ptr != self.end {\n                            ptr::write(self.ptr, U::default());\n                            self.ptr = self.ptr.add(1);\n                        }\n                    }\n                }\n            }"
+}

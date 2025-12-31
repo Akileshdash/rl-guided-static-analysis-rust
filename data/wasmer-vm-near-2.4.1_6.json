@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `global::Global::get`",
+    "file": "wasmer-vm-near-2.4.1/src/global.rs",
+    "start_line": 70,
+    "start_col": 5,
+    "end_line": 92,
+    "end_col": 6,
+    "code_snippet": "pub fn get<T: WasmValueType>(&self, store: &dyn std::any::Any) -> Value<T> {\n        let _global_guard = self.lock.lock().unwrap();\n        unsafe {\n            let definition = &*self.vm_global_definition.get();\n            match self.ty().ty {\n                Type::I32 => Value::I32(definition.to_i32()),\n                Type::I64 => Value::I64(definition.to_i64()),\n                Type::F32 => Value::F32(definition.to_f32()),\n                Type::F64 => Value::F64(definition.to_f64()),\n                Type::V128 => Value::V128(definition.to_u128()),\n                Type::ExternRef => Value::ExternRef(definition.to_externref().into()),\n                Type::FuncRef => {\n                    let p = definition.to_u128() as i128;\n                    if p as usize == 0 {\n                        Value::FuncRef(None)\n                    } else {\n                        let v = T::read_value_from(store, &p);\n                        Value::FuncRef(Some(v))\n                    }\n                }\n            }\n        }\n    }"
+}

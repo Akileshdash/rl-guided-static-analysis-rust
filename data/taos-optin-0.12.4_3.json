@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "taos-optin-0.12.4/src/types/mod.rs",
+    "start_line": 601,
+    "start_col": 1,
+    "end_line": 601,
+    "end_col": 28,
+    "code_snippet": "impl Drop for DropMultiBind {\n    fn drop(&mut self) {\n        let ty = Ty::from(self.0.buffer_type as u8);\n        if ty == Ty::VarChar || ty == Ty::NChar {\n            let len = self.0.buffer_length * self.0.num as usize;\n            unsafe { Vec::from_raw_parts(self.0.buffer as *mut u8, len, len as _) };\n            unsafe {\n                Vec::from_raw_parts(self.0.length as *mut i32, self.0.num as _, self.0.num as _)\n            };\n        }\n    }\n}"
+}

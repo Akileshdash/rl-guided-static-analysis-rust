@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `driver::legacy::LegacyInner::poll_op`",
+    "file": "monoio-0.2.4/src/driver/legacy/mod.rs",
+    "start_line": 266,
+    "start_col": 5,
+    "end_line": 315,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn poll_op<T: OpAble>(\n        this: &Rc<UnsafeCell<Self>>,\n        data: &mut T,\n        cx: &mut Context<'_>,\n    ) -> Poll<CompletionMeta> {\n        let inner = unsafe { &mut *this.get() };\n        let (direction, index) = match data.legacy_interest() {\n            Some(x) => x,\n            None => {\n                // if there is no index provided, it means the action does not rely on fd\n                // readiness. do syscall right now.\n                return Poll::Ready(CompletionMeta {\n                    result: OpAble::legacy_call(data),\n                    flags: 0,\n                });\n            }\n        };\n\n        // wait io ready and do syscall\n        let mut scheduled_io = inner.io_dispatch.get(index).expect(\"scheduled_io lost\");\n        let ref_mut = scheduled_io.as_mut();\n\n        let readiness = ready!(ref_mut.poll_readiness(cx, direction));\n\n        // check if canceled\n        if readiness.is_canceled() {\n            // clear CANCELED part only\n            ref_mut.clear_readiness(readiness & Ready::CANCELED);\n            return Poll::Ready(CompletionMeta {\n                result: Err(io::Error::from_raw_os_error(125)),\n                flags: 0,\n            });\n        }\n\n        match OpAble::legacy_call(data) {\n            Ok(n) => Poll::Ready(CompletionMeta {\n                result: Ok(n),\n                flags: 0,\n            }),\n            Err(ref e) if e.kind() == io::ErrorKind::WouldBlock => {\n                ref_mut.clear_readiness(direction.mask());\n                ref_mut.set_waker(cx, direction);\n                Poll::Pending\n            }\n            Err(e) => Poll::Ready(CompletionMeta {\n                result: Err(e),\n                flags: 0,\n            }),\n        }\n    }"
+}

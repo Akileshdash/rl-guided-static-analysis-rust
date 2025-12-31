@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "netif-0.1.6/src/lib.rs",
+    "start_line": 322,
+    "start_col": 5,
+    "end_line": 322,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Up {\n        fn drop(&mut self) {\n            if let Some(mut base) = self.base {\n                unsafe { c::freeifaddrs(base.as_mut()) };\n            }\n        }\n    }"
+}

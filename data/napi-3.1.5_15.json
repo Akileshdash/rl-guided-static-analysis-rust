@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "napi-3.1.5/src/bindgen_runtime/js_values/function.rs",
+    "start_line": 463,
+    "start_col": 1,
+    "end_line": 463,
+    "end_col": 83,
+    "code_snippet": "unsafe impl<Args: JsValuesTupleIntoVec, Return> Send for FunctionRef<Args, Return> {}\nunsafe impl<Args: JsValuesTupleIntoVec, Return> Sync for FunctionRef<Args, Return> {}"
+}

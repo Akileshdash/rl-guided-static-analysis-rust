@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "arc-swap-1.7.1/src/lib.rs",
+    "start_line": 326,
+    "start_col": 1,
+    "end_line": 326,
+    "end_col": 58,
+    "code_snippet": "impl<T: RefCnt, S: Strategy<T>> Drop for ArcSwapAny<T, S> {\n    fn drop(&mut self) {\n        let ptr = *self.ptr.get_mut();\n        unsafe {\n            // To pay any possible debts\n            self.strategy.wait_for_readers(ptr, &self.ptr);\n            // We are getting rid of the one stored ref count\n            T::dec(ptr);\n        }\n    }\n}"
+}

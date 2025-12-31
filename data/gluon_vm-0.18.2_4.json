@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gluon_vm-0.18.2/src/stack.rs",
+    "start_line": 394,
+    "start_col": 1,
+    "end_line": 396,
+    "end_col": 19,
+    "code_snippet": "impl<S> Drop for FrameViewMut<'_, S>\nwhere\n    S: StackState,\n{\n    fn drop(&mut self) {\n        unsafe {\n            *self.stack.frames.last_mut().unwrap() = self.frame.to_state().unrooted();\n        }\n    }\n}"
+}

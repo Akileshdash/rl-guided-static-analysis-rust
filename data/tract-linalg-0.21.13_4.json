@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `frame::block_quant::q4_0::BaseQ4_0::<QK>::extract_at_mn_t`",
+    "file": "tract-linalg-0.21.13/src/frame/block_quant/q4_0.rs",
+    "start_line": 117,
+    "start_col": 5,
+    "end_line": 162,
+    "end_col": 6,
+    "code_snippet": "fn extract_at_mn_t<T: Float + Debug + 'static>(\n        &self,\n        value: &EagerPackedInput,\n        mn: usize,\n        target: &mut [T],\n    ) -> TractResult<()>\n    where\n        f16: AsPrimitive<T>,\n        i8: AsPrimitive<T>,\n    {\n        let pbqf: &PackedBlockQuantFormat =\n            value.fact.format.downcast_ref().with_context(|| {\n                format!(\"Expecing PackedBlockQuantFormat, found {:?}\", value.fact.format)\n            })?;\n        ensure!(value.fact.k % self.block_len() == 0);\n        ensure!(pbqf.bq.same_as(self));\n        ensure!(value.fact.mn.to_usize().ok().map(|it| mn < it).unwrap_or(true));\n        ensure!(value.fact.k == target.len());\n        let blocks_for_k = value.fact.k / self.block_len();\n        let row_bytes = blocks_for_k * self.block_bytes();\n        let panel = mn / pbqf.r;\n        let value = &value.packed[panel * pbqf.r * row_bytes..];\n        let mut target = target.iter_mut();\n        let zipped_order =\n            zipped_order(pbqf.r, pbqf.zip).iter().position(|x| *x == mn % pbqf.r).unwrap();\n\n        let panel_block_bytes = pbqf.r * self.block_bytes();\n        let (scale_offset, weights_offset) = if pbqf.scales_at_end {\n            (panel_block_bytes - pbqf.r * f16::datum_type().size_of(), 0)\n        } else {\n            (0, pbqf.r * f16::datum_type().size_of())\n        };\n        unsafe {\n            for block in 0..blocks_for_k {\n                let block = value.as_ptr().add(block * panel_block_bytes);\n                let scale = *((block.add(scale_offset) as *const f16).add(mn % pbqf.r));\n                let scale: T = scale.as_();\n                for i in 0..self.block_len() {\n                    let byte = *block.add(weights_offset + i * pbqf.r / 2 + zipped_order / 2);\n                    let nib = if zipped_order % 2 == 0 { byte & 0x0F } else { byte >> 4 };\n                    *target.next().unwrap() = scale * ((nib as i8) - 8).as_();\n                }\n            }\n        }\n        Ok(())\n    }"
+}

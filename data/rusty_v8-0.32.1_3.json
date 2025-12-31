@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rusty_v8-0.32.1/src/support.rs",
+    "start_line": 132,
+    "start_col": 1,
+    "end_line": 132,
+    "end_col": 38,
+    "code_snippet": "impl<T: ?Sized> Drop for UniqueRef<T> {\n  fn drop(&mut self) {\n    unsafe { drop_in_place(self.0.as_ptr()) }\n  }\n}"
+}

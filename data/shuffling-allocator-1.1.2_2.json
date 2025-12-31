@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "shuffling-allocator-1.1.2/src/pthread_mutex.rs",
+    "start_line": 18,
+    "start_col": 1,
+    "end_line": 20,
+    "end_col": 30,
+    "code_snippet": "impl<A, T> Drop for PthreadMutex<A, T>\nwhere\n    A: 'static + GlobalAlloc,\n{\n    fn drop(&mut self) {\n        unsafe {\n            let retcode = libc::pthread_mutex_destroy(self.inner);\n            assert_eq!(retcode, 0);\n\n            let layout = Layout::new::<libc::pthread_mutex_t>();\n            self.allocator.dealloc(self.inner.cast(), layout);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `inline::vec::InlineVecInner::<T, N>::to_vec`",
+    "file": "tl-0.7.8/src/inline/vec.rs",
+    "start_line": 155,
+    "start_col": 5,
+    "end_line": 173,
+    "end_col": 6,
+    "code_snippet": "pub fn to_vec(&self) -> Vec<T>\n    where\n        T: Clone,\n    {\n        match &self {\n            InlineVecInner::Heap(m) => m.to_vec(),\n            InlineVecInner::Inline { len, data } => {\n                let mut new_data = Vec::with_capacity(*len);\n\n                let iter = data.into_iter().take(*len);\n\n                for element in iter {\n                    new_data.push(unsafe { T::clone(&*element.as_ptr()) });\n                }\n\n                new_data\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tokio-uring-0.5.0/src/io/shared_fd.rs",
+    "start_line": 148,
+    "start_col": 1,
+    "end_line": 148,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Inner {\n    fn drop(&mut self) {\n        // If the inner state isn't `Closed`, the user hasn't called close().await\n        // so do it synchronously.\n\n        let state = self.state.borrow_mut();\n\n        if let State::Closed = *state {\n            return;\n        }\n        let _ = unsafe { std::fs::File::from_raw_fd(self.fd) };\n    }\n}"
+}

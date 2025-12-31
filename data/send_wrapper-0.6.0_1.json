@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "send_wrapper-0.6.0/src/lib.rs",
+    "start_line": 201,
+    "start_col": 1,
+    "end_line": 201,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for SendWrapper<T> {\n\t/// Drops the contained value.\n\t///\n\t/// # Panics\n\t///\n\t/// Dropping panics if it is done from a different thread than the one the `SendWrapper<T>` instance has been\n\t/// created with.\n\t///\n\t/// Exceptions:\n\t/// - There is no extra panic if the thread is already panicking/unwinding.\n\t///   This is because otherwise there would be double panics (usually resulting in an abort)\n\t///   when dereferencing from a wrong thread.\n\t/// - If `T` has a trivial drop ([`needs_drop::<T>()`] is false) then this method never panics.\n\t///\n\t/// [`needs_drop::<T>()`]: std::mem::needs_drop\n\t#[track_caller]\n\tfn drop(&mut self) {\n\t\t// If the drop is trivial (`needs_drop` = false), then dropping `T` can't access it\n\t\t// and so it can be safely dropped on any thread.\n\t\tif !mem::needs_drop::<T>() || self.valid() {\n\t\t\tunsafe {\n\t\t\t\t// Drop the inner value\n\t\t\t\t//\n\t\t\t\t// Safety:\n\t\t\t\t// - We've just checked that it's valid to drop `T` on this thread\n\t\t\t\t// - We only move out from `self.data` here and in drop, so `self.data` is present\n\t\t\t\tManuallyDrop::drop(&mut self.data);\n\t\t\t}\n\t\t} else {\n\t\t\tinvalid_drop()\n\t\t}\n\t}\n}"
+}

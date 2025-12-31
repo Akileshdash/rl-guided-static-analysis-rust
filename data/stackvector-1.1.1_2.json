@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stackvector-1.1.1/src/lib.rs",
+    "start_line": 991,
+    "start_col": 1,
+    "end_line": 991,
+    "end_col": 36,
+    "code_snippet": "impl<A: Array> Drop for StackVec<A> {\n    fn drop(&mut self) {\n        unsafe {\n            ptr::drop_in_place(&mut self[..]);\n        }\n    }\n}"
+}

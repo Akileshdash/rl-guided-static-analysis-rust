@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deque-0.3.2/src/lib.rs",
+    "start_line": 333,
+    "start_col": 1,
+    "end_line": 333,
+    "end_col": 33,
+    "code_snippet": "impl<T: Send> Drop for Buffer<T> {\n    fn drop(&mut self) {\n        // It is assumed that all buffers are empty on drop.\n        unsafe { deallocate(self.storage, self.size) }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `atom::Atom::<Static>::from_mutated_str`",
+    "file": "string_cache-0.8.9/src/atom.rs",
+    "start_line": 338,
+    "start_col": 5,
+    "end_line": 352,
+    "end_col": 6,
+    "code_snippet": "fn from_mutated_str<F: FnOnce(&mut str)>(s: &str, f: F) -> Self {\n        let mut buffer = mem::MaybeUninit::<[u8; 64]>::uninit();\n        let buffer = unsafe { &mut *buffer.as_mut_ptr() };\n\n        if let Some(buffer_prefix) = buffer.get_mut(..s.len()) {\n            buffer_prefix.copy_from_slice(s.as_bytes());\n            let as_str = unsafe { ::std::str::from_utf8_unchecked_mut(buffer_prefix) };\n            f(as_str);\n            Atom::from(&*as_str)\n        } else {\n            let mut string = s.to_owned();\n            f(&mut string);\n            Atom::from(string)\n        }\n    }"
+}

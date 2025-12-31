@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::db_size`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 68,
+    "start_col": 5,
+    "end_line": 70,
+    "end_col": 6,
+    "code_snippet": "fn db_size(&self) -> u32 {\n        unsafe { (*self.wrapper).db_size(&*self.wrapped) }\n    }"
+}

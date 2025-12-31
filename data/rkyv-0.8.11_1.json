@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rkyv-0.8.11/src/ser/allocator/alloc.rs",
+    "start_line": 79,
+    "start_col": 1,
+    "end_line": 79,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Arena {\n    fn drop(&mut self) {\n        self.shrink();\n        let head_size = unsafe { self.head_ptr.as_ref().next_size };\n        unsafe {\n            Block::dealloc(self.head_ptr, head_size);\n        }\n    }\n}"
+}

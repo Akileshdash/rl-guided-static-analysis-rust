@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ring-channel-0.12.0/src/channel.rs",
+    "start_line": 226,
+    "start_col": 1,
+    "end_line": 226,
+    "end_col": 33,
+    "code_snippet": "impl<T> Drop for RingReceiver<T> {\n    fn drop(&mut self) {\n        #[cfg(feature = \"futures_api\")]\n        if self.handle.waitlist.deregister(self.slot).is_none() {\n            // Wake some other receiver in case we have been woken in the meantime.\n            if let Some(waker) = self.handle.waitlist.pop() {\n                waker.wake();\n            }\n        }\n\n        // Synchronizes with other receivers.\n        if self.handle.receivers.fetch_sub(1, Ordering::AcqRel) == 1 {\n            // Synchronizes the last sender and receiver with each other.\n            if !self.handle.connected.swap(false, Ordering::AcqRel) {\n                unsafe { ManuallyDrop::drop(&mut self.handle) }\n            }\n        }\n    }\n}"
+}

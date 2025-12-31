@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "affinitypool-0.3.1/src/task.rs",
+    "start_line": 78,
+    "start_col": 1,
+    "end_line": 78,
+    "end_col": 28,
+    "code_snippet": "impl Drop for OwnedTask<'_> {\n\tfn drop(&mut self) {\n\t\tunsafe {\n\t\t\tlet drop = self.0.as_ref().table.drop;\n\t\t\tdrop(self.0.cast());\n\t\t}\n\t}\n}"
+}

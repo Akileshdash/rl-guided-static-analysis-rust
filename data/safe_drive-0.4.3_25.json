@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `delta_list::filter_delta`",
+    "file": "safe_drive-0.4.3/src/delta_list.rs",
+    "start_line": 97,
+    "start_col": 1,
+    "end_line": 119,
+    "end_col": 2,
+    "code_snippet": "fn filter_delta<T, U>(mut list: &mut DeltaList<T>, f: U)\nwhere\n    U: Fn(&T) -> bool,\n{\n    loop {\n        match list {\n            DeltaList::Nil => {\n                return;\n            }\n            DeltaList::Cons(e) => {\n                let front = e.get();\n                let d_mut = unsafe { &mut (*front).1 };\n                if f(d_mut) {\n                    list = unsafe { &mut (*front).2 };\n                } else {\n                    let next = unsafe { &mut (*front).2 };\n                    let next = std::mem::replace(next, DeltaList::Nil);\n                    *list = next;\n                }\n            }\n        }\n    }\n}"
+}

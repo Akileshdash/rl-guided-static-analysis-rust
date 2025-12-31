@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `Bump::<MIN_ALIGN>::alloc_slice_try_fill_with`",
+    "file": "bumpalo-3.19.0/src/lib.rs",
+    "start_line": 1597,
+    "start_col": 5,
+    "end_line": 1620,
+    "end_col": 6,
+    "code_snippet": "pub fn alloc_slice_try_fill_with<T, F, E>(&self, len: usize, mut f: F) -> Result<&mut [T], E>\n    where\n        F: FnMut(usize) -> Result<T, E>,\n    {\n        let layout = Layout::array::<T>(len).unwrap_or_else(|_| oom());\n        let base_ptr = self.alloc_layout(layout);\n        let dst = base_ptr.cast::<T>();\n\n        unsafe {\n            for i in 0..len {\n                match f(i) {\n                    Ok(el) => ptr::write(dst.as_ptr().add(i), el),\n                    Err(e) => {\n                        self.dealloc(base_ptr, layout);\n                        return Err(e);\n                    }\n                }\n            }\n\n            let result = slice::from_raw_parts_mut(dst.as_ptr(), len);\n            debug_assert_eq!(Layout::for_value(result), layout);\n            Ok(result)\n        }\n    }"
+}

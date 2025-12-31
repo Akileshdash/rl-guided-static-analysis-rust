@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "pyo3-0.25.1/src/sync.rs",
+    "start_line": 70,
+    "start_col": 1,
+    "end_line": 70,
+    "end_col": 54,
+    "code_snippet": "unsafe impl<T> Sync for GILProtected<T> where T: Send {}"
+}

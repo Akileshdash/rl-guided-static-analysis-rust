@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `audio::audio_callback_marshall`",
+    "file": "sdl2-0.38.0/src/sdl2/audio.rs",
+    "start_line": 595,
+    "start_col": 1,
+    "end_line": 613,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn audio_callback_marshall<CB: AudioCallback>(\n    userdata: *mut c_void,\n    stream: *mut u8,\n    len: c_int,\n) {\n    use std::mem::size_of;\n    use std::slice::from_raw_parts_mut;\n    unsafe {\n        let cb_userdata: &mut Option<CB> = &mut *(userdata as *mut _);\n        let buf: &mut [CB::Channel] = from_raw_parts_mut(\n            stream as *mut CB::Channel,\n            len as usize / size_of::<CB::Channel>(),\n        );\n\n        if let Some(cb) = cb_userdata {\n            cb.callback(buf);\n        }\n    }\n}"
+}

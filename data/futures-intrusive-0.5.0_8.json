@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "futures-intrusive-0.5.0/src/channel/state_broadcast.rs",
+    "start_line": 331,
+    "start_col": 1,
+    "end_line": 332,
+    "end_col": 51,
+    "code_snippet": "unsafe impl<MutexType: RawMutex + Sync, T: Send> Sync\n    for GenericStateBroadcastChannel<MutexType, T>\n{\n}"
+}

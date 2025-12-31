@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "renderdoc-0.12.1/src/renderdoc.rs",
+    "start_line": 666,
+    "start_col": 1,
+    "end_line": 666,
+    "end_col": 37,
+    "code_snippet": "unsafe impl<V> Send for RenderDoc<V> {}"
+}

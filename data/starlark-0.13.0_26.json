@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::get_attr`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 592,
+    "start_col": 5,
+    "end_line": 592,
+    "end_col": 79,
+    "code_snippet": "fn get_attr(&self, _attribute: &str, _heap: &'v Heap) -> Option<Value<'v>> {\n        None\n    }"
+}

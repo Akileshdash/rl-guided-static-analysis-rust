@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "second-stack-0.3.5/src/lib.rs",
+    "start_line": 22,
+    "start_col": 1,
+    "end_line": 22,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Stack {\n    fn drop(&mut self) {\n        let stack = self.0.get_mut();\n        // It's ok to use force_dealloc here instead of try_dealloc\n        // because we know the allocation cannot be in-use. By eliding\n        // the check, this allows the allocation to be freed when there\n        // was a panic\n        unsafe {\n            stack.force_dealloc();\n        }\n    }\n}"
+}

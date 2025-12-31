@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "byteview-0.7.0/src/byteview.rs",
+    "start_line": 94,
+    "start_col": 1,
+    "end_line": 94,
+    "end_col": 23,
+    "code_snippet": "impl Drop for ByteView {\n    fn drop(&mut self) {\n        if self.is_inline() {\n            return;\n        }\n\n        let heap_region = self.get_heap_region();\n\n        if heap_region.ref_count.fetch_sub(1, Ordering::AcqRel) != 1 {\n            return;\n        }\n\n        unsafe {\n            let header_size = std::mem::size_of::<HeapAllocationHeader>();\n            let alignment = std::mem::align_of::<HeapAllocationHeader>();\n            let total_size = header_size + self.trailer.long.original_len as usize;\n            let layout = std::alloc::Layout::from_size_align(total_size, alignment).unwrap();\n\n            let ptr = self.trailer.long.heap.cast_mut();\n            std::alloc::dealloc(ptr, layout);\n        }\n    }\n}"
+}

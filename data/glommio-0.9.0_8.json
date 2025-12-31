@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glommio-0.9.0/src/sync/semaphore.rs",
+    "start_line": 154,
+    "start_col": 1,
+    "end_line": 154,
+    "end_col": 29,
+    "code_snippet": "impl<'a> Drop for Waiter<'a> {\n    fn drop(&mut self) {\n        if self.node.link.is_linked() {\n            // If node is linked that is for sure is pinned so that is safe\n            // to make it pinned directly\n            let waiter_node = unsafe { Pin::new_unchecked(&mut self.node) };\n            Self::remove_from_waiting_queue(waiter_node, &mut self.semaphore.state.borrow_mut())\n        }\n    }\n}"
+}

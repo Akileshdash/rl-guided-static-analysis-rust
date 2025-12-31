@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arcache::ARCacheWriteTxn::<'_, K, V, S>::clear`",
+    "file": "concread-0.5.7/src/arcache/mod.rs",
+    "start_line": 1608,
+    "start_col": 5,
+    "end_line": 1634,
+    "end_col": 6,
+    "code_snippet": "pub fn clear(&mut self) {\n        // Mark that we have been requested to clear the cache.\n        unsafe {\n            let clear_ptr = self.clear.get();\n            *clear_ptr = true;\n        }\n        // Dump the hit log.\n        unsafe {\n            let hit_ptr = self.hit.get();\n            (*hit_ptr).clear();\n        }\n\n        // Throw away any read ops we did on the old values since they'll\n        // mess up stat numbers.\n        self.stats.cache_clear();\n        /*\n        unsafe {\n            let op_ptr = self.read_ops.get();\n            (*op_ptr) = 0;\n        }\n        */\n\n        // Dump the thread local state.\n        self.tlocal.clear();\n        // From this point any get will miss on the main cache.\n        // Inserts are accepted.\n    }"
+}

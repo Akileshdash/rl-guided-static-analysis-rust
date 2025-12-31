@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `vli_enc::write_u64`",
+    "file": "varisat-internal-proof-0.2.2/src/vli_enc.rs",
+    "start_line": 26,
+    "start_col": 1,
+    "end_line": 42,
+    "end_col": 2,
+    "code_snippet": "pub fn write_u64(target: &mut impl Write, mut value: u64) -> Result<(), io::Error> {\n    let bits = (64 - value.leading_zeros()) as u32;\n    let blocks = (bits * (64 / 7)) / 64;\n    if value < (1 << (8 * 7)) {\n        value = ((value << 1) | 1) << blocks;\n        let bytes = unsafe { std::mem::transmute::<u64, [u8; 8]>(value.to_le()) };\n        target.write_all(&bytes[..(blocks + 1) as usize])\n    } else {\n        let lo_data = ((value << 1) | 1) << blocks;\n        let lo_bytes = unsafe { std::mem::transmute::<u64, [u8; 8]>(lo_data.to_le()) };\n        let hi_data = value >> (64 - (blocks + 1));\n        let hi_bytes = unsafe { std::mem::transmute::<u64, [u8; 8]>(hi_data.to_le()) };\n\n        target.write_all(&lo_bytes)?;\n        target.write_all(&hi_bytes[..(blocks as usize) + 1 - 8])\n    }\n}"
+}

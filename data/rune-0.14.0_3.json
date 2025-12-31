@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rune-0.14.0/src/runtime/any_obj.rs",
+    "start_line": 88,
+    "start_col": 1,
+    "end_line": 88,
+    "end_col": 25,
+    "code_snippet": "impl Drop for AnyObjDrop {\n    fn drop(&mut self) {\n        // Safety: We know that the inner value is live in this instance.\n        unsafe {\n            self.shared.as_ref().access.take();\n\n            Shared::dec(self.shared);\n        }\n    }\n}"
+}

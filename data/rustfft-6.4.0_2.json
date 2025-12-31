@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `algorithm::mixed_radix::MixedRadixSmall::<T>::perform_fft_immut`",
+    "file": "rustfft-6.4.0/src/algorithm/mixed_radix.rs",
+    "start_line": 343,
+    "start_col": 5,
+    "end_line": 369,
+    "end_col": 6,
+    "code_snippet": "fn perform_fft_immut(\n        &self,\n        input: &[Complex<T>],\n        output: &mut [Complex<T>],\n        scratch: &mut [Complex<T>],\n    ) {\n        // SIX STEP FFT:\n        // STEP 1: transpose\n        unsafe { array_utils::transpose_small(self.width, self.height, input, output) };\n\n        // STEP 2: perform FFTs of size `height`\n        self.height_size_fft.process_with_scratch(output, scratch);\n\n        // STEP 3: Apply twiddle factors\n        for (element, twiddle) in output.iter_mut().zip(self.twiddles.iter()) {\n            *element = *element * twiddle;\n        }\n\n        // STEP 4: transpose again\n        unsafe { array_utils::transpose_small(self.height, self.width, output, scratch) };\n\n        // STEP 5: perform FFTs of size `width`\n        self.width_size_fft.process_with_scratch(scratch, output);\n\n        // STEP 6: transpose again\n        unsafe { array_utils::transpose_small(self.width, self.height, scratch, output) };\n    }"
+}

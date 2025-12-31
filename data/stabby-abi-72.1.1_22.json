@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "stabby-abi-72.1.1/src/fatptr.rs",
+    "start_line": 454,
+    "start_col": 1,
+    "end_line": 454,
+    "end_col": 84,
+    "code_snippet": "unsafe impl<P: IPtrOwned + Send, Vt: HasSendVt + HasDropVt> Send for Dyn<'_, P, Vt> {}\n// SAFETY: The pointer must be `Sync` and the pointee must me `Send` and `Sync`."
+}

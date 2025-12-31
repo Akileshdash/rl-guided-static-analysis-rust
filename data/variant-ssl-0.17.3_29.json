@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "variant-ssl-0.17.3/src/macros.rs",
+    "start_line": 290,
+    "start_col": 9,
+    "end_line": 290,
+    "end_col": 42,
+    "code_snippet": "unsafe impl<T> Send for $owned<T>{}\n        unsafe impl<T> Send for $borrowed<T>{}"
+}

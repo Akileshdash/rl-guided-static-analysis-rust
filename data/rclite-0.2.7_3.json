@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `rc::Rc::<T>::optimized_clone`",
+    "file": "rclite-0.2.7/src/rc.rs",
+    "start_line": 412,
+    "start_col": 5,
+    "end_line": 423,
+    "end_col": 6,
+    "code_snippet": "fn optimized_clone(&self) -> Rc<T> {\n        let mut buffer: Box<MaybeUninit<RcInner<T>>> = Box::new(MaybeUninit::uninit());\n        let ptr = unsafe {\n            (&mut (*buffer.as_mut_ptr()).data as *mut T).write(T::clone(self));\n            (*buffer.as_mut_ptr()).counter = Cell::new(1);\n            NonNull::new_unchecked(Box::leak(buffer) as *mut _ as *mut RcInner<T>)\n        };\n        Rc {\n            ptr,\n            phantom: PhantomData,\n        }\n    }"
+}

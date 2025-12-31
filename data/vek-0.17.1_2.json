@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vek-0.17.1/src/vec.rs",
+    "start_line": 1799,
+    "start_col": 9,
+    "end_line": 1799,
+    "end_col": 37,
+    "code_snippet": "impl<T> Drop for IntoIter<T> {\n            fn drop(&mut self) {\n                for elem in &mut self.vector[self.start .. self.end] {\n                    unsafe {\n                        ManuallyDrop::drop(elem);\n                    }\n                }\n            }\n        }"
+}

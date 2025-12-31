@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "asyncs-sync-0.4.0/src/watch.rs",
+    "start_line": 176,
+    "start_col": 1,
+    "end_line": 176,
+    "end_col": 27,
+    "code_snippet": "impl<T> Drop for Shared<T> {\n    fn drop(&mut self) {\n        let slot = self.latest.load(Relaxed).0;\n        self.release(unsafe { slot.slot() });\n    }\n}"
+}

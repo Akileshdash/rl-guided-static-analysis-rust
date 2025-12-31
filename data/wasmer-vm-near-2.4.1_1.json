@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmer-vm-near-2.4.1/src/instance/allocator.rs",
+    "start_line": 46,
+    "start_col": 1,
+    "end_line": 46,
+    "end_col": 32,
+    "code_snippet": "impl Drop for InstanceAllocator {\n    fn drop(&mut self) {\n        if !self.consumed {\n            // If `consumed` has not been set, then we still have ownership\n            // over the buffer and must free it.\n            let instance_ptr = self.instance_ptr.as_ptr();\n\n            unsafe {\n                std::alloc::dealloc(instance_ptr as *mut u8, self.instance_layout);\n            }\n        }\n    }\n}"
+}

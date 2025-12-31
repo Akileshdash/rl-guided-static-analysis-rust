@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `mfunction_raw_callback`",
+    "file": "nlopt-0.8.1/src/lib.rs",
+    "start_line": 171,
+    "start_col": 1,
+    "end_line": 188,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn mfunction_raw_callback<F: MObjFn<T>, T>(\n    m: u32,\n    re: *mut f64,\n    n: u32,\n    x: *const f64,\n    g: *mut f64,\n    d: *mut c_void,\n) {\n    let f = unsafe { &mut *(d as *mut MConstraintCfg<F, T>) };\n    let re = unsafe { slice::from_raw_parts_mut(re, m as usize) };\n    let argument = unsafe { slice::from_raw_parts(x, n as usize) };\n    let gradient: Option<&mut [f64]> = if g.is_null() {\n        None\n    } else {\n        Some(unsafe { slice::from_raw_parts_mut(g, (n as usize) * (m as usize)) })\n    };\n    (f.constraint)(re, argument, gradient, &mut f.user_data);\n}"
+}

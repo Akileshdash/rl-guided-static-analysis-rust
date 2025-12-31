@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/alloc/vec.rs",
+    "start_line": 661,
+    "start_col": 1,
+    "end_line": 661,
+    "end_col": 51,
+    "code_snippet": "impl<T, Alloc: IAlloc> Drop for IntoIter<T, Alloc> {\n    fn drop(&mut self) {\n        unsafe {\n            core::ptr::drop_in_place(&mut self.vec.as_slice_mut()[self.index..]);\n            self.vec.set_len(0);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crossbeam-epoch-0.9.18/src/guard.rs",
+    "start_line": 411,
+    "start_col": 1,
+    "end_line": 411,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Guard {\n    #[inline]\n    fn drop(&mut self) {\n        if let Some(local) = unsafe { self.local.as_ref() } {\n            local.unpin();\n        }\n    }\n}"
+}

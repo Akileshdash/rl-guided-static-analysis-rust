@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glib-0.21.0/src/collections/strv.rs",
+    "start_line": 229,
+    "start_col": 1,
+    "end_line": 229,
+    "end_col": 23,
+    "code_snippet": "impl Drop for IntoIter {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            for i in 0..self.len {\n                ffi::g_free(*self.idx.as_ptr().add(i) as ffi::gpointer);\n            }\n\n            if !self.empty {\n                ffi::g_free(self.ptr.as_ptr() as ffi::gpointer);\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `OccupiedEntry::<'a, A, V>::into_mut`",
+    "file": "anymap3-1.0.1/src/lib.rs",
+    "start_line": 411,
+    "start_col": 13,
+    "end_line": 413,
+    "end_col": 14,
+    "code_snippet": "pub fn into_mut(self) -> &'a mut V {\n                unsafe { self.inner.into_mut().downcast_mut_unchecked() }\n            }"
+}

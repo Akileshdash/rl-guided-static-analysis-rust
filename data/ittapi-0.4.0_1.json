@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `task::Task::<'a>::begin`",
+    "file": "ittapi-0.4.0/src/task.rs",
+    "start_line": 31,
+    "start_col": 5,
+    "end_line": 37,
+    "end_col": 6,
+    "code_snippet": "pub fn begin(domain: &'a Domain, name: impl Into<StringHandle>) -> Self {\n        if let Some(create_fn) = unsafe { ittapi_sys::__itt_task_begin_ptr__3_0 } {\n            // Currently the `taskid` and `parentid` parameters are unimplemented (TODO).\n            unsafe { create_fn(domain.as_ptr(), ITT_NULL, ITT_NULL, name.into().as_ptr()) };\n        }\n        Self(domain)\n    }"
+}

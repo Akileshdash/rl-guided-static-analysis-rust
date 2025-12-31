@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "faiss-0.12.1/src/index/pretransform.rs",
+    "start_line": 24,
+    "start_col": 1,
+    "end_line": 24,
+    "end_col": 49,
+    "code_snippet": "unsafe impl<I> Sync for PreTransformIndexImpl<I> {}"
+}

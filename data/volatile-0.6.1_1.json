@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "volatile-0.6.1/src/volatile_ref.rs",
+    "start_line": 291,
+    "start_col": 1,
+    "end_line": 291,
+    "end_col": 72,
+    "code_snippet": "unsafe impl<T, A> Send for VolatileRef<'_, T, A> where T: Sync + ?Sized {}\nunsafe impl<T, A> Sync for VolatileRef<'_, T, A> where T: Sync + ?Sized {}"
+}

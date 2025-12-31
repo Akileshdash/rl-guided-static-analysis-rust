@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "yffi-0.24.0/src/lib.rs",
+    "start_line": 235,
+    "start_col": 1,
+    "end_line": 235,
+    "end_col": 24,
+    "code_snippet": "impl Drop for YMapEntry {\n    fn drop(&mut self) {\n        unsafe {\n            drop(CString::from_raw(self.key as *mut c_char));\n            drop(Box::from_raw(self.value as *mut YOutput));\n        }\n    }\n}"
+}

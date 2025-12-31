@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "embassy-hal-internal-0.3.0/src/drop.rs",
+    "start_line": 23,
+    "start_col": 1,
+    "end_line": 23,
+    "end_col": 37,
+    "code_snippet": "impl<F: FnOnce()> Drop for OnDrop<F> {\n    fn drop(&mut self) {\n        unsafe { self.f.as_ptr().read()() }\n    }\n}"
+}

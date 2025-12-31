@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `lazy_atomic_cell::LazyAtomicCell::<A, T>::get_or_create`",
+    "file": "shuffling-allocator-1.1.2/src/lazy_atomic_cell.rs",
+    "start_line": 47,
+    "start_col": 5,
+    "end_line": 83,
+    "end_col": 6,
+    "code_snippet": "pub fn get_or_create(&self, init: impl FnOnce() -> T) -> &T {\n        let ptr = self.ptr.load(Ordering::SeqCst);\n        if !ptr.is_null() {\n            return unsafe { &*ptr };\n        }\n\n        // Allocate space for our `T`.\n        let layout = Layout::new::<T>();\n        let new_ptr = unsafe { self.allocator.alloc(layout).cast::<T>() };\n        if new_ptr.is_null() {\n            handle_alloc_error(layout);\n        }\n\n        // Initialize our `T`.\n        unsafe {\n            ptr::write(new_ptr, init());\n        }\n\n        // Attempt to initialize `self.ptr` with our newly allocated and\n        // initialized `T`. We are racing against other threads to be the first\n        // to initialize `self.ptr`.\n        let existing_ptr = self\n            .ptr\n            .compare_and_swap(ptr::null_mut(), new_ptr, Ordering::SeqCst);\n        if existing_ptr.is_null() {\n            // We won the race!\n            unsafe { &*new_ptr }\n        } else {\n            // We lost the race, so we have to remember to drop and deallocate\n            // our now-unnecessary `State`.\n            unsafe {\n                ptr::drop_in_place(new_ptr);\n                self.allocator.dealloc(new_ptr.cast(), layout);\n                &*existing_ptr\n            }\n        }\n    }"
+}

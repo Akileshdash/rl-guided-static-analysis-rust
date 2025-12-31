@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "deb822-lossless-0.3.1/src/parse.rs",
+    "start_line": 79,
+    "start_col": 1,
+    "end_line": 79,
+    "end_col": 33,
+    "code_snippet": "unsafe impl<T> Sync for Parse<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ort-2.0.0-rc.10/src/util.rs",
+    "start_line": 498,
+    "start_col": 1,
+    "end_line": 498,
+    "end_col": 40,
+    "code_snippet": "impl<F: FnOnce()> Drop for RunOnDrop<F> {\n\t#[inline]\n\tfn drop(&mut self) {\n\t\tlet runner = unsafe { ptr::read(&*self.runner) };\n\t\trunner()\n\t}\n}"
+}

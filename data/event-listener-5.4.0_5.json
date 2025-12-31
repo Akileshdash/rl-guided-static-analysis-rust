@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "event-listener-5.4.0/src/lib.rs",
+    "start_line": 1081,
+    "start_col": 1,
+    "end_line": 1081,
+    "end_col": 86,
+    "code_snippet": "unsafe impl<T: Send, B: Borrow<Inner<T>> + Unpin + Sync> Sync for InnerListener<T, B> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `async_cell::RcRef::<T>::map`",
+    "file": "deno_core-0.354.0/async_cell.rs",
+    "start_line": 155,
+    "start_col": 3,
+    "end_line": 164,
+    "end_col": 4,
+    "code_snippet": "pub fn map<S: 'static, R: RcLike<S>, F: FnOnce(&S) -> &T>(\n    source: R,\n    map_fn: F,\n  ) -> RcRef<T> {\n    let RcRef::<S> { rc, value } = source.into();\n    // TODO(piscisaureus): safety comment\n    #[allow(clippy::undocumented_unsafe_blocks)]\n    let value = map_fn(unsafe { &*value });\n    RcRef { rc, value }\n  }"
+}

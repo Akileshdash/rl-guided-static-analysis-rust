@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ndarray-0.16.1/src/impl_owned_array.rs",
+    "start_line": 762,
+    "start_col": 13,
+    "end_line": 762,
+    "end_col": 49,
+    "code_snippet": "impl<A> Drop for SetLenOnDrop<'_, A>\n            {\n                fn drop(&mut self)\n                {\n                    unsafe {\n                        self.data.set_len(self.len);\n                    }\n                }\n            }"
+}

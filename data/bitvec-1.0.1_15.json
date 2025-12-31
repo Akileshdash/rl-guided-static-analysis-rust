@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `vec::BitVec::<T, O>::with_vec`",
+    "file": "bitvec-1.0.1/src/vec.rs",
+    "start_line": 653,
+    "start_col": 2,
+    "end_line": 665,
+    "end_col": 3,
+    "code_snippet": "fn with_vec<F, R>(&mut self, func: F) -> R\n\twhere F: FnOnce(&mut ManuallyDrop<Vec<T>>) -> R {\n\t\tlet mut vec = unsafe { ptr::read(self) }\n\t\t\t.into_vec()\n\t\t\t.pipe(ManuallyDrop::new);\n\t\tlet out = func(&mut vec);\n\n\t\tunsafe {\n\t\t\tself.bitspan.set_address(vec.as_mut_ptr().into_address());\n\t\t}\n\t\tself.capacity = vec.capacity();\n\t\tout\n\t}"
+}

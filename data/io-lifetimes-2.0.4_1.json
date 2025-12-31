@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "io-lifetimes-2.0.4/src/views.rs",
+    "start_line": 158,
+    "start_col": 1,
+    "end_line": 158,
+    "end_col": 65,
+    "code_snippet": "impl<Target: FilelikeViewType> Drop for FilelikeView<'_, Target> {\n    #[inline]\n    fn drop(&mut self) {\n        // Use `Into*` to consume `self.target` without freeing its resource.\n        //\n        // Safety: Using `ManuallyDrop::take` requires us to ensure that\n        // `self.target` is not used again. We don't use it again here, and\n        // this is the `drop` function, so we know it's not used afterward.\n        let _raw = unsafe { ManuallyDrop::take(&mut self.target) }\n            .into_filelike()\n            .into_raw_filelike();\n\n        #[cfg(debug_assertions)]\n        debug_assert_eq!(self.orig, _raw);\n    }\n}"
+}

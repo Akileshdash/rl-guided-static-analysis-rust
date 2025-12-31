@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `clang::visit_children`",
+    "file": "bindgen-0.72.0/clang.rs",
+    "start_line": 1117,
+    "start_col": 1,
+    "end_line": 1129,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn visit_children<Visitor>(\n    cur: CXCursor,\n    _parent: CXCursor,\n    data: CXClientData,\n) -> CXChildVisitResult\nwhere\n    Visitor: FnMut(Cursor) -> CXChildVisitResult,\n{\n    let func: &mut Visitor = unsafe { &mut *data.cast::<Visitor>() };\n    let child = Cursor { x: cur };\n\n    (*func)(child)\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tl-0.7.8/src/bytes.rs",
+    "start_line": 287,
+    "start_col": 1,
+    "end_line": 287,
+    "end_col": 25,
+    "code_snippet": "impl Drop for BytesInner {\n    fn drop(&mut self) {\n        // we only need to deallocate if we own the data\n        // if we don't, just do nothing\n        if let BytesInner::Owned(ptr, len) = self {\n            let ptr = *ptr;\n            let len = *len as usize;\n\n            // carefully reconstruct a `Box<[u8]>` from the raw pointer and length\n            // and immediately drop it to free memory\n            unsafe { drop(Vec::from_raw_parts(ptr, len, len).into_boxed_slice()) };\n        }\n    }\n}"
+}

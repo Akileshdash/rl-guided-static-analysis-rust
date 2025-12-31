@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<dimension::provider::units_essentials::UnitsEssentials<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_experimental-0.3.0/src/dimension/provider/units_essentials.rs",
+    "start_line": 47,
+    "start_col": 35,
+    "end_line": 47,
+    "end_col": 49,
+    "code_snippet": "#[derive(Clone, PartialEq, Debug, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_experimental::dimension::provider::units_essentials))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[yoke(prove_covariance_manually)]\npub struct UnitsEssentials<'data> {\n    // TODO: use `SinglePlaceholderPattern` instead of `str` for the patterns' string representations.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub prefixes: ZeroMap<'data, PatternKey, str>,\n\n    // TODO: use `DoublePlaceholderPattern` instead of `str` for the patterns' string representations.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub per: Cow<'data, str>,\n\n    // TODO: use `DoublePlaceholderPattern` instead of `str` for the patterns' string representations.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub times: Cow<'data, str>,\n}"
+}

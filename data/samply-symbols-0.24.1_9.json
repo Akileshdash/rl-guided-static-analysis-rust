@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<symbol_map_object::ObjectSymbolMapInnerWrapper<'static, FC> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "samply-symbols-0.24.1/src/symbol_map_object.rs",
+    "start_line": 648,
+    "start_col": 10,
+    "end_line": 648,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\npub struct ObjectSymbolMapInnerWrapper<'data, FC>(\n    pub Box<dyn SymbolMapTraitWithExternalFileSupport<FC> + Send + Sync + 'data>,\n);\n\nimpl<'a, FC: FileContents + 'static> ObjectSymbolMapInnerWrapper<'a, FC> {\n    pub fn new<'file, O, Symbol, DDM>(\n        object_file: &'file O,\n        addr2line_context: Option<addr2line::Context<EndianSlice<'a, RunTimeEndian>>>,\n        dwp_package: Option<addr2line::gimli::DwarfPackage<EndianSlice<'a, RunTimeEndian>>>,\n        debug_id: DebugId,\n        function_start_addresses: Option<&[u32]>,\n        function_end_addresses: Option<&[u32]>,\n        dwo_dwarf_maker: &'a DDM,\n    ) -> Self\n    where\n        'a: 'file,\n        O: object::Object<'a, Symbol<'file> = Symbol>,\n        Symbol: object::ObjectSymbol<'a> + Send + Sync + 'a,\n        DDM: DwoDwarfMaker<FC> + Sync,\n    {\n        let base_address = relative_address_base(object_file);\n        let list = SymbolList::new(\n            object_file,\n            base_address,\n            function_start_addresses,\n            function_end_addresses,\n        );\n\n        let inner = ObjectSymbolMapInner {\n            list,\n            debug_id,\n            path_mapper: Mutex::new(PathMapper::new()),\n            object_map: object_file.object_map(),\n            context: addr2line_context.map(Mutex::new),\n            dwp_package,\n            image_base_address: base_address,\n            svma_file_ranges: SvmaFileRanges::from_object(object_file),\n            dwo_dwarf_maker,\n            cached_external_file: Mutex::new(None),\n            _phantom: PhantomData,\n        };\n        Self(Box::new(inner))\n    }\n}"
+}

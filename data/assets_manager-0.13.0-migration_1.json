@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "assets_manager-0.13.0-migration/src/utils/bytes.rs",
+    "start_line": 46,
+    "start_col": 1,
+    "end_line": 46,
+    "end_col": 26,
+    "code_snippet": "impl Drop for SharedBytes {\n    #[inline]\n    fn drop(&mut self) {\n        // Synchronize with `drop_slow`\n        if self.inner().count.fetch_sub(1, Ordering::Release) == 1 {\n            unsafe {\n                self.drop_slow();\n            }\n        }\n    }\n}"
+}

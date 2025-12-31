@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pin-project-1.1.10/src/lib.rs",
+    "start_line": 318,
+    "start_col": 5,
+    "end_line": 318,
+    "end_col": 55,
+    "code_snippet": "impl<T: ?Sized> Drop for UnsafeDropInPlaceGuard<T> {\n        fn drop(&mut self) {\n            // SAFETY: the caller of `UnsafeDropInPlaceGuard::new` must guarantee\n            // that `ptr` is valid for drop when this guard is destructed.\n            unsafe {\n                ptr::drop_in_place(self.0);\n            }\n        }\n    }"
+}

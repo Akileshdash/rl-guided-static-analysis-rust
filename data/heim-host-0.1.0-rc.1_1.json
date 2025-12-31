@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sys::unix::users::get_users`",
+    "file": "heim-host-0.1.0-rc.1/src/sys/unix/users.rs",
+    "start_line": 21,
+    "start_col": 1,
+    "end_line": 42,
+    "end_col": 2,
+    "code_snippet": "pub fn get_users<T: From<libc::utmpx>>() -> Vec<T> {\n    // TODO: Should we try to guess the capacity?\n    let mut users = Vec::with_capacity(1);\n    unsafe {\n        libc::setutxent();\n        loop {\n            let entry = libc::getutxent();\n            if entry.is_null() {\n                break;\n            }\n\n            if (*entry).ut_type != libc::USER_PROCESS {\n                continue;\n            }\n\n            users.push(T::from(*entry))\n        }\n        libc::endutxent();\n    }\n\n    users\n}"
+}

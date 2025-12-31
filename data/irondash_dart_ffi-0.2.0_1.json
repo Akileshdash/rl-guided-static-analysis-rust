@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "irondash_dart_ffi-0.2.0/src/value.rs",
+    "start_line": 304,
+    "start_col": 5,
+    "end_line": 304,
+    "end_col": 30,
+    "code_snippet": "impl Drop for DartCObject {\n        fn drop(&mut self) {\n            match self.ty {\n                DartCObjectType::String => {\n                    unsafe { CString::from_raw(self.value.as_string) };\n                }\n                DartCObjectType::Array => unsafe {\n                    let array = Vec::<*mut DartCObject>::from_raw_parts(\n                        self.value.as_array.values,\n                        self.value.as_array.length as usize,\n                        self.value.as_array.capacity as usize,\n                    );\n                    let _ = array.into_iter().map(|o| Box::from_raw(o));\n                },\n                _ => {}\n            }\n        }\n    }"
+}

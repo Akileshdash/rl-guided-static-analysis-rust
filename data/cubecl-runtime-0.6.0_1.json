@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "cubecl-runtime-0.6.0/src/tune/function_tunable.rs",
+    "start_line": 56,
+    "start_col": 1,
+    "end_line": 57,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<F: AsFunctionTunable<Marker> + Send, Marker> Send\n    for FunctionTunableResultMap<F, Marker>\n{\n}"
+}

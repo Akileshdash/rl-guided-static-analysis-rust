@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `env::raw_finalize_with_custom_callback`",
+    "file": "napi-3.1.5/src/env.rs",
+    "start_line": 1537,
+    "start_col": 1,
+    "end_line": 1546,
+    "end_col": 2,
+    "code_snippet": "pub(crate) unsafe extern \"C\" fn raw_finalize_with_custom_callback<Hint, Finalize>(\n  env: sys::napi_env,\n  _finalize_data: *mut c_void,\n  finalize_hint: *mut c_void,\n) where\n  Finalize: FnOnce(Env, Hint),\n{\n  let (hint, callback) = unsafe { *Box::from_raw(finalize_hint as *mut (Hint, Finalize)) };\n  callback(Env::from_raw(env), hint);\n}"
+}

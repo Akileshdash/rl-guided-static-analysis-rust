@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "libxml-0.3.6/src/schemas/validation.rs",
+    "start_line": 117,
+    "start_col": 1,
+    "end_line": 117,
+    "end_col": 38,
+    "code_snippet": "impl Drop for SchemaValidationContext {\n  fn drop(&mut self) {\n    unsafe {\n      bindings::xmlSchemaFreeValidCtxt(self.ctxt);\n      if !self.errlog.is_null() {\n        let errors: Box<Vec<StructuredError>> = std::mem::transmute(self.errlog);\n        drop(errors)\n      }\n    }\n  }\n}"
+}

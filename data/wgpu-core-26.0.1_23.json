@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/resource.rs",
+    "start_line": 1955,
+    "start_col": 1,
+    "end_line": 1955,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Blas {\n    fn drop(&mut self) {\n        resource_log!(\"Destroy raw {}\", self.error_ident());\n        // SAFETY: We are in the Drop impl, and we don't use self.raw or self.compaction_buffer anymore after this point.\n        if let Some(raw) = self.raw.take() {\n            unsafe {\n                self.device.raw().destroy_acceleration_structure(raw);\n            }\n        }\n        if let Some(mut raw) = self.compaction_buffer.take() {\n            unsafe {\n                self.device\n                    .raw()\n                    .destroy_buffer(ManuallyDrop::take(&mut raw))\n            }\n        }\n    }\n}"
+}

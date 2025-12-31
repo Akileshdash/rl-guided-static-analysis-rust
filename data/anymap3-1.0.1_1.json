@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `OccupiedEntry::<'a, A, V>::get`",
+    "file": "anymap3-1.0.1/src/lib.rs",
+    "start_line": 398,
+    "start_col": 13,
+    "end_line": 400,
+    "end_col": 14,
+    "code_snippet": "pub fn get(&self) -> &V {\n                unsafe { self.inner.get().downcast_ref_unchecked() }\n            }"
+}

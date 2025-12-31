@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lazyinit-0.2.2/src/lib.rs",
+    "start_line": 198,
+    "start_col": 1,
+    "end_line": 198,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for LazyInit<T> {\n    fn drop(&mut self) {\n        if self.is_inited() {\n            unsafe { core::ptr::drop_in_place((*self.data.get()).as_mut_ptr()) };\n        }\n    }\n}"
+}

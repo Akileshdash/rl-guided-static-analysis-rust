@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "i-slint-core-1.12.1/sharedvector.rs",
+    "start_line": 482,
+    "start_col": 1,
+    "end_line": 482,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for IntoIterInner<T> {\n    fn drop(&mut self) {\n        match self {\n            IntoIterInner::Shared(..) => { /* drop of SharedVector takes care of it */ }\n            IntoIterInner::UnShared(mut inner, begin) => unsafe {\n                debug_assert_eq!(inner.as_ref().header.refcount.load(atomic::Ordering::Relaxed), 0);\n                let data_ptr = inner.as_mut().data.as_mut_ptr();\n                for x in (*begin)..inner.as_ref().header.size {\n                    core::ptr::drop_in_place(data_ptr.add(x));\n                }\n                ::alloc::alloc::dealloc(\n                    inner.as_ptr() as *mut u8,\n                    compute_inner_layout::<T>(inner.as_ref().header.capacity),\n                )\n            },\n        }\n    }\n}"
+}

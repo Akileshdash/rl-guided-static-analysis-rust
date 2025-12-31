@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/Transmute",
+    "description": "Potential unsafe dataflow issue in `ptr::P::<T>::map`",
+    "file": "garando_syntax-0.1.1/src/ptr.rs",
+    "start_line": 67,
+    "start_col": 5,
+    "end_line": 87,
+    "end_col": 6,
+    "code_snippet": "pub fn map<F>(mut self, f: F) -> P<T>\n    where\n        F: FnOnce(T) -> T,\n    {\n        let p: *mut T = &mut *self.ptr;\n\n        // Leak self in case of panic.\n        // FIXME(eddyb) Use some sort of \"free guard\" that\n        // only deallocates, without dropping the pointee,\n        // in case the call the `f` below ends in a panic.\n        mem::forget(self);\n\n        unsafe {\n            ptr::write(p, f(ptr::read(p)));\n\n            // Recreate self from the raw pointer.\n            P {\n                ptr: Box::from_raw(p),\n            }\n        }\n    }"
+}

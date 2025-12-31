@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `domain::PartialElement::<'a, M, T, O>::store_value_aliased`",
+    "file": "bitvec-1.0.1/src/domain.rs",
+    "start_line": 884,
+    "start_col": 2,
+    "end_line": 889,
+    "end_col": 3,
+    "code_snippet": "pub fn store_value_aliased(&self, value: T::Mem) -> T::Mem {\n\t\tlet this = unsafe { &*self.elem.to_const().cast::<T::Access>() };\n\t\tlet prev = this.clear_bits(self.mask);\n\t\tthis.set_bits(self.mask & value);\n\t\tprev & self.mask.into_inner()\n\t}"
+}

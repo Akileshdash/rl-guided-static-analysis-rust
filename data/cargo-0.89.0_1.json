@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cargo-0.89.0/src/cargo/core/package.rs",
+    "start_line": 1133,
+    "start_col": 1,
+    "end_line": 1133,
+    "end_col": 46,
+    "code_snippet": "impl<'a, 'gctx> Drop for Downloads<'a, 'gctx> {\n    fn drop(&mut self) {\n        self.set.downloading.set(false);\n        let progress = self.progress.get_mut().take().unwrap();\n        // Don't print a download summary if we're not using a progress bar,\n        // we've already printed lots of `Downloading...` items.\n        if !progress.is_enabled() {\n            return;\n        }\n        // If we didn't download anything, no need for a summary.\n        if self.downloads_finished == 0 {\n            return;\n        }\n        // If an error happened, let's not clutter up the output.\n        if !self.success {\n            return;\n        }\n        // pick the correct plural of crate(s)\n        let crate_string = if self.downloads_finished == 1 {\n            \"crate\"\n        } else {\n            \"crates\"\n        };\n        let mut status = format!(\n            \"{} {} ({:.1}) in {}\",\n            self.downloads_finished,\n            crate_string,\n            HumanBytes(self.downloaded_bytes),\n            util::elapsed(self.start.elapsed())\n        );\n        // print the size of largest crate if it was >1mb\n        // however don't print if only a single crate was downloaded\n        // because it is obvious that it will be the largest then\n        let mib_1 = 1024 * 1024;\n        if self.largest.0 > mib_1 && self.downloads_finished > 1 {\n            status.push_str(&format!(\n                \" (largest was `{}` at {:.1})\",\n                self.largest.1,\n                HumanBytes(self.largest.0),\n            ));\n        }\n        // Clear progress before displaying final summary.\n        drop(progress);\n        drop(self.set.gctx.shell().status(\"Downloaded\", status));\n    }\n}"
+}

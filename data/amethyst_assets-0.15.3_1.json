@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "amethyst_assets-0.15.3/src/storage.rs",
+    "start_line": 491,
+    "start_col": 1,
+    "end_line": 491,
+    "end_col": 40,
+    "code_snippet": "impl<A: Asset> Drop for AssetStorage<A> {\n    fn drop(&mut self) {\n        let bitset = &self.bitset;\n        unsafe { self.assets.clean(bitset) }\n    }\n}"
+}

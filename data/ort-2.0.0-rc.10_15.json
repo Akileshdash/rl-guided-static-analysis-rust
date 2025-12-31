@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<util::RunOnDrop<F> as std::ops::Drop>::drop`",
+    "file": "ort-2.0.0-rc.10/src/util.rs",
+    "start_line": 500,
+    "start_col": 2,
+    "end_line": 503,
+    "end_col": 3,
+    "code_snippet": "fn drop(&mut self) {\n\t\tlet runner = unsafe { ptr::read(&*self.runner) };\n\t\trunner()\n\t}"
+}

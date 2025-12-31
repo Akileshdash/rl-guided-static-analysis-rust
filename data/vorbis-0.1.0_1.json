@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `Decoder::<R>::new::read_func`",
+    "file": "vorbis-0.1.0/src/lib.rs",
+    "start_line": 95,
+    "start_col": 9,
+    "end_line": 122,
+    "end_col": 10,
+    "code_snippet": "extern fn read_func<R>(ptr: *mut libc::c_void, size: libc::size_t, nmemb: libc::size_t,\n            datasource: *mut libc::c_void) -> libc::size_t where R: Read + Seek\n        {\n            use std::slice;\n\n            /*\n             * In practice libvorbisfile always sets size to 1.\n             * This assumption makes things much simpler\n             */\n            assert_eq!(size, 1);\n\n            let ptr = ptr as *mut u8;\n\n            let data: &mut DecoderData<R> = unsafe { std::mem::transmute(datasource) };\n\n            let buffer = unsafe { slice::from_raw_parts_mut(ptr as *mut u8, nmemb as usize) };\n\n            loop {\n                match data.reader.read(buffer) {\n                    Ok(nb) => return nb as libc::size_t,\n                    Err(ref e) if e.kind() == io::ErrorKind::Interrupted => (),\n                    Err(e) => {\n                        data.read_error = Some(e);\n                        return 0\n                    }\n                }\n            }\n        }"
+}

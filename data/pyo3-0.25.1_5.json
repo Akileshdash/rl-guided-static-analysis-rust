@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pyo3-0.25.1/src/sync.rs",
+    "start_line": 363,
+    "start_col": 1,
+    "end_line": 363,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for GILOnceCell<T> {\n    fn drop(&mut self) {\n        if self.once.is_completed() {\n            // SAFETY: the cell has been written.\n            unsafe { MaybeUninit::assume_init_drop(self.data.get_mut()) }\n        }\n    }\n}"
+}

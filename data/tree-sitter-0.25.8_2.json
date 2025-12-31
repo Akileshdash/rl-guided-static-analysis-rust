@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tree-sitter-0.25.8/binding_rust/lib.rs",
+    "start_line": 209,
+    "start_col": 1,
+    "end_line": 209,
+    "end_col": 37,
+    "code_snippet": "impl Drop for QueryCursorOptionsDrop {\n    fn drop(&mut self) {\n        unsafe {\n            if !(*self.0).payload.is_null() {\n                drop(Box::from_raw(\n                    (*self.0).payload.cast::<QueryProgressCallback>(),\n                ));\n            }\n            drop(Box::from_raw(self.0));\n        }\n    }\n}"
+}

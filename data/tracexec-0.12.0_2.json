@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tracexec-0.12.0/src/pty.rs",
+    "start_line": 700,
+    "start_col": 1,
+    "end_line": 700,
+    "end_col": 31,
+    "code_snippet": "impl Drop for UnixMasterWriter {\n  fn drop(&mut self) {\n    let mut t: libc::termios = unsafe { std::mem::MaybeUninit::zeroed().assume_init() };\n    if unsafe { libc::tcgetattr(self.fd.0.as_raw_fd(), &mut t) } == 0 {\n      // EOF is only interpreted after a newline, so if it is set,\n      // we send a newline followed by EOF.\n      let eot = t.c_cc[libc::VEOF];\n      if eot != 0 {\n        let _ = self.fd.0.write_all(&[b'\\n', eot]);\n      }\n    }\n  }\n}"
+}

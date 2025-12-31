@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glutin-0.32.3/src/api/egl/context.rs",
+    "start_line": 476,
+    "start_col": 1,
+    "end_line": 476,
+    "end_col": 27,
+    "code_snippet": "impl Drop for ContextInner {\n    fn drop(&mut self) {\n        unsafe {\n            self.display.inner.egl.DestroyContext(*self.display.inner.raw, *self.raw);\n        }\n    }\n}"
+}

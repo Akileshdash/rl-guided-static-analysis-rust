@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "graphblas_sparse_linear_algebra-0.54.3/src/collections/sparse_matrix/sparse_matrix.rs",
+    "start_line": 45,
+    "start_col": 1,
+    "end_line": 45,
+    "end_col": 51,
+    "code_snippet": "unsafe impl<T: ValueType> Sync for SparseMatrix<T> {}"
+}

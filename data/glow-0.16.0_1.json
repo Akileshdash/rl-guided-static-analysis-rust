@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glow-0.16.0/src/native.rs",
+    "start_line": 25,
+    "start_col": 1,
+    "end_line": 25,
+    "end_col": 34,
+    "code_snippet": "impl Drop for DebugCallbackRawPtr {\n    fn drop(&mut self) {\n        unsafe {\n            // Convert callback back into `Box` and drop it.\n            let thin_ptr = Box::from_raw(self.callback as *mut DebugCallback);\n            let callback = *thin_ptr;\n            drop(callback);\n        }\n    }\n}"
+}

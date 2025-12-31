@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "gfx-backend-gl-0.9.0/src/lib.rs",
+    "start_line": 351,
+    "start_col": 1,
+    "end_line": 351,
+    "end_col": 42,
+    "code_snippet": "unsafe impl<T: ?Sized> Sync for Wstarc<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rendy-resource-0.5.1/src/escape.rs",
+    "start_line": 138,
+    "start_col": 1,
+    "end_line": 138,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for Terminal<T> {\n    fn drop(&mut self) {\n        unsafe {\n            ManuallyDrop::drop(&mut self.sender);\n            match self.receiver.try_recv() {\n                Err(TryRecvError::Disconnected) => {}\n                _ => {\n                    log::error!(\"Terminal must be dropped after all `Escape`s\");\n                }\n            }\n        }\n    }\n}"
+}

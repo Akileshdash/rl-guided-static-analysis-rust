@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `Client::run_callbacks_raw`",
+    "file": "steamworks-0.12.1/src/lib.rs",
+    "start_line": 250,
+    "start_col": 5,
+    "end_line": 285,
+    "end_col": 6,
+    "code_snippet": "fn run_callbacks_raw(&self, mut callback_handler: impl FnMut(i32, *mut c_void)) {\n        unsafe {\n            let pipe = self.inner.manager.get_pipe();\n            sys::SteamAPI_ManualDispatch_RunFrame(pipe);\n            let mut callback = std::mem::zeroed();\n            let mut apicall_result = Vec::new();\n            while sys::SteamAPI_ManualDispatch_GetNextCallback(pipe, &mut callback) {\n                if callback.m_iCallback == sys::SteamAPICallCompleted_t_k_iCallback as i32 {\n                    let apicall = callback\n                        .m_pubParam\n                        .cast::<sys::SteamAPICallCompleted_t>()\n                        .read_unaligned();\n                    apicall_result.resize(apicall.m_cubParam as usize, 0u8);\n                    let mut failed = false;\n                    if sys::SteamAPI_ManualDispatch_GetAPICallResult(\n                        pipe,\n                        apicall.m_hAsyncCall,\n                        apicall_result.as_mut_ptr().cast(),\n                        apicall.m_cubParam as _,\n                        apicall.m_iCallback,\n                        &mut failed,\n                    ) {\n                        let mut call_results = self.inner.callbacks.call_results.lock().unwrap();\n                        // The &{val} pattern here is to avoid taking a reference to a packed field\n                        // Since the value here is Copy, we can just copy it and borrow the copy\n                        if let Some(cb) = call_results.remove(&{ apicall.m_hAsyncCall }) {\n                            cb(apicall_result.as_mut_ptr().cast(), failed);\n                        }\n                    }\n                } else {\n                    callback_handler(callback.m_iCallback, callback.m_pubParam.cast());\n                }\n                sys::SteamAPI_ManualDispatch_FreeLastCallback(pipe);\n            }\n        }\n    }"
+}

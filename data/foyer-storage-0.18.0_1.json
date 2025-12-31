@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "foyer-storage-0.18.0/src/io/buffer.rs",
+    "start_line": 119,
+    "start_col": 1,
+    "end_line": 119,
+    "end_col": 23,
+    "code_snippet": "impl Drop for IoBuffer {\n    fn drop(&mut self) {\n        let layout = unsafe { Layout::from_size_align_unchecked(self.cap, PAGE) };\n        unsafe { Global.deallocate(NonNull::new_unchecked(self.ptr), layout) };\n    }\n}"
+}

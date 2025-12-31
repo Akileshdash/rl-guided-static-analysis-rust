@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "supercow-0.1.0/src/lib.rs",
+    "start_line": 1166,
+    "start_col": 12,
+    "end_line": 1171,
+    "end_col": 6,
+    "code_snippet": "defimpl! {@unsafe [] (Send for) where {\n    OWNED : Send,\n    &'a BORROWED : Send,\n    SHARED : Send,\n    STORAGE : Send,\n} { } }"
+}

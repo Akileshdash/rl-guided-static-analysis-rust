@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "token-cell-1.5.0/src/core.rs",
+    "start_line": 178,
+    "start_col": 1,
+    "end_line": 178,
+    "end_col": 71,
+    "code_snippet": "unsafe impl<T: ?Sized, Token: TokenTrait> Sync for TokenCell<T, Token> {}"
+}

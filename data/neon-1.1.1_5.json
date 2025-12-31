@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "neon-1.1.1/src/handle/root.rs",
+    "start_line": 73,
+    "start_col": 1,
+    "end_line": 73,
+    "end_col": 32,
+    "code_snippet": "unsafe impl<T> Sync for Root<T> {}"
+}

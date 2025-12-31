@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rune-0.14.0/src/runtime/env.rs",
+    "start_line": 110,
+    "start_col": 1,
+    "end_line": 110,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Guard {\n    fn drop(&mut self) {\n        let old_env = self::no_std::rune_env_replace(self.env);\n\n        unsafe {\n            if let Some(context) = old_env.context {\n                drop(Arc::from_raw(context.as_ptr().cast_const()));\n            }\n\n            if let Some(unit) = old_env.unit {\n                drop(Arc::from_raw(unit.as_ptr().cast_const()));\n            }\n        }\n    }\n}"
+}

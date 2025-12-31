@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "allocator_api-0.6.0/src/liballoc/raw_vec.rs",
+    "start_line": 726,
+    "start_col": 1,
+    "end_line": 726,
+    "end_col": 40,
+    "code_snippet": "impl<T, A: Alloc> Drop for RawVec<T, A> {\n    /// Frees the memory owned by the RawVec *without* trying to Drop its contents.\n    fn drop(&mut self) {\n        unsafe { self.dealloc_buffer(); }\n    }\n}"
+}

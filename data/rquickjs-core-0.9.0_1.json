@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rquickjs-core-0.9.0/src/value/object.rs",
+    "start_line": 281,
+    "start_col": 1,
+    "end_line": 281,
+    "end_col": 34,
+    "code_snippet": "impl<'js> Drop for IterState<'js> {\n    fn drop(&mut self) {\n        // Free atoms which doesn't consumed by the iterator\n        for index in self.index..self.count {\n            let elem = unsafe { &*self.enums.offset(index as isize) };\n            unsafe { qjs::JS_FreeAtom(self.ctx.as_ptr(), elem.atom) };\n        }\n\n        // This is safe because iterator cannot outlive ctx\n        unsafe { qjs::js_free(self.ctx.as_ptr(), self.enums as _) };\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cluFlock-1.2.7/src/data/lock.rs",
+    "start_line": 212,
+    "start_col": 1,
+    "end_line": 212,
+    "end_col": 70,
+    "code_snippet": "impl<T> Drop for FlockLock<T> where T: FlockElement + WaitFlockUnlock {\n\t#[inline(always)]\n\tfn drop(&mut self) {\n\t\tunsafe {\n\t\t\tself.unlock_no_result();\n\t\t}\n\t}\n}"
+}

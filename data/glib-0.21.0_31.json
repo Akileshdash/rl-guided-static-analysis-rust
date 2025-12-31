@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `collections::strv::StrV::extend_from_slice`",
+    "file": "glib-0.21.0/src/collections/strv.rs",
+    "start_line": 773,
+    "start_col": 5,
+    "end_line": 787,
+    "end_col": 6,
+    "code_snippet": "pub fn extend_from_slice<S: AsRef<str>>(&mut self, other: &[S]) {\n        // Nothing new to reserve as there's still enough space\n        if self.len + other.len() + 1 > self.capacity {\n            self.reserve(other.len());\n        }\n\n        unsafe {\n            for item in other {\n                *self.ptr.as_ptr().add(self.len) = GString::from(item.as_ref()).into_glib_ptr();\n                self.len += 1;\n            }\n\n            *self.ptr.as_ptr().add(self.len) = ptr::null_mut();\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pdqsort-1.0.3/src/lib.rs",
+    "start_line": 52,
+    "start_col": 1,
+    "end_line": 52,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for WriteOnDrop<T> {\n    fn drop(&mut self) {\n        unsafe {\n            ptr::write(self.dest, self.value.take().unwrap());\n        }\n    }\n}"
+}

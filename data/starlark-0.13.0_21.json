@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::slice`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 488,
+    "start_col": 5,
+    "end_line": 494,
+    "end_col": 34,
+    "code_snippet": "fn slice(\n        &self,\n        _start: Option<Value<'v>>,\n        _stop: Option<Value<'v>>,\n        _stride: Option<Value<'v>>,\n        _heap: &'v Heap,\n    ) -> crate::Result<Value<'v>> {\n        ValueError::unsupported(self, \"[::]\")\n    }"
+}

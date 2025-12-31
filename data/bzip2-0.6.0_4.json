@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<mem::Stream<D> as std::ops::Drop>::drop`",
+    "file": "bzip2-0.6.0/src/mem.rs",
+    "start_line": 324,
+    "start_col": 5,
+    "end_line": 328,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        unsafe {\n            let _ = D::destroy(&mut *self.raw);\n        }\n    }"
+}

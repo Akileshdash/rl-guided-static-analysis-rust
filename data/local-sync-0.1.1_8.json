@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<once_cell::OnceCell<T> as std::ops::Drop>::drop`",
+    "file": "local-sync-0.1.1/src/once_cell.rs",
+    "start_line": 117,
+    "start_col": 5,
+    "end_line": 124,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        if self.initialized_mut() {\n            unsafe {\n                let ptr = self.value.get();\n                ptr::drop_in_place((&mut *ptr).as_mut_ptr());\n            };\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "coco-0.3.4/src/deque.rs",
+    "start_line": 371,
+    "start_col": 1,
+    "end_line": 371,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Deque<T> {\n    fn drop(&mut self) {\n        // Load the bottom, top, and buffer.\n        let b = self.bottom.load(Relaxed);\n        let t = self.top.load(Relaxed);\n\n        unsafe {\n            let buffer = epoch::unprotected(|scope| self.buffer.load(Relaxed, scope).as_raw());\n\n            // Go through the buffer from top to bottom and drop all elements in the deque.\n            let mut i = t;\n            while i != b {\n                ptr::drop_in_place((*buffer).at(i));\n                i = i.wrapping_add(1);\n            }\n\n            // Free the memory allocated by the buffer.\n            drop(Box::from_raw(buffer as *mut Buffer<T>));\n        }\n    }\n}"
+}

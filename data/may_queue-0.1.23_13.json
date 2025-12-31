@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `mpsc_list_v1::Queue::<T>::pop_if`",
+    "file": "may_queue-0.1.23/src/mpsc_list_v1.rs",
+    "start_line": 215,
+    "start_col": 5,
+    "end_line": 265,
+    "end_col": 6,
+    "code_snippet": "pub fn pop_if<F>(&self, f: &F) -> Option<T>\n    where\n        F: Fn(&T) -> bool,\n    {\n        unsafe {\n            let tail = *self.tail.get();\n            // the list is empty\n            if self.head.load(Ordering::Acquire) == tail {\n                return None;\n            }\n\n            // spin until tail next become non-null\n            let mut next;\n            let backoff = Backoff::new();\n            loop {\n                next = (*tail).next.load(Ordering::Acquire);\n                if !next.is_null() {\n                    break;\n                }\n                backoff.snooze();\n            }\n\n            assert!((*tail).value.is_none());\n            assert!((*next).value.is_some());\n\n            let v = (*next).value.as_ref().unwrap();\n            if !f(v) {\n                // no pop\n                return None;\n            }\n\n            // clear the link bit\n            assert!((*tail).refs & REF_COUNT_MASK != 0);\n            (*tail).refs &= REF_COUNT_MASK;\n\n            // clear the prev pointer indicate a new end point\n            (*next).prev = ptr::null_mut();\n            // move the tail to next\n            *self.tail.get() = next;\n\n            // we take the next value, this is why use option to host the value\n            let ret = (*next).value.take().unwrap();\n            (*tail).refs -= 1;\n            if (*tail).refs == 0 {\n                // release the node only when the ref count becomes 0\n                let _: Box<Node<T>> = Box::from_raw(tail);\n            }\n\n            Some(ret)\n        }\n    }"
+}

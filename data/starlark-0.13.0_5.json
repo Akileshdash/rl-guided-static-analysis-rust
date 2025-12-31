@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "starlark-0.13.0/src/eval/bc/instrs.rs",
+    "start_line": 145,
+    "start_col": 1,
+    "end_line": 145,
+    "end_col": 29,
+    "code_snippet": "impl Drop for BcInstrsWriter {\n    fn drop(&mut self) {\n        unsafe {\n            drop_instrs(&self.instrs);\n        }\n    }\n}"
+}

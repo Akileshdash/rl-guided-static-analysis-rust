@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ecdsa::<impl Secp256k1<C>>::sign_grind_with_check`",
+    "file": "secp256k1-0.31.1/src/ecdsa/mod.rs",
+    "start_line": 294,
+    "start_col": 5,
+    "end_line": 333,
+    "end_col": 6,
+    "code_snippet": "fn sign_grind_with_check(\n        &self,\n        msg: impl Into<Message>,\n        sk: &SecretKey,\n        check: impl Fn(&ffi::Signature) -> bool,\n    ) -> Signature {\n        let mut entropy_p: *const ffi::types::c_void = ptr::null();\n        let mut counter: u32 = 0;\n        let mut extra_entropy = [0u8; 32];\n        let msg = msg.into();\n        loop {\n            unsafe {\n                let mut ret = ffi::Signature::new();\n                // We can assume the return value because it's not possible to construct\n                // an invalid signature from a valid `Message` and `SecretKey`\n                assert_eq!(\n                    ffi::secp256k1_ecdsa_sign(\n                        self.ctx.as_ptr(),\n                        &mut ret,\n                        msg.as_c_ptr(),\n                        sk.as_c_ptr(),\n                        ffi::secp256k1_nonce_function_rfc6979,\n                        entropy_p\n                    ),\n                    1\n                );\n                if check(&ret) {\n                    return Signature::from(ret);\n                }\n\n                counter += 1;\n                extra_entropy[..4].copy_from_slice(&counter.to_le_bytes());\n                entropy_p = extra_entropy.as_c_ptr().cast::<ffi::types::c_void>();\n\n                // When fuzzing, these checks will usually spinloop forever, so just short-circuit them.\n                #[cfg(secp256k1_fuzz)]\n                return Signature::from(ret);\n            }\n        }\n    }"
+}

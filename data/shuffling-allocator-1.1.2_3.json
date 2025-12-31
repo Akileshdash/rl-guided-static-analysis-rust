@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "shuffling-allocator-1.1.2/src/lib.rs",
+    "start_line": 91,
+    "start_col": 1,
+    "end_line": 93,
+    "end_col": 30,
+    "code_snippet": "impl<A> Drop for ShufflingArray<A>\nwhere\n    A: 'static + GlobalAlloc,\n{\n    fn drop(&mut self) {\n        let layout =\n            unsafe { Layout::from_size_align_unchecked(self.size_class, mem::align_of::<usize>()) };\n        for el in &self.elems {\n            let p = el.swap(ptr::null_mut(), Ordering::SeqCst);\n            if !p.is_null() {\n                unsafe {\n                    self.allocator.dealloc(p, layout);\n                }\n            }\n        }\n    }\n}"
+}

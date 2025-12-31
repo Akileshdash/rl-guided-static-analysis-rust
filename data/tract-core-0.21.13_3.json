@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ops::cnn::conv::lazy_im2col::LazyIm2colInput::input_6n`",
+    "file": "tract-core-0.21.13/src/ops/cnn/conv/lazy_im2col.rs",
+    "start_line": 185,
+    "start_col": 5,
+    "end_line": 217,
+    "end_col": 6,
+    "code_snippet": "fn input_6n<T: Datum + Copy>(\n        &self,\n        writer: &mut impl PackingWriter<T>,\n        k_range: Range<isize>,\n        n: isize,\n    ) {\n        unsafe {\n            let ptr = self.tensor.as_ptr_unchecked::<u8>();\n            let k_byte_offsets = self.im2col.k_byte_offsets.as_ptr();\n            let n_byte_offsets = self.im2col.n_byte_offsets.as_ptr();\n            let o1 = *n_byte_offsets.offset(n);\n            let o2 = *n_byte_offsets.offset(n + 1);\n            let o3 = *n_byte_offsets.offset(n + 2);\n            let o4 = *n_byte_offsets.offset(n + 3);\n            let o5 = *n_byte_offsets.offset(n + 4);\n            let o6 = *n_byte_offsets.offset(n + 5);\n            for k in k_range.start..k_range.end {\n                let ptr = ptr.offset(*k_byte_offsets.offset(k));\n                let v1 = *(ptr.offset(o1) as *const T);\n                let v2 = *(ptr.offset(o2) as *const T);\n                let v3 = *(ptr.offset(o3) as *const T);\n                let v4 = *(ptr.offset(o4) as *const T);\n                let v5 = *(ptr.offset(o5) as *const T);\n                let v6 = *(ptr.offset(o6) as *const T);\n                writer.write(v1);\n                writer.write(v2);\n                writer.write(v3);\n                writer.write(v4);\n                writer.write(v5);\n                writer.write(v6);\n            }\n        }\n    }"
+}

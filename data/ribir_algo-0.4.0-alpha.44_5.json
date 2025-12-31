@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<frame_cache::KeyRef<K> as std::hash::Hash>::hash`",
+    "file": "ribir_algo-0.4.0-alpha.44/src/frame_cache.rs",
+    "start_line": 25,
+    "start_col": 3,
+    "end_line": 25,
+    "end_col": 80,
+    "code_snippet": "fn hash<H: Hasher>(&self, state: &mut H) { unsafe { (*self.k).hash(state) } }\n}\n\nimpl<K: PartialEq> PartialEq for KeyRef<K> {"
+}

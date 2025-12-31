@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arena::Arena::<R>::new`",
+    "file": "gc-arena-0.5.3/src/arena.rs",
+    "start_line": 126,
+    "start_col": 5,
+    "end_line": 143,
+    "end_col": 6,
+    "code_snippet": "pub fn new<F>(f: F) -> Arena<R>\n    where\n        F: for<'gc> FnOnce(&'gc Mutation<'gc>) -> Root<'gc, R>,\n    {\n        unsafe {\n            let context = Box::new(Context::new());\n            // Note - we cast the `&Mutation` to a `'static` lifetime here,\n            // instead of transmuting the root type returned by `f`. Transmuting the root\n            // type is allowed in nightly versions of rust\n            // (see https://github.com/rust-lang/rust/pull/101520#issuecomment-1252016235)\n            // but is not yet stable. Casting the `&Mutation` is completely invisible\n            // to the callback `f` (since it needs to handle an arbitrary lifetime),\n            // and lets us stay compatible with older versions of Rust\n            let mc: &'static Mutation<'_> = &*(context.mutation_context() as *const _);\n            let root: Root<'static, R> = f(mc);\n            Arena { context, root }\n        }\n    }"
+}

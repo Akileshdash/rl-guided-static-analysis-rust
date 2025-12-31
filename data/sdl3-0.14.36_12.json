@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `render::Canvas::<T>::copy_ex`",
+    "file": "sdl3-0.14.36/src/sdl3/render.rs",
+    "start_line": 1532,
+    "start_col": 5,
+    "end_line": 1589,
+    "end_col": 6,
+    "code_snippet": "pub fn copy_ex<R1, R2, P>(\n        &mut self,\n        texture: &Texture,\n        src: R1,\n        dst: R2,\n        angle: f64,\n        center: P,\n        flip_horizontal: bool,\n        flip_vertical: bool,\n    ) -> Result<(), Error>\n    where\n        R1: Into<Option<FRect>>,\n        R2: Into<Option<FRect>>,\n        P: Into<Option<FPoint>>,\n    {\n        let flip = unsafe {\n            match (flip_horizontal, flip_vertical) {\n                (false, false) => SDL_FLIP_NONE,\n                (true, false) => SDL_FLIP_HORIZONTAL,\n                (false, true) => SDL_FLIP_VERTICAL,\n                (true, true) => transmute::<u32, sys::surface::SDL_FlipMode>(\n                    transmute::<sys::surface::SDL_FlipMode, u32>(SDL_FLIP_HORIZONTAL)\n                        | transmute::<sys::surface::SDL_FlipMode, u32>(SDL_FLIP_VERTICAL),\n                ),\n            }\n        };\n\n        let src = src.into().map(|rect| rect.to_ll());\n        let dst = dst.into().map(|rect| rect.to_ll());\n        let center = center.into().map(|point| point.to_ll());\n\n        let ret = unsafe {\n            sys::render::SDL_RenderTextureRotated(\n                self.context.raw,\n                texture.raw,\n                match src {\n                    Some(ref rect) => rect,\n                    None => ptr::null(),\n                },\n                match dst {\n                    Some(ref rect) => rect,\n                    None => ptr::null(),\n                },\n                angle as c_double,\n                match center {\n                    Some(ref point) => point,\n                    None => ptr::null(),\n                },\n                flip,\n            )\n        };\n\n        if !ret {\n            Err(get_error())\n        } else {\n            Ok(())\n        }\n    }"
+}

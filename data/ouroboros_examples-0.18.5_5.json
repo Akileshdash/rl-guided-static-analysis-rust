@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ouroboros_examples-0.18.5/src/lib.rs",
+    "start_line": 51,
+    "start_col": 1,
+    "end_line": 51,
+    "end_col": 28,
+    "code_snippet": "#[self_referencing(no_doc)]\n/// This struct is created using `#[self_referencing(no_doc)]` so the generated methods and\n/// builders are hidden from documentation.\npub struct Undocumented {\n    data: Box<i32>,\n    #[borrows(data)]\n    data_ref: &'this i32,\n}"
+}

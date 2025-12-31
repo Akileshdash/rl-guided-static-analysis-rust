@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "eyeball-im-0.7.0/src/reusable_box.rs",
+    "start_line": 97,
+    "start_col": 1,
+    "end_line": 97,
+    "end_col": 49,
+    "code_snippet": "unsafe impl<T> Sync for ReusableBoxFuture<'_, T> {}"
+}

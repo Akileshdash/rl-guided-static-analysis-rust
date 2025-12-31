@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bincode-2.0.1/src/de/impl_core.rs",
+    "start_line": 36,
+    "start_col": 5,
+    "end_line": 36,
+    "end_col": 53,
+    "code_snippet": "impl<T, const N: usize> Drop for Guard<'_, T, N> {\n        fn drop(&mut self) {\n            debug_assert!(self.initialized <= N);\n\n            // SAFETY: this slice will contain only initialized objects.\n            unsafe {\n                core::ptr::drop_in_place(slice_assume_init_mut(\n                    self.array_mut.get_unchecked_mut(..self.initialized),\n                ));\n            }\n        }\n    }"
+}

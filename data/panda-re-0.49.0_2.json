@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `guest_ptr::GuestPtr::<T>::write`",
+    "file": "panda-re-0.49.0/src/guest_ptr.rs",
+    "start_line": 126,
+    "start_col": 5,
+    "end_line": 138,
+    "end_col": 6,
+    "code_snippet": "pub fn write(&mut self, func: impl FnOnce(&mut T)) -> Result<(), GuestWriteFail> {\n        if self.guest_type.get().is_none() {\n            self.read().unwrap();\n        }\n\n        let mut inner = self.guest_type.get_mut();\n        let inner = inner.as_mut().unwrap();\n\n        func(inner);\n\n        let cpu = unsafe { &mut *crate::sys::get_cpu() };\n        inner.write_to_guest(cpu, self.pointer)\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arcache::ARCacheWriteTxn::<'_, K, V, S>::get`",
+    "file": "concread-0.5.7/src/arcache/mod.rs",
+    "start_line": 1640,
+    "start_col": 5,
+    "end_line": 1699,
+    "end_col": 6,
+    "code_snippet": "pub fn get<Q>(&mut self, k: &Q) -> Option<&V>\n    where\n        K: Borrow<Q>,\n        Q: Hash + Eq + Ord + ?Sized,\n    {\n        let k_hash: u64 = self.cache.prehash(k);\n\n        // Track the attempted read op\n        /*\n        unsafe {\n            let op_ptr = self.read_ops.get();\n            (*op_ptr) += 1;\n        }\n        */\n        self.stats.cache_read();\n\n        let r: Option<&V> = if let Some(tci) = self.tlocal.get(k) {\n            match tci {\n                ThreadCacheItem::Present(v, _clean, _size) => {\n                    let v = v as *const _;\n                    unsafe { Some(&(*v)) }\n                }\n                ThreadCacheItem::Removed(_clean) => {\n                    return None;\n                }\n            }\n        } else {\n            // If we have been requested to clear, the main cache is \"empty\"\n            // but we can't do that until a commit, so we just flag it and avoid.\n            let is_cleared = unsafe {\n                let clear_ptr = self.clear.get();\n                *clear_ptr\n            };\n            if !is_cleared {\n                if let Some(v) = self.cache.get_prehashed(k, k_hash) {\n                    (*v).to_vref()\n                } else {\n                    None\n                }\n            } else {\n                None\n            }\n        };\n\n        if r.is_some() {\n            self.stats.cache_hit();\n        }\n\n        // How do we track this was a hit?\n        // Remember, we don't track misses - they are *implied* by the fact they'll trigger\n        // an inclusion from the external system. Subsequent, any further re-hit on an\n        // included value WILL be tracked, allowing arc to adjust appropriately.\n        if self.above_watermark && r.is_some() {\n            unsafe {\n                let hit_ptr = self.hit.get();\n                (*hit_ptr).push(k_hash);\n            }\n        }\n        r\n    }"
+}

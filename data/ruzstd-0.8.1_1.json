@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ruzstd-0.8.1/src/decoding/ringbuffer.rs",
+    "start_line": 526,
+    "start_col": 1,
+    "end_line": 526,
+    "end_col": 25,
+    "code_snippet": "impl Drop for RingBuffer {\n    fn drop(&mut self) {\n        if self.cap == 0 {\n            return;\n        }\n\n        // SAFETY: is we were succesfully able to construct this layout when we allocated then it's also valid do so now\n        // Relies on / establishes invariant 1\n        let current_layout = unsafe { Layout::array::<u8>(self.cap).unwrap_unchecked() };\n\n        unsafe {\n            dealloc(self.buf.as_ptr(), current_layout);\n        }\n    }\n}"
+}

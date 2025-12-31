@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sdd-3.0.10/src/guard.rs",
+    "start_line": 157,
+    "start_col": 1,
+    "end_line": 157,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Guard {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            Collector::end_guard(self.collector_ptr);\n        }\n    }\n}"
+}

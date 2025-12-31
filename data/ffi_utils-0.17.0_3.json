@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `test_utils::callback_2`",
+    "file": "ffi_utils-0.17.0/src/test_utils.rs",
+    "start_line": 264,
+    "start_col": 1,
+    "end_line": 286,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn callback_2<E0, E1, T0, T1>(\n    user_data: *mut c_void,\n    res: *const FfiResult,\n    arg0: T0::C,\n    arg1: T1::C,\n) where\n    E0: Debug,\n    E1: Debug,\n    T0: ReprC<Error = E0>,\n    T1: ReprC<Error = E1>,\n{\n    unsafe {\n        let result: Result<(T0, T1), i32> = if (*res).error_code == 0 {\n            Ok((\n                unwrap!(T0::clone_from_repr_c(arg0)),\n                unwrap!(T1::clone_from_repr_c(arg1)),\n            ))\n        } else {\n            Err((*res).error_code)\n        };\n        send_via_user_data(user_data, SendWrapper(result))\n    }\n}"
+}

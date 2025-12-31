@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "i-slint-core-1.12.1/properties.rs",
+    "start_line": 35,
+    "start_col": 5,
+    "end_line": 35,
+    "end_col": 48,
+    "code_snippet": "impl<T> Drop for SingleLinkedListPinHead<T> {\n        fn drop(&mut self) {\n            // Use a loop instead of relying on the Drop of NodePtr to avoid recursion\n            while let Some(mut x) = core::mem::take(&mut self.0) {\n                // Safety: we don't touch the `x.value` which is the one protected by the Pin\n                self.0 = core::mem::take(unsafe { &mut Pin::get_unchecked_mut(x.as_mut()).next });\n            }\n        }\n    }"
+}

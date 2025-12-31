@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cc-1.2.30/src/utilities.rs",
+    "start_line": 121,
+    "start_col": 1,
+    "end_line": 121,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for OnceLock<T> {\n    #[inline]\n    fn drop(&mut self) {\n        if self.once.is_completed() {\n            // SAFETY: The cell is initialized and being dropped, so it can't\n            // be accessed again.\n            unsafe { self.value.get_mut().assume_init_drop() };\n        }\n    }\n}"
+}

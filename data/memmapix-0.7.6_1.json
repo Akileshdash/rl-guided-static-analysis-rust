@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "memmapix-0.7.6/src/unix.rs",
+    "start_line": 425,
+    "start_col": 1,
+    "end_line": 425,
+    "end_col": 24,
+    "code_snippet": "impl Drop for MmapInner {\n    fn drop(&mut self) {\n        let (ptr, len, _) = self.as_mmap_params();\n\n        // Any errors during unmapping/closing are ignored as the only way\n        // to report them would be through panicking which is highly discouraged\n        // in Drop impls, c.f. https://github.com/rust-lang/lang-team/issues/97\n        unsafe {\n            let _ = rustix::mm::munmap(ptr, len);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "skia-safe-0.87.0/src/prelude.rs",
+    "start_line": 641,
+    "start_col": 1,
+    "end_line": 641,
+    "end_col": 47,
+    "code_snippet": "impl<N: NativeRefCounted> Drop for RCHandle<N> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe { self.0.as_ref()._unref() };\n    }\n}"
+}

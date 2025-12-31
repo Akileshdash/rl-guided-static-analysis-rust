@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "cao-lang-0.2.6/src/collections/handle_table.rs",
+    "start_line": 603,
+    "start_col": 1,
+    "end_line": 603,
+    "end_col": 71,
+    "code_snippet": "unsafe impl<T, A> Sync for HandleTable<T, A> where A: Allocator + Sync {}"
+}

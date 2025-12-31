@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jni-0.21.1/src/wrapper/strings/java_str.rs",
+    "start_line": 198,
+    "start_col": 1,
+    "end_line": 198,
+    "end_col": 96,
+    "code_snippet": "impl<'local, 'other_local: 'obj_ref, 'obj_ref> Drop for JavaStr<'local, 'other_local, 'obj_ref> {\n    fn drop(&mut self) {\n        match unsafe { self.release_string_utf_chars() } {\n            Ok(()) => {}\n            Err(e) => warn!(\"error dropping java str: {}\", e),\n        }\n    }\n}"
+}

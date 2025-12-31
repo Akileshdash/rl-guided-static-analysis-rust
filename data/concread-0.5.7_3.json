@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "concread-0.5.7/src/internals/bptree/node.rs",
+    "start_line": 1943,
+    "start_col": 1,
+    "end_line": 1943,
+    "end_col": 61,
+    "code_snippet": "impl<K: Ord + Clone + Debug, V: Clone> Drop for Branch<K, V> {\n    fn drop(&mut self) {\n        debug_assert_branch!(self);\n        #[cfg(all(test, not(miri)))]\n        release_nid(self.nid);\n        // Due to the use of maybe uninit we have to drop any contained values.\n        // https://github.com/kanidm/concread/issues/55\n        // if we are invalid, do NOT drop our internals as they MAY be inconsistent.\n        // this WILL leak memory, but it's better than crashing.\n        if self.meta.0 & FLAG_INVALID == 0 {\n            unsafe {\n                for idx in 0..self.count() {\n                    ptr::drop_in_place(self.key[idx].as_mut_ptr());\n                }\n            }\n        }\n        // Done\n        self.meta.0 = FLAG_DROPPED;\n        debug_assert!(self.meta.0 & FLAG_MASK != FLAG_BRANCH);\n        // println!(\"set branch {:?} to {:x}\", self.nid, self.meta.0);\n    }\n}"
+}

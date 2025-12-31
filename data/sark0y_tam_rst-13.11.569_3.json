@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `subs::glee_prompt`",
+    "file": "sark0y_tam_rst-13.11.569/src/subs.rs",
+    "start_line": 83,
+    "start_col": 1,
+    "end_line": 99,
+    "end_col": 2,
+    "code_snippet": "pub fn glee_prompt <T: STRN + AsRef <str> + std::fmt::Display > (str0: T) -> String where String: From < T >  {\n    use Mademoiselle_Entropia::true_rnd::get_true_rnd_u64;\n    let mut ret = \"\".strn();\n    let mut cnt = 0usize;\n    let str0_len = str0.strn().len();\n    static mut rnd: usize = 517;\n    let rnd0 = unsafe { rnd } % str0_len;\n    let mut copy = |val: &usize| -> usize {return val.to_usize().unwrap() ;};\nstd::thread::spawn(move|| { unsafe { rnd ^= get_true_rnd_u64() as usize; } } );\n//    crate::set_ask_user( rnd.strn().as_str(), -111);\n    for ch in str0.strn().chars() {\n        if cnt == rnd0 {\n            ret.push( ch.to_uppercase().nth(0 ).unwrap() );\n        } else {ret.push(ch )} cnt.inc();\n    }\n    ret\n}"
+}

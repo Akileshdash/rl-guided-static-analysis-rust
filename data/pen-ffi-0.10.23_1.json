@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pen-ffi-0.10.23/src/cps/stack.rs",
+    "start_line": 69,
+    "start_col": 1,
+    "end_line": 69,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Stack {\n    fn drop(&mut self) {\n        unsafe { dealloc(self.base_pointer, Self::get_layout(self.capacity)) }\n    }\n}"
+}

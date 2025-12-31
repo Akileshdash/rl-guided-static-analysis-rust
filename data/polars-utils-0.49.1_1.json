@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "polars-utils-0.49.1/src/parma/raw/mod.rs",
+    "start_line": 759,
+    "start_col": 1,
+    "end_line": 759,
+    "end_col": 49,
+    "code_snippet": "impl<K: Key + ?Sized, V> Drop for RawTable<K, V> {\n    fn drop(&mut self) {\n        unsafe {\n            self.gc(|| {});\n\n            let alloc = *self.cur_alloc.get_mut();\n            let header = &*alloc;\n            for entry in header.entries_mut(alloc) {\n                let entry_ptr = *(*entry).get_mut();\n                if entry_ptr.is_null() || entry_ptr.addr() == DELETED {\n                    continue;\n                }\n\n                let state = (*EntryHeader::state_ptr(entry_ptr)).get_mut();\n                if state.addr() & INIT_BIT != 0 {\n                    core::ptr::drop_in_place(EntryHeader::val_ptr(entry_ptr));\n                }\n                K::drop_in_place(EntryHeader::key_ptr(entry_ptr));\n                EntryHeader::free(entry_ptr);\n            }\n            AllocHeader::free(alloc);\n        }\n    }\n}"
+}

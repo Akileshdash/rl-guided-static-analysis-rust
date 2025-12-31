@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `node::Node::<T, S>::visit_from_leaves_mut_with`",
+    "file": "raw-btree-0.3.3/src/node/mod.rs",
+    "start_line": 511,
+    "start_col": 2,
+    "end_line": 523,
+    "end_col": 3,
+    "code_snippet": "pub fn visit_from_leaves_mut_with(\n\t\t&self,\n\t\tnodes: &mut S,\n\t\tf: &mut impl FnMut(S::Node, &mut Self),\n\t) {\n\t\tif let Node::Internal(node) = self {\n\t\t\tfor c in node.children() {\n\t\t\t\tlet child: &mut Self = unsafe { std::mem::transmute(nodes.get_mut(c)) };\n\t\t\t\tchild.visit_from_leaves_mut_with(nodes, f);\n\t\t\t\tf(c, child);\n\t\t\t}\n\t\t}\n\t}"
+}

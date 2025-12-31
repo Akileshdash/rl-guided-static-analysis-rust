@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `encoding::collections::<impl encoding::Encodable for [T; SIZE]>::consensus_encode`",
+    "file": "fedimint-core-0.8.0/src/encoding/collections.rs",
+    "start_line": 131,
+    "start_col": 5,
+    "end_line": 143,
+    "end_col": 6,
+    "code_snippet": "fn consensus_encode<W: std::io::Write>(&self, writer: &mut W) -> Result<(), std::io::Error> {\n        if TypeId::of::<T>() == TypeId::of::<u8>() {\n            // unsafe: we've just checked that T is `u8` so the transmute here is a no-op\n            let bytes = unsafe { std::mem::transmute::<&[T; SIZE], &[u8; SIZE]>(self) };\n            writer.write_all(bytes)?;\n            return Ok(());\n        }\n\n        for item in self {\n            item.consensus_encode(writer)?;\n        }\n        Ok(())\n    }"
+}

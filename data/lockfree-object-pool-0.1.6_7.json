@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lockfree-object-pool-0.1.6/src/spin_lock_reusable.rs",
+    "start_line": 56,
+    "start_col": 1,
+    "end_line": 56,
+    "end_col": 45,
+    "code_snippet": "impl<'a, T> Drop for SpinLockReusable<'a, T> {\n    #[inline]\n    fn drop(&mut self) {\n        let data = unsafe {\n            // SAFETY: self.data is never referenced again and it isn't dropped\n            ManuallyDrop::take(&mut self.data)\n        };\n        self.pool.attach(data);\n    }\n}"
+}

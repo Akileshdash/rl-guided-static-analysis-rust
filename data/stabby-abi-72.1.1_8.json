@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/alloc/sync.rs",
+    "start_line": 730,
+    "start_col": 1,
+    "end_line": 730,
+    "end_col": 52,
+    "code_snippet": "impl<T, Alloc: IAlloc> Drop for WeakSlice<T, Alloc> {\n    fn drop(&mut self) {\n        if unsafe { self.inner.start.prefix() }\n            .weak\n            .fetch_sub(1, Ordering::Relaxed)\n            != 1\n        {\n            return;\n        }\n        let mut alloc = unsafe { self.inner.start.prefix().alloc.assume_init_read() };\n        unsafe { self.inner.start.free(&mut alloc) }\n    }\n}"
+}

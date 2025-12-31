@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `array::fixed_size_list::ffi::<impl array::ffi::FromFfi<A> for array::fixed_size_list::FixedSizeListArray>::try_from_ffi`",
+    "file": "polars-arrow-0.49.1/src/array/fixed_size_list/ffi.rs",
+    "start_line": 32,
+    "start_col": 5,
+    "end_line": 49,
+    "end_col": 6,
+    "code_snippet": "unsafe fn try_from_ffi(array: A) -> PolarsResult<Self> {\n        let dtype = array.dtype().clone();\n        let (_, width) = FixedSizeListArray::try_child_and_size(&dtype)?;\n        let validity = unsafe { array.validity() }?;\n        let child = unsafe { array.child(0) }?;\n        let values = ffi::try_from(child)?;\n\n        let length = if values.is_empty() {\n            0\n        } else {\n            polars_ensure!(width > 0, InvalidOperation: \"Zero-width array with values\");\n            values.len() / width\n        };\n\n        let mut fsl = Self::try_new(dtype, length, values, validity)?;\n        fsl.slice(array.offset(), array.length());\n        Ok(fsl)\n    }"
+}

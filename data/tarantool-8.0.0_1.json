@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tarantool-8.0.0/src/fiber/channel.rs",
+    "start_line": 406,
+    "start_col": 1,
+    "end_line": 406,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for ChannelBox<T> {\n    #[inline(always)]\n    fn drop(&mut self) {\n        unsafe { ffi::fiber_channel_delete(self.inner.as_ptr()) }\n    }\n}"
+}

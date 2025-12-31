@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `Once::<T>::try_call_once`",
+    "file": "spinning-0.1.0/src/lib.rs",
+    "start_line": 446,
+    "start_col": 5,
+    "end_line": 481,
+    "end_col": 6,
+    "code_snippet": "pub fn try_call_once<'a, F>(&'a self, init: F) -> Result<&'a T, F>\n    where\n        F: FnOnce() -> T,\n    {\n        match self.state.compare_exchange(\n            OnceState::Uninitialized as u8,\n            OnceState::Initializing as u8,\n            Ordering::Acquire,\n            Ordering::Relaxed,\n        ) {\n            Ok(_) => unsafe {\n                (*self.value.get()).as_mut_ptr().write(init());\n                let old = self\n                    .state\n                    .swap(OnceState::Initialized as u8, Ordering::Release);\n                debug_assert_eq!(\n                    old,\n                    OnceState::Initializing as u8,\n                    \"once state was modified when setting state to \\\"initialized\\\"\"\n                );\n                Ok(&*((*self.value.get()).as_ptr()))\n            },\n            Err(other_state) if other_state == OnceState::Initialized as u8 => unsafe {\n                Ok(&*((*self.value.get()).as_ptr()))\n            },\n\n            #[cfg(debug_assertions)]\n            Err(other_state) if other_state == OnceState::Initializing as u8 => Err(init),\n\n            #[cfg(debug_assertions)]\n            Err(_) => unreachable!(),\n\n            #[cfg(not(debug_assertions))]\n            Err(_) => Err(init),\n        }\n    }"
+}

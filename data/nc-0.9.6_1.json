@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nc-0.9.6/src/c_str.rs",
+    "start_line": 172,
+    "start_col": 1,
+    "end_line": 172,
+    "end_col": 22,
+    "code_snippet": "impl Drop for CString {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            *self.inner.get_unchecked_mut(0) = 0;\n        }\n    }\n}"
+}

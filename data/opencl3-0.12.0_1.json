@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "opencl3-0.12.0/src/command_buffer.rs",
+    "start_line": 58,
+    "start_col": 1,
+    "end_line": 58,
+    "end_col": 28,
+    "code_snippet": "impl Drop for CommandBuffer {\n    fn drop(&mut self) {\n        unsafe {\n            release_command_buffer_khr(self.buffer).expect(\"Error: clReleaseCommandBufferKHR\")\n        };\n    }\n}"
+}

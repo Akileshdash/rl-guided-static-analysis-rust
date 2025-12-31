@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `imp::com_bindings::IAgileReference_Vtbl::new::Resolve`",
+    "file": "windows-core-0.61.2/src/imp/com_bindings.rs",
+    "start_line": 105,
+    "start_col": 9,
+    "end_line": 120,
+    "end_col": 10,
+    "code_snippet": "unsafe extern \"system\" fn Resolve<Identity: IAgileReference_Impl, const OFFSET: isize>(\n            this: *mut core::ffi::c_void,\n            riid: *const windows_core::GUID,\n            ppvobjectreference: *mut *mut core::ffi::c_void,\n        ) -> windows_core::HRESULT {\n            unsafe {\n                let this: &Identity =\n                    &*((this as *const *const ()).offset(OFFSET) as *const Identity);\n                IAgileReference_Impl::Resolve(\n                    this,\n                    core::mem::transmute_copy(&riid),\n                    core::mem::transmute_copy(&ppvobjectreference),\n                )\n                .into()\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `gemm::kernels::TempTile::<T, MR, NR>::accumulate_into`",
+    "file": "rten-0.20.0/src/gemm/kernels.rs",
+    "start_line": 325,
+    "start_col": 5,
+    "end_line": 361,
+    "end_col": 6,
+    "code_snippet": "pub unsafe fn accumulate_into(\n        &self,\n        dest: *mut MaybeUninit<T>,\n        n_rows: usize,\n        n_cols: usize,\n        row_stride: usize,\n        beta: T,\n    ) {\n        if beta != T::zero() {\n            // Accumulate into initialized output.\n            for i in 0..n_rows {\n                for j in 0..n_cols {\n                    // Safety: Row and column indices are < `n_rows`/`n_cols`\n                    unsafe {\n                        let out_el = dest.add(row_stride * i + j);\n                        let tmp = (*out_el).assume_init();\n                        out_el.write(MaybeUninit::new(\n                            beta * tmp + self.data.get_unchecked(i).get_unchecked(j).assume_init(),\n                        ));\n                    }\n                }\n            }\n        } else {\n            // Copy into possible uninitialized output.\n            for i in 0..n_rows {\n                for j in 0..n_cols {\n                    // Safety: Row and column indices are < `n_rows`/`n_cols`\n                    unsafe {\n                        let out_el = dest.add(row_stride * i + j);\n                        out_el.write(MaybeUninit::new(\n                            self.data.get_unchecked(i).get_unchecked(j).assume_init(),\n                        ));\n                    }\n                }\n            }\n        }\n    }"
+}

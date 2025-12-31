@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "monoio-0.2.4/src/task/join.rs",
+    "start_line": 18,
+    "start_col": 1,
+    "end_line": 18,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T: Send> Sync for JoinHandle<T> {}"
+}

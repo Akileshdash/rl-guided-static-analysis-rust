@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "cubecl-runtime-0.6.0/src/tune/operation.rs",
+    "start_line": 37,
+    "start_col": 1,
+    "end_line": 37,
+    "end_col": 75,
+    "code_snippet": "unsafe impl<K: AutotuneKey, In: Send, Out> Sync for TunableSet<K, In, Out> {}"
+}

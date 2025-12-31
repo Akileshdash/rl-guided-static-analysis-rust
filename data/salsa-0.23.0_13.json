@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::vec::Vec<T> as update::Update>::maybe_update`",
+    "file": "salsa-0.23.0/src/update.rs",
+    "start_line": 195,
+    "start_col": 5,
+    "end_line": 197,
+    "end_col": 6,
+    "code_snippet": "unsafe fn maybe_update(old_pointer: *mut Self, new_vec: Self) -> bool {\n        maybe_update_vec!(old_pointer, new_vec, T)\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "local-sync-0.1.1/src/once_cell.rs",
+    "start_line": 116,
+    "start_col": 1,
+    "end_line": 116,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for OnceCell<T> {\n    fn drop(&mut self) {\n        if self.initialized_mut() {\n            unsafe {\n                let ptr = self.value.get();\n                ptr::drop_in_place((&mut *ptr).as_mut_ptr());\n            };\n        }\n    }\n}"
+}

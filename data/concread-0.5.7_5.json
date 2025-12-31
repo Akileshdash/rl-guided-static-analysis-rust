@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "concread-0.5.7/src/internals/hashmap/node.rs",
+    "start_line": 152,
+    "start_col": 1,
+    "end_line": 153,
+    "end_col": 19,
+    "code_snippet": "unsafe impl<K: Clone + Hash + Eq + Debug + Send + 'static, V: Clone + Sync + Send + 'static> Sync\n    for Node<K, V>\n{\n}"
+}

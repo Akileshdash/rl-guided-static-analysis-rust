@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::rmul`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 706,
+    "start_col": 5,
+    "end_line": 706,
+    "end_col": 87,
+    "code_snippet": "fn rmul(&self, lhs: Value<'v>, heap: &'v Heap) -> Option<crate::Result<Value<'v>>> {\n        let _ignore = (lhs, heap);\n        None\n    }"
+}

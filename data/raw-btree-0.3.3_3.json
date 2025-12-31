@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `RawBTree::<T, S>::visit_from_leaves_mut`",
+    "file": "raw-btree-0.3.3/src/lib.rs",
+    "start_line": 247,
+    "start_col": 2,
+    "end_line": 254,
+    "end_col": 3,
+    "code_snippet": "pub fn visit_from_leaves_mut(&mut self, mut f: impl FnMut(S::Node, &mut Node<T, S>)) {\n\t\tif let Some(root_id) = self.root {\n\t\t\tlet root_node: &mut Node<T, S> =\n\t\t\t\tunsafe { std::mem::transmute(self.nodes.get_mut(root_id)) };\n\t\t\troot_node.visit_from_leaves_mut(&mut self.nodes, &mut f);\n\t\t\tf(root_id, root_node)\n\t\t}\n\t}"
+}

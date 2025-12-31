@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pinned-0.1.0/src/oneshot.rs",
+    "start_line": 135,
+    "start_col": 1,
+    "end_line": 135,
+    "end_col": 27,
+    "code_snippet": "impl<T> Drop for Sender<T> {\n    fn drop(&mut self) {\n        // SAFETY:\n        //\n        // We can acquire a mutable reference without checking as:\n        //\n        // - This type is !Sync and !Send.\n        // - This function is not used by any other functions and hence uniquely owns the\n        // mutable reference.\n        // - The mutable reference is dropped at the end of this function.\n        unsafe { self.inner.with_mut(|inner| inner.close_impl(true)) }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "corosensei-0.2.2/src/stack/valgrind.rs",
+    "start_line": 139,
+    "start_col": 1,
+    "end_line": 139,
+    "end_col": 40,
+    "code_snippet": "impl Drop for ValgrindStackRegistration {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            valgrind_request(0, &[STACK_DEREGISTER, self.id, 0, 0, 0, 0]);\n        }\n    }\n}"
+}

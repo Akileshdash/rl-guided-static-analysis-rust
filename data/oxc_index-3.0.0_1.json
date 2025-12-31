@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "oxc_index-3.0.0/src/idxslice.rs",
+    "start_line": 46,
+    "start_col": 1,
+    "end_line": 46,
+    "end_col": 65,
+    "code_snippet": "unsafe impl<I: Idx, T> Send for IndexSlice<I, [T]> where T: Send {}"
+}

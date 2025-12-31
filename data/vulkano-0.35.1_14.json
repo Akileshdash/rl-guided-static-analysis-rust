@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::boxed::Box<F> as sync::future::GpuFuture>::build_submission`",
+    "file": "vulkano-0.35.1/src/sync/future/mod.rs",
+    "start_line": 404,
+    "start_col": 5,
+    "end_line": 406,
+    "end_col": 6,
+    "code_snippet": "unsafe fn build_submission(&self) -> Result<SubmitAnyBuilder, Validated<VulkanError>> {\n        unsafe { (**self).build_submission() }\n    }"
+}

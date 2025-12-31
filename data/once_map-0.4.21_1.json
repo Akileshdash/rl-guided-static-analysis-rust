@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "once_map-0.4.21/src/sync.rs",
+    "start_line": 939,
+    "start_col": 1,
+    "end_line": 939,
+    "end_col": 49,
+    "code_snippet": "impl<K, V, S> Drop for ReadOnlyView<'_, K, V, S> {\n    fn drop(&mut self) {\n        for shard in self.shards.iter() {\n            unsafe { shard.0.map.force_unlock_read() }\n        }\n    }\n}"
+}

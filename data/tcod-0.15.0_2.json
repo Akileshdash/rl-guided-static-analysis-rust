@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `pathfinding::c_path_callback`",
+    "file": "tcod-0.15.0/src/pathfinding.rs",
+    "start_line": 36,
+    "start_col": 1,
+    "end_line": 44,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn c_path_callback<T: FnMut((i32, i32), (i32, i32)) -> f32>(xf: c_int, yf: c_int,\n                          xt: c_int, yt: c_int,\n                          user_data: *mut c_void) -> c_float {\n    let callback_ptr = user_data as *mut T;\n    let cb: &mut T = unsafe {\n        &mut *callback_ptr\n    };\n    cb((xf, yf), (xt, yt))\n}"
+}

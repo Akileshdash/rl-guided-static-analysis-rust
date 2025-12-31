@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "neon-1.1.1/src/handle/root.rs",
+    "start_line": 71,
+    "start_col": 1,
+    "end_line": 71,
+    "end_col": 32,
+    "code_snippet": "unsafe impl<T> Send for Root<T> {}"
+}

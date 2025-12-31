@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `<vec::EcoVec<T> as std::ops::Drop>::drop`",
+    "file": "ecow-0.2.5/src/vec.rs",
+    "start_line": 801,
+    "start_col": 5,
+    "end_line": 841,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        // Drop our ref-count. If there was more than one vector before\n        // (including this one), we shouldn't deallocate. Nothing to do if there\n        // is no header and thus no backing allocation. See Arc's drop impl for\n        // details about memory ordering.\n        if self\n            .header()\n            .map_or(true, |header| header.refs.fetch_sub(1, Release) != 1)\n        {\n            return;\n        }\n\n        // See Arc's drop impl for details.\n        atomic::fence(Acquire);\n\n        // Ensures that the backing storage is deallocated even if one of the\n        // element drops panics.\n        struct Dealloc(*mut u8, Layout);\n\n        impl Drop for Dealloc {\n            fn drop(&mut self) {\n                // Safety: See below.\n                unsafe {\n                    alloc::alloc::dealloc(self.0, self.1);\n                }\n            }\n        }\n\n        // Safety:\n        // The vector has a header, so `self.allocation()` points to an\n        // allocation with the layout of current capacity.\n        let _dealloc =\n            unsafe { Dealloc(self.allocation_mut(), Self::layout(self.capacity())) };\n\n        unsafe {\n            // Safety:\n            // No other vector references the backing allocation (just checked).\n            // For more details, see `Self::as_slice()`.\n            ptr::drop_in_place(ptr::slice_from_raw_parts_mut(self.data_mut(), self.len));\n        }\n    }"
+}

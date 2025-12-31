@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `keyexpr_tree::traits::default_impls::<impl keyexpr_tree::traits::HasChunk for token_cell::prelude::TokenCell<T, Token>>::chunk`",
+    "file": "zenoh-keyexpr-1.5.0/src/keyexpr_tree/traits/default_impls.rs",
+    "start_line": 42,
+    "start_col": 5,
+    "end_line": 44,
+    "end_col": 6,
+    "code_snippet": "fn chunk(&self) -> &keyexpr {\n        T::chunk(unsafe { &*self.get() })\n    }"
+}

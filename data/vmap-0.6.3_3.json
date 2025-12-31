@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vmap-0.6.3/src/io/ring.rs",
+    "start_line": 245,
+    "start_col": 1,
+    "end_line": 245,
+    "end_col": 27,
+    "code_snippet": "impl Drop for InfiniteRing {\n    fn drop(&mut self) {\n        unsafe { unmap_ring(self.ptr, self.write_capacity()) }.unwrap_or_default()\n    }\n}"
+}

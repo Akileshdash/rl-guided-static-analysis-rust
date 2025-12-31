@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dodrio-0.2.0/src/vdom.rs",
+    "start_line": 105,
+    "start_col": 1,
+    "end_line": 105,
+    "end_col": 33,
+    "code_snippet": "impl Drop for VdomInnerExclusive {\n    fn drop(&mut self) {\n        debug!(\"Dropping VdomInnerExclusive\");\n\n        // Make sure that we clean up our JS listeners and all that before we\n        // empty the container.\n        unsafe {\n            ManuallyDrop::drop(&mut self.change_list);\n        }\n\n        let registry = self.events_registry.take().unwrap_throw();\n        let mut registry = registry.borrow_mut();\n        registry.clear_active_listeners();\n\n        empty_container(&self.container);\n    }\n}"
+}

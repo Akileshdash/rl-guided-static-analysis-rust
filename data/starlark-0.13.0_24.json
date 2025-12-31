@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::iter_next`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 551,
+    "start_col": 5,
+    "end_line": 551,
+    "end_col": 84,
+    "code_snippet": "unsafe fn iter_next(&self, _index: usize, _heap: &'v Heap) -> Option<Value<'v>> {\n        panic!(\n            \"iter_next called on non-iterable value of type {}\",\n            Self::TYPE\n        )\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `tree::tiny_arc::Arc::<T>::optimized_clone`",
+    "file": "crop-0.4.3/src/tree/tiny_arc.rs",
+    "start_line": 87,
+    "start_col": 5,
+    "end_line": 103,
+    "end_col": 6,
+    "code_snippet": "fn optimized_clone(&self) -> Self {\n        // See the homonymous function in `rclite` for more details.\n\n        let mut buffer: Box<MaybeUninit<ArcInner<T>>> =\n            Box::new(MaybeUninit::uninit());\n\n        let ptr = unsafe {\n            let ptr = buffer.as_mut_ptr();\n            // Here we use `write()` instead of assignment via `=` to avoid\n            // dropping the old, uninitialized value.\n            addr_of_mut!((*ptr).data).write(T::clone(self));\n            (*ptr).counter = atomic::AtomicUsize::new(1);\n            NonNull::new_unchecked(Box::into_raw(buffer) as *mut ArcInner<T>)\n        };\n\n        Arc { ptr }\n    }"
+}

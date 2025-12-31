@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gc-0.5.1/src/lib.rs",
+    "start_line": 1016,
+    "start_col": 1,
+    "end_line": 1016,
+    "end_col": 71,
+    "code_snippet": "impl<'a, T: Trace + ?Sized, U: ?Sized> Drop for GcCellRefMut<'a, T, U> {\n    #[inline]\n    fn drop(&mut self) {\n        debug_assert!(self.gc_cell.flags.get().borrowed() == BorrowState::Writing);\n        // Restore the rooted state of the GcCell's contents to the state of the GcCell.\n        // During the lifetime of the GcCellRefMut, the GcCell's contents are rooted.\n        if !self.gc_cell.flags.get().rooted() {\n            unsafe {\n                (*self.gc_cell.cell.get()).unroot();\n            }\n        }\n        self.gc_cell\n            .flags\n            .set(self.gc_cell.flags.get().set_unused());\n    }\n}"
+}

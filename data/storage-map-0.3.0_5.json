@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `StorageMap::<L, std::collections::HashMap<K, V, S>>::get_or_create_with`",
+    "file": "storage-map-0.3.0/src/lib.rs",
+    "start_line": 108,
+    "start_col": 5,
+    "end_line": 135,
+    "end_col": 6,
+    "code_snippet": "pub fn get_or_create_with<'a, F: FnOnce() -> V>(\n        &'a self,\n        key: &K,\n        create_fn: F,\n    ) -> StorageMapGuard<'a, L, V> {\n        self.lock.lock_shared();\n        // try mapping for reading first\n        let map = unsafe { &*self.map.get() };\n        if let Some(value) = map.get(key) {\n            return StorageMapGuard {\n                lock: &self.lock,\n                value,\n                exclusive: false,\n            };\n        }\n        unsafe {\n            self.lock.unlock_shared();\n        }\n        // now actually lock for writes\n        let value = create_fn();\n        self.lock.lock_exclusive();\n        let map = unsafe { &mut *self.map.get() };\n        StorageMapGuard {\n            lock: &self.lock,\n            value: &*map.entry(key.clone()).or_insert(value),\n            exclusive: true,\n        }\n    }"
+}

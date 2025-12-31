@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/mut_bump_vec/into_iter.rs",
+    "start_line": 194,
+    "start_col": 1,
+    "end_line": 194,
+    "end_col": 35,
+    "code_snippet": "impl<T, A> Drop for IntoIter<T, A> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            non_null::slice_from_raw_parts(self.ptr, self.len()).as_ptr().drop_in_place();\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "minifb-0.28.0/src/os/posix/x11.rs",
+    "start_line": 1327,
+    "start_col": 1,
+    "end_line": 1327,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Window {\n    fn drop(&mut self) {\n        unsafe {\n            self.free_image();\n\n            // TODO  [ andrewj: right now DisplayInfo is not shared, so doing this is\n            //                  probably pointless ]\n            // XSaveContext(s_display, info->window, s_context, (XPointer)0);\n\n            (self.d.lib.XDestroyIC)(self.xic);\n            (self.d.lib.XCloseIM)(self.xim);\n            (self.d.lib.XDestroyWindow)(self.d.display, self.handle);\n        }\n    }\n}"
+}

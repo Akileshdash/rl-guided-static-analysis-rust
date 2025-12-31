@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ssl::callbacks::raw_sni`",
+    "file": "openssl-0.10.73/src/ssl/callbacks.rs",
+    "start_line": 163,
+    "start_col": 1,
+    "end_line": 179,
+    "end_col": 2,
+    "code_snippet": "pub extern \"C\" fn raw_sni<F>(ssl: *mut ffi::SSL, al: *mut c_int, arg: *mut c_void) -> c_int\nwhere\n    F: Fn(&mut SslRef, &mut SslAlert) -> Result<(), SniError> + 'static + Sync + Send,\n{\n    unsafe {\n        let ssl = SslRef::from_ptr_mut(ssl);\n        let callback = arg as *const F;\n        let mut alert = SslAlert(*al);\n\n        let r = (*callback)(ssl, &mut alert);\n        *al = alert.0;\n        match r {\n            Ok(()) => ffi::SSL_TLSEXT_ERR_OK,\n            Err(e) => e.0,\n        }\n    }\n}"
+}

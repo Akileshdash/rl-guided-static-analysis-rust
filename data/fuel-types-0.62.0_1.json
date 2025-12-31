@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::vec::Vec<T> as canonical::Serialize>::encode_dynamic`",
+    "file": "fuel-types-0.62.0/src/canonical.rs",
+    "start_line": 306,
+    "start_col": 5,
+    "end_line": 322,
+    "end_col": 6,
+    "code_snippet": "fn encode_dynamic<O: Output + ?Sized>(&self, buffer: &mut O) -> Result<(), Error> {\n        // Bytes - Vec<u8> it a separate case without padding for each element.\n        // It should padded at the end if is not % ALIGN\n        if T::UNALIGNED_BYTES {\n            // SAFETY: `UNALIGNED_BYTES` only set for `u8`.\n            let bytes = unsafe { ::core::mem::transmute::<&Vec<T>, &Vec<u8>>(self) };\n            buffer.write(bytes.as_slice())?;\n            for _ in 0..alignment_bytes(self.len()) {\n                buffer.push_byte(0)?;\n            }\n        } else {\n            for e in self.iter() {\n                e.encode(buffer)?;\n            }\n        }\n        Ok(())\n    }"
+}

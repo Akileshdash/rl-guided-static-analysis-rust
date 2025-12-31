@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `io::FilterPtr::map_filter`",
+    "file": "ntex-io-2.14.0/src/io.rs",
+    "start_line": 884,
+    "start_col": 5,
+    "end_line": 903,
+    "end_col": 6,
+    "code_snippet": "fn map_filter<F: Filter, U, R>(&self, f: U)\n    where\n        U: FnOnce(F) -> R,\n        R: Filter,\n    {\n        let mut data = NULL;\n        let filter = Box::new(f(*self.take_filter::<F>()));\n        unsafe {\n            let filter_ref: &'static dyn Filter = {\n                let f: &dyn Filter = filter.as_ref();\n                mem::transmute(f)\n            };\n            self.filter.set(filter_ref);\n\n            let ptr = &mut data as *mut _ as *mut *mut R;\n            ptr.write(Box::into_raw(filter));\n            data[KIND_IDX] |= KIND_PTR;\n            self.data.set(data);\n        }\n    }"
+}

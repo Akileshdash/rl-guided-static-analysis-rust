@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sxd-document-0.3.2/src/string_pool.rs",
+    "start_line": 47,
+    "start_col": 1,
+    "end_line": 47,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Chunk {\n    fn drop(&mut self) {\n        // This is safe because we only ever store u8, which doesn't\n        // have a destructor. This means the len doesn't matter, only\n        // the capacity.\n        unsafe {\n            Vec::from_raw_parts(self.start, self.capacity, self.capacity);\n        }\n    }\n}"
+}

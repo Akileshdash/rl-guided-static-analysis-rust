@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "io-extras-0.18.4/src/owned.rs",
+    "start_line": 346,
+    "start_col": 1,
+    "end_line": 346,
+    "end_col": 29,
+    "code_snippet": "impl Drop for OwnedWriteable {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            let _owned = OwnedGrip::from_raw_grip(self.0.as_raw_grip());\n        }\n    }\n}"
+}

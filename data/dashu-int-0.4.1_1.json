@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dashu-int-0.4.1/src/buffer.rs",
+    "start_line": 457,
+    "start_col": 1,
+    "end_line": 457,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Buffer {\n    fn drop(&mut self) {\n        // SAFETY: self.ptr was allocated with self.capacity space\n        unsafe {\n            Self::deallocate_raw(self.ptr, self.capacity);\n        }\n    }\n}"
+}

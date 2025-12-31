@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `io::Text::<'r, R>::new`",
+    "file": "chttp-0.5.5/src/io.rs",
+    "start_line": 20,
+    "start_col": 5,
+    "end_line": 32,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn new(reader: &'r mut R) -> Self {\n        // We can't split the borrow on the buffer safely, so we heap-allocate\n        // it and pretend that it has the lifetime 'r, carefully making sure\n        // that we remove references to the buffer first before cleaning it up.\n        let mut buffer = Box::new(Vec::new());\n        let ptr: *mut Vec<u8> = &mut *buffer as *mut _;\n        let buffer_ref = unsafe { ptr.as_mut().unwrap() };\n\n        Self {\n            buffer: Some(buffer),\n            inner: Some(AsyncReadExt::read_to_end(reader, buffer_ref)),\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `perm::permown::<impl perm::generic::Perm<perm::permown::Own<I, N>>>::new_unchecked`",
+    "file": "faer-0.22.6/src/perm/permown.rs",
+    "start_line": 57,
+    "start_col": 2,
+    "end_line": 61,
+    "end_col": 3,
+    "code_snippet": "pub unsafe fn new_unchecked(forward: alloc::boxed::Box<[Idx<N, I>]>, inverse: alloc::boxed::Box<[Idx<N, I>]>) -> Self {\n\t\tlet n = forward.len();\n\t\tassert!(all(forward.len() == inverse.len(), n <= I::Signed::MAX.zx(),));\n\t\tSelf { 0: Own { forward, inverse } }\n\t}"
+}

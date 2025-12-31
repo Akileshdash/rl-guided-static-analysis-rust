@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "qutex-0.2.6/src/qutex.rs",
+    "start_line": 98,
+    "start_col": 1,
+    "end_line": 98,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for FutureGuard<T> {\n    /// Gracefully unlock if this guard has a lock acquired but has not yet\n    /// been polled to completion.\n    fn drop(&mut self) {\n        if let Some(qutex) = self.qutex.take() {\n            self.rx.close();\n\n            match self.rx.try_recv() {\n                Ok(status) => {\n                    if status.is_some() {\n                        unsafe {\n                            qutex.direct_unlock();\n                        }\n                    }\n                }\n                Err(_) => (),\n            }\n        }\n    }\n}"
+}

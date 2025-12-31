@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "matrixmultiply-0.3.10/src/aligned_alloc.rs",
+    "start_line": 55,
+    "start_col": 1,
+    "end_line": 55,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Alloc<T> {\n    fn drop(&mut self) {\n        unsafe {\n            let layout =\n                Layout::from_size_align_unchecked(mem::size_of::<T>() * self.len, self.align);\n            alloc::dealloc(self.ptr as _, layout);\n        }\n    }\n}"
+}

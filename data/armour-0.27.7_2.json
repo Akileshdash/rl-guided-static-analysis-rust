@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `types::fuid::Fuid::<H>::ser`",
+    "file": "armour-0.27.7/src/types/fuid.rs",
+    "start_line": 319,
+    "start_col": 5,
+    "end_line": 322,
+    "end_col": 6,
+    "code_snippet": "pub fn ser(self) -> IdStr {\n        let u: u64 = zerocopy::transmute!(self);\n        H::ser(u)\n    }"
+}

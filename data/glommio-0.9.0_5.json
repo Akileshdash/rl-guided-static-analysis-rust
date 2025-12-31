@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glommio-0.9.0/src/channels/spsc_queue.rs",
+    "start_line": 219,
+    "start_col": 1,
+    "end_line": 219,
+    "end_col": 27,
+    "code_snippet": "impl<T> Drop for Buffer<T> {\n    fn drop(&mut self) {\n        // Pop the rest of the values off the queue. By moving them into this scope,\n        // we implicitly call their destructor\n        while self.try_pop().is_some() {}\n        // We don't want to run any destructors here, because we didn't run\n        // any of the constructors through the vector. And whatever object was\n        // in fact still alive we popped above.\n        let _drop = unsafe {\n            // Nightly clippy warns about this but ptr::from_raw_parts_mut isn't stable yet.\n            #[allow(clippy::cast_slice_from_raw_parts)]\n            let ptr = from_raw_parts_mut(self.buffer_storage, self.capacity) as *mut [Slot<T>];\n            Box::from_raw(ptr)\n        };\n    }\n}"
+}

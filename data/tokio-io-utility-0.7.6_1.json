@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tokio-io-utility-0.7.6/src/reusable_io_slices.rs",
+    "start_line": 63,
+    "start_col": 1,
+    "end_line": 63,
+    "end_col": 31,
+    "code_snippet": "impl Drop for ReusableIoSlices {\n    fn drop(&mut self) {\n        // Cast it back to its original type\n        let ptr = self.ptr.as_ptr() as *mut MaybeUninit<IoSlice<'_>>;\n\n        // Safety:\n        //\n        //  - ptr are obtained using `Vec::as_mut_ptr` from\n        //    a `ManuallyDrop<Vec<_>>` with non-zero cap.\n        //  - `IoSlice` does not have a `Drop` implementation and is\n        //    `Copy`able, so it is ok to pass `0` as length.\n        //  - self.cap.get() == v.capacity()\n        let v: Vec<MaybeUninit<IoSlice<'_>>> =\n            unsafe { Vec::from_raw_parts(ptr, 0, self.cap.get()) };\n\n        drop(v);\n    }\n}"
+}

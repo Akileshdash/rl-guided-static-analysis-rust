@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mbox-0.7.1/src/mbox.rs",
+    "start_line": 621,
+    "start_col": 1,
+    "end_line": 621,
+    "end_col": 35,
+    "code_snippet": "impl<T> Drop for MSliceIntoIter<T> {\n    fn drop(&mut self) {\n        unsafe {\n            let base = self.ptr.as_ptr().add(self.begin);\n            let len = self.end - self.begin;\n            let slice = slice_from_raw_parts_mut(base, len);\n            drop_in_place(slice);\n            gen_free(self.ptr);\n        }\n    }\n}"
+}

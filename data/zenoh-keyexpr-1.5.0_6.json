@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<keyexpr_tree::arc_tree::KeArcTree<Weight, Token, Wildness, Children> as keyexpr_tree::traits::ITokenKeyExprTree<'a, Weight, Token>>::node_or_create`",
+    "file": "zenoh-keyexpr-1.5.0/src/keyexpr_tree/arc_tree.rs",
+    "start_line": 170,
+    "start_col": 5,
+    "end_line": 205,
+    "end_col": 6,
+    "code_snippet": "fn node_or_create(&'a self, token: &'a mut Token, at: &keyexpr) -> Self::NodeMut {\n        let inner = ketree_borrow_mut(&self.inner, token);\n        if at.is_wild_impl() {\n            inner.wildness.set(true);\n        }\n        let inner: &mut KeArcTreeInner<Weight, Wildness, Children, Token> =\n            unsafe { core::mem::transmute(inner) };\n        let construct_node = |k: &keyexpr, parent| {\n            Arc::new(TokenCell::new(\n                KeArcTreeNode {\n                    parent,\n                    chunk: k.into(),\n                    children: Default::default(),\n                    weight: None,\n                },\n                token,\n            ))\n        };\n        let mut chunks = at.chunks_impl();\n        let mut node = inner\n            .children\n            .entry(chunks.next().unwrap())\n            .get_or_insert_with(|k| construct_node(k, None));\n        for chunk in chunks {\n            let as_node: &Arc<\n                TokenCell<KeArcTreeNode<Weight, Weak<()>, Wildness, Children, Token>, Token>,\n            > = node.as_node();\n            node = unsafe {\n                (*as_node.get())\n                    .children\n                    .entry(chunk)\n                    .get_or_insert_with(|k| construct_node(k, Some(Arc::downgrade(as_node))))\n            };\n        }\n        (node, token)\n    }"
+}

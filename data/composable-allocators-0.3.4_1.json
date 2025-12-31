@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<freelist::Freelist<Limit, A> as core::alloc::Allocator>::allocate`",
+    "file": "composable-allocators-0.3.4/src/freelist.rs",
+    "start_line": 135,
+    "start_col": 5,
+    "end_line": 148,
+    "end_col": 6,
+    "code_snippet": "fn allocate(&self, layout: alloc::Layout) -> Result<NonNull<[u8]>, AllocError> {\n        if !self.manages(layout) {\n            return self.base().allocate(layout);\n        }\n        let mut list = self.list.lock().unwrap();\n        if let Some(next_ptr) = NonNull::new(*list.head.next.get_mut()) {\n            let next = unsafe { ptr::read(next_ptr.as_ptr() as *const Node) }.next;\n            list.head = Node { next };\n            list.len = unsafe { self.limit.dec_list_len(list.len) };\n            Ok(NonNull::slice_from_raw_parts(next_ptr, self.layout.size()))\n        } else {\n            self.base().allocate(self.layout)\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "asyncs-sync-0.4.0/src/parker.rs",
+    "start_line": 112,
+    "start_col": 1,
+    "end_line": 112,
+    "end_col": 35,
+    "code_snippet": "unsafe impl<T> Send for Parking<T> {}\nunsafe impl<T> Sync for Parking<T> {}"
+}

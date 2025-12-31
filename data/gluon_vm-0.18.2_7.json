@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "gluon_vm-0.18.2/src/api/scoped.rs",
+    "start_line": 131,
+    "start_col": 1,
+    "end_line": 131,
+    "end_col": 70,
+    "code_snippet": "unsafe impl<T, M> Send for Scoped<T, M> where T: Send + Sync + ?Sized {}\nunsafe impl<T, M> Sync for Scoped<T, M> where T: Send + Sync + ?Sized {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "protobuf-4.32.0-rc.1/src/map.rs",
+    "start_line": 52,
+    "start_col": 1,
+    "end_line": 52,
+    "end_col": 68,
+    "code_snippet": "unsafe impl<'msg, K: ?Sized, V: ?Sized> Sync for MapMut<'msg, K, V> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `resize::MemoryRange::<T>::drop_in_place`",
+    "file": "matreex-0.33.1/src/resize.rs",
+    "start_line": 939,
+    "start_col": 5,
+    "end_line": 944,
+    "end_col": 6,
+    "code_snippet": "unsafe fn drop_in_place(self) {\n        let to_drop = ptr::slice_from_raw_parts_mut(self.start, self.len.get());\n        unsafe {\n            ptr::drop_in_place(to_drop);\n        }\n    }"
+}

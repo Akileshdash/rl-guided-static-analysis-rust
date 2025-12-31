@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::unfold::CaseMapUnfold<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_casemap-2.0.0/src/provider/unfold.rs",
+    "start_line": 24,
+    "start_col": 35,
+    "end_line": 24,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[yoke(prove_covariance_manually)]\npub struct CaseMapUnfold<'data> {\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    /// The actual map. Maps from strings to a list of codepoints, stored as a contiguous UTF-8 string\n    pub map: ZeroMap<'data, PotentialUtf8, str>,\n}"
+}

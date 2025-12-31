@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `private::layout::StructBuilder::<'a>::set_data_field`",
+    "file": "capnp-0.21.4/src/private/layout.rs",
+    "start_line": 3629,
+    "start_col": 5,
+    "end_line": 3632,
+    "end_col": 6,
+    "code_snippet": "pub fn set_data_field<T: Primitive>(&self, offset: ElementCount, value: T) {\n        let ptr: *mut <T as Primitive>::Raw = self.data as *mut _;\n        unsafe { <T as Primitive>::set(&mut *ptr.add(offset), value) }\n    }"
+}

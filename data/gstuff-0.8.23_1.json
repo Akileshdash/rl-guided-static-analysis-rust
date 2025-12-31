@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gstuff-0.8.23/gstuff.rs",
+    "start_line": 1050,
+    "start_col": 1,
+    "end_line": 1050,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for IniMutex<T> {\n  fn drop (&mut self) {\n    if self.au.load (Ordering::Acquire) != 0 {\n      self.au.store (0, Ordering::Relaxed);\n      let vc = unsafe {&mut *self.vc.get()};\n      unsafe {vc.assume_init_drop()}}}}"
+}

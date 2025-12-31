@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sll::AddToSllResult::<'a, E>::add_to_sll`",
+    "file": "rowan-0.15.17/src/sll.rs",
+    "start_line": 21,
+    "start_col": 5,
+    "end_line": 50,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn add_to_sll(&self, elem_ptr: *const E) {\n        unsafe {\n            (*elem_ptr).prev().set(elem_ptr);\n            (*elem_ptr).next().set(elem_ptr);\n\n            match self {\n                // Case 1: empty head, replace it.\n                AddToSllResult::EmptyHead(head) => head.set(elem_ptr),\n\n                // Case 2: we are smaller than the head, replace it.\n                AddToSllResult::SmallerThanHead(head) => {\n                    let old_head = head.get();\n                    let prev = (*old_head).prev().replace(elem_ptr);\n                    (*prev).next().set(elem_ptr);\n                    (*elem_ptr).next().set(old_head);\n                    (*elem_ptr).prev().set(prev);\n                    head.set(elem_ptr);\n                }\n\n                // Case 3: insert in place found by looping\n                AddToSllResult::SmallerThanNotHead(curr) => {\n                    let next = (**curr).next().replace(elem_ptr);\n                    (*next).prev().set(elem_ptr);\n                    (*elem_ptr).prev().set(*curr);\n                    (*elem_ptr).next().set(next);\n                }\n                AddToSllResult::NoHead | AddToSllResult::AlreadyInSll(_) => (),\n            }\n        }\n    }"
+}

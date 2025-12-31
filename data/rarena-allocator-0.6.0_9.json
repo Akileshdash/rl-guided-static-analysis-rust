@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "rarena-allocator-0.6.0/src/object.rs",
+    "start_line": 39,
+    "start_col": 1,
+    "end_line": 39,
+    "end_col": 57,
+    "code_snippet": "unsafe impl<A: Allocator + Sync, T> Sync for Owned<T, A> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<[T; N] as msgpack::encode::Decode<'de>>::decode`",
+    "file": "tarantool-8.0.0/src/msgpack/encode.rs",
+    "start_line": 379,
+    "start_col": 5,
+    "end_line": 416,
+    "end_col": 6,
+    "code_snippet": "fn decode(r: &mut &'de [u8], context: &Context) -> Result<Self, DecodeError> {\n        let n = rmp::decode::read_array_len(r).map_err(DecodeError::from_vre::<Self>)? as usize;\n        if n != N {\n            return Err(DecodeError::new::<Self>(format!(\n                \"expected array count {N}, got {n}\"\n            )));\n        }\n\n        let mut res = std::mem::MaybeUninit::uninit();\n        let ptr = &mut res as *mut _ as *mut [T; N] as *mut T;\n        let mut num_assigned = 0;\n\n        for i in 0..N {\n            match T::decode(r, context) {\n                Ok(v) => {\n                    // SAFETY: safe, because MaybeUninit<[T; N]> has the same\n                    // memory representation as [T; N], and we're writing into\n                    // the array's elements.\n                    unsafe { std::ptr::write(ptr.add(i), v) }\n                    num_assigned += 1;\n                }\n                Err(e) => {\n                    for i in 0..num_assigned {\n                        // SAFETY: safe, because we assigned all of these elements\n                        // a valid value of type T.\n                        unsafe { std::ptr::drop_in_place(ptr.add(i)) }\n                    }\n\n                    return Err(DecodeError::new::<Self>(e).with_part(format!(\"element {i}\")));\n                }\n            }\n        }\n\n        debug_assert_eq!(num_assigned, N);\n\n        // SAFETY: safe, we've assigned every single element.\n        return Ok(unsafe { res.assume_init() });\n    }"
+}

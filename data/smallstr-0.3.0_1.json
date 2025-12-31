@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "smallstr-0.3.0/src/string.rs",
+    "start_line": 403,
+    "start_col": 9,
+    "end_line": 403,
+    "end_col": 67,
+    "code_snippet": "impl<'a, A: Array<Item = u8>> Drop for SetLenOnDrop<'a, A> {\n            fn drop(&mut self) {\n                let new_len = self.idx - self.del_bytes;\n                debug_assert!(new_len <= self.s.len());\n                unsafe { self.s.data.set_len(new_len) };\n            }\n        }"
+}

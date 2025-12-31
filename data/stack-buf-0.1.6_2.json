@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stack-buf-0.1.6/src/vec.rs",
+    "start_line": 850,
+    "start_col": 1,
+    "end_line": 850,
+    "end_col": 48,
+    "code_snippet": "impl<T, const N: usize> Drop for StackVec<T, N> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe { ptr::drop_in_place(ptr::slice_from_raw_parts_mut(self.as_mut_ptr(), self.len())) }\n    }\n}"
+}

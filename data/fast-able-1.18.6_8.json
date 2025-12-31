@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `unsafe_cell_type::U::<T>::fetch_add`",
+    "file": "fast-able-1.18.6/src/unsafe_cell_type.rs",
+    "start_line": 64,
+    "start_col": 5,
+    "end_line": 69,
+    "end_col": 6,
+    "code_snippet": "pub fn fetch_add(&self, v: T) -> T {\n        let r = self.deref().clone();\n        let s = unsafe { &mut *self._inner.get() };\n        *s = self.deref().clone() + v;\n        r\n    }"
+}

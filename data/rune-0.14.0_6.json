@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rune-0.14.0/src/runtime/value/dynamic.rs",
+    "start_line": 191,
+    "start_col": 1,
+    "end_line": 191,
+    "end_col": 34,
+    "code_snippet": "impl<H, T> Drop for Dynamic<H, T> {\n    fn drop(&mut self) {\n        // Decrement a shared value.\n        unsafe {\n            Shared::dec(self.shared);\n        }\n    }\n}"
+}

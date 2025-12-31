@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `types::slice::SliceWrapper::<'a, T>::get`",
+    "file": "bebop-3.1.3/src/types/slice.rs",
+    "start_line": 69,
+    "start_col": 5,
+    "end_line": 86,
+    "end_col": 6,
+    "code_snippet": "pub fn get(&self, i: usize) -> Option<T> {\n        match *self {\n            SliceWrapper::Raw(raw) => {\n                if i * size_of::<T>() + size_of::<T>() > raw.len() {\n                    None\n                } else {\n                    let raw: &'a [u8] = unsafe {\n                        &*slice_from_raw_parts(\n                            raw.as_ptr().add(i * size_of::<T>()),\n                            size_of::<T>(),\n                        )\n                    };\n                    Some(T::_deserialize_chained(raw).map(|(_, v)| v).unwrap())\n                }\n            }\n            SliceWrapper::Cooked(ary) => ary.get(i).copied(),\n        }\n    }"
+}

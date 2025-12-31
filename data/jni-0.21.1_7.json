@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jni-0.21.1/src/wrapper/java_vm/vm.rs",
+    "start_line": 616,
+    "start_col": 1,
+    "end_line": 616,
+    "end_col": 34,
+    "code_snippet": "impl Drop for InternalAttachGuard {\n    fn drop(&mut self) {\n        if let Err(e) = self.detach() {\n            error!(\n                \"Error detaching current thread: {:#?}\\nThread {} id={:?}\",\n                e,\n                self.thread.name().unwrap_or_default(),\n                self.thread.id(),\n            );\n        }\n    }\n}"
+}

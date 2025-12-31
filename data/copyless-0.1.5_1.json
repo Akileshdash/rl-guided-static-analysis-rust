@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "copyless-0.1.5/src/boxed.rs",
+    "start_line": 31,
+    "start_col": 1,
+    "end_line": 31,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for BoxAllocation<T> {\n    fn drop(&mut self) {\n        if mem::size_of::<T>() == 0 {\n            return;\n        }\n\n        let layout = alloc::Layout::new::<T>();\n        unsafe {\n            alloc::dealloc(self.0.as_ptr() as *mut u8, layout);\n        }\n    }\n}"
+}

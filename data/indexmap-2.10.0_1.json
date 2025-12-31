@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "indexmap-2.10.0/src/map/core/extract.rs",
+    "start_line": 38,
+    "start_col": 1,
+    "end_line": 38,
+    "end_col": 42,
+    "code_snippet": "impl<K, V> Drop for ExtractCore<'_, K, V> {\n    fn drop(&mut self) {\n        let old_len = self.map.indices.len();\n        let mut new_len = self.new_len;\n\n        debug_assert!(new_len <= self.current);\n        debug_assert!(self.current <= self.end);\n        debug_assert!(self.current <= old_len);\n        debug_assert!(old_len <= self.map.entries.capacity());\n\n        // SAFETY: We assume `new_len` and `current` were correctly maintained by the iterator.\n        // So `entries[new_len..current]` were extracted, but the rest before and after are valid.\n        unsafe {\n            if new_len == self.current {\n                // Nothing was extracted, so any remaining items can be left in place.\n                new_len = old_len;\n            } else if self.current < old_len {\n                // Need to shift the remaining items down.\n                let tail_len = old_len - self.current;\n                let base = self.map.entries.as_mut_ptr();\n                let src = base.add(self.current);\n                let dest = base.add(new_len);\n                src.copy_to(dest, tail_len);\n                new_len += tail_len;\n            }\n            self.map.entries.set_len(new_len);\n        }\n\n        if new_len != old_len {\n            // We don't keep track of *which* items were extracted, so reindex everything.\n            self.map.rebuild_hash_table();\n        }\n    }\n}"
+}

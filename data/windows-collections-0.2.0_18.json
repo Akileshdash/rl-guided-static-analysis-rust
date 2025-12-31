@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `bindings::IMapView_Vtbl::<K, V>::new::Split`",
+    "file": "windows-collections-0.2.0/src/bindings.rs",
+    "start_line": 1106,
+    "start_col": 9,
+    "end_line": 1126,
+    "end_col": 10,
+    "code_snippet": "unsafe extern \"system\" fn Split<\n            K: windows_core::RuntimeType + 'static,\n            V: windows_core::RuntimeType + 'static,\n            Identity: IMapView_Impl<K, V>,\n            const OFFSET: isize,\n        >(\n            this: *mut core::ffi::c_void,\n            first: *mut *mut core::ffi::c_void,\n            second: *mut *mut core::ffi::c_void,\n        ) -> windows_core::HRESULT {\n            unsafe {\n                let this: &Identity =\n                    &*((this as *const *const ()).offset(OFFSET) as *const Identity);\n                IMapView_Impl::Split(\n                    this,\n                    core::mem::transmute_copy(&first),\n                    core::mem::transmute_copy(&second),\n                )\n                .into()\n            }\n        }"
+}

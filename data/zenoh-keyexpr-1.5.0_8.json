@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<keyexpr_tree::box_tree::KeBoxTree<Weight, Wildness, Children> as keyexpr_tree::traits::IKeyExprTreeMut<'a, Weight>>::remove`",
+    "file": "zenoh-keyexpr-1.5.0/src/keyexpr_tree/box_tree.rs",
+    "start_line": 156,
+    "start_col": 5,
+    "end_line": 169,
+    "end_col": 6,
+    "code_snippet": "fn remove(&mut self, at: &keyexpr) -> Option<Weight> {\n        let node = self.node_mut(at)?;\n        if !node.children.is_empty() {\n            node.weight.take()\n        } else {\n            let chunk = unsafe { core::mem::transmute::<&keyexpr, &keyexpr>(node.chunk()) };\n            match node.parent {\n                None => &mut self.children,\n                Some(parent) => unsafe { &mut (*parent.as_ptr()).children },\n            }\n            .remove(chunk)\n            .and_then(|node| node.weight)\n        }\n    }"
+}

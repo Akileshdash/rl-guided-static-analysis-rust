@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "bitvec-1.0.1/src/ptr/proxy.rs",
+    "start_line": 407,
+    "start_col": 1,
+    "end_line": 411,
+    "end_col": 14,
+    "code_snippet": "unsafe impl<M, T, O> Sync for BitRef<'_, M, T, O>\nwhere\n\tM: Mutability,\n\tT: BitStore + Sync,\n\tO: BitOrder,\n{\n}"
+}

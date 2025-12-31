@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "bzip2-0.6.0/src/mem.rs",
+    "start_line": 35,
+    "start_col": 1,
+    "end_line": 35,
+    "end_col": 45,
+    "code_snippet": "unsafe impl<D: Direction> Sync for Stream<D> {}"
+}

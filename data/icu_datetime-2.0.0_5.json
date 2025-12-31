@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::calendar::TimeLengths<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_datetime-2.0.0/src/provider/calendar/mod.rs",
+    "start_line": 57,
+    "start_col": 44,
+    "end_line": 57,
+    "end_col": 58,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, Default, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_datetime::provider::calendar))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\npub struct TimeLengths<'data> {\n    /// These patterns are common uses of time formatting, broken down by the length of the\n    /// pattern. Users can override the hour cycle with a preference, so there are two\n    /// pattern groups stored here. Note that the pattern will contain either h11 or h12.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub time_h11_h12: patterns::LengthPatterns<'data>,\n\n    /// These patterns are common uses of time formatting, broken down by the length of the\n    /// pattern. Users can override the hour cycle with a preference, so there are two\n    /// pattern groups stored here. Note that the pattern will contain either h23 or h24.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub time_h23_h24: patterns::LengthPatterns<'data>,\n\n    /// By default a locale will prefer one hour cycle type over another.\n    pub preferred_hour_cycle: pattern::CoarseHourCycle,\n}"
+}

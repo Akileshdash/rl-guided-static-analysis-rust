@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mallumo-gls-0.43.0/src/pipeline/pipeline.rs",
+    "start_line": 139,
+    "start_col": 1,
+    "end_line": 139,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Pipeline {\n    fn drop(&mut self) {\n        unsafe {\n            delete_program(self.id);\n        }\n    }\n}"
+}

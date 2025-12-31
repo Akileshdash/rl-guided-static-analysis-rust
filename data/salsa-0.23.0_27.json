@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::option::Option<T> as update::Update>::maybe_update`",
+    "file": "salsa-0.23.0/src/update.rs",
+    "start_line": 536,
+    "start_col": 5,
+    "end_line": 546,
+    "end_col": 6,
+    "code_snippet": "unsafe fn maybe_update(old_pointer: *mut Self, new_value: Self) -> bool {\n        let old_value = unsafe { &mut *old_pointer };\n        match (old_value, new_value) {\n            (Some(old), Some(new)) => unsafe { T::maybe_update(old, new) },\n            (None, None) => false,\n            (old_value, new_value) => {\n                *old_value = new_value;\n                true\n            }\n        }\n    }"
+}

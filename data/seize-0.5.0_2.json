@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "seize-0.5.0/src/guard.rs",
+    "start_line": 361,
+    "start_col": 1,
+    "end_line": 361,
+    "end_col": 29,
+    "code_snippet": "impl Drop for OwnedGuard<'_> {\n    #[inline]\n    fn drop(&mut self) {\n        // Safety: `self.reservation` is owned by the current thread.\n        let reservation = unsafe { &*self.reservation };\n\n        // Safety: `self.thread` is an owned thread.\n        unsafe { self.collector.raw.leave(reservation) };\n\n        // Safety: We are in `drop` and never share `self.thread`.\n        unsafe { Thread::free(self.thread.id) };\n    }\n}"
+}

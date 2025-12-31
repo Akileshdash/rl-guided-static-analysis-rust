@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hashlink-0.10.0/src/linked_hash_map.rs",
+    "start_line": 1717,
+    "start_col": 1,
+    "end_line": 1717,
+    "end_col": 35,
+    "code_snippet": "impl<K, V> Drop for IntoIter<K, V> {\n    #[inline]\n    fn drop(&mut self) {\n        for _ in 0..self.remaining {\n            unsafe {\n                let tail = self.tail.as_ptr();\n                self.tail = Some((*tail).links.value.prev);\n                (*tail).take_entry();\n                let _ = Box::from_raw(tail);\n            }\n        }\n    }\n}"
+}

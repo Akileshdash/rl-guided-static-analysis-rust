@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 505,
+    "start_col": 1,
+    "end_line": 505,
+    "end_col": 56,
+    "code_snippet": "unsafe impl<A: Send, B: Send, W> Send for Then<A, B, W> {}"
+}

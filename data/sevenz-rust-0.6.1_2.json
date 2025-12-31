@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<reader::ReaderPtr<R> as std::io::Seek>::seek`",
+    "file": "sevenz-rust-0.6.1/src/reader.rs",
+    "start_line": 1505,
+    "start_col": 5,
+    "end_line": 1507,
+    "end_col": 6,
+    "code_snippet": "fn seek(&mut self, pos: SeekFrom) -> std::io::Result<u64> {\n        unsafe { (*self.reader).seek(pos) }\n    }"
+}

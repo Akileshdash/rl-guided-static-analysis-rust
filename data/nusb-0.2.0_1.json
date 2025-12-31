@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nusb-0.2.0/src/platform/linux_usbfs/transfer.rs",
+    "start_line": 181,
+    "start_col": 1,
+    "end_line": 181,
+    "end_col": 27,
+    "code_snippet": "impl Drop for TransferData {\n    fn drop(&mut self) {\n        unsafe {\n            drop(self.take_completion());\n            drop(Box::from_raw(self.urb));\n        }\n    }\n}"
+}

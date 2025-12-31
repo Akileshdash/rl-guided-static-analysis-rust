@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nucleo-matcher-0.3.1/src/matrix.rs",
+    "start_line": 194,
+    "start_col": 1,
+    "end_line": 194,
+    "end_col": 25,
+    "code_snippet": "impl Drop for MatrixSlab {\n    fn drop(&mut self) {\n        unsafe { dealloc(self.0.as_ptr(), Layout::new::<MatcherData>()) };\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "left-right-0.11.5/src/aliasing.rs",
+    "start_line": 226,
+    "start_col": 1,
+    "end_line": 229,
+    "end_col": 20,
+    "code_snippet": "unsafe impl<T, D> Send for Aliased<T, D>\nwhere\n    D: DropBehavior,\n    T: Send + Sync,\n{\n}"
+}

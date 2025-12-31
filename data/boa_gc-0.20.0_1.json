@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<internals::ephemeron_box::EphemeronBox<K, V> as internals::ephemeron_box::ErasedEphemeronBox>::trace`",
+    "file": "boa_gc-0.20.0/src/internals/ephemeron_box.rs",
+    "start_line": 139,
+    "start_col": 5,
+    "end_line": 164,
+    "end_col": 6,
+    "code_snippet": "unsafe fn trace(&self, tracer: &mut Tracer) -> bool {\n        if !self.header.is_marked() {\n            return false;\n        }\n\n        // SAFETY: the garbage collector ensures the ephemeron doesn't mutate until\n        // finalization.\n        let data = unsafe { &*self.data.get() };\n        let Some(data) = data.as_ref() else {\n            return true;\n        };\n\n        // SAFETY: `key` comes from a `Gc`, and the garbage collector only invalidates\n        // `key` when it is unreachable, making `key` always valid.\n        let key = unsafe { data.key.as_ref() };\n\n        let is_key_marked = key.is_marked();\n\n        if is_key_marked {\n            // SAFETY: this is safe to call, since we want to trace all reachable objects\n            // from a marked ephemeron that holds a live `key`.\n            unsafe { data.value.trace(tracer) }\n        }\n\n        is_key_marked\n    }"
+}

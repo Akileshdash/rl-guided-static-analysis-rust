@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::compare`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 428,
+    "start_col": 5,
+    "end_line": 428,
+    "end_col": 67,
+    "code_snippet": "fn compare(&self, other: Value<'v>) -> crate::Result<Ordering> {\n        ValueError::unsupported_with(self, \"compare\", other)\n    }"
+}

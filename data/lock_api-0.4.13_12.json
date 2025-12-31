@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "lock_api-0.4.13/src/rwlock.rs",
+    "start_line": 2761,
+    "start_col": 1,
+    "end_line": 2762,
+    "end_col": 25,
+    "code_snippet": "unsafe impl<'a, R: RawRwLock + 'a, T: ?Sized + Send + 'a> Send for MappedRwLockWriteGuard<'a, R, T> where\n    R::GuardMarker: Send\n{\n}"
+}

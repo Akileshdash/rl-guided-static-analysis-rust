@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ducc-0.1.5/src/ducc.rs",
+    "start_line": 466,
+    "start_col": 1,
+    "end_line": 466,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Ducc {\n    fn drop(&mut self) {\n        if !self.is_top {\n            return;\n        }\n\n        unsafe {\n            let udata = get_udata(self.ctx);\n            let any_map = get_any_map(self.ctx);\n            ffi::duk_destroy_heap(self.ctx);\n            Box::from_raw(udata);\n            Box::from_raw(any_map);\n        }\n    }\n}"
+}

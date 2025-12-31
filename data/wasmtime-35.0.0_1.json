@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/fiber.rs",
+    "start_line": 230,
+    "start_col": 9,
+    "end_line": 230,
+    "end_col": 72,
+    "code_snippet": "impl<S: AsStoreOpaque> Drop for ResetBlockingContext<'_, '_, S> {\n            fn drop(&mut self) {\n                let store = self.store.as_store_opaque();\n                let state = store.fiber_async_state_mut();\n\n                debug_assert!(state.current_future_cx.is_none());\n                debug_assert!(state.current_suspend.is_none());\n                state.current_suspend = Some(NonNull::from(&mut *self.cx.suspend));\n\n                if let Some(cx) = &mut self.cx.future_cx {\n                    // SAFETY: while this is changing the lifetime to `'static`\n                    // it should never be used while it's `'static` given this\n                    // `BlockingContext` abstraction.\n                    state.current_future_cx =\n                        Some(NonNull::from(unsafe { change_context_lifetime(cx) }));\n                }\n            }\n        }"
+}

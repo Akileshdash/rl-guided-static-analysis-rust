@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<vec_dyn::VecDyn<V> as std::ops::Drop>::drop`",
+    "file": "dync-0.6.0/src/vec_dyn.rs",
+    "start_line": 85,
+    "start_col": 5,
+    "end_line": 98,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        unsafe {\n            {\n                // Drop the contents using the associated drop function\n                let VecCopy { data, vtable, .. } = &mut *self.data;\n                for elem_bytes in data.byte_chunks_mut() {\n                    vtable.drop_fn()(elem_bytes);\n                }\n            }\n\n            // Drop the vec itself\n            ManuallyDrop::drop(&mut self.data);\n        }\n    }"
+}

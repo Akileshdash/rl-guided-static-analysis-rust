@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fluvio-socket-0.50.1/src/multiplexing.rs",
+    "start_line": 280,
+    "start_col": 15,
+    "end_line": 280,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\npub struct AsyncResponse<R> {\n    #[pin]\n    receiver: Pin<Box<Receiver<Option<Bytes>>>>,\n    header: RequestHeader,\n    correlation_id: i32,\n    data: PhantomData<R>,\n}"
+}

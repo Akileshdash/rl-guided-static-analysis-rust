@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::DecimalSymbolStrsBuilder<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_decimal-2.0.0/src/provider.rs",
+    "start_line": 192,
+    "start_col": 35,
+    "end_line": 192,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize))]\n#[zerovec::make_varule(DecimalSymbolsStrs)]\n#[zerovec::derive(Debug)]\n#[zerovec::skip_derive(Ord)]\n#[cfg_attr(not(feature = \"alloc\"), zerovec::skip_derive(ZeroMapKV, ToOwned))]\n#[cfg_attr(feature = \"serde\", zerovec::derive(Deserialize))]\n#[cfg_attr(feature = \"datagen\", zerovec::derive(Serialize))]\n// Each affix/separator is at most three characters, which tends to be around 3-12 bytes each\n// and the numbering system is at most 8 ascii bytes, All put together the indexing is extremely\n// unlikely to have to go past 256.\n#[zerovec::format(zerovec::vecs::Index8)]\npub struct DecimalSymbolStrsBuilder<'data> {\n    /// Prefix to apply when a negative sign is needed.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub minus_sign_prefix: VarZeroCow<'data, str>,\n    /// Suffix to apply when a negative sign is needed.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub minus_sign_suffix: VarZeroCow<'data, str>,\n\n    /// Prefix to apply when a positive sign is needed.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub plus_sign_prefix: VarZeroCow<'data, str>,\n    /// Suffix to apply when a positive sign is needed.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub plus_sign_suffix: VarZeroCow<'data, str>,\n\n    /// Character used to separate the integer and fraction parts of the number.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub decimal_separator: VarZeroCow<'data, str>,\n\n    /// Character used to separate groups in the integer part of the number.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub grouping_separator: VarZeroCow<'data, str>,\n\n    /// The numbering system to use.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub numsys: VarZeroCow<'data, str>,\n}"
+}

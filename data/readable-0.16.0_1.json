@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `toa::itoa::Itoa::new`",
+    "file": "readable-0.16.0/src/toa/itoa.rs",
+    "start_line": 69,
+    "start_col": 5,
+    "end_line": 83,
+    "end_col": 6,
+    "code_snippet": "pub fn new<I: Integer>(i: I) -> Self {\n        let mut bytes = [MaybeUninit::<u8>::uninit(); I128_MAX_LEN];\n\n\t\t// SAFETY: dtolnay\n        let (len, offset) = i.write(unsafe {\n            &mut *(&mut bytes as *mut [MaybeUninit<u8>; I128_MAX_LEN]\n                as *mut <I as private::Sealed>::Itoa)\n        });\n\n\t\tSelf {\n\t\t\tlen: len as u8,\n\t\t\toffset: offset as u8,\n\t\t\tbytes,\n\t\t}\n    }"
+}

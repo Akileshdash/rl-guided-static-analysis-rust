@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "state-0.6.0/src/type_map.rs",
+    "start_line": 329,
+    "start_col": 1,
+    "end_line": 329,
+    "end_col": 45,
+    "code_snippet": "unsafe impl Sync for TypeMap<kind::SendSync> {  }"
+}

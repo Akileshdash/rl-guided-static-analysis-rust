@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sanakirja-1.4.3/src/environment/muttxn.rs",
+    "start_line": 70,
+    "start_col": 1,
+    "end_line": 70,
+    "end_col": 46,
+    "code_snippet": "impl<E: Borrow<Env>, T> Drop for MutTxn<E, T> {\n    fn drop(&mut self) {\n        if self.parent.is_none() {\n            let env = self.env.borrow();\n            unsafe {\n                env.mut_txn_unlock().unwrap_or(());\n                env.roots[self.root].rw.unlock_exclusive();\n                env.unlock(self.root).unwrap_or(())\n            }\n        }\n    }\n}"
+}

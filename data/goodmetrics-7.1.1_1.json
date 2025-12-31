@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "goodmetrics-7.1.1/src/allocator/returning_reference.rs",
+    "start_line": 79,
+    "start_col": 1,
+    "end_line": 79,
+    "end_col": 89,
+    "code_snippet": "impl<TRef, TReturnTarget: ReturnTarget<TRef>> Drop for ReturningRef<TRef, TReturnTarget> {\n    #[inline]\n    fn drop(&mut self) {\n        // Transfer the referent to the return target for finalization or reuse.\n        // ManuallyDrop is used for fancy 0-cost ownership transfer.\n        unsafe {\n            self.return_target\n                .return_referent(ManuallyDrop::take(&mut self.referent))\n        }\n    }\n}"
+}

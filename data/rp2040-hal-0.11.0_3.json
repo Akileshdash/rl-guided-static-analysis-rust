@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "rp2040-hal-0.11.0/src/pio.rs",
+    "start_line": 1315,
+    "start_col": 1,
+    "end_line": 1315,
+    "end_col": 74,
+    "code_snippet": "unsafe impl<SM: ValidStateMachine + Send, RxSize> Send for Rx<SM, RxSize> {}"
+}

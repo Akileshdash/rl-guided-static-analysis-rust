@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "arraydeque-0.5.1/src/lib.rs",
+    "start_line": 2384,
+    "start_col": 1,
+    "end_line": 2386,
+    "end_col": 17,
+    "code_snippet": "impl<'a, T, const CAP: usize, B> Drop for Drain<'a, T, CAP, B>\nwhere\n    B: Behavior,\n{\n    fn drop(&mut self) {\n        for _ in self.by_ref() {}\n\n        let source_deque = unsafe { &mut *self.deque };\n\n        let tail_len = source_deque.len();\n        let head_len = self.after_len;\n\n        let orig_tail = source_deque.tail();\n        let drain_tail = wrap_add(orig_tail, tail_len, CAP);\n        let drain_head = self.after_tail;\n        let orig_head = wrap_add(drain_head, head_len, CAP);\n        let orig_len = wrap_sub(orig_head, orig_tail, CAP);\n\n        // Restore the original len value\n        unsafe { source_deque.set_len(orig_len) }\n        match (tail_len, head_len) {\n            (0, 0) => unsafe {\n                source_deque.set_tail(0);\n                source_deque.set_len(0);\n            },\n            (0, _) => unsafe {\n                source_deque.set_tail(drain_head);\n                source_deque.set_len(head_len);\n            },\n            (_, 0) => unsafe { source_deque.set_len(tail_len) },\n            _ => unsafe {\n                if tail_len <= head_len {\n                    let new_tail = wrap_sub(drain_head, tail_len, CAP);\n                    source_deque.set_tail(new_tail);\n                    source_deque.set_len(tail_len + head_len);\n                    source_deque.wrap_copy(new_tail, orig_tail, tail_len);\n                } else {\n                    source_deque.set_len(tail_len + head_len);\n                    source_deque.wrap_copy(drain_tail, drain_head, head_len);\n                }\n            },\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "spitfire-glow-0.35.0/src/graphics.rs",
+    "start_line": 543,
+    "start_col": 1,
+    "end_line": 543,
+    "end_col": 27,
+    "code_snippet": "impl Drop for SurfaceInner {\n    fn drop(&mut self) {\n        unsafe {\n            if let Some(context) = self.context.get() {\n                context.delete_framebuffer(self.framebuffer);\n            }\n        }\n    }\n}"
+}

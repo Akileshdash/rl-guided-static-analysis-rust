@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pin-project-1.1.10/src/lib.rs",
+    "start_line": 341,
+    "start_col": 5,
+    "end_line": 341,
+    "end_col": 45,
+    "code_snippet": "impl<T> Drop for UnsafeOverwriteGuard<T> {\n        fn drop(&mut self) {\n            // SAFETY: the caller of `UnsafeOverwriteGuard::new` must guarantee\n            // that `target` is valid for writes when this guard is destructed.\n            unsafe {\n                ptr::write(self.target, ptr::read(&*self.value));\n            }\n        }\n    }"
+}

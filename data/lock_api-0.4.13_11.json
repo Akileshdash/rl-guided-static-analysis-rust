@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "lock_api-0.4.13/src/rwlock.rs",
+    "start_line": 2621,
+    "start_col": 1,
+    "end_line": 2621,
+    "end_col": 99,
+    "code_snippet": "unsafe impl<'a, R: RawRwLock + 'a, T: ?Sized + Sync + 'a> Sync for MappedRwLockReadGuard<'a, R, T> {}\nunsafe impl<'a, R: RawRwLock + 'a, T: ?Sized + Sync + 'a> Send for MappedRwLockReadGuard<'a, R, T> where"
+}

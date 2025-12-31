@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<input::BufferedReader<R> as input::ReadBytes>::read_u8`",
+    "file": "claxon-0.4.3/src/input.rs",
+    "start_line": 133,
+    "start_col": 5,
+    "end_line": 151,
+    "end_col": 6,
+    "code_snippet": "fn read_u8(&mut self) -> io::Result<u8> {\n        if self.pos == self.num_valid {\n            // The buffer was depleted, replenish it first.\n            self.pos = 0;\n            self.num_valid = try!(self.inner.read(&mut self.buf)) as u32;\n\n            if self.num_valid == 0 {\n                return Err(io::Error::new(io::ErrorKind::UnexpectedEof,\n                                          \"Expected one more byte.\"))\n            }\n        }\n\n        // At this point there is at least one more byte in the buffer, we\n        // checked that above. However, when using regular indexing, the\n        // compiler still inserts a bounds check here. It is safe to avoid it.\n        let byte = unsafe { *self.buf.get_unchecked(self.pos as usize) };\n        self.pos += 1;\n        Ok(byte)\n    }"
+}

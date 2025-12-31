@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dyn-stack-0.13.0/src/lib.rs",
+    "start_line": 156,
+    "start_col": 1,
+    "end_line": 156,
+    "end_col": 33,
+    "code_snippet": "impl<T> Drop for DynArray<'_, T> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            core::ptr::drop_in_place(core::ptr::slice_from_raw_parts_mut(\n                self.ptr.as_ptr(),\n                self.len,\n            ))\n        };\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "heed-0.22.0/src/envs/env.rs",
+    "start_line": 640,
+    "start_col": 1,
+    "end_line": 640,
+    "end_col": 23,
+    "code_snippet": "impl Drop for EnvInner {\n    fn drop(&mut self) {\n        let mut lock = OPENED_ENV.write().unwrap();\n        let removed = lock.remove(&self.path);\n        debug_assert!(removed.is_some());\n        unsafe { ffi::mdb_env_close(self.env_ptr.as_mut()) };\n        self.signal_event.signal();\n    }\n}"
+}

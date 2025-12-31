@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "futures-util-preview-0.3.0-alpha.19/src/stream/futures_unordered/task.rs",
+    "start_line": 36,
+    "start_col": 1,
+    "end_line": 36,
+    "end_col": 36,
+    "code_snippet": "unsafe impl<Fut> Sync for Task<Fut> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<<[T; N] as const_generics::BigArray<'de, T>>::deserialize::ArrayVisitor<[T; N]> as serde::de::Visitor<'de>>::visit_seq`",
+    "file": "serde-big-array-0.5.1/src/const_generics.rs",
+    "start_line": 92,
+    "start_col": 13,
+    "end_line": 112,
+    "end_col": 14,
+    "code_snippet": "fn visit_seq<A>(self, mut seq: A) -> result::Result<[T; N], A::Error>\n            where\n                A: SeqAccess<'de>,\n            {\n                unsafe {\n                    let mut arr = PartiallyInitialized::<T, N>::new();\n                    {\n                        let p = arr.0.as_mut().unwrap();\n                        for i in 0..N {\n                            let p = (p.as_mut_ptr() as *mut T).wrapping_add(i);\n                            let val = seq\n                                .next_element()?\n                                .ok_or_else(|| Error::invalid_length(i, &self))?;\n                            core::ptr::write(p, val);\n                            arr.1 += 1;\n                        }\n                    }\n                    let initialized = arr.0.take().unwrap().assume_init();\n                    Ok(initialized)\n                }\n            }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "selinux-0.5.2/src/context_restore/mod.rs",
+    "start_line": 427,
+    "start_col": 1,
+    "end_line": 427,
+    "end_col": 35,
+    "code_snippet": "impl Drop for DirectoryXAttributes {\n    fn drop(&mut self) {\n        unsafe {\n            libc::free(self.pointer.as_ref().directory.cast());\n            libc::free(self.pointer.as_ref().digest.cast());\n            libc::free(self.pointer.as_ptr().cast());\n        }\n    }\n}"
+}

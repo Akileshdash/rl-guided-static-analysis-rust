@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<buffer::Buffer<T> as std::clone::Clone>::clone`",
+    "file": "tensorflow-0.21.0/src/buffer.rs",
+    "start_line": 200,
+    "start_col": 5,
+    "end_line": 207,
+    "end_col": 6,
+    "code_snippet": "fn clone(&self) -> Buffer<T> {\n        let mut b = unsafe { Buffer::new_uninitialized((*self.inner).length) };\n        // TODO: Use std::ptr::copy for primitives once we have impl specialization\n        for i in 0..self.length() {\n            b[i] = self[i].clone();\n        }\n        b\n    }"
+}

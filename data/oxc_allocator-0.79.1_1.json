@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "oxc_allocator-0.79.1/src/vec2/mod.rs",
+    "start_line": 1320,
+    "start_col": 9,
+    "end_line": 1320,
+    "end_col": 65,
+    "code_snippet": "impl<T, A: Alloc> Drop for BackshiftOnDrop<'_, '_, T, A> {\n            fn drop(&mut self) {\n                if self.deleted_cnt > 0 {\n                    // SAFETY: Trailing unchecked items must be valid since we never touch them.\n                    unsafe {\n                        ptr::copy(\n                            self.v.as_ptr().add(self.processed_len),\n                            self.v.as_mut_ptr().add(self.processed_len - self.deleted_cnt),\n                            self.original_len - self.processed_len,\n                        );\n                    }\n                }\n                // SAFETY: After filling holes, all items are in contiguous memory.\n                unsafe {\n                    self.v.set_len(self.original_len - self.deleted_cnt);\n                }\n            }\n        }"
+}

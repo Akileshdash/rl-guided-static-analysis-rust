@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "stderr-0.8.0/src/static_mut.rs",
+    "start_line": 62,
+    "start_col": 1,
+    "end_line": 62,
+    "end_col": 37,
+    "code_snippet": "unsafe impl<T> Sync for StaticMut<T> {}"
+}

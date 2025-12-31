@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "oneshot-uniffi-0.1.6/src/errors.rs",
+    "start_line": 57,
+    "start_col": 1,
+    "end_line": 57,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for SendError<T> {\n    fn drop(&mut self) {\n        // SAFETY: we have ownership of the channel and require that the message is initialized\n        // upon construction\n        unsafe {\n            self.channel_ptr.as_ref().drop_message();\n            dealloc(self.channel_ptr);\n        }\n    }\n}"
+}

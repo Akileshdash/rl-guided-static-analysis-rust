@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `convolution::vertical_f32::native::convolution_by_f32`",
+    "file": "fast_image_resize-5.2.1/src/convolution/vertical_f32/native.rs",
+    "start_line": 61,
+    "start_col": 1,
+    "end_line": 82,
+    "end_col": 2,
+    "code_snippet": "pub(crate) fn convolution_by_f32<T: InnerPixel<Component = f32>>(\n    src_view: &impl ImageView<Pixel = T>,\n    dst_components: &mut [f32],\n    mut x_src: usize,\n    first_y_src: u32,\n    ks: &[f64],\n) -> usize {\n    for dst_component in dst_components.iter_mut() {\n        let mut ss = 0.;\n        let src_rows = src_view.iter_rows(first_y_src);\n        for (&k, src_row) in ks.iter().zip(src_rows) {\n            // SAFETY: Alignment of src_row is greater or equal than alignment f32\n            //         because a component of pixel type T is f32.\n            let src_ptr = src_row.as_ptr() as *const f32;\n            let src_component = unsafe { *src_ptr.add(x_src) };\n            ss += src_component as f64 * k;\n        }\n        *dst_component = ss as f32;\n        x_src += 1\n    }\n    x_src\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "self_cell-1.2.0/src/unsafe_self_cell.rs",
+    "start_line": 164,
+    "start_col": 9,
+    "end_line": 164,
+    "end_col": 35,
+    "code_snippet": "impl Drop for DeallocGuard {\n            fn drop(&mut self) {\n                unsafe { dealloc(self.ptr, self.layout) }\n            }\n        }"
+}

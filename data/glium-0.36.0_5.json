@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/memory_object.rs",
+    "start_line": 134,
+    "start_col": 1,
+    "end_line": 134,
+    "end_col": 27,
+    "code_snippet": "impl Drop for MemoryObject {\n    fn drop(&mut self) {\n        let ctxt = self.context.get_context().make_current();\n        unsafe { ctxt.gl.DeleteMemoryObjectsEXT(1, &mut self.id as *mut u32) };\n    }\n}"
+}

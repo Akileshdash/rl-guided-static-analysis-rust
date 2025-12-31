@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<packable::prefix::boxed::BoxedSlicePrefix<T, B> as packable::Packable>::pack`",
+    "file": "packable-0.11.0/src/packable/prefix/boxed.rs",
+    "start_line": 98,
+    "start_col": 5,
+    "end_line": 114,
+    "end_col": 6,
+    "code_snippet": "fn pack<P: Packer>(&self, packer: &mut P) -> Result<(), P::Error> {\n        // The length of any dynamically-sized sequence must be prefixed. This unwrap is fine since\n        // the length of the inner slice has been validated while creating this `BoxedSlicePrefix`.\n        B::try_from(self.len()).unwrap().pack(packer)?;\n\n        if TypeId::of::<T>() == TypeId::of::<u8>() {\n            // Safety: `Self` is identical to `BoxedSlicePrefix<u8, B>`.\n            let bytes = unsafe { core::mem::transmute::<&Self, &BoxedSlicePrefix<u8, B>>(self) };\n            packer.pack_bytes(bytes.deref())?;\n        } else {\n            for item in self.iter() {\n                item.pack(packer)?;\n            }\n        }\n\n        Ok(())\n    }"
+}

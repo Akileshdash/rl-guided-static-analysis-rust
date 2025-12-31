@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tracexec-0.12.0//home/usagers/u139091/Documents/Rudra_Testing/Downloaded_Crates/tracexec-0.12.0/src/bpf/tracexec_system.skel.rs",
+    "start_line": 357,
+    "start_col": 3,
+    "end_line": 357,
+    "end_col": 35,
+    "code_snippet": ""
+}

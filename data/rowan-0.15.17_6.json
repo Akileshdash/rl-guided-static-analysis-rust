@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sll::adjust`",
+    "file": "rowan-0.15.17/src/sll.rs",
+    "start_line": 112,
+    "start_col": 1,
+    "end_line": 129,
+    "end_col": 2,
+    "code_snippet": "pub(crate) fn adjust<E: Elem>(elem: &E, from: u32, by: Delta<u32>) {\n    let elem_ptr: *const E = elem;\n\n    unsafe {\n        let mut curr = elem_ptr;\n        loop {\n            let mut key = (*curr).key().get();\n            if key >= from {\n                key += by;\n                (*curr).key().set(key);\n            }\n            curr = (*curr).next().get();\n            if curr == elem_ptr {\n                break;\n            }\n        }\n    }\n}"
+}

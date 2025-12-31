@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "minicbor-2.0.0/src/decode.rs",
+    "start_line": 484,
+    "start_col": 1,
+    "end_line": 484,
+    "end_col": 60,
+    "code_snippet": "impl <T, const N: usize> core::ops::Drop for ArrayVec<T, N> {\n    fn drop(&mut self) {\n        unsafe {\n            let s = core::slice::from_raw_parts_mut(self.buffer.as_mut_ptr() as *mut T, self.len);\n            core::ptr::drop_in_place(s)\n        }\n    }\n}"
+}

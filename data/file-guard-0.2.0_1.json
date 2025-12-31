@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "file-guard-0.2.0/src/lib.rs",
+    "start_line": 376,
+    "start_col": 1,
+    "end_line": 378,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for FileGuard<T>\nwhere\n    T: Deref<Target = File>,\n{\n    #[inline]\n    fn drop(&mut self) {\n        let _ = unsafe { raw_file_lock(&self.file, None, self.offset, self.len, false) };\n    }\n}"
+}

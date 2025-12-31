@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "zoxide-0.9.8/src/db/mod.rs",
+    "start_line": 15,
+    "start_col": 1,
+    "end_line": 15,
+    "end_col": 20,
+    "code_snippet": "#[self_referencing]\npub struct Database {\n    path: PathBuf,\n    bytes: Vec<u8>,\n    #[borrows(bytes)]\n    #[covariant]\n    pub dirs: Vec<Dir<'this>>,\n    dirty: bool,\n}"
+}

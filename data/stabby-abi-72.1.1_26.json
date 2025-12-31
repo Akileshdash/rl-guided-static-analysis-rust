@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<T as as_mut::IGuardMut<As>>::guard_mut_inner`",
+    "file": "stabby-abi-72.1.1/src/as_mut.rs",
+    "start_line": 106,
+    "start_col": 5,
+    "end_line": 111,
+    "end_col": 6,
+    "code_snippet": "fn guard_mut_inner(&mut self) -> Self::GuardMut<'_> {\n        MutAs {\n            target: core::mem::ManuallyDrop::new(unsafe { core::ptr::read(self).into() }),\n            source: self,\n        }\n    }"
+}

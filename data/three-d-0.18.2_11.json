@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "three-d-0.18.2/src/core/texture/depth_texture_cube_map.rs",
+    "start_line": 93,
+    "start_col": 1,
+    "end_line": 93,
+    "end_col": 34,
+    "code_snippet": "impl Drop for DepthTextureCubeMap {\n    fn drop(&mut self) {\n        unsafe {\n            self.context.delete_texture(self.id);\n        }\n    }\n}"
+}

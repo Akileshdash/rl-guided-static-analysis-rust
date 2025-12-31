@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "boxcar-0.2.13/src/raw.rs",
+    "start_line": 541,
+    "start_col": 1,
+    "end_line": 541,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Entry<T> {\n    fn drop(&mut self) {\n        if self.active.read_mut() {\n            // Safety: We have `&mut self` and verifid that the value is initialized.\n            unsafe { ptr::drop_in_place(self.slot.with_mut(|slot| (*slot).as_mut_ptr())) }\n        }\n    }\n}"
+}

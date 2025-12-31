@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rclite-0.2.7/src/arc.rs",
+    "start_line": 606,
+    "start_col": 1,
+    "end_line": 606,
+    "end_col": 24,
+    "code_snippet": "impl<T> Drop for Arc<T> {\n    #[inline]\n    fn drop(&mut self) {\n        if self.inner().counter.fetch_sub(1, Ordering::Release) != 1 {\n            return;\n        }\n        fence(Ordering::Acquire);\n        // SAFETY: this is the last owner of the ptr, it is safe to drop data\n        unsafe { self.drop_slow() };\n    }\n}"
+}

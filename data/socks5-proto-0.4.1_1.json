@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `handshake::request::Request::write_to_buf`",
+    "file": "socks5-proto-0.4.1/src/handshake/request.rs",
+    "start_line": 69,
+    "start_col": 5,
+    "end_line": 75,
+    "end_col": 6,
+    "code_snippet": "pub fn write_to_buf<B: BufMut>(&self, buf: &mut B) {\n        buf.put_u8(crate::SOCKS_VERSION);\n        buf.put_u8(self.methods.len() as u8);\n\n        let methods = unsafe { mem::transmute(self.methods.as_slice()) };\n        buf.put_slice(methods);\n    }"
+}

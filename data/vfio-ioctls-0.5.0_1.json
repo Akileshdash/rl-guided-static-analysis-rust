@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vfio-ioctls-0.5.0/src/vfio_device.rs",
+    "start_line": 1209,
+    "start_col": 1,
+    "end_line": 1209,
+    "end_col": 25,
+    "code_snippet": "impl Drop for VfioDevice {\n    fn drop(&mut self) {\n        // ManuallyDrop is needed here because we need to ensure that VfioDevice::device is closed\n        // before dropping VfioDevice::group, otherwise it will cause EBUSY when putting the\n        // group object.\n\n        // SAFETY: we own the File object.\n        unsafe {\n            ManuallyDrop::drop(&mut self.device);\n        }\n        self.container.put_group(self.group.clone());\n    }\n}"
+}

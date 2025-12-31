@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/mut_bump_vec_rev.rs",
+    "start_line": 2595,
+    "start_col": 1,
+    "end_line": 2595,
+    "end_col": 40,
+    "code_snippet": "impl<T, A> Drop for MutBumpVecRev<T, A> {\n    #[inline(always)]\n    fn drop(&mut self) {\n        unsafe { self.drop_inner() }\n    }\n}"
+}

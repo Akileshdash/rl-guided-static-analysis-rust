@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "mini-moka-0.10.3/src/sync/mapref.rs",
+    "start_line": 14,
+    "start_col": 1,
+    "end_line": 18,
+    "end_col": 20,
+    "code_snippet": "unsafe impl<'a, K, V, S> Sync for EntryRef<'a, K, V, S>\nwhere\n    K: Eq + Hash + Send + Sync,\n    V: Send + Sync,\n    S: BuildHasher,\n{\n}"
+}

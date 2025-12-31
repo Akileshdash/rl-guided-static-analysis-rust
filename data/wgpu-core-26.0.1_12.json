@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/pipeline.rs",
+    "start_line": 286,
+    "start_col": 1,
+    "end_line": 286,
+    "end_col": 30,
+    "code_snippet": "impl Drop for ComputePipeline {\n    fn drop(&mut self) {\n        resource_log!(\"Destroy raw {}\", self.error_ident());\n        // SAFETY: We are in the Drop impl and we don't use self.raw anymore after this point.\n        let raw = unsafe { ManuallyDrop::take(&mut self.raw) };\n        unsafe {\n            self.device.raw().destroy_compute_pipeline(raw);\n        }\n    }\n}"
+}

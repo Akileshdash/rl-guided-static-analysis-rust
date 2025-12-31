@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-c-api-impl-35.0.0/src/val.rs",
+    "start_line": 28,
+    "start_col": 1,
+    "end_line": 28,
+    "end_col": 25,
+    "code_snippet": "impl Drop for wasm_val_t {\n    fn drop(&mut self) {\n        match into_valtype(self.kind) {\n            ValType::Ref(_) => unsafe {\n                if !self.of.ref_.is_null() {\n                    drop(Box::from_raw(self.of.ref_));\n                }\n            },\n            _ => {}\n        }\n    }\n}"
+}

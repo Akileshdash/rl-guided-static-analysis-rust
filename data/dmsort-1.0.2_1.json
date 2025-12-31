@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dmsort-1.0.2/src/dmsort.rs",
+    "start_line": 204,
+    "start_col": 1,
+    "end_line": 204,
+    "end_col": 37,
+    "code_snippet": "impl<'a, T> Drop for DmSorter<'a, T> {\n    fn drop(&mut self) {\n        if self.dropped.is_empty() {\n            return;\n        }\n        unsafe {\n            // This code will only run on stack-unwind (panic).\n\n            // Move back all elements into the slice:\n            ptr::copy_nonoverlapping(\n                self.dropped.as_ptr(),\n                self.slice.as_mut_ptr().add(self.write),\n                self.dropped.len(),\n            );\n\n            // Make sure the objects aren't destroyed when self.dropped is dropped (avoid-double-free).\n            self.dropped.set_len(0);\n        }\n    }\n}"
+}

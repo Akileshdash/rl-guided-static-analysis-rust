@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mallumo-gls-0.43.0/src/texture/texture_1d.rs",
+    "start_line": 216,
+    "start_col": 1,
+    "end_line": 216,
+    "end_col": 24,
+    "code_snippet": "impl Drop for Texture1D {\n    fn drop(&mut self) {\n        unsafe { delete_texture(self.id) };\n    }\n}"
+}

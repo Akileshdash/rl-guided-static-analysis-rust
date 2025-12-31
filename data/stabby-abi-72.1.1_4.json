@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/alloc/collections/arc_btree.rs",
+    "start_line": 475,
+    "start_col": 5,
+    "end_line": 476,
+    "end_col": 75,
+    "code_snippet": "impl<T, Alloc: IAlloc, const REPLACE_ON_INSERT: bool, const SPLIT_LIMIT: usize> Drop\n        for ArcBTreeSetNodeInner<T, Alloc, REPLACE_ON_INSERT, SPLIT_LIMIT>\n    {\n        fn drop(&mut self) {\n            // SAFETY: This only yields back the existing entries that can be safetly dropped.\n            unsafe { core::ptr::drop_in_place(self.entries_mut()) }\n        }\n    }"
+}

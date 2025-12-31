@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arena::bump::DataArena::with_path_chain`",
+    "file": "datalogic-rs-3.0.34/src/arena/bump.rs",
+    "start_line": 812,
+    "start_col": 5,
+    "end_line": 822,
+    "end_col": 6,
+    "code_snippet": "pub fn with_path_chain<F, R>(&self, f: F) -> R\n    where\n        F: FnOnce(&[&DataValue]) -> R,\n    {\n        let chain = self.path_chain.borrow();\n        // SAFETY: The static lifetime can be safely narrowed\n        let path_slice: &[&DataValue] = unsafe {\n            mem::transmute::<&[&'static DataValue<'static>], &[&DataValue]>(chain.as_slice())\n        };\n        f(path_slice)\n    }"
+}

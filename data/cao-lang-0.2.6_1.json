@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cao-lang-0.2.6/src/collections/handle_table.rs",
+    "start_line": 232,
+    "start_col": 1,
+    "end_line": 234,
+    "end_col": 18,
+    "code_snippet": "impl<T, A> Drop for HandleTable<T, A>\nwhere\n    A: Allocator,\n{\n    fn drop(&mut self) {\n        self.clear();\n        unsafe {\n            self.alloc.dealloc(\n                self.handles.cast(),\n                Layout::from_size_align(self.capacity * size_of::<Handle>(), align_of::<Handle>())\n                    .unwrap(),\n            );\n            self.alloc.dealloc(\n                self.values.cast(),\n                Layout::from_size_align(self.capacity * size_of::<T>(), align_of::<T>()).unwrap(),\n            );\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "netidx-core-0.28.3/src/pool/mod.rs",
+    "start_line": 198,
+    "start_col": 1,
+    "end_line": 198,
+    "end_col": 54,
+    "code_snippet": "impl<T: Poolable + Send + 'static> Drop for Pooled<T> {\n    fn drop(&mut self) {\n        if self.really_dropped() {\n            match self.pool.upgrade() {\n                Some(pool) => pool.insert(unsafe { ptr::read(self) }),\n                None => unsafe {\n                    ManuallyDrop::drop(&mut self.pool);\n                    ManuallyDrop::drop(&mut self.object);\n                },\n            }\n        }\n    }\n}"
+}

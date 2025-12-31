@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "futures-intrusive-0.5.0/src/channel/oneshot_broadcast.rs",
+    "start_line": 163,
+    "start_col": 1,
+    "end_line": 164,
+    "end_col": 53,
+    "code_snippet": "unsafe impl<MutexType: RawMutex + Sync, T: Send> Sync\n    for GenericOneshotBroadcastChannel<MutexType, T>\n{\n}"
+}

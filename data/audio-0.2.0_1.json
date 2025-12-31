@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "audio-0.2.0/src/buf/dynamic.rs",
+    "start_line": 714,
+    "start_col": 1,
+    "end_line": 714,
+    "end_col": 28,
+    "code_snippet": "impl<T> Drop for Dynamic<T> {\n    fn drop(&mut self) {\n        for n in 0..self.channels_cap {\n            // Safety: We're being dropped, so there's no subsequent access to\n            // the current collection.\n            unsafe {\n                self.data\n                    .get_unchecked_mut(n)\n                    .drop_in_place(self.frames_cap);\n            }\n        }\n\n        // Safety: We trust the length of the underlying array.\n        unsafe {\n            self.data.drop_in_place(self.channels_cap);\n        }\n    }\n}"
+}

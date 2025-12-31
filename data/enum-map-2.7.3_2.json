@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "enum-map-2.7.3/src/lib.rs",
+    "start_line": 79,
+    "start_col": 1,
+    "end_line": 81,
+    "end_col": 21,
+    "code_snippet": "impl<K, V> Drop for Guard<'_, K, V>\nwhere\n    K: EnumArray<V>,\n{\n    fn drop(&mut self) {\n        // This is safe as arr[..len] is initialized due to\n        // Guard's type invariant.\n        unsafe {\n            ptr::slice_from_raw_parts_mut(self.as_mut_ptr(), self.initialized).drop_in_place();\n        }\n    }\n}"
+}

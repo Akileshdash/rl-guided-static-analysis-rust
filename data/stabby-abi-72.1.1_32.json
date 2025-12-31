@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<T as as_mut::IGuardRef<As>>::guard_ref_inner`",
+    "file": "stabby-abi-72.1.1/src/as_mut.rs",
+    "start_line": 69,
+    "start_col": 5,
+    "end_line": 74,
+    "end_col": 6,
+    "code_snippet": "fn guard_ref_inner(&self) -> Self::Guard<'_> {\n        RefAs {\n            source: core::marker::PhantomData,\n            target: core::mem::ManuallyDrop::new(unsafe { core::ptr::read(self).into() }),\n        }\n    }"
+}

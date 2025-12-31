@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<SmallVec<A> as core::iter::Extend<<A as Array>::Item>>::extend`",
+    "file": "smallvec-1.15.1/src/lib.rs",
+    "start_line": 2091,
+    "start_col": 5,
+    "end_line": 2113,
+    "end_col": 6,
+    "code_snippet": "fn extend<I: IntoIterator<Item = A::Item>>(&mut self, iterable: I) {\n        let mut iter = iterable.into_iter();\n        let (lower_size_bound, _) = iter.size_hint();\n        self.reserve(lower_size_bound);\n\n        unsafe {\n            let (ptr, len_ptr, cap) = self.triple_mut();\n            let ptr = ptr.as_ptr();\n            let mut len = SetLenOnDrop::new(len_ptr);\n            while len.get() < cap {\n                if let Some(out) = iter.next() {\n                    ptr::write(ptr.add(len.get()), out);\n                    len.increment_len(1);\n                } else {\n                    return;\n                }\n            }\n        }\n\n        for elem in iter {\n            self.push(elem);\n        }\n    }"
+}

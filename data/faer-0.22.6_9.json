@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `linalg::mat_ops::<impl std::ops::Mul<&perm::generic::Perm<R>> for &perm::generic::Perm<L>>::mul::imp`",
+    "file": "faer-0.22.6/src/linalg/mat_ops.rs",
+    "start_line": 1078,
+    "start_col": 4,
+    "end_line": 1092,
+    "end_col": 5,
+    "code_snippet": "fn imp<I: Index>(lhs: PermRef<'_, I>, rhs: PermRef<'_, I>) -> Perm<I> {\n\t\t\t\tassert!(lhs.len() == rhs.len());\n\t\t\t\tlet truncate = <I::Signed as SignedIndex>::truncate;\n\t\t\t\tlet mut fwd = alloc::vec![I::from_signed(truncate(0)); lhs.len()].into_boxed_slice();\n\t\t\t\tlet mut inv = alloc::vec![I::from_signed(truncate(0)); lhs.len()].into_boxed_slice();\n\n\t\t\t\tfor (fwd, rhs) in fwd.iter_mut().zip(rhs.arrays().0) {\n\t\t\t\t\t*fwd = lhs.arrays().0[rhs.to_signed().zx()];\n\t\t\t\t}\n\t\t\t\tfor (i, fwd) in fwd.iter().enumerate() {\n\t\t\t\t\tinv[fwd.to_signed().zx()] = I::from_signed(I::Signed::truncate(i));\n\t\t\t\t}\n\n\t\t\t\tPerm::new_checked(fwd, inv, lhs.len())\n\t\t\t}"
+}

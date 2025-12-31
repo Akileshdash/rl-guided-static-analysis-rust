@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `Atom::<P>::replace_and_set_next`",
+    "file": "atom-0.3.6/src/lib.rs",
+    "start_line": 97,
+    "start_col": 5,
+    "end_line": 119,
+    "end_col": 6,
+    "code_snippet": "pub fn replace_and_set_next(&self, mut value: P) -> bool\n        where P: GetNextMut<NextPtr=Option<P>> {\n        unsafe {\n            let next = value.get_next() as *mut Option<P>;\n            let raw = value.into_raw();\n            // Iff next was set to Some(P) we want to \n            // assert that it was droppeds\n            drop(ptr::read(next));\n            loop {\n                let pcurrent = self.inner.load(Ordering::Relaxed);\n                let current = if pcurrent.is_null() {\n                    None\n                } else {\n                    Some(FromRawPtr::from_raw(pcurrent))\n                };\n                ptr::write(next, current);\n                let last = self.inner.compare_and_swap(pcurrent, raw, Ordering::AcqRel);\n                if last == pcurrent {\n                    return last.is_null();\n                }\n            }\n        }\n    }"
+}

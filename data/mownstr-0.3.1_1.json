@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mownstr-0.3.1/src/lib.rs",
+    "start_line": 121,
+    "start_col": 1,
+    "end_line": 121,
+    "end_col": 26,
+    "code_snippet": "impl Drop for MownStr<'_> {\n    fn drop(&mut self) {\n        if self.is_owned() {\n            unsafe {\n                std::mem::drop(self.extract_box());\n            }\n        }\n    }\n}"
+}

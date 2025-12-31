@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `recurse_schema_dir`",
+    "file": "bebop-tools-3.1.3/src/lib.rs",
+    "start_line": 138,
+    "start_col": 1,
+    "end_line": 177,
+    "end_col": 2,
+    "code_snippet": "fn recurse_schema_dir(\n    dir: impl AsRef<Path>,\n    dest: impl AsRef<Path>,\n    config: &BuildConfig,\n) -> LinkedList<String> {\n    let mut list = LinkedList::new();\n    for dir_entry in fs::read_dir(&dir).unwrap() {\n        let dir_entry = dir_entry.unwrap();\n        let file_type = dir_entry.file_type().unwrap();\n        let file_path = PathBuf::from(dir.as_ref()).join(dir_entry.file_name());\n        if file_type.is_dir() {\n            if dir_entry.file_name() == \"ShouldFail\" {\n                // do nothing\n            } else {\n                list.append(&mut recurse_schema_dir(&file_path, dest.as_ref(), config));\n            }\n        } else if file_type.is_file()\n            && file_path\n                .extension()\n                .map(|s| s.to_str().unwrap())\n                .unwrap_or(\"\")\n                == \"bop\"\n        {\n            let fname = format!(\n                \"{}{}\",\n                unsafe { GENERATED_PREFIX.as_deref().unwrap_or_else(|| \"\".into()) },\n                file_stem(file_path.as_path())\n            );\n            build_schema(\n                canonicalize(file_path.to_str().unwrap()),\n                canonicalize(&dest).join(fname.clone() + \".rs\"),\n                config,\n            );\n            list.push_back(fname);\n        } else {\n            // do nothing\n        }\n    }\n    list\n}"
+}

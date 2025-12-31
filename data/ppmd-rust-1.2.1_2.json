@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ppmd-rust-1.2.1/src/internal/ppmd8.rs",
+    "start_line": 90,
+    "start_col": 1,
+    "end_line": 90,
+    "end_col": 28,
+    "code_snippet": "impl<RC> Drop for PPMd8<RC> {\n    fn drop(&mut self) {\n        unsafe {\n            dealloc(self.memory_ptr.as_ptr(), self.memory_layout);\n        }\n    }\n}"
+}

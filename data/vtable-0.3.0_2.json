@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vtable-0.3.0/src/vrc.rs",
+    "start_line": 311,
+    "start_col": 1,
+    "end_line": 311,
+    "end_col": 65,
+    "code_snippet": "impl<T: VTableMetaDropInPlace + 'static, X> Drop for VWeak<T, X> {\n    fn drop(&mut self) {\n        if let Some(i) = self.inner {\n            unsafe {\n                if (*core::ptr::addr_of!((*i.as_ptr()).weak_ref)).fetch_sub(1, Ordering::SeqCst)\n                    == 1\n                {\n                    // Safety: while allocating, we made sure that the size was big enough to\n                    // hold a VRcInner<T, Layout>.\n                    let vtable = &*core::ptr::addr_of!((*i.as_ptr()).vtable);\n                    let layout = *(VRcInner::data_ptr(i.cast::<VRcInner<T, Layout>>().as_ptr()));\n                    T::dealloc(vtable, i.cast().as_ptr(), layout);\n                }\n            }\n        }\n    }\n}"
+}

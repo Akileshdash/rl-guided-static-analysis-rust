@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `internals::bptree::node::Branch::<K, V>::rekey_by_idx`",
+    "file": "concread-0.5.7/src/internals/bptree/node.rs",
+    "start_line": 1512,
+    "start_col": 5,
+    "end_line": 1522,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn rekey_by_idx(&mut self, idx: usize) {\n        debug_assert_branch!(self);\n        debug_assert!(idx <= self.count());\n        debug_assert!(idx > 0);\n        // For the node listed, rekey it.\n        let nref = self.nodes[idx];\n        let nkey = unsafe { &*Node::min_raw(nref) }.clone();\n        unsafe {\n            self.key[idx - 1].as_mut_ptr().write(nkey);\n        }\n    }"
+}

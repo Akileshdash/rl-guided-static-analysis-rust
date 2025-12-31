@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<collections::slist::SList<T> as std::iter::FromIterator<T>>::from_iter`",
+    "file": "glib-0.21.0/src/collections/slist.rs",
+    "start_line": 423,
+    "start_col": 5,
+    "end_line": 450,
+    "end_col": 6,
+    "code_snippet": "fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {\n        unsafe {\n            let mut iter = iter.into_iter();\n\n            let first = match iter.next() {\n                None => return Self::new(),\n                Some(first) => first,\n            };\n\n            let list = ffi::g_slist_prepend(\n                ptr::null_mut(),\n                *(&mut *mem::ManuallyDrop::new(first) as *mut T as *mut *mut T::GlibType)\n                    as ffi::gpointer,\n            );\n            let mut tail = list;\n            for item in iter {\n                let new_tail = ffi::g_slist_alloc();\n\n                (*new_tail).data = *(&mut *mem::ManuallyDrop::new(item) as *mut T\n                    as *mut *mut T::GlibType) as ffi::gpointer;\n                (*new_tail).next = ptr::null_mut();\n                (*tail).next = new_tail;\n                tail = new_tail;\n            }\n\n            Self::from_glib_full(list)\n        }\n    }"
+}

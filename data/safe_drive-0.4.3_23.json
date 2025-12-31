@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "safe_drive-0.4.3/src/topic/publisher.rs",
+    "start_line": 305,
+    "start_col": 1,
+    "end_line": 305,
+    "end_col": 37,
+    "code_snippet": "unsafe impl<T> Sync for Publisher<T> {}\nunsafe impl<T> Send for Publisher<T> {}"
+}

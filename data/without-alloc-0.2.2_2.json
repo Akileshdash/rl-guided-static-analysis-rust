@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "without-alloc-0.2.2/src/rc.rs",
+    "start_line": 491,
+    "start_col": 1,
+    "end_line": 491,
+    "end_col": 27,
+    "code_snippet": "impl<T> Drop for Rc<'_, T> {\n    /// Drops the `Rc`.\n    ///\n    /// This will decrement the strong reference count. If the strong reference\n    /// count reaches zero then the only other references (if any) are\n    /// [`Weak`], so we `drop` the inner value.\n    ///\n    /// # Examples\n    ///\n    /// ```\n    /// use without_alloc::{alloc::LocalAllocLeakExt, rc::Rc};\n    /// use static_alloc::Bump;\n    ///\n    /// struct Foo;\n    ///\n    /// impl Drop for Foo {\n    ///     fn drop(&mut self) {\n    ///         println!(\"dropped!\");\n    ///     }\n    /// }\n    ///\n    /// let slab: Bump<[u8; 1024]> = Bump::uninit();\n    ///\n    /// let foo  = slab.rc(Foo).unwrap();\n    /// let foo2 = Rc::clone(&foo);\n    ///\n    /// drop(foo);    // Doesn't print anything\n    /// drop(foo2);   // Prints \"dropped!\"\n    /// ```\n    fn drop(&mut self) {\n        self.dec_strong();\n        // weak count doesn't actually do anything.\n        if Rc::strong_count(self) == 0 {\n            self.dec_weak();\n\n            unsafe {\n                ptr::drop_in_place(self.as_mut_ptr())\n            }\n        }\n    }\n}"
+}

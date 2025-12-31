@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "interprocess-docfix-1.2.2/src/os/unix/fdops.rs",
+    "start_line": 104,
+    "start_col": 1,
+    "end_line": 104,
+    "end_col": 20,
+    "code_snippet": "impl Drop for FdOps {\n    fn drop(&mut self) {\n        unsafe { close_fd(self.0) };\n    }\n}"
+}

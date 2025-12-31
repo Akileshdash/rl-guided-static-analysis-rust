@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `callbacks::unbuffered::set_handler::handler`",
+    "file": "glfw-0.59.0/src/callbacks.rs",
+    "start_line": 141,
+    "start_col": 9,
+    "end_line": 153,
+    "end_col": 10,
+    "code_snippet": "fn handler<F>(\n            window_id: WindowId,\n            event: (f64, WindowEvent),\n            callback_ptr: CallbackPtr,\n        ) -> Option<(f64, WindowEvent)>\n        where\n            F: FnMut(WindowId, (f64, WindowEvent)) -> Option<(f64, WindowEvent)>,\n        {\n            unsafe {\n                let callback: &mut F = &mut *(callback_ptr as *mut F);\n                callback(window_id, event)\n            }\n        }"
+}

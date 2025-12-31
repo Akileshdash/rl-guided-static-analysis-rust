@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::SingularSubPattern<'static> as icu_provider::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_relativetime-0.1.4/src/provider.rs",
+    "start_line": 170,
+    "start_col": 44,
+    "end_line": 170,
+    "end_col": 58,
+    "code_snippet": "#[derive(Debug, Clone, Default, PartialEq, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(\n    feature = \"datagen\", \n    derive(serde::Serialize, databake::Bake),\n    databake(path = icu_relativetime::provider)\n)]\npub struct SingularSubPattern<'data> {\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    /// The underlying pattern with the placeholder \"{0}\" removed.\n    pub pattern: Cow<'data, str>,\n    /// Denotes the substitution position in the pattern.\n    /// Equals 255 if the pattern does not have a placeholder.\n    pub index: u8,\n}"
+}

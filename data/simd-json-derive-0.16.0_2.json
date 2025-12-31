@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `<impls::array::Guard<'_, T, N> as std::ops::Drop>::drop`",
+    "file": "simd-json-derive-0.16.0/src/impls/array.rs",
+    "start_line": 25,
+    "start_col": 5,
+    "end_line": 34,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        debug_assert!(self.initialized <= N);\n\n        // SAFETY: this slice will contain only initialized objects.\n        unsafe {\n            let slice =\n                ptr::slice_from_raw_parts_mut(self.array.as_mut_ptr() as *mut T, self.initialized);\n            ptr::drop_in_place(slice);\n        }\n    }"
+}

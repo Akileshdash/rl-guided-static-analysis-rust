@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "futures-concurrency-7.6.3/src/future/try_join/array.rs",
+    "start_line": 21,
+    "start_col": 15,
+    "end_line": 21,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\npub struct TryJoin<Fut, T, E, const N: usize>\nwhere\n    Fut: Future<Output = Result<T, E>>,\n{\n    /// A boolean which holds whether the future has completed\n    consumed: bool,\n    /// The number of futures which are currently still in-flight\n    pending: usize,\n    /// The output data, to be returned after the future completes\n    items: OutputArray<T, N>,\n    /// A structure holding the waker passed to the future, and the various\n    /// sub-wakers passed to the contained futures.\n    wakers: WakerArray<N>,\n    /// The individual poll state of each future.\n    state: PollArray<N>,\n    #[pin]\n    /// The array of futures passed to the structure.\n    futures: FutureArray<Fut, N>,\n}"
+}

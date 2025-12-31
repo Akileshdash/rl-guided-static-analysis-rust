@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nj-core-6.1.0/src/thread_fn.rs",
+    "start_line": 52,
+    "start_col": 1,
+    "end_line": 52,
+    "end_col": 33,
+    "code_snippet": "impl Drop for ThreadSafeFunction {\n    fn drop(&mut self) {\n        crate::napi_call_assert!(crate::sys::napi_release_threadsafe_function(\n            self.tf,\n            crate::sys::napi_threadsafe_function_release_mode_napi_tsfn_release\n        ));\n    }\n}"
+}

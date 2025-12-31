@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "exclusion-set-0.1.2/src/lib.rs",
+    "start_line": 399,
+    "start_col": 1,
+    "end_line": 399,
+    "end_col": 24,
+    "code_snippet": "impl<T> Drop for Set<T> {\n    fn drop(&mut self) {\n        #[cfg(loom)]\n        let mut node = self\n            .head\n            .with_mut(|p| core::mem::replace(p, ptr::null_mut()));\n        #[cfg(not(loom))]\n        let mut node = core::mem::replace(self.head.get_mut(), ptr::null_mut());\n        while !node.is_null() {\n            // Node pointers are either null or valid pointers created by\n            // `Box::into_raw`, and we just checked that it was not null, so\n            // it's safe to call `Box::from_raw` here.\n            let boxed = unsafe { Box::from_raw(node) };\n            node = boxed.next.cast_mut();\n        }\n    }\n}"
+}

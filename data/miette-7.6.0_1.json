@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "miette-7.6.0/src/eyreish/error.rs",
+    "start_line": 475,
+    "start_col": 1,
+    "end_line": 475,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Report {\n    fn drop(&mut self) {\n        unsafe {\n            // Invoke the vtable's drop behavior.\n            (vtable(self.inner.ptr).object_drop)(self.inner);\n        }\n    }\n}"
+}

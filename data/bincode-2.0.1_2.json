@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `enc::impls::<impl enc::Encode for [T]>::encode`",
+    "file": "bincode-2.0.1/src/enc/impls.rs",
+    "start_line": 300,
+    "start_col": 5,
+    "end_line": 314,
+    "end_col": 6,
+    "code_snippet": "fn encode<E: Encoder>(&self, encoder: &mut E) -> Result<(), EncodeError> {\n        super::encode_slice_len(encoder, self.len())?;\n\n        if unty::type_equal::<T, u8>() {\n            // Safety: T = u8\n            let t: &[u8] = unsafe { core::mem::transmute(self) };\n            encoder.writer().write(t)?;\n            return Ok(());\n        }\n\n        for item in self {\n            item.encode(encoder)?;\n        }\n        Ok(())\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `cps::async_stack::AsyncStack::<V>::run_with_context`",
+    "file": "pen-ffi-0.10.23/src/cps/async_stack.rs",
+    "start_line": 48,
+    "start_col": 5,
+    "end_line": 60,
+    "end_col": 6,
+    "code_snippet": "pub fn run_with_context<T>(\n        &mut self,\n        context: &mut Context,\n        callback: impl FnOnce(&mut Self) -> T,\n    ) -> T {\n        self.context = Some(unsafe { transmute(context) });\n\n        let value = callback(self);\n\n        self.context = None;\n\n        value\n    }"
+}

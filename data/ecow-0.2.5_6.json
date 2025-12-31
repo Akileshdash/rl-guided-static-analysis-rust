@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `<vec::IntoIter<T> as std::ops::Drop>::drop`",
+    "file": "ecow-0.2.5/src/vec.rs",
+    "start_line": 1174,
+    "start_col": 5,
+    "end_line": 1197,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        if !self.unique || !self.vec.is_allocated() {\n            return;\n        }\n\n        // Safety:\n        // We have unique ownership over the underlying allocation.\n        unsafe {\n            // Safety:\n            // Set len to zero before dropping to prevent double dropping in\n            // EcoVec's drop impl in case of panic.\n            self.vec.len = 0;\n\n            // Safety:\n            // - The elements in `..self.front` and `self.back..` have\n            //   already been moved out of the vector. Thus, we only drop\n            //   the elements that remain in the middle.\n            // - For details about the slicing, see `Self::as_slice()`.\n            ptr::drop_in_place(ptr::slice_from_raw_parts_mut(\n                self.vec.data_mut().add(self.front),\n                self.back - self.front,\n            ));\n        }\n    }"
+}

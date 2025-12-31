@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `inet::checksum::write_sized_generic`",
+    "file": "s2n-quic-core-0.63.0/src/inet/checksum.rs",
+    "start_line": 27,
+    "start_col": 1,
+    "end_line": 79,
+    "end_col": 2,
+    "code_snippet": "fn write_sized_generic<'a, const MAX_LEN: usize, const CHUNK_LEN: usize>(\n    state: &mut State,\n    mut bytes: &'a [u8],\n    on_chunk: impl Fn(&[u8; CHUNK_LEN], &mut Accumulator),\n) -> &'a [u8] {\n    //= https://www.rfc-editor.org/rfc/rfc1071#section-4.1\n    //# The following \"C\" code algorithm computes the checksum with an inner\n    //# loop that sums 16-bits at a time in a 32-bit accumulator.\n    //#\n    //# in 6\n    //#    {\n    //#        /* Compute Internet Checksum for \"count\" bytes\n    //#         *         beginning at location \"addr\".\n    //#         */\n    //#    register long sum = 0;\n    //#\n    //#     while( count > 1 )  {\n    //#        /*  This is the inner loop */\n    //#            sum += * (unsigned short) addr++;\n    //#            count -= 2;\n    //#    }\n    //#\n    //#        /*  Add left-over byte, if any */\n    //#    if( count > 0 )\n    //#            sum += * (unsigned char *) addr;\n    //#\n    //#        /*  Fold 32-bit sum to 16 bits */\n    //#    while (sum>>16)\n    //#        sum = (sum & 0xffff) + (sum >> 16);\n    //#\n    //#    checksum = ~sum;\n    //# }\n\n    while bytes.len() >= MAX_LEN {\n        // use `get_unchecked` to make it easier for kani to analyze\n        let chunks = unsafe { bytes.get_unchecked(..MAX_LEN) };\n        bytes = unsafe { bytes.get_unchecked(MAX_LEN..) };\n\n        let mut sum = 0;\n        // for each pair of bytes, interpret them as integers and sum them up\n        for chunk in chunks.chunks_exact(CHUNK_LEN) {\n            let chunk = unsafe {\n                // SAFETY: chunks_exact always produces a slice of CHUNK_LEN\n                debug_assert_eq!(chunk.len(), CHUNK_LEN);\n                &*(chunk.as_ptr() as *const [u8; CHUNK_LEN])\n            };\n            on_chunk(chunk, &mut sum);\n        }\n        *state += sum;\n    }\n\n    bytes\n}"
+}

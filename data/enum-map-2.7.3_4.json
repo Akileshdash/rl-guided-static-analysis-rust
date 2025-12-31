@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `EnumMap::<K, V>::map`",
+    "file": "enum-map-2.7.3/src/lib.rs",
+    "start_line": 475,
+    "start_col": 5,
+    "end_line": 508,
+    "end_col": 6,
+    "code_snippet": "pub fn map<F, T>(self, mut f: F) -> EnumMap<K, T>\n    where\n        F: FnMut(K, V) -> T,\n        K: EnumArray<T>,\n    {\n        struct DropOnPanic<K, V>\n        where\n            K: EnumArray<V>,\n        {\n            position: usize,\n            map: ManuallyDrop<EnumMap<K, V>>,\n        }\n        impl<K, V> Drop for DropOnPanic<K, V>\n        where\n            K: EnumArray<V>,\n        {\n            fn drop(&mut self) {\n                unsafe {\n                    ptr::drop_in_place(&mut self.map.as_mut_slice()[self.position..]);\n                }\n            }\n        }\n        let mut drop_protect = DropOnPanic {\n            position: 0,\n            map: ManuallyDrop::new(self),\n        };\n        enum_map! {\n            k => {\n                let value = unsafe { ptr::read(&drop_protect.map.as_slice()[drop_protect.position]) };\n                drop_protect.position += 1;\n                f(k, value)\n            }\n        }\n    }"
+}

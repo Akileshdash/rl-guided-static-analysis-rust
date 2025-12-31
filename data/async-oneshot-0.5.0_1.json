@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-oneshot-0.5.0/src/inner.rs",
+    "start_line": 90,
+    "start_col": 1,
+    "end_line": 90,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Inner<T> {\n    #[inline(always)]\n    fn drop(&mut self) {\n        let state = State(*self.state.get_mut());\n        // Drop the wakers if they are present\n        if state.recv() {\n            unsafe { drop_in_place((&mut *self.recv.get()).as_mut_ptr()); }\n        }\n        if state.send() {\n            unsafe { drop_in_place((&mut *self.send.get()).as_mut_ptr()); }\n        }\n    }\n}"
+}

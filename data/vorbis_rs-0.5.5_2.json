@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vorbis_rs-0.5.5/src/encoder/encoder_util.rs",
+    "start_line": 107,
+    "start_col": 1,
+    "end_line": 107,
+    "end_col": 34,
+    "code_snippet": "impl Drop for VorbisEncodingState {\n\tfn drop(&mut self) {\n\t\t// SAFETY: when this struct is dropped we have structs in valid state to clear.\n\t\t// Rust destructor execution order guarantees that VorbisInfo is dropped after\n\t\t// this, which is necessary because clearing these structs requires data\n\t\t// from VorbisInfo\n\t\tunsafe {\n\t\t\tvorbis_block_clear(self.vorbis_block);\n\t\t\tvorbis_dsp_clear(self.vorbis_dsp_state);\n\n\t\t\tdrop(Box::from_raw(self.vorbis_block));\n\t\t\tdrop(Box::from_raw(self.vorbis_dsp_state));\n\t\t}\n\t}\n}"
+}

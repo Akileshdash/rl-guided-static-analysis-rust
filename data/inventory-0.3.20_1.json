@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "inventory-0.3.20/src/lib.rs",
+    "start_line": 311,
+    "start_col": 5,
+    "end_line": 311,
+    "end_col": 36,
+    "code_snippet": "unsafe impl<T> Sync for Iter<T> {}\n}\n\nmod value_iter {"
+}

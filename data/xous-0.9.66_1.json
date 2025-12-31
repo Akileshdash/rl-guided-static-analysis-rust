@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "xous-0.9.66/src/stringbuffer.rs",
+    "start_line": 274,
+    "start_col": 1,
+    "end_line": 274,
+    "end_col": 35,
+    "code_snippet": "impl<'a> Drop for StringBuffer<'a> {\n    fn drop(&mut self) {\n        if self.should_free && !self.as_bytes().is_empty() {\n            let range =\n                unsafe { MemoryRange::new(self.as_bytes().as_ptr() as _, self.as_bytes().len()).unwrap() };\n            unmap_memory(range).expect(\"Buffer: failed to drop memory\");\n        }\n    }\n}"
+}

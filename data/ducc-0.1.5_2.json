@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ducc-0.1.5/src/types.rs",
+    "start_line": 26,
+    "start_col": 1,
+    "end_line": 26,
+    "end_col": 32,
+    "code_snippet": "impl<'ducc> Drop for Ref<'ducc> {\n    fn drop(&mut self) {\n        unsafe { self.ducc.drop_ref(self); }\n    }\n}"
+}

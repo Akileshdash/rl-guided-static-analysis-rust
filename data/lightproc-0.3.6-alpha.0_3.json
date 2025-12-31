@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "lightproc-0.3.6-alpha.0/src/proc_handle.rs",
+    "start_line": 29,
+    "start_col": 1,
+    "end_line": 29,
+    "end_col": 38,
+    "code_snippet": "unsafe impl<R> Send for ProcHandle<R> {}\nunsafe impl<R> Sync for ProcHandle<R> {}"
+}

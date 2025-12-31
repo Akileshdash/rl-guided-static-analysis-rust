@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crossbeam-epoch-0.9.18/src/guard.rs",
+    "start_line": 369,
+    "start_col": 9,
+    "end_line": 369,
+    "end_col": 33,
+    "code_snippet": "impl Drop for ScopeGuard {\n            fn drop(&mut self) {\n                if let Some(local) = unsafe { self.0.as_ref() } {\n                    mem::forget(local.pin());\n                    local.release_handle();\n                }\n            }\n        }"
+}

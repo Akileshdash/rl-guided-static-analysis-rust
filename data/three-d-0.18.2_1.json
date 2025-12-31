@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "three-d-0.18.2/src/core/buffer/element_buffer.rs",
+    "start_line": 123,
+    "start_col": 1,
+    "end_line": 123,
+    "end_col": 57,
+    "code_snippet": "impl<T: ElementBufferDataType> Drop for ElementBuffer<T> {\n    fn drop(&mut self) {\n        unsafe {\n            self.context.delete_buffer(self.id);\n        }\n    }\n}"
+}

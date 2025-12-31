@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::get_object_array_element`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 1698,
+    "start_col": 5,
+    "end_line": 1712,
+    "end_col": 6,
+    "code_snippet": "pub fn get_object_array_element<'other_local>(\n        &mut self,\n        array: impl AsRef<JObjectArray<'other_local>>,\n        index: jsize,\n    ) -> Result<JObject<'local>> {\n        non_null!(array.as_ref(), \"get_object_array_element array argument\");\n        Ok(unsafe {\n            JObject::from_raw(jni_non_void_call!(\n                self.internal,\n                GetObjectArrayElement,\n                array.as_ref().as_raw(),\n                index\n            ))\n        })\n    }"
+}

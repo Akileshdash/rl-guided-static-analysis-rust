@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "intaglio-1.10.0/src/cstr.rs",
+    "start_line": 321,
+    "start_col": 1,
+    "end_line": 321,
+    "end_col": 32,
+    "code_snippet": "impl<S> Drop for SymbolTable<S> {\n    fn drop(&mut self) {\n        // SAFETY: No mutable references to `SymbolTable` internal fields are\n        // given out, which means `ManuallyDrop::drop` can only be invoked in\n        // this `Drop::drop` impl. Interal fields are guaranteed to be\n        // initialized by `SymbolTable` constructors.\n        unsafe {\n            // `Interned` requires that the `'static` references it gives out\n            // are dropped before the owning buffer stored in the `Interned`.\n            ManuallyDrop::drop(&mut self.map);\n            ManuallyDrop::drop(&mut self.vec);\n        }\n    }\n}"
+}

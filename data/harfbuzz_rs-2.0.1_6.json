@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `blob::Blob::<'a>::with_bytes_owned`",
+    "file": "harfbuzz_rs-2.0.1/src/blob.rs",
+    "start_line": 69,
+    "start_col": 5,
+    "end_line": 94,
+    "end_col": 6,
+    "code_snippet": "pub fn with_bytes_owned<T: 'a + Send>(\n        bytes_owner: T,\n        projector: impl Fn(&T) -> &[u8],\n    ) -> Owned<Blob<'a>> {\n        let boxxed = Box::new(bytes_owner);\n        let slice = projector(&boxxed);\n        let len = slice.len();\n        let ptr = slice.as_ptr();\n\n        let data = Box::into_raw(boxxed);\n\n        extern \"C\" fn destroy<U>(ptr: *mut c_void) {\n            unsafe { Box::from_raw(ptr as *mut U) };\n        }\n\n        let hb_blob = unsafe {\n            hb::hb_blob_create(\n                ptr as *const _,\n                len as u32,\n                hb::HB_MEMORY_MODE_READONLY,\n                data as *mut _,\n                Some(destroy::<T>),\n            )\n        };\n        unsafe { Owned::from_raw(hb_blob) }\n    }"
+}

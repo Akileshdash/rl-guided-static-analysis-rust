@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nvml-wrapper-0.11.0/src/lib.rs",
+    "start_line": 1008,
+    "start_col": 1,
+    "end_line": 1008,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Nvml {\n    #[doc(alias = \"nvmlShutdown\")]\n    fn drop(&mut self) {\n        unsafe {\n            self.lib.nvmlShutdown();\n\n            // SAFETY: called after the last usage of `self.lib`\n            ManuallyDrop::drop(&mut self.lib);\n        }\n    }\n}"
+}

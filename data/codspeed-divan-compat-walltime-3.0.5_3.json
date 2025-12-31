@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "codspeed-divan-compat-walltime-3.0.5/src/util/sync.rs",
+    "start_line": 15,
+    "start_col": 1,
+    "end_line": 15,
+    "end_col": 36,
+    "code_snippet": "unsafe impl<T> Sync for SyncWrap<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<codepointtrie::cptrie::CodePointTrie<'static, T> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_collections-2.0.0/src/codepointtrie/cptrie.rs",
+    "start_line": 130,
+    "start_col": 32,
+    "end_line": 130,
+    "end_col": 40,
+    "code_snippet": "#[derive(Debug, Eq, PartialEq, Yokeable, ZeroFrom)]\npub struct CodePointTrie<'trie, T: TrieValue> {\n    pub(crate) header: CodePointTrieHeader,\n    pub(crate) index: ZeroVec<'trie, u16>,\n    pub(crate) data: ZeroVec<'trie, T>,\n    // serde impl skips this field\n    #[zerofrom(clone)] // TrieValue is Copy, this allows us to avoid\n    // a T: ZeroFrom bound\n    pub(crate) error_value: T,\n}"
+}

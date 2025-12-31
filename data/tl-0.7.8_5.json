@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<inline::vec::InlineVecInner<T, N> as std::clone::Clone>::clone`",
+    "file": "tl-0.7.8/src/inline/vec.rs",
+    "start_line": 107,
+    "start_col": 5,
+    "end_line": 126,
+    "end_col": 6,
+    "code_snippet": "fn clone(&self) -> Self {\n        match self {\n            Self::Heap(m) => Self::Heap(m.clone()),\n            Self::Inline { len, data } => {\n                let mut new_data = super::uninit_array();\n\n                let iter = data.iter().take(*len).enumerate();\n\n                for (idx, element) in iter {\n                    let element = unsafe { &*element.as_ptr() };\n                    new_data[idx] = MaybeUninit::new(T::clone(element));\n                }\n\n                Self::Inline {\n                    len: *len,\n                    data: new_data,\n                }\n            }\n        }\n    }"
+}

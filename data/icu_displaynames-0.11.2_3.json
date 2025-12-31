@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::ScriptDisplayNamesV1<'static> as icu_provider::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_displaynames-0.11.2/src/provider.rs",
+    "start_line": 106,
+    "start_col": 1,
+    "end_line": 106,
+    "end_col": 84,
+    "code_snippet": "#[icu_provider::data_struct(ScriptDisplayNamesV1Marker = \"displaynames/scripts@1\")]\n#[derive(Debug, PartialEq, Clone, Default)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(\n    feature = \"datagen\",\n    derive(serde::Serialize, databake::Bake),\n    databake(path = icu_displaynames::provider),\n)]\n#[yoke(prove_covariance_manually)]\n/// ScriptDisplayNames provides mapping between a script code and it's display name.\npub struct ScriptDisplayNamesV1<'data> {\n    /// Mapping for script to locale display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub names: ZeroMap<'data, UnvalidatedScript, str>,\n    /// Mapping for script to locale display short name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub short_names: ZeroMap<'data, UnvalidatedScript, str>,\n}"
+}

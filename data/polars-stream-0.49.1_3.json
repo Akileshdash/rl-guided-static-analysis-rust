@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "polars-stream-0.49.1/src/async_primitives/distributor_channel.rs",
+    "start_line": 286,
+    "start_col": 1,
+    "end_line": 286,
+    "end_col": 37,
+    "code_snippet": "impl<T> Drop for DistributorInner<T> {\n    fn drop(&mut self) {\n        for r in 0..self.receivers.len() {\n            // We have exclusive access, so we only need to atomically load once.\n            let write_head = self.write_heads[r].load(Ordering::SeqCst);\n            let mut read_head = self.receivers[r].read_head.load(Ordering::Relaxed);\n            while read_head != write_head {\n                let idx = self.reduce_index(read_head);\n                unsafe {\n                    (*self.receivers[r].data[idx].get()).assume_init_drop();\n                }\n                read_head = read_head.wrapping_add(1);\n            }\n        }\n    }\n}"
+}

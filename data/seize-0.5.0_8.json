@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<raw::tls::Entry<T> as std::ops::Drop>::drop`",
+    "file": "seize-0.5.0/src/raw/tls/mod.rs",
+    "start_line": 242,
+    "start_col": 5,
+    "end_line": 249,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        if *self.present.get_mut() {\n            // Safety: We have `&mut self` and ensured the entry was initialized.\n            unsafe {\n                ptr::drop_in_place((*self.value.get()).as_mut_ptr());\n            }\n        }\n    }"
+}

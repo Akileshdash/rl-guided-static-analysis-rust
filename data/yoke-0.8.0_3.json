@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "yoke-0.8.0/src/cartable_ptr.rs",
+    "start_line": 376,
+    "start_col": 1,
+    "end_line": 376,
+    "end_col": 85,
+    "code_snippet": "unsafe impl<C> Sync for CartableOptionPointer<C> where C: Send + CartablePointerLike {}"
+}

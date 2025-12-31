@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `llvm::diagnostic_handler`",
+    "file": "bpf-linker-0.9.14/src/llvm/mod.rs",
+    "start_line": 326,
+    "start_col": 1,
+    "end_line": 337,
+    "end_col": 2,
+    "code_snippet": "pub extern \"C\" fn diagnostic_handler<T: LLVMDiagnosticHandler>(\n    info: LLVMDiagnosticInfoRef,\n    handler: *mut c_void,\n) {\n    let severity = unsafe { LLVMGetDiagInfoSeverity(info) };\n    let message = Message {\n        ptr: unsafe { LLVMGetDiagInfoDescription(info) },\n    };\n    let handler = handler as *mut T;\n    unsafe { &mut *handler }\n        .handle_diagnostic(severity, message.as_c_str().unwrap().to_str().unwrap());\n}"
+}

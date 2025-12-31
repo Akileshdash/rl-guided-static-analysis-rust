@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "reusable-box-future-0.2.0/src/box_future.rs",
+    "start_line": 91,
+    "start_col": 9,
+    "end_line": 93,
+    "end_col": 52,
+    "code_snippet": "impl<'a, F, T> Drop for SetLayout<'a, F, T>\n        where\n            F: Future<Output = T> + Send + 'static,\n        {\n            fn drop(&mut self) {\n                // By doing the replacement on `drop` we make sure the change\n                // will happen even if the existing future panics on drop.\n                //\n                // We could use `catch_unwind`, but it is not available in `no_std`.\n                unsafe {\n                    // Overwrite the future behind the pointer. This is safe because the\n                    // allocation was allocated with the same size and alignment as the type F.\n                    let fut_ptr: *mut F = self.rbf.boxed.as_ptr() as *mut F;\n                    ptr::write(fut_ptr, ManuallyDrop::take(&mut self.new_future));\n\n                    // Update the vtable of self.boxed. The pointer is not null because we\n                    // just got it from self.boxed, which is not null.\n                    self.rbf.boxed = NonNull::new_unchecked(fut_ptr);\n                }\n            }\n        }"
+}

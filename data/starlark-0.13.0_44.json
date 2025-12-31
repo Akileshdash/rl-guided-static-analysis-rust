@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::left_shift`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 827,
+    "start_col": 5,
+    "end_line": 827,
+    "end_col": 88,
+    "code_snippet": "fn left_shift(&self, other: Value<'v>, _heap: &'v Heap) -> crate::Result<Value<'v>> {\n        ValueError::unsupported_with(self, \"<<\", other)\n    }"
+}

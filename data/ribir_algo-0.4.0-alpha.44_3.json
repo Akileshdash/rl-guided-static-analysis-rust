@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ribir_algo-0.4.0-alpha.44/src/sc.rs",
+    "start_line": 172,
+    "start_col": 1,
+    "end_line": 172,
+    "end_col": 31,
+    "code_snippet": "impl<T: ?Sized> Drop for Sc<T> {\n  fn drop(&mut self) {\n    self.inner().dec();\n    if self.inner().ref_cnt() == 0 {\n      unsafe {\n        let layout = std::alloc::Layout::for_value(self.0.as_ref());\n        let ptr = self.0.as_ptr();\n        std::ptr::drop_in_place(ptr);\n        std::alloc::dealloc(ptr as *mut _, layout)\n      }\n    }\n  }\n}"
+}

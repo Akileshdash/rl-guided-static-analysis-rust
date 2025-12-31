@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "monoio-0.2.4/src/time/driver/entry.rs",
+    "start_line": 571,
+    "start_col": 1,
+    "end_line": 571,
+    "end_col": 25,
+    "code_snippet": "impl Drop for TimerEntry {\n    fn drop(&mut self) {\n        unsafe { Pin::new_unchecked(self) }.as_mut().cancel()\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "borsh-1.5.7/src/de/mod.rs",
+    "start_line": 784,
+    "start_col": 9,
+    "end_line": 784,
+    "end_col": 62,
+    "code_snippet": "impl<T, const N: usize> Drop for ArrayDropGuard<T, N> {\n            fn drop(&mut self) {\n                let init_range = &mut self.buffer[..self.init_count];\n                // SAFETY: Elements up to self.init_count have been initialized. Assumes this value\n                //         is only incremented in `fill_buffer`, which writes the element before\n                //         increasing the init_count.\n                unsafe {\n                    core::ptr::drop_in_place(init_range as *mut _ as *mut [T]);\n                };\n            }\n        }"
+}

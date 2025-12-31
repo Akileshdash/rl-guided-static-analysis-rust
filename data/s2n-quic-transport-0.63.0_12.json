@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "s2n-quic-transport-0.63.0/src/connection/connection_container.rs",
+    "start_line": 238,
+    "start_col": 1,
+    "end_line": 238,
+    "end_col": 88,
+    "code_snippet": "unsafe impl<C: connection::Trait, L: connection::Lock<C>> Sync for ConnectionNode<C, L> {}"
+}

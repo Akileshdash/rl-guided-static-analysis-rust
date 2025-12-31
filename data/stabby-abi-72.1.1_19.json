@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/result.rs",
+    "start_line": 557,
+    "start_col": 1,
+    "end_line": 560,
+    "end_col": 18,
+    "code_snippet": "impl<Ok, Err> Drop for ErrGuard<'_, Ok, Err>\nwhere\n    Ok: IDeterminantProvider<Err>,\n    Err: IStable,\n{\n    fn drop(&mut self) {\n        if <<Determinant<Ok, Err> as IDeterminant>::IsNicheTrick as Bit>::BOOL {\n            unsafe { Determinant::<Ok, Err>::err(self.inner.storage.as_mut_ptr()) };\n        }\n    }\n}"
+}

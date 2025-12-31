@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `bump_box::BumpBox::<'a, [T]>::retain::process_loop`",
+    "file": "bump-scope-0.17.4/src/bump_box.rs",
+    "start_line": 2197,
+    "start_col": 9,
+    "end_line": 2227,
+    "end_col": 10,
+    "code_snippet": "fn process_loop<F, T, const DELETED: bool>(original_len: usize, f: &mut F, g: &mut BackshiftOnDrop<'_, '_, T>)\n        where\n            F: FnMut(&mut T) -> bool,\n        {\n            while g.processed_len != original_len {\n                // SAFETY: Unchecked element must be valid.\n                let cur = unsafe { &mut *g.v.ptr.as_ptr().cast::<T>().add(g.processed_len) };\n                if !f(cur) {\n                    // Advance early to avoid double drop if `drop_in_place` panicked.\n                    g.processed_len += 1;\n                    g.deleted_cnt += 1;\n                    // SAFETY: We never touch this element again after dropped.\n                    unsafe { ptr::drop_in_place(cur) };\n                    // We already advanced the counter.\n                    if DELETED {\n                        continue;\n                    } else {\n                        break;\n                    }\n                }\n                if DELETED {\n                    // SAFETY: `deleted_cnt` > 0, so the hole slot must not overlap with current element.\n                    // We use copy for move, and never touch this element again.\n                    unsafe {\n                        let hole_slot = g.v.ptr.as_ptr().cast::<T>().add(g.processed_len - g.deleted_cnt);\n                        ptr::copy_nonoverlapping(cur, hole_slot, 1);\n                    }\n                }\n                g.processed_len += 1;\n            }\n        }"
+}

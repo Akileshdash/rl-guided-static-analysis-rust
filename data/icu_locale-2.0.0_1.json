@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::LikelySubtagsForLanguage<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_locale-2.0.0/src/provider.rs",
+    "start_line": 292,
+    "start_col": 35,
+    "end_line": 292,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_locale::provider))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n/// This likely subtags data is used for the minimize and maximize operations.\n///\n/// Each field defines a mapping from an old identifier to a new identifier,\n/// based upon the rules in\n/// <https://www.unicode.org/reports/tr35/#Likely_Subtags>.\n///\n/// The data is stored is broken down into smaller vectors based upon the rules\n/// defined for the likely subtags maximize algorithm.\n///\n/// For efficiency, only the relevant part of the LanguageIdentifier is stored\n/// for searching and replacing. E.g., the `language_script` field is used to store\n/// rules for `LanguageIdentifier`s that contain a language and a script, but not a\n/// region.\n///\n/// This struct contains mappings when the input contains a language subtag.\n/// Also see [`LikelySubtagsForScriptRegion`].\n///\n/// <div class=\"stab unstable\">\n/// \ud83d\udea7 This code is considered unstable; it may change at any time, in breaking or non-breaking ways,\n/// including in SemVer minor releases. While the serde representation of data structs is guaranteed\n/// to be stable, their Rust representation might not be. Use with caution.\n/// </div>\n#[yoke(prove_covariance_manually)]\npub struct LikelySubtagsForLanguage<'data> {\n    /// Language and script.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub language_script: ZeroMap<'data, (UnvalidatedLanguage, UnvalidatedScript), Region>,\n    /// Language and region.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub language_region: ZeroMap<'data, (UnvalidatedLanguage, UnvalidatedRegion), Script>,\n    /// Just language.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub language: ZeroMap<'data, UnvalidatedLanguage, (Script, Region)>,\n    /// Undefined.\n    pub und: (Language, Script, Region),\n}"
+}

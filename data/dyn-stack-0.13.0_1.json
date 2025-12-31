@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dyn-stack-0.13.0/src/mem.rs",
+    "start_line": 201,
+    "start_col": 1,
+    "end_line": 201,
+    "end_col": 41,
+    "code_snippet": "impl<A: Allocator> Drop for MemBuffer<A> {\n    #[inline]\n    fn drop(&mut self) {\n        // SAFETY: this was initialized with std::alloc::alloc\n        unsafe {\n            self.alloc.deallocate(\n                self.ptr,\n                Layout::from_size_align_unchecked(self.len, self.align),\n            )\n        }\n    }\n}"
+}

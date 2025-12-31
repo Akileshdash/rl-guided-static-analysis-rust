@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/device/resource.rs",
+    "start_line": 162,
+    "start_col": 1,
+    "end_line": 162,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Device {\n    fn drop(&mut self) {\n        resource_log!(\"Drop {}\", self.error_ident());\n\n        // SAFETY: We are in the Drop impl and we don't use self.zero_buffer anymore after this point.\n        let zero_buffer = unsafe { ManuallyDrop::take(&mut self.zero_buffer) };\n        // SAFETY: We are in the Drop impl and we don't use self.fence anymore after this point.\n        let fence = unsafe { ManuallyDrop::take(&mut self.fence.write()) };\n        if let Some(indirect_validation) = self.indirect_validation.take() {\n            indirect_validation.dispose(self.raw.as_ref());\n        }\n        if let Some(timestamp_normalizer) = self.timestamp_normalizer.take() {\n            timestamp_normalizer.dispose(self.raw.as_ref());\n        }\n        unsafe {\n            self.raw.destroy_buffer(zero_buffer);\n            self.raw.destroy_fence(fence);\n        }\n    }\n}"
+}

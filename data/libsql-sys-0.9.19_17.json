@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::frame_count`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 92,
+    "start_col": 5,
+    "end_line": 94,
+    "end_col": 6,
+    "code_snippet": "fn frame_count(&self, locked: i32) -> super::Result<u32> {\n        unsafe { (*self.wrapper).frame_count(&*self.wrapped, locked) }\n    }"
+}

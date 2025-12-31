@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gazebo-0.8.1/src/cell.rs",
+    "start_line": 60,
+    "start_col": 1,
+    "end_line": 60,
+    "end_col": 37,
+    "code_snippet": "impl<T: ?Sized> Drop for ARef<'_, T> {\n    fn drop(&mut self) {\n        if self.borrow.is_some() {\n            let me: ARef<T> = ARef {\n                value: self.value,\n                borrow: self.borrow,\n            };\n            // The transmute forgets me, so I won't get called recursively\n            let them: Ref<T> = unsafe { cast::transmute_unchecked(me) };\n            // But we can now drop on the Ref\n            mem::drop(them);\n        }\n    }\n}"
+}

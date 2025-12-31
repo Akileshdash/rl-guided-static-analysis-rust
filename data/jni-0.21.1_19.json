@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::new_object_array`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 1669,
+    "start_col": 5,
+    "end_line": 1695,
+    "end_col": 6,
+    "code_snippet": "pub fn new_object_array<'other_local_1, 'other_local_2, T, U>(\n        &mut self,\n        length: jsize,\n        element_class: T,\n        initial_element: U,\n    ) -> Result<JObjectArray<'local>>\n    where\n        T: Desc<'local, JClass<'other_local_2>>,\n        U: AsRef<JObject<'other_local_1>>,\n    {\n        let class = element_class.lookup(self)?;\n\n        let array: jarray = jni_non_null_call!(\n            self.internal,\n            NewObjectArray,\n            length,\n            class.as_ref().as_raw(),\n            initial_element.as_ref().as_raw()\n        );\n\n        let array = unsafe { JObjectArray::from_raw(array) };\n\n        // Ensure that `class` isn't dropped before the JNI call returns.\n        drop(class);\n\n        Ok(array)\n    }"
+}

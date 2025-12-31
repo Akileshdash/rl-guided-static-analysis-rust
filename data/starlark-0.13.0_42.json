@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::bit_xor`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 817,
+    "start_col": 5,
+    "end_line": 817,
+    "end_col": 85,
+    "code_snippet": "fn bit_xor(&self, other: Value<'v>, _heap: &'v Heap) -> crate::Result<Value<'v>> {\n        ValueError::unsupported_with(self, \"^\", other)\n    }"
+}

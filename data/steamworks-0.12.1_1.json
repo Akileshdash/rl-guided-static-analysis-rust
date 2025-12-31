@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "steamworks-0.12.1/src/utils.rs",
+    "start_line": 308,
+    "start_col": 1,
+    "end_line": 308,
+    "end_col": 36,
+    "code_snippet": "impl Drop for SteamParamStringArray {\n    fn drop(&mut self) {\n        for c_string in &self.0 {\n            unsafe { drop(CString::from_raw(*c_string)) };\n        }\n    }\n}"
+}

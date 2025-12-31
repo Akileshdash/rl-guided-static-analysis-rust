@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ip_network_table-deps-treebitmap-0.5.0/src/tree_bitmap/mod.rs",
+    "start_line": 645,
+    "start_col": 1,
+    "end_line": 645,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for TreeBitmap<T> {\n    fn drop(&mut self) {\n        if self.should_drop {\n            for (_, _, item) in self.iter() {\n                unsafe {\n                    ptr::read(item);\n                }\n            }\n        }\n    }\n}"
+}

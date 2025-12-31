@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `matmul::components::global::args::TensorOutput::<EI, EO, GA>::stride`",
+    "file": "cubecl-linalg-0.5.0/src/matmul/components/global/args.rs",
+    "start_line": 412,
+    "start_col": 5,
+    "end_line": 414,
+    "end_col": 6,
+    "code_snippet": "pub fn stride(&self, dim: u32) -> u32 {\n        unsafe { GA::stride_out(&(*self.state), dim) }\n    }"
+}

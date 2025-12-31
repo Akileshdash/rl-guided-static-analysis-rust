@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "embassy-sync-0.7.0/src/channel.rs",
+    "start_line": 181,
+    "start_col": 1,
+    "end_line": 181,
+    "end_col": 61,
+    "code_snippet": "unsafe impl<'ch, T: Send> Sync for SendDynamicSender<'ch, T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ops::cnn::conv::lazy_im2col::LazyIm2colInput::input_2n`",
+    "file": "tract-core-0.21.13/src/ops/cnn/conv/lazy_im2col.rs",
+    "start_line": 247,
+    "start_col": 5,
+    "end_line": 267,
+    "end_col": 6,
+    "code_snippet": "fn input_2n<T: Datum + Copy>(\n        &self,\n        writer: &mut impl PackingWriter<T>,\n        k_range: Range<isize>,\n        n: isize,\n    ) {\n        unsafe {\n            let ptr = self.tensor.as_ptr_unchecked::<u8>();\n            let k_byte_offsets = self.im2col.k_byte_offsets.as_ptr();\n            let n_byte_offsets = self.im2col.n_byte_offsets.as_ptr();\n            let o1 = *n_byte_offsets.offset(n);\n            let o2 = *n_byte_offsets.offset(n + 1);\n            for k in k_range.start..k_range.end {\n                let ptr = ptr.offset(*k_byte_offsets.offset(k));\n                let v1 = *(ptr.offset(o1) as *const T);\n                let v2 = *(ptr.offset(o2) as *const T);\n                writer.write(v1);\n                writer.write(v2);\n            }\n        }\n    }"
+}

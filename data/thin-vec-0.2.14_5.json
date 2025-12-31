@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ThinVec::<T>::dedup_by`",
+    "file": "thin-vec-0.2.14/src/lib.rs",
+    "start_line": 1305,
+    "start_col": 5,
+    "end_line": 1336,
+    "end_col": 6,
+    "code_snippet": "pub fn dedup_by<F>(&mut self, mut same_bucket: F)\n    where\n        F: FnMut(&mut T, &mut T) -> bool,\n    {\n        // See the comments in `Vec::dedup` for a detailed explanation of this code.\n        unsafe {\n            let ln = self.len();\n            if ln <= 1 {\n                return;\n            }\n\n            // Avoid bounds checks by using raw pointers.\n            let p = self.as_mut_ptr();\n            let mut r: usize = 1;\n            let mut w: usize = 1;\n\n            while r < ln {\n                let p_r = p.add(r);\n                let p_wm1 = p.add(w - 1);\n                if !same_bucket(&mut *p_r, &mut *p_wm1) {\n                    if r != w {\n                        let p_w = p_wm1.add(1);\n                        mem::swap(&mut *p_r, &mut *p_w);\n                    }\n                    w += 1;\n                }\n                r += 1;\n            }\n\n            self.truncate(w);\n        }\n    }"
+}

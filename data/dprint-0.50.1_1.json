@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dprint-0.50.1/src/utils/lax_single_process_fs_flag.rs",
+    "start_line": 139,
+    "start_col": 1,
+    "end_line": 139,
+    "end_col": 83,
+    "code_snippet": "impl<TEnvironment: Environment> Drop for LaxSingleProcessFsFlagInner<TEnvironment> {\n  fn drop(&mut self) {\n    use fs3::FileExt;\n    // kill the poll thread\n    self.finished_token.cancel();\n    // release the file lock\n    if let Err(err) = FileExt::unlock(&self.fs_file) {\n      log_debug!(self.environment, \"Failed releasing lock for {}. {:#}\", self.file_path.display(), err);\n    }\n  }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pdqselect-0.1.1/src/lib.rs",
+    "start_line": 52,
+    "start_col": 1,
+    "end_line": 52,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for CopyOnDrop<T> {\n    fn drop(&mut self) {\n        unsafe { ptr::copy_nonoverlapping(self.src, self.dest, 1); }\n    }\n}"
+}

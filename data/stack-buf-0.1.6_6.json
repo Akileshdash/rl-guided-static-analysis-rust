@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `vec::StackVec::<T, N>::extend_from_slice`",
+    "file": "stack-buf-0.1.6/src/vec.rs",
+    "start_line": 761,
+    "start_col": 5,
+    "end_line": 771,
+    "end_col": 6,
+    "code_snippet": "pub fn extend_from_slice(&mut self, other: &[T]) {\n        assert!(self.remaining_capacity() >= other.len());\n        unsafe {\n            let ptr = self.as_mut_ptr();\n            let mut local_len = SetLenOnDrop::new(&mut self.len);\n            for elem in other {\n                ptr::write(ptr.offset(local_len.local_len as isize), elem.clone());\n                local_len.increment_len(1);\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<dimension::provider::units::UnitsDisplayName<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_experimental-0.3.0/src/dimension/provider/units.rs",
+    "start_line": 24,
+    "start_col": 35,
+    "end_line": 24,
+    "end_col": 49,
+    "code_snippet": "#[derive(Clone, PartialEq, Debug, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[yoke(prove_covariance_manually)]\npub struct UnitsDisplayName<'data> {\n    // TODO: use `MeasureUnit` for the units key instead of strings.\n    /// Contains the long width patterns for the units.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub patterns: PluralElementsPackedCow<'data, SinglePlaceholderPattern>,\n}"
+}

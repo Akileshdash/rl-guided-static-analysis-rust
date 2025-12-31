@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "syd-3.37.1/src/sealbox.rs",
+    "start_line": 246,
+    "start_col": 1,
+    "end_line": 246,
+    "end_col": 28,
+    "code_snippet": "impl<T> Drop for SealBox<T> {\n    fn drop(&mut self) {\n        // SAFETY: valid mapping to unmap\n        let _ = unsafe { munmap(self.map_ptr, self.map_len) };\n    }\n}"
+}

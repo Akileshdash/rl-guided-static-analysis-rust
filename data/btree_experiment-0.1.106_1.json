@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "btree_experiment-0.1.106/src/vecs.rs",
+    "start_line": 175,
+    "start_col": 1,
+    "end_line": 175,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for ShortVec<T> {\n    fn drop(&mut self) {\n        let mut len = self.len as usize;\n        while len > 0 {\n            len -= 1;\n            unsafe {\n                self.v.get(len);\n            }\n        }\n        self.len = 0;\n        self.set_alloc(0);\n    }\n}"
+}

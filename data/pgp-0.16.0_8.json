@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `packet::signature::config::SignatureConfig::sign_key`",
+    "file": "pgp-0.16.0/src/packet/signature/config.rs",
+    "start_line": 408,
+    "start_col": 5,
+    "end_line": 439,
+    "end_col": 6,
+    "code_snippet": "pub fn sign_key<K, P>(self, signing_key: &K, key_pw: &Password, key: &P) -> Result<Signature>\n    where\n        K: SecretKeyTrait,\n        P: PublicKeyTrait + Serialize,\n    {\n        ensure!(\n            (self.version() == SignatureVersion::V4 && signing_key.version() == KeyVersion::V4)\n                || (self.version() == SignatureVersion::V6\n                    && signing_key.version() == KeyVersion::V6),\n            \"signature version {:?} not allowed for signer key version {:?}\",\n            self.version(),\n            signing_key.version()\n        );\n        debug!(\"signing key (revocation): {:#?} - {:#?}\", self, key);\n\n        let mut hasher = self.hash_alg.new_hasher()?;\n\n        if let SignatureVersionSpecific::V6 { salt } = &self.version_specific {\n            hasher.update(salt.as_ref())\n        }\n\n        serialize_for_hashing(key, &mut hasher)?;\n\n        let len = self.hash_signature_data(&mut hasher)?;\n        hasher.update(&self.trailer(len)?);\n\n        let hash = &hasher.finalize()[..];\n        let signed_hash_value = [hash[0], hash[1]];\n        let signature = signing_key.create_signature(key_pw, self.hash_alg, hash)?;\n\n        Signature::from_config(self, signed_hash_value, signature)\n    }"
+}

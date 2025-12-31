@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::set_long_array_region`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 2142,
+    "start_col": 5,
+    "end_line": 2158,
+    "end_col": 6,
+    "code_snippet": "pub fn set_long_array_region<'other_local>(\n        &self,\n        array: impl AsRef<JLongArray<'other_local>>,\n        start: jsize,\n        buf: &[jlong],\n    ) -> Result<()> {\n        non_null!(array.as_ref(), \"set_long_array_region array argument\");\n        jni_void_call!(\n            self.internal,\n            SetLongArrayRegion,\n            array.as_ref().as_raw(),\n            start,\n            buf.len() as jsize,\n            buf.as_ptr()\n        );\n        Ok(())\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "safe_drive-0.4.3/src/action/client.rs",
+    "start_line": 612,
+    "start_col": 15,
+    "end_line": 612,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\npub struct AsyncResultReceiver<T: ActionMsg> {\n    client: ClientResultRecv<T>,\n    is_waiting: bool,\n}"
+}

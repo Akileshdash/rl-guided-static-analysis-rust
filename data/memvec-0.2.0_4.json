@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `mem_vec::MemVec::<'a, T, A>::truncate`",
+    "file": "memvec-0.2.0/src/mem_vec.rs",
+    "start_line": 230,
+    "start_col": 5,
+    "end_line": 244,
+    "end_col": 6,
+    "code_snippet": "pub fn truncate(&mut self, len: usize) {\n        if len > self.len() {\n            return;\n        }\n        unsafe {\n            // Note: It's intentional that this is `>` and not `>=`.\n            //       Changing it to `>=` has negative performance\n            //       implications in some cases. See #78884 for more.\n\n            let remaining_len = self.mem.len() - len;\n            let s = ptr::slice_from_raw_parts_mut(self.as_mut_ptr().add(len), remaining_len);\n            *self.mem.len_mut() = len;\n            ptr::drop_in_place(s);\n        }\n    }"
+}

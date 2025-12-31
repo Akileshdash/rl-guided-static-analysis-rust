@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cao-lang-0.2.6/src/collections/hash_map.rs",
+    "start_line": 124,
+    "start_col": 1,
+    "end_line": 124,
+    "end_col": 54,
+    "code_snippet": "impl<K, V, A: Allocator> Drop for CaoHashMap<K, V, A> {\n    fn drop(&mut self) {\n        self.clear();\n        let (layout, _) = Self::layout(self.capacity);\n        unsafe {\n            self.alloc.dealloc(self.data, layout);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<linear_group::linear_group_by_key::LinearGroupByKeyMut<'a, T, F> as std::iter::Iterator>::next`",
+    "file": "slice-group-by-0.3.1/src/linear_group/linear_group_by_key.rs",
+    "start_line": 26,
+    "start_col": 13,
+    "end_line": 66,
+    "end_col": 14,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item> {\n                if self.is_empty() {\n                    return None;\n                }\n\n                let mut i = 0;\n                let mut ptr = self.ptr;\n\n                // we use an unsafe block to avoid bounds checking here.\n                // this is safe because the only thing we do here is to get\n                // two elements at `ptr` and `ptr + 1`, bounds checking is done by hand.\n\n                // we need to get *two* contiguous elements so we check that:\n                //  - the first element is at the `end - 1` position because\n                //  - the second one will be read from `ptr + 1` that must\n                //    be lower or equal to `end`\n                unsafe {\n                    while ptr != self.end.sub(1) {\n                        let a = &*ptr;\n                        ptr = ptr.add(1);\n                        let b = &*ptr;\n\n                        i += 1;\n\n                        if (self.func)(a) != (self.func)(b) {\n                            let slice = $mkslice(self.ptr, i);\n                            self.ptr = ptr;\n                            return Some(slice);\n                        }\n                    }\n                }\n\n                // `i` is either `0` or the `slice length - 1` because either:\n                //  - we have not entered the loop and so `i` is equal to `0`\n                //    the slice length is necessarily `1` because we ensure it is not empty\n                //  - we have entered the loop and we have not early returned\n                //    so `i` is equal to the slice `length - 1`\n                let slice = unsafe { $mkslice(self.ptr, i + 1) };\n                self.ptr = self.end;\n                Some(slice)\n            }"
+}

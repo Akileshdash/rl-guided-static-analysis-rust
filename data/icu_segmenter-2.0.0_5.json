@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::RuleBreakData<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_segmenter-2.0.0/src/provider/mod.rs",
+    "start_line": 147,
+    "start_col": 35,
+    "end_line": 147,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_segmenter::provider))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\npub struct RuleBreakData<'data> {\n    /// Property table.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub property_table: CodePointTrie<'data, u8>,\n\n    /// Break state table.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub break_state_table: ZeroVec<'data, BreakState>,\n\n    /// Word type table. Only used for word segmenter.\n    #[cfg_attr(feature = \"serde\", serde(borrow, rename = \"rule_status_table\"))]\n    pub word_type_table: ZeroVec<'data, WordType>,\n\n    /// Number of properties; should be the square root of the length of [`Self::break_state_table`].\n    pub property_count: u8,\n\n    /// The index of the last simple state for [`Self::break_state_table`]. (A simple state has no\n    /// `left` nor `right` in SegmenterProperty).\n    pub last_codepoint_property: u8,\n\n    /// The index of SOT (start of text) state for [`Self::break_state_table`].\n    pub sot_property: u8,\n\n    /// The index of EOT (end of text) state [`Self::break_state_table`].\n    pub eot_property: u8,\n\n    /// The index of \"SA\" state (or 127 if the complex language isn't handled) for\n    /// [`Self::break_state_table`].\n    pub complex_property: u8,\n}"
+}

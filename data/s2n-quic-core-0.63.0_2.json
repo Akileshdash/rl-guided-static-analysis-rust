@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `slice::partition_dedup`",
+    "file": "s2n-quic-core-0.63.0/src/slice.rs",
+    "start_line": 139,
+    "start_col": 1,
+    "end_line": 190,
+    "end_col": 2,
+    "code_snippet": "pub fn partition_dedup<T>(slice: &mut [T]) -> (&mut [T], &mut [T])\nwhere\n    T: PartialEq,\n{\n    // TODO replace with\n    // https://doc.rust-lang.org/std/primitive.slice.html#method.partition_dedup\n    // when stable\n    //\n    // For now, we've just inlined their implementation\n\n    let len = slice.len();\n    if len <= 1 {\n        return (slice, &mut []);\n    }\n\n    let ptr = slice.as_mut_ptr();\n    let mut next_read: usize = 1;\n    let mut next_write: usize = 1;\n\n    // SAFETY: the `while` condition guarantees `next_read` and `next_write`\n    // are less than `len`, thus are inside `self`. `prev_ptr_write` points to\n    // one element before `ptr_write`, but `next_write` starts at 1, so\n    // `prev_ptr_write` is never less than 0 and is inside the slice.\n    // This fulfils the requirements for dereferencing `ptr_read`, `prev_ptr_write`\n    // and `ptr_write`, and for using `ptr.add(next_read)`, `ptr.add(next_write - 1)`\n    // and `prev_ptr_write.offset(1)`.\n    //\n    // `next_write` is also incremented at most once per loop at most meaning\n    // no element is skipped when it may need to be swapped.\n    //\n    // `ptr_read` and `prev_ptr_write` never point to the same element. This\n    // is required for `&mut *ptr_read`, `&mut *prev_ptr_write` to be safe.\n    // The explanation is simply that `next_read >= next_write` is always true,\n    // thus `next_read > next_write - 1` is too.\n    unsafe {\n        // Avoid bounds checks by using raw pointers.\n        while next_read < len {\n            let ptr_read = ptr.add(next_read);\n            let prev_ptr_write = ptr.add(next_write - 1);\n            if *ptr_read != *prev_ptr_write {\n                if next_read != next_write {\n                    let ptr_write = prev_ptr_write.add(1);\n                    core::ptr::swap(ptr_read, ptr_write);\n                }\n                next_write += 1;\n            }\n            next_read += 1;\n        }\n    }\n\n    slice.split_at_mut(next_write)\n}"
+}

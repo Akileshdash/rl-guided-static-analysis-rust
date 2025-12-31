@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "array-macro-2.1.8/src/lib.rs",
+    "start_line": 99,
+    "start_col": 1,
+    "end_line": 99,
+    "end_col": 50,
+    "code_snippet": "impl<T, const N: usize> Drop for __ArrayVec<T, N> {\n    fn drop(&mut self) {\n        // This is safe as arr[..len] is initialized due to\n        // __ArrayVecInner's type invariant.\n        let initialized = &mut self.0.arr[..self.0.len] as *mut _ as *mut [T];\n        unsafe { ptr::drop_in_place(initialized) };\n    }\n}"
+}

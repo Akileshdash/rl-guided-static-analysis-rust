@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "gix-pack-0.60.0/src/cache/delta/traverse/util.rs",
+    "start_line": 64,
+    "start_col": 1,
+    "end_line": 64,
+    "end_col": 59,
+    "code_snippet": "unsafe impl<T> Sync for ItemSliceSync<'_, T> where T: Send {}"
+}

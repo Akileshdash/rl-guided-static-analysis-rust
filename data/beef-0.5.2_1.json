@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "beef-0.5.2/src/generic.rs",
+    "start_line": 366,
+    "start_col": 1,
+    "end_line": 369,
+    "end_col": 17,
+    "code_snippet": "impl<T, U> Drop for Cow<'_, T, U>\nwhere\n    T: Beef + ?Sized,\n    U: Capacity,\n{\n    #[inline]\n    fn drop(&mut self) {\n        if let Some(capacity) = self.capacity() {\n            unsafe { T::owned_from_parts::<U>(self.ptr, self.fat, capacity) };\n        }\n    }\n}"
+}

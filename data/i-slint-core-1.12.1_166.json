@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `items::ContextMenuVTable::input_event`",
+    "file": "i-slint-core-1.12.1/items.rs",
+    "start_line": 150,
+    "start_col": 33,
+    "end_line": 150,
+    "end_col": 35,
+    "code_snippet": "pub input_event: extern \"C\" fn(\n        core::pin::Pin<VRef<ItemVTable>>,\n        MouseEvent,\n        window_adapter: &WindowAdapterRc,\n        self_rc: &ItemRc,\n    ) -> InputEventResult,\n\n    pub focus_event: extern \"C\" fn(\n        core::pin::Pin<VRef<ItemVTable>>,\n        &FocusEvent,\n        window_adapter: &WindowAdapterRc,\n        self_rc: &ItemRc,\n    ) -> FocusEventResult,\n\n    pub key_event: extern \"C\" fn(\n        core::pin::Pin<VRef<ItemVTable>>,\n        &KeyEvent,\n        window_adapter: &WindowAdapterRc,\n        self_rc: &ItemRc,\n    ) -> KeyEventResult,\n\n    pub render: extern \"C\" fn(\n        core::pin::Pin<VRef<ItemVTable>>,\n        backend: &mut ItemRendererRef,\n        self_rc: &ItemRc,\n        size: LogicalSize,\n    ) -> RenderingResult,\n\n    pub bounding_rect: extern \"C\" fn(\n        core::pin::Pin<VRef<ItemVTable>>,\n        window_adapter: &WindowAdapterRc,\n        self_rc: &ItemRc,\n        geometry: LogicalRect,\n    ) -> LogicalRect,\n\n    pub clips_children: extern \"C\" fn(core::pin::Pin<VRef<ItemVTable>>) -> bool,\n}\n\n/// Alias for `vtable::VRef<ItemVTable>` which represent a pointer to a `dyn Item` with\n/// the associated vtable\npub type ItemRef<'a> = vtable::VRef<'a, ItemVTable>;\n\n#[repr(C)]\n#[derive(FieldOffsets, Default, SlintElement)]\n#[pin]\n/// The implementation of an empty items that does nothing\npub struct Empty {\n    pub cached_rendering_data: CachedRenderingData,\n}"
+}

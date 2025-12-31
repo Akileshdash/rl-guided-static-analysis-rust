@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `properties::PropertyHandle::access`",
+    "file": "i-slint-core-1.12.1/properties.rs",
+    "start_line": 527,
+    "start_col": 5,
+    "end_line": 540,
+    "end_col": 6,
+    "code_snippet": "fn access<R>(&self, f: impl FnOnce(Option<Pin<&mut BindingHolder>>) -> R) -> R {\n        assert!(!self.lock_flag(), \"Recursion detected\");\n        unsafe {\n            self.set_lock_flag(true);\n            scopeguard::defer! { self.set_lock_flag(false); }\n            let handle = self.handle.get();\n            let binding = if handle & 0b10 == 0b10 {\n                Some(Pin::new_unchecked(&mut *((handle & !0b11) as *mut BindingHolder)))\n            } else {\n                None\n            };\n            f(binding)\n        }\n    }"
+}

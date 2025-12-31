@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vorbis_rs-0.5.5/src/common/vorbis.rs",
+    "start_line": 182,
+    "start_col": 1,
+    "end_line": 182,
+    "end_col": 25,
+    "code_snippet": "impl Drop for VorbisInfo {\n\tfn drop(&mut self) {\n\t\t// SAFETY: when this struct is dropped we have a valid Vorbis info struct to clear,\n\t\t// and no encode or decode state struct is referencing it\n\t\tunsafe {\n\t\t\tvorbis_info_clear(self.vorbis_info);\n\t\t\tdrop(Box::from_raw(self.vorbis_info));\n\t\t}\n\t}\n}"
+}

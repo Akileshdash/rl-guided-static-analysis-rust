@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crossbeam-epoch-0.9.18/src/sync/queue.rs",
+    "start_line": 203,
+    "start_col": 1,
+    "end_line": 203,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Queue<T> {\n    fn drop(&mut self) {\n        unsafe {\n            let guard = unprotected();\n\n            while self.try_pop(guard).is_some() {}\n\n            // Destroy the remaining sentinel node.\n            let sentinel = self.head.load(Relaxed, guard);\n            drop(sentinel.into_owned());\n        }\n    }\n}"
+}

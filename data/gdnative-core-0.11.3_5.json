@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "gdnative-core-0.11.3/src/object/mod.rs",
+    "start_line": 308,
+    "start_col": 1,
+    "end_line": 308,
+    "end_col": 72,
+    "code_snippet": "unsafe impl<T: GodotObject, Own: Ownership + Sync> Sync for Ref<T, Own> {}"
+}

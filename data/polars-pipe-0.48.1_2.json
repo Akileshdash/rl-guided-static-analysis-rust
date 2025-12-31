@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<executors::sinks::group_by::aggregates::min_max::MinMaxAgg<K, F> as executors::sinks::group_by::aggregates::interface::AggregateFn>::pre_agg_ordered`",
+    "file": "polars-pipe-0.48.1/src/executors/sinks/group_by/aggregates/min_max.rs",
+    "start_line": 67,
+    "start_col": 5,
+    "end_line": 85,
+    "end_col": 6,
+    "code_snippet": "fn pre_agg_ordered(\n        &mut self,\n        _chunk_idx: IdxSize,\n        offset: IdxSize,\n        length: IdxSize,\n        values: &Series,\n    ) {\n        let ca: &ChunkedArray<K::PolarsType> = values.as_ref().as_ref();\n        let arr = ca.downcast_iter().next().unwrap();\n        let arr = unsafe { arr.slice_typed_unchecked(offset as usize, length as usize) };\n        // convince the compiler that K::POLARSTYPE::Native == K\n        let arr = unsafe { std::mem::transmute::<PrimitiveArray<_>, PrimitiveArray<K>>(arr) };\n        let agg = if self.is_min {\n            arr.min_ignore_nan_kernel()\n        } else {\n            arr.max_ignore_nan_kernel()\n        };\n        self.pre_agg_primitive(0, agg)\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "parity-send-wrapper-0.1.0/src/lib.rs",
+    "start_line": 169,
+    "start_col": 1,
+    "end_line": 169,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for SendWrapper<T> {\n\n\t/// Drops the contained value.\n\t///\n\t/// # Panics\n\t/// Dropping panics if it is done from a different thread than the one the SendWrapper<T> instance has been\n\t/// created with. As an exception, there is no extra panic if the thread is already panicking/unwinding. This is\n\t/// because otherwise there would be double panics (usually resulting in an abort) when dereferencing from a wrong\n\t/// thread.\n\tfn drop(&mut self) {\n\t\tif self.valid() {\n\t\t\tunsafe {\n\t\t\t\t// Create a boxed value from the raw pointer. We just checked that the pointer is valid.\n\t\t\t\t// Box handles the dropping for us when _dropper goes out of scope.\n\t\t\t\tlet _dropper = Box::from_raw(self.data);\n\t\t\t}\n\t\t} else {\n\t\t\tif !std::thread::panicking() {\n\t\t\t\t// panic because of dropping from wrong thread\n\t\t\t\t// only do this while not unwinding (coud be caused by deref from wrong thread)\n\t\t\t\tpanic!(DROP_ERROR);\n\t\t\t}\n\t\t}\n\t}\n}"
+}

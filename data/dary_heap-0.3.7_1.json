@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dary_heap-0.3.7/src/lib.rs",
+    "start_line": 471,
+    "start_col": 1,
+    "end_line": 471,
+    "end_col": 56,
+    "code_snippet": "impl<T: Ord, const D: usize> Drop for PeekMut<'_, T, D> {\n    fn drop(&mut self) {\n        if let Some(original_len) = self.original_len {\n            // SAFETY: That's how many elements were in the Vec at the time of\n            // the PeekMut::deref_mut call, and therefore also at the time of\n            // the BinaryHeap::peek_mut call. Since the PeekMut did not end up\n            // getting leaked, we are now undoing the leak amplification that\n            // the DerefMut prepared for.\n            unsafe { self.heap.data.set_len(original_len.get()) };\n\n            // SAFETY: PeekMut is only instantiated for non-empty heaps.\n            unsafe { self.heap.sift_down(0) };\n        }\n    }\n}"
+}

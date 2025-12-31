@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "kiddo-5.2.2/src/mirror_select_nth_unstable_by.rs",
+    "start_line": 662,
+    "start_col": 1,
+    "end_line": 662,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for CopyOnDrop<T> {\n    fn drop(&mut self) {\n        // SAFETY:  This is a helper class.\n        //          Please refer to its usage for correctness.\n        //          Namely, one must be sure that `src` and `dst` does not overlap as required by `ptr::copy_nonoverlapping`.\n        unsafe {\n            ptr::copy_nonoverlapping(self.src, self.dest, 1);\n        }\n    }\n}"
+}

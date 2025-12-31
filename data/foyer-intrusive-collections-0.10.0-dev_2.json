@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<pointer_ops::clone_pointer_from_raw::PointerGuard<'a, T> as core::ops::Drop>::drop`",
+    "file": "foyer-intrusive-collections-0.10.0-dev/src/pointer_ops.rs",
+    "start_line": 251,
+    "start_col": 9,
+    "end_line": 258,
+    "end_col": 10,
+    "code_snippet": "fn drop(&mut self) {\n            // Prevent shared pointers from being released by converting them\n            // back into the raw pointers\n            // SAFETY: `pointer` is never dropped. `ManuallyDrop::take` is not stable until 1.42.0.\n            let _ = self\n                .pointer_ops\n                .into_raw(unsafe { core::ptr::read(&*self.pointer) });\n        }"
+}

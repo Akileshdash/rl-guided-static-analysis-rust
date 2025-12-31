@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "par-stream-0.10.2/src/shared_stream.rs",
+    "start_line": 89,
+    "start_col": 1,
+    "end_line": 92,
+    "end_col": 20,
+    "code_snippet": "unsafe impl<St> Sync for Inner<St>\nwhere\n    St: Stream + Send,\n    St::Item: Send,\n{\n}"
+}

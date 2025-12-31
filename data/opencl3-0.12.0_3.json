@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "opencl3-0.12.0/src/context.rs",
+    "start_line": 104,
+    "start_col": 1,
+    "end_line": 104,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Context {\n    fn drop(&mut self) {\n        self.devices.clear();\n        unsafe { context::release_context(self.context).expect(\"Error: clReleaseContext\") };\n    }\n}"
+}

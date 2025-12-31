@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sync::queue::Queue::<T>::pop_if_internal`",
+    "file": "crossbeam-epoch-0.9.18/src/sync/queue.rs",
+    "start_line": 146,
+    "start_col": 5,
+    "end_line": 173,
+    "end_col": 6,
+    "code_snippet": "fn pop_if_internal<F>(&self, condition: F, guard: &Guard) -> Result<Option<T>, ()>\n    where\n        T: Sync,\n        F: Fn(&T) -> bool,\n    {\n        let head = self.head.load(Acquire, guard);\n        let h = unsafe { head.deref() };\n        let next = h.next.load(Acquire, guard);\n        match unsafe { next.as_ref() } {\n            Some(n) if condition(unsafe { &*n.data.as_ptr() }) => unsafe {\n                self.head\n                    .compare_exchange(head, next, Release, Relaxed, guard)\n                    .map(|_| {\n                        let tail = self.tail.load(Relaxed, guard);\n                        // Advance the tail so that we don't retire a pointer to a reachable node.\n                        if head == tail {\n                            let _ = self\n                                .tail\n                                .compare_exchange(tail, next, Release, Relaxed, guard);\n                        }\n                        guard.defer_destroy(head);\n                        Some(n.data.assume_init_read())\n                    })\n                    .map_err(|_| ())\n            },\n            None | Some(_) => Ok(None),\n        }\n    }"
+}

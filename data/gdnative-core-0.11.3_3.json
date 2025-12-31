@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gdnative-core-0.11.3/src/object/bounds.rs",
+    "start_line": 189,
+    "start_col": 1,
+    "end_line": 189,
+    "end_col": 20,
+    "code_snippet": "impl Drop for UnRef {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            let raw = RawObject::<ReferenceCountedClassPlaceholder>::from_sys_ref_unchecked(self.0);\n            raw.unref_and_free_if_last();\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "allsorts-0.15.1/src/glyph_info.rs",
+    "start_line": 46,
+    "start_col": 1,
+    "end_line": 46,
+    "end_col": 20,
+    "code_snippet": "#[self_referencing]\nstruct Post {\n    data: Box<[u8]>,\n    #[borrows(data)]\n    #[not_covariant]\n    table: PostTable<'this>,\n}"
+}

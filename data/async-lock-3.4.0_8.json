@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-lock-3.4.0/src/rwlock.rs",
+    "start_line": 797,
+    "start_col": 1,
+    "end_line": 797,
+    "end_col": 39,
+    "code_snippet": "impl<T> Drop for RwLockReadGuardArc<T> {\n    #[inline]\n    fn drop(&mut self) {\n        // SAFETY: we are in `drop`, decrementing the reference count\n        // on purpose.\n        // We hold a read lock on the `RwLock`.\n        unsafe {\n            let arc = ManuallyDrop::into_inner(Self::inner_arc(self));\n            arc.raw.read_unlock();\n        }\n    }\n}"
+}

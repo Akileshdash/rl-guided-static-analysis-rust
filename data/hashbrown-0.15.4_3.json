@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hashbrown-0.15.4/src/raw/mod.rs",
+    "start_line": 3968,
+    "start_col": 1,
+    "end_line": 3968,
+    "end_col": 50,
+    "code_snippet": "impl<T, A: Allocator> Drop for RawDrain<'_, T, A> {\n    #[cfg_attr(feature = \"inline-more\", inline)]\n    fn drop(&mut self) {\n        unsafe {\n            // Drop all remaining elements. Note that this may panic.\n            self.iter.drop_elements();\n\n            // Reset the contents of the table now that all elements have been\n            // dropped.\n            self.table.clear_no_drop();\n\n            // Move the now empty table back to its original location.\n            self.orig_table\n                .as_ptr()\n                .copy_from_nonoverlapping(&self.table, 1);\n        }\n    }\n}"
+}

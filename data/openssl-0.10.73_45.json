@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ssl::callbacks::raw_custom_ext_parse`",
+    "file": "openssl-0.10.73/src/ssl/callbacks.rs",
+    "start_line": 641,
+    "start_col": 1,
+    "end_line": 680,
+    "end_col": 2,
+    "code_snippet": "pub extern \"C\" fn raw_custom_ext_parse<F>(\n    ssl: *mut ffi::SSL,\n    _: c_uint,\n    context: c_uint,\n    input: *const c_uchar,\n    inlen: size_t,\n    x: *mut ffi::X509,\n    chainidx: size_t,\n    al: *mut c_int,\n    _: *mut c_void,\n) -> c_int\nwhere\n    F: Fn(&mut SslRef, ExtensionContext, &[u8], Option<(usize, &X509Ref)>) -> Result<(), SslAlert>\n        + 'static\n        + Sync\n        + Send,\n{\n    unsafe {\n        let ssl = SslRef::from_ptr_mut(ssl);\n        let callback = ssl\n            .ssl_context()\n            .ex_data(SslContext::cached_ex_index::<F>())\n            .expect(\"BUG: custom ext parse callback missing\") as *const F;\n        let ectx = ExtensionContext::from_bits_truncate(context);\n        #[allow(clippy::unnecessary_cast)]\n        let slice = util::from_raw_parts(input as *const u8, inlen);\n        let cert = if ectx.contains(ExtensionContext::TLS1_3_CERTIFICATE) {\n            Some((chainidx, X509Ref::from_ptr(x)))\n        } else {\n            None\n        };\n        match (*callback)(ssl, ectx, slice, cert) {\n            Ok(()) => 1,\n            Err(alert) => {\n                *al = alert.0;\n                0\n            }\n        }\n    }\n}"
+}

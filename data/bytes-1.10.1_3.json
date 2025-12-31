@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `bytes::Bytes::from_owner`",
+    "file": "bytes-1.10.1/src/bytes.rs",
+    "start_line": 251,
+    "start_col": 5,
+    "end_line": 290,
+    "end_col": 6,
+    "code_snippet": "pub fn from_owner<T>(owner: T) -> Self\n    where\n        T: AsRef<[u8]> + Send + 'static,\n    {\n        // Safety & Miri:\n        // The ownership of `owner` is first transferred to the `Owned` wrapper and `Bytes` object.\n        // This ensures that the owner is pinned in memory, allowing us to call `.as_ref()` safely\n        // since the lifetime of the owner is controlled by the lifetime of the new `Bytes` object,\n        // and the lifetime of the resulting borrowed `&[u8]` matches that of the owner.\n        // Note that this remains safe so long as we only call `.as_ref()` once.\n        //\n        // There are some additional special considerations here:\n        //   * We rely on Bytes's Drop impl to clean up memory should `.as_ref()` panic.\n        //   * Setting the `ptr` and `len` on the bytes object last (after moving the owner to\n        //     Bytes) allows Miri checks to pass since it avoids obtaining the `&[u8]` slice\n        //     from a stack-owned Box.\n        // More details on this: https://github.com/tokio-rs/bytes/pull/742/#discussion_r1813375863\n        //                  and: https://github.com/tokio-rs/bytes/pull/742/#discussion_r1813316032\n\n        let owned = Box::into_raw(Box::new(Owned {\n            lifetime: OwnedLifetime {\n                ref_cnt: AtomicUsize::new(1),\n                drop: owned_box_and_drop::<T>,\n            },\n            owner,\n        }));\n\n        let mut ret = Bytes {\n            ptr: NonNull::dangling().as_ptr(),\n            len: 0,\n            data: AtomicPtr::new(owned.cast()),\n            vtable: &OWNED_VTABLE,\n        };\n\n        let buf = unsafe { &*owned }.owner.as_ref();\n        ret.ptr = buf.as_ptr();\n        ret.len = buf.len();\n\n        ret\n    }"
+}

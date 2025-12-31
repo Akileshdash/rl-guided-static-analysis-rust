@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "alto-3.0.4/src/alc.rs",
+    "start_line": 483,
+    "start_col": 1,
+    "end_line": 483,
+    "end_col": 26,
+    "code_snippet": "impl Drop for DeviceInner {\n\tfn drop(&mut self) {\n\t\tunsafe { self.alto.0.api.alcCloseDevice(self.dev); }\n\t}\n}"
+}

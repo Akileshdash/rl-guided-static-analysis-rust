@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<ty::RefinementType as erg_common::traits::LimitedDisplay>::limited_fmt`",
+    "file": "erg_compiler-0.6.53-nightly.5/ty/mod.rs",
+    "start_line": 1098,
+    "start_col": 5,
+    "end_line": 1125,
+    "end_col": 6,
+    "code_snippet": "fn limited_fmt<W: std::fmt::Write>(&self, f: &mut W, limit: isize) -> std::fmt::Result {\n        if limit == 0 {\n            return write!(f, \"...\");\n        }\n        let first_subj = self.pred.ors().iter().next().and_then(|p| p.subject());\n        let is_simple_type = self.t.is_value_class();\n        let is_simple_preds = self\n            .pred\n            .ors()\n            .iter()\n            .all(|p| p.is_equal() && p.subject() == first_subj);\n        if is_simple_type && is_simple_preds {\n            write!(f, \"{{\")?;\n            for (i, pred) in self.pred.ors().into_iter().enumerate() {\n                if i > 0 {\n                    write!(f, \", \")?;\n                }\n                let (_, rhs) = enum_unwrap!(pred, Predicate::Equal { lhs, rhs });\n                rhs.limited_fmt(f, limit - 1)?;\n            }\n            write!(f, \"}}\")?;\n            Ok(())\n        } else {\n            write!(f, \"{{{}: \", self.var)?;\n            self.t.limited_fmt(f, limit - 1)?;\n            write!(f, \" | {}}}\", self.pred)\n        }\n    }"
+}

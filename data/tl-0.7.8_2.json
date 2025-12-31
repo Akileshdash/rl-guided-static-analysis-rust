@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tl-0.7.8/src/inline/hashmap.rs",
+    "start_line": 141,
+    "start_col": 1,
+    "end_line": 141,
+    "end_col": 64,
+    "code_snippet": "impl<K, V, const N: usize> Drop for InlineHashMapInner<K, V, N> {\n    fn drop(&mut self) {\n        if let Some((data, len)) = self.inline_parts_mut() {\n            for element in data.iter_mut().take(len) {\n                unsafe { ptr::drop_in_place(element.as_mut_ptr()) };\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "argon2-0.6.0-rc.0/src/block.rs",
+    "start_line": 190,
+    "start_col": 1,
+    "end_line": 190,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Blocks {\n    fn drop(&mut self) {\n        use alloc::alloc::{Layout, dealloc};\n        // SAFETY: layout was checked during construction\n        let layout = unsafe { Layout::array::<Block>(self.len).unwrap_unchecked() };\n        // SAFETY: we use `dealloc` correctly with the previously allocated pointer\n        unsafe {\n            dealloc(self.p.as_ptr().cast(), layout);\n        }\n    }\n}"
+}

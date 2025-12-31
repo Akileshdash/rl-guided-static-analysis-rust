@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `raw::utils::stack::Stack::<T>::drain`",
+    "file": "papaya-0.2.3/src/raw/utils/stack.rs",
+    "start_line": 60,
+    "start_col": 5,
+    "end_line": 73,
+    "end_col": 6,
+    "code_snippet": "pub fn drain(&mut self, mut f: impl FnMut(T)) {\n        let mut head = *self.head.get_mut();\n\n        while !head.is_null() {\n            // Safety: We have `&mut self` and the node is non-null.\n            let owned_head = unsafe { Box::from_raw(head) };\n\n            // Drain the element.\n            f(owned_head.value);\n\n            // Continue iterating over the stack.\n            head = owned_head.next;\n        }\n    }"
+}

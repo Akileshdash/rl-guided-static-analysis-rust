@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `packable::array::<impl packable::Packable for [T; N]>::pack`",
+    "file": "packable-0.11.0/src/packable/array.rs",
+    "start_line": 13,
+    "start_col": 5,
+    "end_line": 25,
+    "end_col": 6,
+    "code_snippet": "fn pack<P: Packer>(&self, packer: &mut P) -> Result<(), P::Error> {\n        if TypeId::of::<T>() == TypeId::of::<u8>() {\n            // Safety: `Self` is identical to `[u8; N]`.\n            let bytes = unsafe { core::mem::transmute::<&Self, &[u8; N]>(self) };\n            packer.pack_bytes(bytes)?;\n        } else {\n            for item in self.iter() {\n                item.pack(packer)?;\n            }\n        }\n\n        Ok(())\n    }"
+}

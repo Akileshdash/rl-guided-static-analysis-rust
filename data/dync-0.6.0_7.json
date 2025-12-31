@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "dync-0.6.0/src/vec_dyn.rs",
+    "start_line": 147,
+    "start_col": 1,
+    "end_line": 147,
+    "end_col": 62,
+    "code_snippet": "unsafe impl<V: ?Sized + HasDrop + HasSync> Sync for VecDyn<V> {}"
+}

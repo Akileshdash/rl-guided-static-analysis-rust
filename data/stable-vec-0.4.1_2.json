@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<core::bitvec::BitVecCore<T> as core::clone::Clone>::clone`",
+    "file": "stable-vec-0.4.1/src/core/bitvec.rs",
+    "start_line": 359,
+    "start_col": 5,
+    "end_line": 390,
+    "end_col": 6,
+    "code_snippet": "fn clone(&self) -> Self {\n        let mut out = Self::new();\n\n        if self.cap != 0 {\n            // All of this is scary\n            unsafe {\n                out.realloc(self.cap);\n\n                // Copy element data over\n                if size_of::<T>() != 0 {\n                    let mut idx = 0;\n                    while let Some(next) = self.first_filled_slot_from(idx) {\n                        let clone = self.get_unchecked(next).clone();\n                        ptr::write(out.elem_ptr.as_ptr().add(next), clone);\n\n                        idx = next + 1;\n                    }\n                }\n\n                // Copy bitvec data over\n                ptr::copy_nonoverlapping(\n                    self.bit_ptr.as_ptr(),\n                    out.bit_ptr.as_ptr(),\n                    num_usizes_for(self.cap)\n                );\n\n                out.set_len(self.len);\n            }\n        }\n\n        out\n    }"
+}

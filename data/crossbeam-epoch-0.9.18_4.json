@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crossbeam-epoch-0.9.18/src/sync/list.rs",
+    "start_line": 218,
+    "start_col": 1,
+    "end_line": 218,
+    "end_col": 45,
+    "code_snippet": "impl<T, C: IsElement<T>> Drop for List<T, C> {\n    fn drop(&mut self) {\n        unsafe {\n            let guard = unprotected();\n            let mut curr = self.head.load(Relaxed, guard);\n            while let Some(c) = curr.as_ref() {\n                let succ = c.next.load(Relaxed, guard);\n                // Verify that all elements have been removed from the list.\n                assert_eq!(succ.tag(), 1);\n\n                C::finalize(curr.deref(), guard);\n                curr = succ;\n            }\n        }\n    }\n}"
+}

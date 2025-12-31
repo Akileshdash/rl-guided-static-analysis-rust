@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `OrdinalDirectionTable::<T>::new_fn`",
+    "file": "direction-0.17.12/src/lib.rs",
+    "start_line": 851,
+    "start_col": 13,
+    "end_line": 860,
+    "end_col": 14,
+    "code_snippet": "pub fn new_fn<F: FnMut($direction_type) -> T>(mut f: F) -> Self {\n                let values = unsafe {\n                    let mut values: [T; $count] = MaybeUninit::uninit().assume_init();\n                    for i in 0..$count {\n                        values[i] = f(mem::transmute(i as u8));\n                    }\n                    values\n                };\n                Self { values }\n            }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mallumo-gls-0.43.0/src/renderer.rs",
+    "start_line": 545,
+    "start_col": 1,
+    "end_line": 545,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Renderer {\n    fn drop(&mut self) {\n        unsafe {\n            delete_vertex_array(self.vertex_array_object);\n        }\n    }\n}"
+}

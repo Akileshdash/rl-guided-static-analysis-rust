@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `matmul::components::global::args::TensorOutput::<EI, EO, GA>::shape`",
+    "file": "cubecl-linalg-0.5.0/src/matmul/components/global/args.rs",
+    "start_line": 407,
+    "start_col": 5,
+    "end_line": 409,
+    "end_col": 6,
+    "code_snippet": "pub fn shape(&self, axis: u32) -> u32 {\n        unsafe { GA::shape_out(&(*self.state), axis) }\n    }"
+}

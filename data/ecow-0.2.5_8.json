@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `vec::EcoVec::<T>::truncate`",
+    "file": "ecow-0.2.5/src/vec.rs",
+    "start_line": 412,
+    "start_col": 5,
+    "end_line": 440,
+    "end_col": 6,
+    "code_snippet": "pub fn truncate(&mut self, target: usize) {\n        if target >= self.len {\n            return;\n        }\n\n        if !self.is_unique() {\n            // Safety: Just checked bounds.\n            *self = Self::from(unsafe { self.get_unchecked(..target) });\n            return;\n        }\n\n        let rest = self.len - target;\n        unsafe {\n            // Safety:\n            // - Since `target < len`, we maintain `len <= capacity`.\n            self.len = target;\n\n            // Safety:\n            // The reference count is `1` because of `make_unique`.\n            // - The pointer returned by `data_mut()` is valid for `capacity`\n            //   writes.\n            // - We have the invariant `len <= capacity`.\n            // - Thus, `data_mut() + target` is valid for `len - target` writes.\n            ptr::drop_in_place(ptr::slice_from_raw_parts_mut(\n                self.data_mut().add(target),\n                rest,\n            ));\n        }\n    }"
+}

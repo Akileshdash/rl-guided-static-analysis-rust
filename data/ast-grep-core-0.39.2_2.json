@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `pinned::PinnedNodeData::<D, T>::get_data`",
+    "file": "ast-grep-core-0.39.2/src/pinned.rs",
+    "start_line": 51,
+    "start_col": 3,
+    "end_line": 55,
+    "end_col": 4,
+    "code_snippet": "pub fn get_data(&mut self) -> &T::Data {\n    let pin = unsafe { &*(&self.pin as *const Root<D>) as &'static Root<D> };\n    self.data.visit_nodes(|n| unsafe { pin.readopt(n) });\n    self.data.get_data()\n  }"
+}

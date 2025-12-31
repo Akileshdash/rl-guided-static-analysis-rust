@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tract-data-0.21.13/src/blob.rs",
+    "start_line": 29,
+    "start_col": 1,
+    "end_line": 29,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Blob {\n    #[inline]\n    fn drop(&mut self) {\n        if !self.data.is_null() {\n            unsafe { dealloc(self.data, self.layout) }\n        }\n    }\n}"
+}

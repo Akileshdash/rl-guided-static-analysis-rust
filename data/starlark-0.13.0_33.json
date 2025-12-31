@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::add`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 688,
+    "start_col": 5,
+    "end_line": 688,
+    "end_col": 88,
+    "code_snippet": "fn add(&self, _rhs: Value<'v>, _heap: &'v Heap) -> Option<crate::Result<Value<'v>>> {\n        None\n    }"
+}

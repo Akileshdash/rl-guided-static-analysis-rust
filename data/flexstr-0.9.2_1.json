@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "flexstr-0.9.2/src/lib.rs",
+    "start_line": 207,
+    "start_col": 1,
+    "end_line": 208,
+    "end_col": 40,
+    "code_snippet": "impl<const SIZE: usize, const PAD1: usize, const PAD2: usize, HEAP> Drop\n    for FlexStr<SIZE, PAD1, PAD2, HEAP>\n{\n    #[inline]\n    fn drop(&mut self) {\n        // SAFETY: Marker check is aligned to correct accessed field\n        unsafe {\n            if let StorageType::Heap = self.heap_str.marker {\n                ManuallyDrop::drop(&mut self.heap_str);\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tl-0.7.8/src/vdom.rs",
+    "start_line": 253,
+    "start_col": 1,
+    "end_line": 253,
+    "end_col": 24,
+    "code_snippet": "impl Drop for RawString {\n    fn drop(&mut self) {\n        // SAFETY: the pointer is always valid because `RawString` can only be constructed through `RawString::new()`\n        unsafe {\n            drop(Box::from_raw(self.0));\n        };\n    }\n}"
+}

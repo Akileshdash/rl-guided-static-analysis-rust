@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "spinning-0.1.0/src/lib.rs",
+    "start_line": 579,
+    "start_col": 1,
+    "end_line": 579,
+    "end_col": 64,
+    "code_snippet": "unsafe impl<T, F: Send> Sync for Lazy<T, F> where Once<T>: Sync {}\n// auto-derived `Send` impl is OK."
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "cassandra-cpp-3.0.2/src/cassandra/future.rs",
+    "start_line": 65,
+    "start_col": 1,
+    "end_line": 65,
+    "end_col": 38,
+    "code_snippet": "unsafe impl<T> Sync for CassFuture<T> {}\nunsafe impl<T> Send for CassFuture<T> where T: Send {}"
+}

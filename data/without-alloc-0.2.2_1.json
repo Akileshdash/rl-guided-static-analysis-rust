@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "without-alloc-0.2.2/src/boxed.rs",
+    "start_line": 157,
+    "start_col": 1,
+    "end_line": 157,
+    "end_col": 36,
+    "code_snippet": "impl<T: ?Sized> Drop for Box<'_, T> {\n    fn drop(&mut self) {\n        unsafe {\n            ptr::drop_in_place(self.inner.as_ptr())\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gfx-backend-vulkan-0.9.0/src/lib.rs",
+    "start_line": 87,
+    "start_col": 1,
+    "end_line": 87,
+    "end_col": 26,
+    "code_snippet": "impl Drop for RawInstance {\n    fn drop(&mut self) {\n        unsafe {\n            match self.debug_messenger {\n                Some(DebugMessenger::Utils(ref ext, callback)) => {\n                    ext.destroy_debug_utils_messenger(callback, None)\n                }\n                #[allow(deprecated)] // `DebugReport`\n                Some(DebugMessenger::Report(ref ext, callback)) => {\n                    ext.destroy_debug_report_callback(callback, None)\n                }\n                None => {}\n            }\n\n            if !self.handle_is_external {\n                self.inner.destroy_instance(None);\n            }\n        }\n    }\n}"
+}

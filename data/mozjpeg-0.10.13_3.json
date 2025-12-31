@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mozjpeg-0.10.13/src/writedst.rs",
+    "start_line": 113,
+    "start_col": 1,
+    "end_line": 113,
+    "end_col": 35,
+    "code_snippet": "impl<W> Drop for DestinationMgr<W> {\n    fn drop(&mut self) {\n        if !self.inner_shared.is_null() {\n            unsafe {\n                #[cfg(debug_assertions)]\n                self.poison_jpeg_destination_mgr();\n\n                let _ = Box::from_raw(self.inner_shared);\n            }\n        }\n    }\n}"
+}

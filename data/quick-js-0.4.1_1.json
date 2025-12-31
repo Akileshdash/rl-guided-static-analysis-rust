@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "quick-js-0.4.1/src/bindings.rs",
+    "start_line": 597,
+    "start_col": 1,
+    "end_line": 597,
+    "end_col": 36,
+    "code_snippet": "impl<'a> Drop for OwnedValueRef<'a> {\n    fn drop(&mut self) {\n        unsafe {\n            free_value(self.context.context, self.value);\n        }\n    }\n}"
+}

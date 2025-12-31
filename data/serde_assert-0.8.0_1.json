@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "serde_assert-0.8.0/src/token.rs",
+    "start_line": 1550,
+    "start_col": 1,
+    "end_line": 1550,
+    "end_col": 29,
+    "code_snippet": "impl Drop for OwningIter<'_> {\n    fn drop(&mut self) {\n        // SAFETY: The raw parts stored in this struct are guaranteed to correspond to the valid\n        // parts of a `Vec`, since the parts were obtained directly from a `Vec` originally.\n        unsafe {\n            Vec::from_raw_parts(\n                self.buf.as_ptr(),\n                #[allow(clippy::cast_sign_loss)]\n                {\n                    self.end.offset_from(self.buf.as_ptr()) as usize\n                },\n                self.cap,\n            )\n        };\n    }\n}"
+}

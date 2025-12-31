@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "flurry-0.5.2/src/node.rs",
+    "start_line": 923,
+    "start_col": 1,
+    "end_line": 923,
+    "end_col": 34,
+    "code_snippet": "impl<K, V> Drop for TreeBin<K, V> {\n    fn drop(&mut self) {\n        // safety: we have &mut self _and_ all references we have returned are bound to the\n        // lifetime of their borrow of self, so there cannot be any outstanding references to\n        // anything in the map.\n        unsafe { self.drop_fields(true) };\n    }\n}"
+}

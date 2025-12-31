@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::boxed::Box<T> as HeapSizeOf>::heap_size_of_children`",
+    "file": "heapsize-0.4.2/src/lib.rs",
+    "start_line": 88,
+    "start_col": 5,
+    "end_line": 93,
+    "end_col": 6,
+    "code_snippet": "fn heap_size_of_children(&self) -> usize {\n        // Measure size of `self`.\n        unsafe {\n            heap_size_of(&**self as *const T as *const c_void) + (**self).heap_size_of_children()\n        }\n    }"
+}

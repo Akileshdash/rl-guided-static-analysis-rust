@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "futures-concurrency-7.6.3/src/future/race_ok/tuple/mod.rs",
+    "start_line": 33,
+    "start_col": 23,
+    "end_line": 33,
+    "end_col": 33,
+    "code_snippet": "#[pin_project(PinnedDrop)]\n        pub struct $StructName<T, ERR, $($F),*>\n        where\n            $( $F: Future<Output = Result<T, ERR>>, )*\n            ERR: fmt::Debug,\n        {\n            completed: usize,\n            done: bool,\n            indexer: utils::Indexer,\n            errors: [MaybeUninit<ERR>; $StructName],\n            errors_states: PollArray<{ $StructName }>,\n            $( #[pin] $F: $F, )*\n        }"
+}

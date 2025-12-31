@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/bump_vec.rs",
+    "start_line": 2348,
+    "start_col": 9,
+    "end_line": 2348,
+    "end_col": 59,
+    "code_snippet": "impl<T, A: BumpAllocator> Drop for DropGuard<T, A> {\n            fn drop(&mut self) {\n                unsafe {\n                    let layout = Layout::from_size_align_unchecked(self.cap * T::SIZE, T::ALIGN);\n                    self.allocator.deallocate(self.ptr.cast(), layout);\n                }\n            }\n        }"
+}

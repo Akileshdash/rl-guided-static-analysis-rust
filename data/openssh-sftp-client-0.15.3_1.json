@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "openssh-sftp-client-0.15.3/src/file/tokio_compat_file.rs",
+    "start_line": 63,
+    "start_col": 15,
+    "end_line": 63,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\npub struct TokioCompatFile {\n    inner: File,\n\n    buffer_len: NonZeroUsize,\n    buffer: BytesMut,\n\n    write_len: usize,\n\n    read_future: Option<AwaitableDataFuture<Buffer>>,\n    write_futures: VecDeque<WriteFutureElement>,\n\n    /// cancellation_fut is not only cancel-safe, but also can be polled after\n    /// it is ready.\n    ///\n    /// Once it is ready, all polls after that immediately return Poll::Ready(())\n    #[pin]\n    cancellation_future: WaitForCancellationFutureOwned,\n}"
+}

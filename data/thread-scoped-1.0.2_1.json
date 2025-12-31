@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "thread-scoped-1.0.2/src/lib.rs",
+    "start_line": 25,
+    "start_col": 1,
+    "end_line": 25,
+    "end_col": 56,
+    "code_snippet": "unsafe impl<'a, T: Send + 'a> Sync for JoinGuard<'a, T> {}"
+}

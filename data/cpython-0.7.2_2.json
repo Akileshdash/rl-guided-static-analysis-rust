@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "cpython-0.7.2/src/pythonrun.rs",
+    "start_line": 167,
+    "start_col": 1,
+    "end_line": 167,
+    "end_col": 46,
+    "code_snippet": "unsafe impl<T: Send> Sync for GILProtected<T> {}"
+}

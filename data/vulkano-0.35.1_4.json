@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkano-0.35.1/src/command_buffer/commands/secondary.rs",
+    "start_line": 700,
+    "start_col": 1,
+    "end_line": 700,
+    "end_col": 38,
+    "code_snippet": "impl Drop for DropUnlockCommandBuffer {\n    fn drop(&mut self) {\n        unsafe {\n            self.unlock();\n        }\n    }\n}"
+}

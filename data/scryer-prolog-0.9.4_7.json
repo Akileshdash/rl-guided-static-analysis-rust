@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `machine::system_calls::<impl machine::Machine>::socket_server_close`",
+    "file": "scryer-prolog-0.9.4/src/machine/system_calls.rs",
+    "start_line": 6725,
+    "start_col": 5,
+    "end_line": 6752,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn socket_server_close(&mut self) -> CallResult {\n        let culprit = self.deref_register(1);\n\n        read_heap_cell!(culprit,\n            (HeapCellValueTag::Cons, cons_ptr) => {\n                match_untyped_arena_ptr!(cons_ptr,\n                    (ArenaHeaderTag::TcpListener, tcp_listener) => {\n                        unsafe {\n                            // dropping closes the instance.\n                            std::ptr::drop_in_place(&mut tcp_listener as *mut _);\n                        }\n\n                        tcp_listener.set_tag(ArenaHeaderTag::Dropped);\n                        return Ok(());\n                    }\n                    _ => {\n                    }\n                );\n            }\n            _ => {\n            }\n        );\n\n        let err = self.machine_st.type_error(ValidType::TcpListener, culprit);\n        let stub = functor_stub(atom!(\"socket_server_close\"), 1);\n\n        Err(self.machine_st.error_form(err, stub))\n    }"
+}

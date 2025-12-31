@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tokio-uring-0.5.0/src/runtime/mod.rs",
+    "start_line": 139,
+    "start_col": 1,
+    "end_line": 139,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Runtime {\n    fn drop(&mut self) {\n        // drop tasks in correct order\n        unsafe {\n            ManuallyDrop::drop(&mut self.local);\n            ManuallyDrop::drop(&mut self.tokio_rt);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::CollationData<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_collator-2.0.0/src/provider.rs",
+    "start_line": 183,
+    "start_col": 35,
+    "end_line": 183,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_collator::provider))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\npub struct CollationData<'data> {\n    /// Mapping from `char` to `CollationElement32` (represented\n    /// as its `u32` bits).\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub trie: CodePointTrie<'data, u32>,\n    /// `CollationElement`s used in expansions and offset CE32s\n    /// (represented as their `u64` bits)\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub ces: ZeroVec<'data, u64>,\n    /// `CollationElement32`s used in expansions and as defaults\n    /// for digits when the numeric mode is not in use\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub ce32s: ZeroVec<'data, u32>,\n    /// Defaults and tries for prefix and contraction matching\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub contexts: ZeroVec<'data, u16>,\n}"
+}

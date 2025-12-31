@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::rbin_op_ty`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 842,
+    "start_col": 5,
+    "end_line": 842,
+    "end_col": 66,
+    "code_snippet": "fn rbin_op_ty(_lhs: &TyBasic, _op: TypingBinOp) -> Option<Ty> {\n        None\n    }"
+}

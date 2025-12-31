@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "bitvec-1.0.1/src/vec/iter.rs",
+    "start_line": 506,
+    "start_col": 1,
+    "end_line": 510,
+    "end_col": 23,
+    "code_snippet": "unsafe impl<T, O> Sync for Drain<'_, T, O>\nwhere\n\tT: BitStore,\n\tO: BitOrder,\n\tBitSlice<T, O>: Sync,\n{\n}"
+}

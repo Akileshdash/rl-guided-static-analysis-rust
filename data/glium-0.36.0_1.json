@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/buffer/alloc.rs",
+    "start_line": 870,
+    "start_col": 1,
+    "end_line": 870,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Alloc {\n    fn drop(&mut self) {\n        unsafe {\n            let mut ctxt = self.context.make_current();\n            self.assert_unmapped(&mut ctxt);\n            self.assert_not_transform_feedback(&mut ctxt);\n            VertexAttributesSystem::purge_buffer(&mut ctxt, self.id);\n            destroy_buffer(&mut ctxt, self.id);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<structure::matrix::Matrix as traits::fp::FPMatrix>::col_mut_map`",
+    "file": "peroxide-0.40.0/src/structure/matrix.rs",
+    "start_line": 2805,
+    "start_col": 5,
+    "end_line": 2818,
+    "end_col": 6,
+    "code_snippet": "fn col_mut_map<F>(&mut self, f: F)\n    where\n        F: Fn(Vec<f64>) -> Vec<f64>,\n    {\n        for i in 0..self.col {\n            unsafe {\n                let mut p = self.col_mut(i);\n                let fv = f(self.col(i));\n                for j in 0..p.len() {\n                    *p[j] = fv[j];\n                }\n            }\n        }\n    }"
+}

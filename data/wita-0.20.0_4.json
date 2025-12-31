@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `context::call_other`",
+    "file": "wita-0.20.0/src/context.rs",
+    "start_line": 174,
+    "start_col": 1,
+    "end_line": 203,
+    "end_col": 2,
+    "code_snippet": "pub(crate) fn call_other<T>(hwnd: HWND, message: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT\nwhere\n    T: EventHandler + 'static,\n{\n    let p = CONTEXT.with(|ctx| *ctx.borrow());\n    unsafe {\n        let ctx = &mut *p;\n        if ctx.event_handler.is_some() {\n            let event_handler = ctx\n                .event_handler\n                .as_mut()\n                .unwrap()\n                .downcast_mut::<T>()\n                .unwrap();\n            let ret = event_handler.other(event::Other {\n                hwnd,\n                message,\n                wparam,\n                lparam,\n            });\n            if let Some(ret) = ret {\n                LRESULT(ret)\n            } else {\n                DefWindowProcW(hwnd, message, wparam, lparam)\n            }\n        } else {\n            DefWindowProcW(hwnd, message, wparam, lparam)\n        }\n    }\n}"
+}

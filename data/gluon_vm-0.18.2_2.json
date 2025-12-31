@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gluon_vm-0.18.2/src/gc.rs",
+    "start_line": 386,
+    "start_col": 1,
+    "end_line": 386,
+    "end_col": 23,
+    "code_snippet": "impl Drop for AllocPtr {\n    fn drop(&mut self) {\n        unsafe {\n            // Avoid stack overflow by looping through all next pointers instead of doing it\n            // recursively\n            let mut current = self.next.take();\n            while let Some(mut next) = current {\n                current = next.next.take();\n            }\n            let size = self.size();\n            ((*self.type_info).drop)(self.value());\n            ptr::read(&*self.ptr);\n            deallocate(self.ptr as *mut u8, size);\n        }\n    }\n}"
+}

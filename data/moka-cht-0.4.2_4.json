@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `map::bucket_array_ref::BucketArrayRef::<'a, K, V, S>::insert_entry_and`",
+    "file": "moka-cht-0.4.2/src/map/bucket_array_ref.rs",
+    "start_line": 62,
+    "start_col": 5,
+    "end_line": 113,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn insert_entry_and<F: FnOnce(&K, &V) -> T, T>(\n        &self,\n        key: K,\n        hash: u64,\n        value: V,\n        with_previous_entry: F,\n    ) -> Option<T> {\n        let guard = &crossbeam_epoch::pin();\n        let current_ref = self.get(guard);\n        let mut bucket_array_ref = current_ref;\n        let mut bucket_ptr = Owned::new(Bucket::new(key, value));\n\n        let result;\n\n        loop {\n            while self.len.load(Ordering::Relaxed) > bucket_array_ref.capacity() {\n                bucket_array_ref = bucket_array_ref.rehash(guard, self.build_hasher);\n            }\n\n            match bucket_array_ref.insert(guard, hash, bucket_ptr) {\n                Ok(previous_bucket_ptr) => {\n                    if let Some(previous_bucket_ref) = unsafe { previous_bucket_ptr.as_ref() } {\n                        if previous_bucket_ptr.tag() & bucket::TOMBSTONE_TAG != 0 {\n                            self.len.fetch_add(1, Ordering::Relaxed);\n                            result = None;\n                        } else {\n                            let Bucket {\n                                key,\n                                maybe_value: value,\n                            } = previous_bucket_ref;\n                            result = Some(with_previous_entry(key, unsafe { &*value.as_ptr() }));\n                        }\n\n                        unsafe { bucket::defer_destroy_bucket(guard, previous_bucket_ptr) };\n                    } else {\n                        self.len.fetch_add(1, Ordering::Relaxed);\n                        result = None;\n                    }\n\n                    break;\n                }\n                Err(p) => {\n                    bucket_ptr = p;\n                    bucket_array_ref = bucket_array_ref.rehash(guard, self.build_hasher);\n                }\n            }\n        }\n\n        self.swing(guard, current_ref, bucket_array_ref);\n\n        result\n    }"
+}

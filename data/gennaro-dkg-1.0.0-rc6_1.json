@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "gennaro-dkg-1.0.0-rc6/src/participant.rs",
+    "start_line": 514,
+    "start_col": 1,
+    "end_line": 514,
+    "end_col": 49,
+    "code_snippet": "unsafe impl<G> Send for SecretParticipantImpl<G> {}\nunsafe impl<G> Sync for SecretParticipantImpl<G> {}"
+}

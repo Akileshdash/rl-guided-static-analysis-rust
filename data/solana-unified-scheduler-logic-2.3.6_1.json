@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `utils::TokenCell::<V>::with_borrow_mut`",
+    "file": "solana-unified-scheduler-logic-2.3.6/src/lib.rs",
+    "start_line": 248,
+    "start_col": 9,
+    "end_line": 254,
+    "end_col": 10,
+    "code_snippet": "pub(super) fn with_borrow_mut<R>(\n            &self,\n            _token: &mut Token<V>,\n            f: impl FnOnce(&mut V) -> R,\n        ) -> R {\n            f(unsafe { &mut *self.0.get() })\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/resource.rs",
+    "start_line": 2105,
+    "start_col": 1,
+    "end_line": 2105,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Tlas {\n    fn drop(&mut self) {\n        unsafe {\n            resource_log!(\"Destroy raw {}\", self.error_ident());\n            if let Some(structure) = self.raw.take() {\n                self.device.raw().destroy_acceleration_structure(structure);\n            }\n            let buffer = ManuallyDrop::take(&mut self.instance_buffer);\n            self.device.raw().destroy_buffer(buffer);\n        }\n    }\n}"
+}

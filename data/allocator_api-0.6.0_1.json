@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "allocator_api-0.6.0/src/liballoc/boxed.rs",
+    "start_line": 339,
+    "start_col": 1,
+    "end_line": 339,
+    "end_col": 45,
+    "code_snippet": "impl<T: ?Sized, A: Alloc> Drop for Box<T, A> {\n    fn drop(&mut self) {\n        unsafe {\n            let layout = Layout::for_value(self.ptr.as_ref());\n            ptr::drop_in_place(self.ptr.as_ptr());\n            if layout.size() != 0 {\n                self.a.dealloc(self.ptr.cast(), layout);\n            }\n        }\n    }\n}"
+}

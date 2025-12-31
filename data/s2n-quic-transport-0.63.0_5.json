@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "s2n-quic-transport-0.63.0//usagers4/u139091/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/intrusive-collections-0.9.7/src/adapter.rs",
+    "start_line": 178,
+    "start_col": 9,
+    "end_line": 178,
+    "end_col": 74,
+    "code_snippet": "unsafe impl<$($args),*> Sync for $name<$($args),*> $($where_)* {}\n        impl<$($args),*> Copy for $name<$($args),*> $($where_)* {}"
+}

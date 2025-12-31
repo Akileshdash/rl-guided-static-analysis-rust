@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "slotmap-1.0.7/src/hop.rs",
+    "start_line": 94,
+    "start_col": 1,
+    "end_line": 94,
+    "end_col": 25,
+    "code_snippet": "impl<T> Drop for Slot<T> {\n    fn drop(&mut self) {\n        if core::mem::needs_drop::<T>() && self.occupied() {\n            // This is safe because we checked that we're occupied.\n            unsafe {\n                ManuallyDrop::drop(&mut self.u.value);\n            }\n        }\n    }\n}"
+}

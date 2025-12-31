@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `IpTrie::<N>::insert`",
+    "file": "iprange-0.6.7/src/lib.rs",
+    "start_line": 455,
+    "start_col": 5,
+    "end_line": 490,
+    "end_col": 6,
+    "code_snippet": "fn insert(&mut self, network: N) {\n        // The current node\n        let mut node = if let Some(root) = &mut self.root {\n            if root.is_leaf() {\n                // Insert into all-zero network has no effect.\n                return;\n            }\n            root as *mut IpTrieNode\n        } else {\n            self.root = Some(IpTrieNode::new());\n            self.root.as_mut().unwrap() as *mut IpTrieNode\n        };\n\n        unsafe {\n            let bits = network.prefix_bits();\n            for bit in bits {\n                let i = bit as usize;\n                let child = &mut (*node).children[i];\n                match child {\n                    Some(child) => {\n                        if child.is_leaf() {\n                            // This means the network to be inserted\n                            // is already in the trie.\n                            return;\n                        }\n                        node = &mut **child as *mut IpTrieNode;\n                    }\n                    None => {\n                        (*node).children[i] = Some(Box::new(IpTrieNode::new()));\n                        node = (*node).children[i].as_mut().unwrap().as_mut() as *mut IpTrieNode;\n                    }\n                }\n            }\n            (*node).children = [None, None];\n        }\n    }"
+}

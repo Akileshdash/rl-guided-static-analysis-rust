@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "hashbrown-0.15.4/src/raw/mod.rs",
+    "start_line": 3605,
+    "start_col": 1,
+    "end_line": 3605,
+    "end_col": 40,
+    "code_snippet": "unsafe impl<T> Sync for RawIterRange<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "miniserde-0.1.42/src/de/impls.rs",
+    "start_line": 269,
+    "start_col": 9,
+    "end_line": 269,
+    "end_col": 47,
+    "code_snippet": "impl<'a, T: 'a> Drop for BoxMap<'a, T> {\n            fn drop(&mut self) {\n                unsafe { ManuallyDrop::drop(&mut self.map) }\n            }\n        }"
+}

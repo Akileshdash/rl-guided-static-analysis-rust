@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fibers-0.1.13/src/sync_atomic.rs",
+    "start_line": 33,
+    "start_col": 1,
+    "end_line": 33,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for AtomicCell<T> {\n    fn drop(&mut self) {\n        let inner = self.inner.load(atomic::Ordering::SeqCst);\n        assert_ne!(inner, ptr::null_mut());\n        let _ = unsafe { Box::from_raw(inner) };\n    }\n}"
+}

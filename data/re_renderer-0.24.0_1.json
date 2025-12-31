@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `line_drawable_builder::LineBatchBuilder::<'_, 'ctx>::add_vertices`",
+    "file": "re_renderer-0.24.0/src/line_drawable_builder.rs",
+    "start_line": 116,
+    "start_col": 5,
+    "end_line": 167,
+    "end_col": 6,
+    "code_snippet": "fn add_vertices(\n        &mut self,\n        points: impl ExactSizeIterator<Item = glam::Vec3>,\n        strip_index: u32,\n    ) -> Result<(), DataTextureSourceWriteError> {\n        let num_new_vertices = points.len();\n        if num_new_vertices == 0 {\n            return Ok(());\n        }\n\n        // Sentinel at the beginning and end to facilitate caps.\n        let add_start_sentinel = self.0.vertices_buffer.is_empty();\n        let num_sentinels_to_add = if add_start_sentinel {\n            LineVertex::NUM_SENTINEL_VERTICES // Start and end sentinel.\n        } else {\n            1 // End sentinel only.\n        };\n\n        // Do a reserve ahead of time including sentinel vertices, in order to check whether we're hitting the data texture limit.\n        let reserve_count = num_new_vertices + num_sentinels_to_add;\n        let num_available_points = self.0.vertices_buffer.reserve(reserve_count)?;\n        let num_new_vertices = if reserve_count > num_available_points {\n            re_log::error_once!(\n                \"Reached maximum number of vertices for lines strips of {}. Ignoring all excess vertices.\",\n                self.0.vertices_buffer.len() + num_available_points\n                    - LineVertex::NUM_SENTINEL_VERTICES\n            );\n            num_available_points - num_sentinels_to_add\n        } else {\n            num_new_vertices\n        };\n\n        if add_start_sentinel {\n            self.0.vertices_buffer.push(LineVertex::SENTINEL)?;\n        }\n\n        // TODO(andreas): It would be nice to pass on the iterator as is so we don't have to do yet another\n        // copy of the data and instead write into the buffers directly - if done right this should be the fastest.\n        // But it's surprisingly tricky to do this effectively.\n        let vertices = points\n            .map(|pos| LineVertex {\n                position: pos,\n                strip_index,\n            })\n            .take(num_new_vertices)\n            .collect::<Vec<_>>();\n        self.0.vertices_buffer.extend_from_slice(&vertices)?;\n\n        self.batch_mut().line_vertex_count += num_new_vertices as u32;\n\n        Ok(())\n    }"
+}

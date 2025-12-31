@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bitvec-1.0.1/src/vec/iter.rs",
+    "start_line": 641,
+    "start_col": 1,
+    "end_line": 645,
+    "end_col": 27,
+    "code_snippet": "impl<T, O, I> Drop for Splice<'_, T, O, I>\nwhere\n\tT: BitStore,\n\tO: BitOrder,\n\tI: Iterator<Item = bool>,\n{\n\t#[inline]\n\tfn drop(&mut self) {\n\t\tlet tail = self.drain.tail.clone();\n\t\tlet tail_len = tail.len();\n\t\tlet bv = &mut *self.drain.source;\n\n\t\tif tail_len == 0 {\n\t\t\tbv.extend(self.splice.by_ref());\n\t\t\treturn;\n\t\t}\n\n\t\tif let FillStatus::EmptyInput = self.drain.fill(&mut self.splice) {\n\t\t\treturn;\n\t\t}\n\n\t\tlet len = match self.splice.size_hint() {\n\t\t\t(n, None) | (_, Some(n)) => n,\n\t\t};\n\n\t\tunsafe {\n\t\t\tself.drain.move_tail(len);\n\t\t}\n\t\tif let FillStatus::EmptyInput = self.drain.fill(&mut self.splice) {\n\t\t\treturn;\n\t\t}\n\n\t\t/* If the `.splice` *still* has bits to provide, then its\n\t\t * `.size_hint()` is untrustworthy. Collect the `.splice` into a\n\t\t * bit-vector, then insert the bit-vector into the spliced region.\n\t\t */\n\t\tlet mut collected =\n\t\t\tself.splice.by_ref().collect::<BitVec<T, O>>().into_iter();\n\t\tlet len = collected.len();\n\t\tif len > 0 {\n\t\t\tunsafe {\n\t\t\t\tself.drain.move_tail(len);\n\t\t\t}\n\t\t\tlet filled = self.drain.fill(collected.by_ref());\n\t\t\tdebug_assert_eq!(filled, FillStatus::EmptyInput);\n\t\t\tdebug_assert_eq!(collected.len(), 0);\n\t\t}\n\t}\n}"
+}

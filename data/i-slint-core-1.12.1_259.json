@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<sharedvector::SharedVector<T> as core::iter::FromIterator<T>>::from_iter`",
+    "file": "i-slint-core-1.12.1/sharedvector.rs",
+    "start_line": 326,
+    "start_col": 5,
+    "end_line": 368,
+    "end_col": 6,
+    "code_snippet": "fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {\n        let mut iter = iter.into_iter();\n        let mut capacity = iter.size_hint().0;\n        let mut result = Self::with_capacity(capacity);\n        let mut size = 0;\n        while let Some(x) = iter.next() {\n            if size >= capacity {\n                capacity = capacity_for_grow(\n                    capacity,\n                    size + 1 + iter.size_hint().0,\n                    core::mem::size_of::<T>(),\n                );\n                unsafe {\n                    result.inner.as_ref().header.refcount.store(0, atomic::Ordering::Relaxed)\n                };\n                let mut iter = IntoIter(IntoIterInner::UnShared(result.inner, 0));\n                result.inner = alloc_with_capacity::<T>(capacity);\n                match &mut iter.0 {\n                    IntoIterInner::UnShared(old_inner, begin) => {\n                        while *begin < size {\n                            unsafe {\n                                core::ptr::write(\n                                    result.inner.as_mut().data.as_mut_ptr().add(*begin),\n                                    core::ptr::read(old_inner.as_ref().data.as_ptr().add(*begin)),\n                                );\n                                *begin += 1;\n                                result.inner.as_mut().header.size = *begin;\n                            }\n                        }\n                    }\n                    _ => unreachable!(),\n                }\n            }\n            debug_assert_eq!(result.len(), size);\n            debug_assert!(result.capacity() > size);\n            unsafe {\n                core::ptr::write(result.inner.as_mut().data.as_mut_ptr().add(size), x);\n                size += 1;\n                result.inner.as_mut().header.size = size;\n            }\n        }\n        result\n    }"
+}

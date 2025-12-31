@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lightproc-0.3.6-alpha.0/src/raw_proc.rs",
+    "start_line": 520,
+    "start_col": 1,
+    "end_line": 524,
+    "end_col": 46,
+    "code_snippet": "impl<F, R, S> Drop for Guard<F, R, S>\nwhere\n    F: Future<Output = R> + Send + 'static,\n    R: Send + 'static,\n    S: Fn(LightProc) + Send + Sync + 'static,\n{\n    fn drop(&mut self) {\n        let raw = self.0;\n        let ptr = raw.pdata as *const ();\n\n        unsafe {\n            let mut state = (*raw.pdata).state.load(Ordering::Acquire);\n\n            loop {\n                // If the proc was closed while running, then unschedule it, drop its\n                // future, and drop the proc reference.\n                if state & CLOSED != 0 {\n                    // We still need to unschedule the proc because it is possible it was\n                    // woken while running.\n                    (*raw.pdata).state.fetch_and(!SCHEDULED, Ordering::AcqRel);\n\n                    // The thread that closed the proc didn't drop the future because it\n                    // was running so now it's our responsibility to do so.\n                    RawProc::<F, R, S>::drop_future(ptr);\n\n                    // Drop the proc reference.\n                    RawProc::<F, R, S>::decrement(ptr);\n                    break;\n                }\n\n                // Mark the proc as not running, not scheduled, and closed.\n                match (*raw.pdata).state.compare_exchange_weak(\n                    state,\n                    (state & !RUNNING & !SCHEDULED) | CLOSED,\n                    Ordering::AcqRel,\n                    Ordering::Acquire,\n                ) {\n                    Ok(state) => {\n                        // Drop the future because the proc is now closed.\n                        RawProc::<F, R, S>::drop_future(ptr);\n\n                        // Notify the awaiter that the proc has been closed.\n                        if state & AWAITER != 0 {\n                            (*raw.pdata).notify();\n                        }\n\n                        // Drop the proc reference.\n                        RawProc::<F, R, S>::decrement(ptr);\n                        break;\n                    }\n                    Err(s) => state = s,\n                }\n            }\n        }\n    }\n}"
+}

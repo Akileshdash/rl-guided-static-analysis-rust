@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "imap-3.0.0-alpha.15/src/types/capabilities.rs",
+    "start_line": 38,
+    "start_col": 1,
+    "end_line": 38,
+    "end_col": 20,
+    "code_snippet": "#[self_referencing]\npub struct Capabilities {\n    data: Vec<u8>,\n    #[borrows(data)]\n    #[covariant]\n    pub(crate) capabilities: HashSet<Capability<'this>>,\n}"
+}

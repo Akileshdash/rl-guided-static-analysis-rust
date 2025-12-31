@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "tower-grpc-0.1.1/src/metadata/map.rs",
+    "start_line": 1263,
+    "start_col": 1,
+    "end_line": 1263,
+    "end_col": 63,
+    "code_snippet": "unsafe impl<'a, VE: ValueEncoding> Send for ValueDrain<'a, VE> {}"
+}

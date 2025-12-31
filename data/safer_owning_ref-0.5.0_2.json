@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "safer_owning_ref-0.5.0/src/lib.rs",
+    "start_line": 1142,
+    "start_col": 1,
+    "end_line": 1143,
+    "end_col": 41,
+    "code_snippet": "unsafe impl<'t, O, T: ?Sized> Sync for OwningRef<'t, O, T>\n    where O: Sync, for<'a> (&'a T): Sync {}"
+}

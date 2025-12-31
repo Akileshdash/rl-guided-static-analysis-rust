@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ouroboros_examples-0.18.5/src/lib.rs",
+    "start_line": 29,
+    "start_col": 1,
+    "end_line": 29,
+    "end_col": 22,
+    "code_snippet": "#[self_referencing()]\n#[allow(clippy::redundant_allocation)]\n/// A chain of references, where c references b which references a.\npub struct Chain {\n    a: i32,\n    #[borrows(a)]\n    b: &'this i32,\n    #[borrows(b)]\n    c: &'this i32,\n}"
+}

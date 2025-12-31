@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ritelinked-0.3.2/src/map.rs",
+    "start_line": 1704,
+    "start_col": 1,
+    "end_line": 1704,
+    "end_col": 40,
+    "code_snippet": "impl<'a, K, V> Drop for Drain<'a, K, V> {\n    #[cfg_attr(feature = \"inline-more\", inline)]\n    fn drop(&mut self) {\n        for _ in 0..self.remaining {\n            unsafe {\n                let mut tail = NonNull::new_unchecked(self.tail.as_ptr());\n                self.tail = Some(tail.as_ref().links.value.prev);\n                tail.as_mut().take_entry();\n                push_free(&mut *self.free.as_ptr(), tail);\n            }\n        }\n    }\n}"
+}

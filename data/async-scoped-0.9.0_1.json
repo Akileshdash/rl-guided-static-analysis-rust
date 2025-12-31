@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-scoped-0.9.0/src/scoped.rs",
+    "start_line": 22,
+    "start_col": 15,
+    "end_line": 22,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\npub struct Scope<'a, T, Sp: Spawner<T> + Blocker> {\n    spawner: Option<Sp>,\n    len: usize,\n    #[pin]\n    futs: FuturesOrdered<Sp::SpawnHandle>,\n    abort_handles: Vec<AbortHandle>,\n\n    // Future proof against variance changes\n    _marker: PhantomData<fn(&'a ()) -> &'a ()>,\n    _spawn_marker: PhantomData<Sp>,\n}"
+}

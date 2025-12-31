@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasm-bindgen-0.2.100/src/convert/slices.rs",
+    "start_line": 94,
+    "start_col": 1,
+    "end_line": 94,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for MutSlice<T> {\n    fn drop(&mut self) {\n        unsafe {\n            __wbindgen_copy_to_typed_array(\n                self.contents.as_ptr() as *const u8,\n                self.contents.len() * mem::size_of::<T>(),\n                self.js.idx,\n            );\n        }\n    }\n}"
+}

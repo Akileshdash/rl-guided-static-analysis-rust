@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "taos-optin-0.12.4/src/types/mod.rs",
+    "start_line": 521,
+    "start_col": 1,
+    "end_line": 521,
+    "end_col": 28,
+    "code_snippet": "impl Drop for TaosMultiBind {\n    fn drop(&mut self) {\n        if !self.is_null.is_null() {\n            unsafe { Vec::from_raw_parts(self.is_null as *mut i8, self.num as _, self.num as _) };\n        }\n    }\n}"
+}

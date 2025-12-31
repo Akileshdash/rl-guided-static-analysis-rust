@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "boa_engine-0.20.0/src/symbol.rs",
+    "start_line": 298,
+    "start_col": 1,
+    "end_line": 298,
+    "end_col": 23,
+    "code_snippet": "impl Drop for JsSymbol {\n    fn drop(&mut self) {\n        if let UnwrappedTagged::Ptr(ptr) = self.repr.unwrap() {\n            // SAFETY: the pointer returned by `self.repr` must be a valid pointer\n            // that came from an `Arc::into_raw` call.\n            unsafe { drop(Arc::from_raw(ptr.as_ptr().cast_const())) }\n        }\n    }\n}"
+}

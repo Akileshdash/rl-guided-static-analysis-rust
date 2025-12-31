@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "corcovado-0.2.23/src/poll.rs",
+    "start_line": 2345,
+    "start_col": 1,
+    "end_line": 2345,
+    "end_col": 29,
+    "code_snippet": "impl Drop for ReadinessQueue {\n    fn drop(&mut self) {\n        // Close the queue by enqueuing the closed node\n        self.inner.enqueue_node(&self.inner.closed_marker);\n\n        loop {\n            // Free any nodes that happen to be left in the readiness queue\n            let ptr = match unsafe { self.inner.dequeue_node(ptr::null_mut()) } {\n                Dequeue::Empty => break,\n                Dequeue::Inconsistent => {\n                    // This really shouldn't be possible as all other handles to\n                    // `ReadinessQueueInner` are dropped, but handle this by\n                    // spinning I guess?\n                    continue;\n                }\n                Dequeue::Data(ptr) => ptr,\n            };\n\n            let node = unsafe { &*ptr };\n\n            let state = node.state.load(Acquire);\n\n            debug_assert!(state.is_queued());\n\n            release_node(ptr);\n        }\n    }\n}"
+}

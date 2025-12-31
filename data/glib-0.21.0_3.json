@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glib-0.21.0/src/object.rs",
+    "start_line": 3521,
+    "start_col": 1,
+    "end_line": 3521,
+    "end_col": 40,
+    "code_snippet": "impl<T: ObjectType> Drop for WeakRef<T> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            gobject_ffi::g_weak_ref_clear(Pin::as_mut(&mut self.0).get_unchecked_mut());\n        }\n    }\n}"
+}

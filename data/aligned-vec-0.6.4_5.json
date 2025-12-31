@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `AVec::<T, A>::extend_with`",
+    "file": "aligned-vec-0.6.4/src/lib.rs",
+    "start_line": 777,
+    "start_col": 5,
+    "end_line": 798,
+    "end_col": 6,
+    "code_snippet": "fn extend_with(&mut self, n: usize, value: T) {\n        // Copied somewhat from the standard library\n        self.reserve(n);\n\n        unsafe {\n            let mut ptr = self.as_mut_ptr().add(self.len());\n\n            // Write all elements except the last one\n            for _ in 1..n {\n                core::ptr::write(ptr, value.clone());\n                ptr = ptr.add(1);\n                // Increment the length in every step in case clone() panics\n                self.len += 1;\n            }\n\n            if n > 0 {\n                // We can write the last element directly without cloning needlessly\n                core::ptr::write(ptr, value);\n                self.len += 1;\n            }\n        }\n    }"
+}

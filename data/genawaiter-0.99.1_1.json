@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "genawaiter-0.99.1/src/stack/generator.rs",
+    "start_line": 136,
+    "start_col": 1,
+    "end_line": 136,
+    "end_col": 52,
+    "code_snippet": "impl<'s, Y, R, F: Future> Drop for Gen<'s, Y, R, F> {\n    fn drop(&mut self) {\n        // Safety: `state` is a `MaybeUninit` which is guaranteed to be initialized,\n        // because the only way to construct a `Gen` is with `Gen::new`, which\n        // initializes it.\n        //\n        // Drop `state` in place, by dropping each field in place. Drop `future` first,\n        // since it likely contains a reference to `airlock` (through the `co` object).\n        // Since we drop everything in place, the `Pin` invariants are not violated.\n        unsafe {\n            let state = self.state.as_mut().get_unchecked_mut();\n            ptr::drop_in_place(&mut state.future);\n            ptr::drop_in_place(&mut state.airlock);\n        }\n    }\n}"
+}

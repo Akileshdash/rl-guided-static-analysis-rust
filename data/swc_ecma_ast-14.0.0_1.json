@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `expr::Expr::unwrap_mut_with`",
+    "file": "swc_ecma_ast-14.0.0/src/expr.rs",
+    "start_line": 242,
+    "start_col": 5,
+    "end_line": 258,
+    "end_col": 6,
+    "code_snippet": "pub fn unwrap_mut_with<'a, F>(&'a mut self, mut op: F) -> &'a mut Expr\n    where\n        F: FnMut(&'a mut Expr) -> Option<&'a mut Expr>,\n    {\n        let mut cur = self;\n        loop {\n            match unsafe {\n                // Safety: Polonius is not yet stable\n                op(transmute::<&mut _, &mut _>(cur))\n            } {\n                Some(next) => cur = next,\n                None => {\n                    return cur;\n                }\n            }\n        }\n    }"
+}

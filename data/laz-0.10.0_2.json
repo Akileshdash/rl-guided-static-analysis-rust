@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `encoders::ArithmeticEncoder::<T>::manage_out_buffer`",
+    "file": "laz-0.10.0/src/encoders.rs",
+    "start_line": 412,
+    "start_col": 5,
+    "end_line": 426,
+    "end_col": 6,
+    "code_snippet": "fn manage_out_buffer(&mut self) -> std::io::Result<()> {\n        debug_assert!(self.out_byte.cast_const() == self.end_byte);\n\n        if self.out_byte.cast_const() == self.end_of_buffer() {\n            self.out_byte = self.out_buffer.as_mut_ptr();\n        }\n\n        let slc = unsafe { std::slice::from_raw_parts(self.out_byte, AC_BUFFER_SIZE) };\n        self.out_stream.write_all(slc)?;\n        self.end_byte = self.out_byte.wrapping_add(AC_BUFFER_SIZE);\n\n        debug_assert!(self.end_byte > self.out_byte);\n        debug_assert!(self.out_byte.cast_const() < self.end_of_buffer());\n        Ok(())\n    }"
+}

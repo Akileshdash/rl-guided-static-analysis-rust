@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "raw-btree-0.3.3/src/utils/array.rs",
+    "start_line": 157,
+    "start_col": 1,
+    "end_line": 157,
+    "end_col": 45,
+    "code_snippet": "impl<T, const N: usize> Drop for Array<T, N> {\n\tfn drop(&mut self) {\n\t\tfor i in 0..self.len {\n\t\t\tunsafe { self.buffer[i].assume_init_drop() };\n\t\t}\n\t}\n}"
+}

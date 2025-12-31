@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "unicycle-0.10.2/src/lib.rs",
+    "start_line": 630,
+    "start_col": 1,
+    "end_line": 632,
+    "end_col": 17,
+    "code_snippet": "impl<T, S> Drop for Unordered<T, S>\nwhere\n    S: Sentinel,\n{\n    fn drop(&mut self) {\n        // Cancel all child futures in an attempt to prevent them from\n        // attempting to call wake on the shared wake set.\n        self.slab.clear();\n\n        // We intend to drop both wake sets. Therefore we need exclusive access\n        // to both wakers. Unfortunately that means that at this point, any call\n        // to wakes will have to serialize behind the shared wake set while the\n        // alternate set is being dropped.\n        let _write = self.slab.shared().wake_set.prevent_drop_write();\n\n        // Safety: we uniquely own `alternate`, so we are responsible for\n        // dropping it. This is asserted when we swap it out during a poll by\n        // calling WakeSet::lock_exclusive. We are also the _only_ one\n        // swapping `wake_alternative`, so we know that can't happen here.\n        unsafe {\n            drop(Box::from_raw(self.alternate));\n        }\n    }\n}"
+}

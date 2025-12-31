@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `rank_select::select::CombinedSampling::<D>::select`",
+    "file": "bitm-0.5.1/src/rank_select/select.rs",
+    "start_line": 611,
+    "start_col": 5,
+    "end_line": 638,
+    "end_col": 6,
+    "code_snippet": "fn select<const ONE: bool>(&self, content: &[u64], #[cfg(target_pointer_width = \"64\")] l1ranks: &[usize], l2ranks: &[u64], mut rank: usize) -> Option<usize> {\n        #[cfg(target_pointer_width = \"64\")] if l1ranks.is_empty() { return None; }\n        #[cfg(target_pointer_width = \"64\")] let l1_index = select_l1::<ONE>(l1ranks, &mut rank);\n        #[cfg(target_pointer_width = \"64\")] let l2_begin = l1_index * L2_ENTRIES_PER_L1_ENTRY;\n        #[cfg(target_pointer_width = \"64\")] let mut l2_index = l2_begin + self.decode_shift(\n            *self.select.get(unsafe{self.select_begin.get_unchecked(l1_index)} + D::divide(rank, self.density))?,\n            rank) as usize;\n        #[cfg(target_pointer_width = \"64\")] let l2_chunk_end = l2ranks.len().min(l2_begin+L2_ENTRIES_PER_L1_ENTRY);\n\n        #[cfg(target_pointer_width = \"32\")] if l2ranks.is_empty() { return None; }\n        #[cfg(target_pointer_width = \"32\")] let l2_begin = 0;\n        #[cfg(target_pointer_width = \"32\")] let mut l2_index = self.decode_shift(\n            *self.select.get(D::divide(rank, self.density))?, rank) as usize;\n        #[cfg(target_pointer_width = \"32\")] let l2_chunk_end = l2ranks.len();\n\n        while l2_index+1 < l2_chunk_end &&\n             if ONE {(unsafe{l2ranks.get_unchecked(l2_index+1)} & 0xFF_FF_FF_FF) as usize}\n             else {(l2_index+1-l2_begin) /*% L2_ENTRIES_PER_L1_ENTRY*/ * BITS_PER_L2_ENTRY - (unsafe{l2ranks.get_unchecked(l2_index+1)} & 0xFF_FF_FF_FF) as usize} <= rank\n        {\n            l2_index += 1;\n        }\n        unsafe {\n            if l2_index + 1 == l2ranks.len() {  // unlikely\n                return select_from_l2::<ONE>(content, l2ranks, l2_index, rank); // this can be used for any l2_index, but is slower than unchecked ver.\n            }\n            Some(select_from_l2_unchecked::<ONE>(content, l2ranks, l2_index, rank))\n        }\n    }"
+}

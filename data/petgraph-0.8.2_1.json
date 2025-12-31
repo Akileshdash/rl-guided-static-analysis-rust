@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `graph_impl::stable_graph::StableGraph::<N, E, Ty, Ix>::index_twice_mut`",
+    "file": "petgraph-0.8.2/src/graph_impl/stable_graph/mod.rs",
+    "start_line": 825,
+    "start_col": 5,
+    "end_line": 848,
+    "end_col": 6,
+    "code_snippet": "pub fn index_twice_mut<T, U>(\n        &mut self,\n        i: T,\n        j: U,\n    ) -> (\n        &mut <Self as Index<T>>::Output,\n        &mut <Self as Index<U>>::Output,\n    )\n    where\n        Self: IndexMut<T> + IndexMut<U>,\n        T: GraphIndex,\n        U: GraphIndex,\n    {\n        assert!(T::is_node_index() != U::is_node_index() || i.index() != j.index());\n\n        // Allow two mutable indexes here -- they are nonoverlapping\n        unsafe {\n            let self_mut = self as *mut _;\n            (\n                <Self as IndexMut<T>>::index_mut(&mut *self_mut, i),\n                <Self as IndexMut<U>>::index_mut(&mut *self_mut, j),\n            )\n        }\n    }"
+}

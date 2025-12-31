@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ra_ap_salsa-0.0.269/src/runtime.rs",
+    "start_line": 660,
+    "start_col": 1,
+    "end_line": 660,
+    "end_col": 28,
+    "code_snippet": "impl Drop for RevisionGuard {\n    fn drop(&mut self) {\n        // Release our read-lock without using RAII. As documented in\n        // `Snapshot::new` above, this requires the unsafe keyword.\n        unsafe {\n            self.shared_state.query_lock.raw().unlock_shared();\n        }\n    }\n}"
+}

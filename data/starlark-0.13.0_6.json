@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "starlark-0.13.0/src/values/layout/heap/allocator/alloc/chunk.rs",
+    "start_line": 222,
+    "start_col": 1,
+    "end_line": 222,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Chunk {\n    fn drop(&mut self) {\n        if self.is_empty() {\n            return;\n        }\n\n        unsafe {\n            if self.data().ref_count.fetch_sub(1, atomic::Ordering::SeqCst) == 1 {\n                let layout = ChunkData::layout_for_len(self.data().len);\n                alloc::dealloc(self.ptr.as_ptr() as *mut u8, layout);\n            }\n        }\n    }\n}"
+}

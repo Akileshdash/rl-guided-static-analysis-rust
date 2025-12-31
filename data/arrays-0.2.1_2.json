@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "arrays-0.2.1/src/lib.rs",
+    "start_line": 50,
+    "start_col": 5,
+    "end_line": 50,
+    "end_col": 53,
+    "code_snippet": "impl<T, const N: usize> Drop for Guard<'_, T, N> {\n        fn drop(&mut self) {\n            for elem in &mut self.arr.as_mut_slice()[..self.init] {\n                // SAFETY: this raw slice up to `self.len` will only contain\n                // the initialized objects.\n                unsafe { ptr::drop_in_place(elem.as_mut_ptr()) };\n            }\n        }\n    }"
+}

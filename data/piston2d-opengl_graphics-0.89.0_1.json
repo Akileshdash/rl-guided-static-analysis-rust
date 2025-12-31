@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "piston2d-opengl_graphics-0.89.0/src/shader_utils.rs",
+    "start_line": 26,
+    "start_col": 1,
+    "end_line": 26,
+    "end_col": 31,
+    "code_snippet": "impl Drop for DynamicAttribute {\n    fn drop(&mut self) {\n        unsafe {\n            gl::DeleteBuffers(1, &self.vbo);\n        }\n    }\n}"
+}

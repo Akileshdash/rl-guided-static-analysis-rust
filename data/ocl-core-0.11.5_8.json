@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `functions::link_program`",
+    "file": "ocl-core-0.11.5/src/functions.rs",
+    "start_line": 2400,
+    "start_col": 1,
+    "end_line": 2449,
+    "end_col": 2,
+    "code_snippet": "pub fn link_program<D: ClDeviceIdPtr, C: ClContextPtr>(\n    context: C,\n    devices: Option<&[D]>,\n    options: &CString,\n    input_programs: &[&Program],\n    pfn_notify: Option<BuildProgramCallbackFn>,\n    user_data: Option<Box<UserDataPh>>,\n    device_versions: Option<&[OpenclVersion]>,\n) -> OclCoreResult<Program> {\n    verify_context(context)?;\n    verify_device_versions(\n        device_versions,\n        [1, 2],\n        &context.as_ptr(),\n        ApiFunction::LinkProgram,\n    )?;\n\n    assert!(\n        pfn_notify.is_none() && user_data.is_none(),\n        \"ocl::core::link_program(): Callback functions not yet implemented.\"\n    );\n\n    let device_ptrs = DevicePtrList::new(devices);\n\n    let input_programs_ptrs: Vec<_> = input_programs.iter().map(|cs| cs.as_ptr()).collect();\n\n    let user_data = match user_data {\n        Some(ud) => ud.unwrapped(),\n        None => ptr::null_mut(),\n    };\n\n    let mut errcode: cl_int = 0;\n\n    let program_ptr = unsafe {\n        ffi::clLinkProgram(\n            context.as_ptr(),\n            device_ptrs.num(),\n            device_ptrs.as_ptr(),\n            options.as_ptr(),\n            input_programs_ptrs.len() as cl_uint,\n            input_programs_ptrs.as_ptr() as *const cl_program,\n            pfn_notify,\n            user_data,\n            &mut errcode,\n        )\n    };\n\n    eval_errcode(errcode, program_ptr, \"clLinkProgram\", None::<String>)\n        .map(|ptr| unsafe { Program::from_raw_create_ptr(ptr) })\n}"
+}

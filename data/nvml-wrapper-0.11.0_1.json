@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nvml-wrapper-0.11.0/src/event.rs",
+    "start_line": 142,
+    "start_col": 1,
+    "end_line": 142,
+    "end_col": 37,
+    "code_snippet": "impl<'nvml> Drop for EventSet<'nvml> {\n    #[doc(alias = \"nvmlEventSetFree\")]\n    fn drop(&mut self) {\n        unsafe {\n            self.nvml.lib.nvmlEventSetFree(self.set);\n        }\n    }\n}"
+}

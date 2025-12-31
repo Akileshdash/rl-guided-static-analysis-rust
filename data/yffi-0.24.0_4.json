@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "yffi-0.24.0/src/lib.rs",
+    "start_line": 2999,
+    "start_col": 1,
+    "end_line": 2999,
+    "end_col": 22,
+    "code_snippet": "impl Drop for YOutput {\n    fn drop(&mut self) {\n        let tag = self.tag;\n        unsafe {\n            match tag {\n                Y_JSON_STR => drop(CString::from_raw(self.value.str)),\n                Y_JSON_ARR => drop(Vec::from_raw_parts(\n                    self.value.array,\n                    self.len as usize,\n                    self.len as usize,\n                )),\n                Y_JSON_MAP => drop(Vec::from_raw_parts(\n                    self.value.map,\n                    self.len as usize,\n                    self.len as usize,\n                )),\n                Y_JSON_BUF => drop(Vec::from_raw_parts(\n                    // while we were using Box<[u8]>, for deallocation this should work\n                    self.value.buf as *mut u8,\n                    self.len as usize,\n                    self.len as usize,\n                )),\n                Y_DOC => drop(Box::from_raw(self.value.y_doc)),\n                _ => { /* ignore */ }\n            }\n        }\n    }\n}"
+}

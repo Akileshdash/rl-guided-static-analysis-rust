@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "smallbox-0.8.8/src/smallbox.rs",
+    "start_line": 564,
+    "start_col": 1,
+    "end_line": 564,
+    "end_col": 65,
+    "code_snippet": "unsafe impl<T: ?Sized + Sync, Space> Sync for SmallBox<T, Space> {}"
+}

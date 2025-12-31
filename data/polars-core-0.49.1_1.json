@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `chunked_array::ops::fill_null::fill_with_gather`",
+    "file": "polars-core-0.49.1/src/chunked_array/ops/fill_null.rs",
+    "start_line": 223,
+    "start_col": 1,
+    "end_line": 234,
+    "end_col": 2,
+    "code_snippet": "fn fill_with_gather<F: Fn(&Bitmap) -> Vec<IdxSize>>(\n    s: &Series,\n    bits_to_idx: F,\n) -> PolarsResult<Series> {\n    let s = s.rechunk();\n    let arr = s.chunks()[0].clone();\n    let validity = arr.validity().expect(\"nulls\");\n\n    let idx = bits_to_idx(validity);\n\n    Ok(unsafe { s.take_slice_unchecked(&idx) })\n}"
+}

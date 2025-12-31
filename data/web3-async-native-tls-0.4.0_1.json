@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `std_adapter::StdAdapter::<S>::with_context`",
+    "file": "web3-async-native-tls-0.4.0/src/std_adapter.rs",
+    "start_line": 22,
+    "start_col": 5,
+    "end_line": 31,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn with_context<F, R>(&mut self, f: F) -> R\n    where\n        F: FnOnce(&mut Context<'_>, Pin<&mut S>) -> R,\n    {\n        unsafe {\n            assert!(!self.context.is_null());\n            let waker = &mut *(self.context as *mut _);\n            f(waker, Pin::new(&mut self.inner))\n        }\n    }"
+}

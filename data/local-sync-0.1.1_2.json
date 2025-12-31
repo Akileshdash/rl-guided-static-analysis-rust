@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "local-sync-0.1.1/src/semaphore.rs",
+    "start_line": 396,
+    "start_col": 1,
+    "end_line": 396,
+    "end_col": 26,
+    "code_snippet": "impl Drop for Acquire<'_> {\n    fn drop(&mut self) {\n        // If the future is completed, there is no node in the wait list, so we\n        // can skip acquiring the lock.\n        if !self.queued {\n            return;\n        }\n\n        // This is where we ensure safety. The future is being dropped,\n        // which means we must ensure that the waiter entry is no longer stored\n        // in the linked list.\n        let mut waiters = self.semaphore.waiters.borrow_mut();\n\n        // remove the entry from the list\n        let node = NonNull::from(&mut self.node);\n        // Safety: we have locked the wait list.\n        unsafe { waiters.queue.remove(node) };\n\n        let acquired_permits = self.num_permits as usize - *self.node.state.borrow();\n        if acquired_permits > 0 {\n            self.semaphore.add_permits(acquired_permits);\n        }\n    }\n}"
+}

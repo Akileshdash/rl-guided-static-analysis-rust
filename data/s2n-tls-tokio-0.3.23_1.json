@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `TlsStream::<S, C>::poll_io`",
+    "file": "s2n-tls-tokio-0.3.23/src/lib.rs",
+    "start_line": 218,
+    "start_col": 5,
+    "end_line": 240,
+    "end_col": 6,
+    "code_snippet": "fn poll_io<F>(ctx: *mut c_void, action: F) -> c_int\n    where\n        F: FnOnce(Pin<&mut S>, &mut Context) -> Poll<Result<usize, std::io::Error>>,\n    {\n        debug_assert_ne!(ctx, std::ptr::null_mut());\n        let tls = unsafe { &mut *(ctx as *mut Self) };\n\n        let mut async_context = Context::from_waker(tls.conn.as_ref().waker().unwrap());\n        let stream = Pin::new(&mut tls.stream);\n\n        let res = debug_assert_waker_contract(&mut async_context, |async_context| {\n            action(stream, async_context)\n        });\n\n        match res {\n            Poll::Ready(Ok(len)) => len as c_int,\n            Poll::Pending => {\n                set_errno(Errno(libc::EWOULDBLOCK));\n                CallbackResult::Failure.into()\n            }\n            _ => CallbackResult::Failure.into(),\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "extendr-api-0.8.1/src/robj/mod.rs",
+    "start_line": 1102,
+    "start_col": 1,
+    "end_line": 1102,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Robj {\n    fn drop(&mut self) {\n        unsafe {\n            ownership::unprotect(self.inner);\n        }\n    }\n}"
+}

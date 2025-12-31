@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "self_cell-1.2.0/src/unsafe_self_cell.rs",
+    "start_line": 158,
+    "start_col": 1,
+    "end_line": 158,
+    "end_col": 72,
+    "code_snippet": "impl<Owner, Dependent> Drop for OwnerAndCellDropGuard<Owner, Dependent> {\n    fn drop(&mut self) {\n        struct DeallocGuard {\n            ptr: *mut u8,\n            layout: Layout,\n        }\n        impl Drop for DeallocGuard {\n            fn drop(&mut self) {\n                unsafe { dealloc(self.ptr, self.layout) }\n            }\n        }\n\n        // Deallocate even when the drop_in_place(...owner) panics\n        let _guard = DeallocGuard {\n            ptr: self.joined_ptr.as_ptr() as *mut u8,\n            layout: Layout::new::<JoinedCell<Owner, Dependent>>(),\n        };\n\n        unsafe {\n            // We must only drop owner and the struct itself,\n            // The whole point of this drop guard is to clean up the partially\n            // initialized struct should building the dependent fail.\n            drop_in_place(&mut (*self.joined_ptr.as_ptr()).owner);\n        }\n\n        // Deallocation happens at end of scope\n    }\n}"
+}

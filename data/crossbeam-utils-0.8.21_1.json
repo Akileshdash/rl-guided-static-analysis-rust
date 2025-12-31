@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crossbeam-utils-0.8.21/src/atomic/atomic_cell.rs",
+    "start_line": 307,
+    "start_col": 1,
+    "end_line": 307,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for AtomicCell<T> {\n    fn drop(&mut self) {\n        if mem::needs_drop::<T>() {\n            // SAFETY:\n            // - the mutable reference guarantees that no other threads are concurrently accessing the atomic data\n            // - the raw pointer passed in is valid because we got it from a reference\n            // - `MaybeUninit` prevents double dropping `T`\n            unsafe {\n                self.as_ptr().drop_in_place();\n            }\n        }\n    }\n}"
+}

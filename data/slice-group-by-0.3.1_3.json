@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<linear_group::linear_group_by_key::LinearGroupByKey<'a, T, F> as std::iter::DoubleEndedIterator>::next_back`",
+    "file": "slice-group-by-0.3.1/src/linear_group/linear_group_by_key.rs",
+    "start_line": 87,
+    "start_col": 13,
+    "end_line": 126,
+    "end_col": 14,
+    "code_snippet": "fn next_back(&mut self) -> Option<Self::Item> {\n                // during the loop we retrieve two elements at `ptr` and `ptr - 1`.\n                if self.is_empty() {\n                    return None;\n                }\n\n                let mut i = 0;\n\n                unsafe {\n                    // we ensure that the first element that will be read\n                    // is not under `end` because `end` is out of bound.\n                    let mut ptr = self.end.sub(1);\n\n                    while ptr != self.ptr {\n                        // we first get `a` that is at the left of `ptr`\n                        // then `b` that is under the `ptr` position.\n                        let a = &*ptr.sub(1);\n                        let b = &*ptr;\n\n                        i += 1;\n\n                        if (self.func)(a) != (self.func)(b) {\n                            // the slice to return starts at the `ptr` position\n                            // and `i` is the length of it.\n                            let slice = $mkslice(ptr, i);\n\n                            // because `end` is always an invalid bound\n                            // we use `ptr` as `end` for the future call to `next`.\n                            self.end = ptr;\n                            return Some(slice);\n                        }\n\n                        ptr = ptr.sub(1);\n                    }\n                }\n\n                let slice = unsafe { $mkslice(self.ptr, i + 1) };\n                self.ptr = self.end;\n                Some(slice)\n            }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "stretto-0.8.4/src/utils.rs",
+    "start_line": 103,
+    "start_col": 1,
+    "end_line": 103,
+    "end_col": 79,
+    "code_snippet": "unsafe impl<'a, V: Send + Sync, S: BuildHasher> Sync for ValueRefMut<'a, V, S> {}"
+}

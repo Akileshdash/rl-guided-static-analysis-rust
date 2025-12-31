@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<(D, std::boxed::Box<[T]>) as value::impl_tensor::create::OwnedTensorArrayData<T>>::into_parts`",
+    "file": "ort-2.0.0-rc.10/src/value/impl_tensor/create.rs",
+    "start_line": 573,
+    "start_col": 2,
+    "end_line": 583,
+    "end_col": 3,
+    "code_snippet": "fn into_parts(mut self) -> Result<TensorArrayDataParts<T>> {\n\t\tlet shape = self.0.to_shape(Some(self.1.len()))?;\n\t\t// SAFETY: A `Box` always has a non-null pointer.\n\t\tlet ptr = unsafe { NonNull::new_unchecked(self.1.as_mut_ptr()) };\n\t\tassert_eq!(shape.num_elements(), self.1.len());\n\t\tOk(TensorArrayDataParts {\n\t\t\tshape,\n\t\t\tptr,\n\t\t\tguard: Some(Box::new(self.1))\n\t\t})\n\t}"
+}

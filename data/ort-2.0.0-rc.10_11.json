@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `util::with_cstr::run_with_stack_cstr`",
+    "file": "ort-2.0.0-rc.10/src/util.rs",
+    "start_line": 426,
+    "start_col": 2,
+    "end_line": 437,
+    "end_col": 3,
+    "code_snippet": "fn run_with_stack_cstr<T>(bytes: &[u8], f: &dyn Fn(&CStr) -> Result<T>) -> Result<T> {\n\t\tlet mut buf = MaybeUninit::<[u8; STACK_CSTR_MAX]>::uninit();\n\t\tlet buf_ptr = buf.as_mut_ptr() as *mut u8;\n\n\t\tunsafe {\n\t\t\tptr::copy_nonoverlapping(bytes.as_ptr(), buf_ptr, bytes.len());\n\t\t\t*buf_ptr.add(bytes.len()) = 0;\n\t\t};\n\n\t\tlet cstr = CStr::from_bytes_with_nul(unsafe { slice::from_raw_parts(buf_ptr, bytes.len() + 1) })?;\n\t\tf(cstr)\n\t}"
+}

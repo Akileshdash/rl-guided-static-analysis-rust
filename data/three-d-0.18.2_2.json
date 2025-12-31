@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "three-d-0.18.2/src/core/buffer/uniform_buffer.rs",
+    "start_line": 114,
+    "start_col": 1,
+    "end_line": 114,
+    "end_col": 28,
+    "code_snippet": "impl Drop for UniformBuffer {\n    fn drop(&mut self) {\n        unsafe {\n            self.context.delete_buffer(self.id);\n        }\n    }\n}"
+}

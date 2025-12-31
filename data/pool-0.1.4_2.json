@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `Pool::<T>::with_capacity`",
+    "file": "pool-0.1.4/src/lib.rs",
+    "start_line": 70,
+    "start_col": 5,
+    "end_line": 91,
+    "end_col": 6,
+    "code_snippet": "pub fn with_capacity<F>(count: usize, mut extra: usize, init: F) -> Pool<T>\n            where F: Fn() -> T {\n\n        let mut inner = PoolInner::with_capacity(count, extra);\n\n        // Get the actual number of extra bytes\n        extra = inner.entry_size - mem::size_of::<Entry<T>>();\n\n        // Initialize the entries\n        for i in 0..count {\n            unsafe {\n                ptr::write(inner.entry_mut(i), Entry {\n                    data: init(),\n                    next: i + 1,\n                    extra: extra,\n                });\n            }\n            inner.init += 1;\n        }\n\n        Pool { inner: Arc::new(UnsafeCell::new(inner)) }\n    }"
+}

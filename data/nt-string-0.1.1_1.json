@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nt-string-0.1.1/src/unicode_string/string.rs",
+    "start_line": 442,
+    "start_col": 1,
+    "end_line": 442,
+    "end_col": 30,
+    "code_snippet": "impl Drop for NtUnicodeString {\n    fn drop(&mut self) {\n        if !self.raw.buffer.is_null() {\n            let layout = self.layout();\n            unsafe { alloc::dealloc(self.raw.buffer as *mut u8, layout) }\n        }\n    }\n}"
+}

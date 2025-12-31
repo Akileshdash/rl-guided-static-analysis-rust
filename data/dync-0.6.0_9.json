@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "dync-0.6.0/src/value.rs",
+    "start_line": 415,
+    "start_col": 9,
+    "end_line": 415,
+    "end_col": 91,
+    "code_snippet": "unsafe impl<'a, V: ?Sized + HasSync $( + $maybe_drop)*> Sync for $value_ref<'a, V> {}"
+}

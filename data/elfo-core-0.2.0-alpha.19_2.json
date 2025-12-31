@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "elfo-core-0.2.0-alpha.19/src/message/any.rs",
+    "start_line": 192,
+    "start_col": 1,
+    "end_line": 192,
+    "end_col": 25,
+    "code_snippet": "impl Drop for AnyMessage {\n    fn drop(&mut self) {\n        // SAFETY: only a vtable is accessed below.\n        unsafe { self.drop_in_place() };\n\n        // SAFETY: memory was allocated by `alloc_repr()`.\n        unsafe { dealloc_repr(self.0) };\n    }\n}"
+}

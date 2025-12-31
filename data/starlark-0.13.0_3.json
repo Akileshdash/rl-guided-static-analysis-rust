@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "starlark-0.13.0/src/collections/maybe_uninit_backport.rs",
+    "start_line": 41,
+    "start_col": 5,
+    "end_line": 41,
+    "end_col": 38,
+    "code_snippet": "impl<'a, T> Drop for Guard<'a, T> {\n        fn drop(&mut self) {\n            let initialized_part = &mut self.slice[..self.initialized];\n            // SAFETY: this raw slice will contain only initialized objects\n            // that's why, it is allowed to drop it.\n            unsafe {\n                ptr::drop_in_place(&mut *(initialized_part as *mut [MaybeUninit<T>] as *mut [T]));\n            }\n        }\n    }"
+}

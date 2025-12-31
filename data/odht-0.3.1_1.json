@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `memory_layout::Allocation::<C, M>::with_mut_parts`",
+    "file": "odht-0.3.1/src/memory_layout.rs",
+    "start_line": 275,
+    "start_col": 5,
+    "end_line": 327,
+    "end_col": 6,
+    "code_snippet": "pub fn with_mut_parts<R>(\n        &mut self,\n        f: impl FnOnce(\n            &mut Header,\n            &mut [EntryMetadata],\n            &mut [Entry<C::EncodedKey, C::EncodedValue>],\n        ) -> R,\n    ) -> R {\n        let raw_bytes = self.bytes.borrow_mut();\n\n        // Copy the address as an integer so we can use it for the debug_assertion\n        // below without accessing `raw_bytes` again.\n        let _raw_bytes_end_addr = raw_bytes.as_ptr_range().end as usize;\n\n        let (header, rest) = raw_bytes.split_at_mut(HEADER_SIZE);\n        let header: &mut Header = unsafe { &mut *(header.as_mut_ptr() as *mut Header) };\n\n        let slot_count = header.slot_count();\n        let entry_data_size_in_bytes = header.entry_data_size_in_bytes::<C>();\n\n        let (entry_data_bytes, metadata_bytes) = rest.split_at_mut(entry_data_size_in_bytes);\n\n        let entry_metadata = unsafe {\n            std::slice::from_raw_parts_mut(\n                metadata_bytes.as_mut_ptr() as *mut EntryMetadata,\n                slot_count + REFERENCE_GROUP_SIZE,\n            )\n        };\n\n        let entry_data = unsafe {\n            std::slice::from_raw_parts_mut(\n                entry_data_bytes.as_mut_ptr() as *mut Entry<C::EncodedKey, C::EncodedValue>,\n                slot_count,\n            )\n        };\n\n        debug_assert_eq!(\n            entry_data.as_ptr_range().start as usize,\n            header as *mut Header as usize + HEADER_SIZE,\n        );\n\n        debug_assert_eq!(\n            entry_data.as_ptr_range().end as usize,\n            entry_metadata.as_ptr_range().start as usize,\n        );\n\n        debug_assert_eq!(\n            _raw_bytes_end_addr,\n            entry_metadata.as_ptr_range().end as usize,\n        );\n\n        f(header, entry_metadata, entry_data)\n    }"
+}

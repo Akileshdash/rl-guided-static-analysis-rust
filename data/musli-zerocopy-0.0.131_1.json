@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "musli-zerocopy-0.0.131/src/buf/owned_buf.rs",
+    "start_line": 1278,
+    "start_col": 1,
+    "end_line": 1281,
+    "end_col": 13,
+    "code_snippet": "impl<E, O> Drop for OwnedBuf<E, O>\nwhere\n    E: ByteOrder,\n    O: Size,\n{\n    fn drop(&mut self) {\n        unsafe {\n            if self.capacity != 0 {\n                // SAFETY: This is guaranteed to be valid per the construction\n                // of this type.\n                let layout = Layout::from_size_align_unchecked(self.capacity, self.align);\n                alloc::dealloc(self.data.as_ptr(), layout);\n            }\n        }\n    }\n}"
+}

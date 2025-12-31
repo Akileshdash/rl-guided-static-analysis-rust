@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "consume_on_drop-0.1.1/src/lib.rs",
+    "start_line": 78,
+    "start_col": 5,
+    "end_line": 78,
+    "end_col": 47,
+    "code_snippet": "impl<T: Consume> Drop for ConsumeOnDrop<T> {\n        #[inline]\n        fn drop(&mut self) {\n            unsafe {\n                // SAFETY: It is impossible to use self.inner again after Drop is called.\n                ManuallyDrop::take(&mut self.inner).consume()\n            }\n        }\n    }"
+}

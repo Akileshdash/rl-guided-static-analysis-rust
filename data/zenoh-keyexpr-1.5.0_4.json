@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<keyexpr_tree::iters::tree_iter::TreeIterMut<'a, Children, Node, Weight> as std::iter::Iterator>::next`",
+    "file": "zenoh-keyexpr-1.5.0/src/keyexpr_tree/iters/tree_iter.rs",
+    "start_line": 109,
+    "start_col": 5,
+    "end_line": 124,
+    "end_col": 6,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item> {\n        loop {\n            match self.iterators.last_mut()?.next() {\n                Some(node) => {\n                    let iterator = unsafe { &mut *(node.as_node_mut() as *mut Node) }\n                        .children_mut()\n                        .children_mut();\n                    self.iterators.push(iterator);\n                    return Some(node);\n                }\n                None => {\n                    self.iterators.pop();\n                }\n            }\n        }\n    }"
+}

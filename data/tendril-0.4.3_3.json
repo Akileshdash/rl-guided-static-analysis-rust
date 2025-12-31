@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<tendril::Tendril<F, A> as std::ops::Drop>::drop`",
+    "file": "tendril-0.4.3/src/tendril.rs",
+    "start_line": 245,
+    "start_col": 5,
+    "end_line": 263,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        unsafe {\n            let p = self.ptr.get().get();\n            if p <= MAX_INLINE_TAG {\n                return;\n            }\n\n            let (buf, shared, _) = self.assume_buf();\n            if shared {\n                let header = self.header();\n                if (*header).refcount.decrement() == 1 {\n                    A::fence_acquire();\n                    buf.destroy();\n                }\n            } else {\n                buf.destroy();\n            }\n        }\n    }"
+}

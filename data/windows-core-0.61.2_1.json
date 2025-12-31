@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "windows-core-0.61.2/src/com_object.rs",
+    "start_line": 230,
+    "start_col": 1,
+    "end_line": 230,
+    "end_col": 46,
+    "code_snippet": "impl<T: ComObjectInner> Drop for ComObject<T> {\n    fn drop(&mut self) {\n        unsafe {\n            T::Outer::Release(self.ptr.as_ptr());\n        }\n    }\n}"
+}

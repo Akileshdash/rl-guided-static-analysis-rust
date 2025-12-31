@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "js-sys-0.3.77/src/lib.rs",
+    "start_line": 6043,
+    "start_col": 5,
+    "end_line": 6043,
+    "end_col": 39,
+    "code_snippet": "unsafe impl<T> Sync for Wrapper<T> {}"
+}

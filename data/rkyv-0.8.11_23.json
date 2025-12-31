@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<string::ArchivedString as bytecheck::CheckBytes<__C>>::check_bytes`",
+    "file": "rkyv-0.8.11/src/string/mod.rs",
+    "start_line": 33,
+    "start_col": 12,
+    "end_line": 33,
+    "end_col": 33,
+    "code_snippet": "derive(bytecheck::CheckBytes),\n    bytecheck(verify)\n)]\n#[derive(Portable)]\n#[rkyv(crate)]\npub struct ArchivedString {\n    repr: ArchivedStringRepr,\n}"
+}

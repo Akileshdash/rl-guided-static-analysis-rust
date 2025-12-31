@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sequoia-openpgp-2.0.0/src/crypto/mem.rs",
+    "start_line": 239,
+    "start_col": 1,
+    "end_line": 239,
+    "end_col": 24,
+    "code_snippet": "impl Drop for Protected {\n    fn drop(&mut self) {\n        unsafe {\n            let len = self.len();\n            memsec::memzero(self.as_mut().as_mut_ptr(), len);\n            drop(Box::from_raw(self.0));\n        }\n    }\n}"
+}

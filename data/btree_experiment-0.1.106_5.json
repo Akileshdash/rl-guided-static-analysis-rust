@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `CursorMutKey::<'a, K, V, A>::save_split`",
+    "file": "btree_experiment-0.1.106/src/lib.rs",
+    "start_line": 2670,
+    "start_col": 5,
+    "end_line": 2702,
+    "end_col": 6,
+    "code_snippet": "fn save_split(&mut self, med: (K, V), tree: Tree<K, V>, r: usize) -> *mut Tree<K, V> {\n        unsafe {\n            if let Some((mut nl, mut ix)) = self.stack.pop() {\n                if (*nl).v.full() {\n                    let a = &(*self.map).atune;\n                    match a.full_action(ix, (*nl).v.0.len()) {\n                        FullAction::Split(b, a1, a2) => {\n                            let (med, right) = (*nl).split(b, a1, a2);\n                            let r = usize::from(ix > b);\n                            ix -= r * (b + 1);\n                            assert!(ix < if r == 1 { a2 } else { a1 });\n                            let t = self.save_split(med, Tree::NL(right), r);\n                            nl = (*t).nonleaf();\n                        }\n                        FullAction::Extend(to) => {\n                            (*nl).v.0.set_alloc(to);\n                            (*nl).c.set_alloc(to + 1);\n                        }\n                    }\n                }\n                (*nl).v.0.insert(ix, med);\n                (*nl).c.insert(ix + 1, tree);\n                ix += r;\n                self.stack.push((nl, ix));\n                (*nl).c.ixm(ix)\n            } else {\n                (*self.map).tree.new_root((med, tree));\n                let nl = (*self.map).tree.nonleaf();\n                self.stack.push((nl, r));\n                nl.c.ixm(r)\n            }\n        }\n    }"
+}

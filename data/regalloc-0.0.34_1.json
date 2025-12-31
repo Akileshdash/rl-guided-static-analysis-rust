@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `sparse_set::small_contains`",
+    "file": "regalloc-0.0.34/src/sparse_set.rs",
+    "start_line": 187,
+    "start_col": 1,
+    "end_line": 199,
+    "end_col": 2,
+    "code_snippet": "fn small_contains<A>(card: usize, arr: &MaybeUninit<A>, item: A::Item) -> bool\nwhere\n    A: Array,\n    A::Item: Eq,\n{\n    let arr_p = arr.as_ptr() as *const A::Item;\n    for i in 0..card {\n        if unsafe { read(arr_p.add(i)) } == item {\n            return true;\n        }\n    }\n    false\n}"
+}

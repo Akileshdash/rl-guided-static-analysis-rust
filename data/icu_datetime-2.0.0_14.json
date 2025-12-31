@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::calendar::symbols::Eras<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_datetime-2.0.0/src/provider/calendar/symbols.rs",
+    "start_line": 94,
+    "start_col": 44,
+    "end_line": 94,
+    "end_col": 58,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, Default, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_datetime::provider::calendar))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[yoke(prove_covariance_manually)]\npub struct Eras<'data> {\n    /// Symbol data for era names.\n    ///\n    /// Keys are era codes, and values are display names. See [`Eras`].\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub names: ZeroMap<'data, PotentialUtf8, str>,\n    /// Symbol data for era abbreviations.\n    ///\n    /// Keys are era codes, and values are display names. See [`Eras`].\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub abbr: ZeroMap<'data, PotentialUtf8, str>,\n    /// Symbol data for era narrow forms.\n    ///\n    /// Keys are era codes, and values are display names. See [`Eras`].\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub narrow: ZeroMap<'data, PotentialUtf8, str>,\n}"
+}

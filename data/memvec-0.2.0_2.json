@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "memvec-0.2.0/src/mem_vec.rs",
+    "start_line": 602,
+    "start_col": 9,
+    "end_line": 602,
+    "end_col": 78,
+    "code_snippet": "impl<'a, 'b, T: Copy, A: Memory> Drop for FillGapOnDrop<'a, 'b, T, A> {\n            fn drop(&mut self) {\n                /* This code gets executed when `same_bucket` panics */\n                /* SAFETY: invariant guarantees that `read - write`\n                 * and `len - read` never overflow and that the copy is always\n                 * in-bounds. */\n                unsafe {\n                    let ptr = self.vec.as_mut_ptr();\n                    let len = self.vec.len();\n\n                    /* How many items were left when `same_bucket` panicked.\n                     * Basically vec[read..].len() */\n                    let items_left = len.wrapping_sub(self.read);\n\n                    /* Pointer to first item in vec[write..write+items_left] slice */\n                    let dropped_ptr = ptr.add(self.write);\n                    /* Pointer to first item in vec[read..] slice */\n                    let valid_ptr = ptr.add(self.read);\n\n                    /* Copy `vec[read..]` to `vec[write..write+items_left]`.\n                     * The slices can overlap, so `copy_nonoverlapping` cannot be used */\n                    ptr::copy(valid_ptr, dropped_ptr, items_left);\n\n                    /* How many items have been already dropped\n                     * Basically vec[read..write].len() */\n                    let dropped = self.read.wrapping_sub(self.write);\n\n                    self.vec.set_len(len - dropped);\n                }\n            }\n        }"
+}

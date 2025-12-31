@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "interoptopus-0.15.0-alpha.6/src/pattern/string.rs",
+    "start_line": 67,
+    "start_col": 1,
+    "end_line": 67,
+    "end_col": 21,
+    "code_snippet": "impl Drop for String {\n    #[allow(clippy::cast_possible_truncation)]\n    fn drop(&mut self) {\n        if self.ptr.is_null() {\n            return;\n        }\n        unsafe {\n            let _ = std::string::String::from_raw_parts(self.ptr, self.len as usize, self.capacity as usize);\n        }\n    }\n}"
+}

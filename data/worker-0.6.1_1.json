@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "worker-0.6.1/src/delay.rs",
+    "start_line": 25,
+    "start_col": 28,
+    "end_line": 25,
+    "end_col": 38,
+    "code_snippet": "#[pin_project::pin_project(PinnedDrop)]\npub struct Delay {\n    inner: Duration,\n    closure: Option<Closure<dyn FnMut()>>,\n    timeout_id: Option<i32>,\n    awoken: Rc<Cell<bool>>,\n}"
+}

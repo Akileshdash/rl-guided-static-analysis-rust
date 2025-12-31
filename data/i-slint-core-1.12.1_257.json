@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `sharedvector::SharedVector::<T>::resize`",
+    "file": "i-slint-core-1.12.1/sharedvector.rs",
+    "start_line": 235,
+    "start_col": 5,
+    "end_line": 254,
+    "end_col": 6,
+    "code_snippet": "pub fn resize(&mut self, new_len: usize, value: T) {\n        if self.len() == new_len {\n            return;\n        }\n        self.detach(new_len);\n        // Safety: detach ensured that the array is not shared.\n        let inner = unsafe { self.inner.as_mut() };\n\n        if inner.header.size >= new_len {\n            self.shrink(new_len);\n        } else {\n            while inner.header.size < new_len {\n                // Safety: The array must have a capacity of at least new_len because of the detach call earlier\n                unsafe {\n                    core::ptr::write(inner.data.as_mut_ptr().add(inner.header.size), value.clone());\n                }\n                inner.header.size += 1;\n            }\n        }\n    }"
+}

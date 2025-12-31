@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::register_native_methods`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 2763,
+    "start_col": 5,
+    "end_line": 2792,
+    "end_col": 6,
+    "code_snippet": "pub fn register_native_methods<'other_local, T>(\n        &mut self,\n        class: T,\n        methods: &[NativeMethod],\n    ) -> Result<()>\n    where\n        T: Desc<'local, JClass<'other_local>>,\n    {\n        let class = class.lookup(self)?;\n        let jni_native_methods: Vec<JNINativeMethod> = methods\n            .iter()\n            .map(|nm| JNINativeMethod {\n                name: nm.name.as_ptr() as *mut c_char,\n                signature: nm.sig.as_ptr() as *mut c_char,\n                fnPtr: nm.fn_ptr,\n            })\n            .collect();\n        let res = jni_non_void_call!(\n            self.internal,\n            RegisterNatives,\n            class.as_ref().as_raw(),\n            jni_native_methods.as_ptr(),\n            jni_native_methods.len() as jint\n        );\n\n        // Ensure that `class` isn't dropped before the JNI call returns.\n        drop(class);\n\n        jni_error_code_to_result(res)\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "orx-pinned-concurrent-col-2.14.0/src/col.rs",
+    "start_line": 33,
+    "start_col": 1,
+    "end_line": 36,
+    "end_col": 27,
+    "code_snippet": "impl<T, P, S> Drop for PinnedConcurrentCol<T, P, S>\nwhere\n    P: ConcurrentPinnedVec<T>,\n    S: ConcurrentState<T>,\n{\n    fn drop(&mut self) {\n        match self.vec_drop_state {\n            VecDropState::ToBeDropped => {\n                let len = match self.state().fill_memory_with().is_some() {\n                    true => self.con_pinned_vec.capacity(),\n                    false => {\n                        let capacity = self.con_pinned_vec.capacity();\n                        let no_gap_len = self.state.try_get_no_gap_len().unwrap_or(capacity);\n                        [no_gap_len].into_iter().fold(capacity, usize::min)\n                    }\n                };\n                self.vec_drop_state = VecDropState::TakenOut;\n                unsafe { self.con_pinned_vec.set_pinned_vec_len(len) };\n            }\n            VecDropState::TakenOut => {\n                let len = match self.state().fill_memory_with().is_some() {\n                    true => self.con_pinned_vec.capacity(),\n                    false => 0,\n                };\n                unsafe { self.con_pinned_vec.set_pinned_vec_len(len) };\n            }\n        }\n    }\n}"
+}

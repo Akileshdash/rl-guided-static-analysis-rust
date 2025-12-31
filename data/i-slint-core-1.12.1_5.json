@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "i-slint-core-1.12.1/properties.rs",
+    "start_line": 704,
+    "start_col": 1,
+    "end_line": 704,
+    "end_col": 29,
+    "code_snippet": "impl Drop for PropertyHandle {\n    fn drop(&mut self) {\n        self.remove_binding();\n        debug_assert!(self.handle.get() & 0b11 == 0);\n        if self.handle.get() as *const u32 != (&CONSTANT_PROPERTY_SENTINEL) as *const u32 {\n            unsafe {\n                DependencyListHead::drop(self.handle.as_ptr() as *mut _);\n            }\n        }\n    }\n}"
+}

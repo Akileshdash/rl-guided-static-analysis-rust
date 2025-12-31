@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<fn(A, B) -> R as api::function::VmFunction<'vm>>::unpack_and_call`",
+    "file": "gluon_vm-0.18.2/src/api/function.rs",
+    "start_line": 283,
+    "start_col": 5,
+    "end_line": 316,
+    "end_col": 6,
+    "code_snippet": "fn unpack_and_call(&self, vm: &'vm Thread) -> Status {\n        let n_args = Self::arguments();\n        let mut context = vm.current_context();\n        let frame_index = context.stack().get_frames().len() as VmIndex - 1;\n        let mut i = 0;\n        let lock;\n        let r = unsafe {\n\n            let stack = StackFrame::<ExternState>::current(context.stack());\n            $(\n                let variants = Variants::with_root(&stack[i], vm);\n                let mut proxy = match $args::to_proxy(vm, variants) {\n                    Ok(x) => x,\n                    Err(err) => {\n                        drop(stack);\n                        err.to_string().vm_push(&mut context).unwrap();\n                        return Status::Error;\n                    }\n                };\n                // The proxy will live as along as the 'value lifetime we just created\n                let $args = $args::from_proxy(vm, &mut *(&mut proxy as *mut _));\n                i += 1;\n            )*\n            // Lock the frame to ensure that any references to the stack stay rooted\n            lock = stack.into_lock();\n\n            drop(context);\n            let r = (*self)($($args),*);\n            context = vm.current_context();\n            r\n        };\n\n        r.async_status_push(&mut context, lock, frame_index)\n    }"
+}

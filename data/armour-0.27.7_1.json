@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `types::id64::Id64::<T>::ser`",
+    "file": "armour-0.27.7/src/types/id64.rs",
+    "start_line": 184,
+    "start_col": 5,
+    "end_line": 187,
+    "end_col": 6,
+    "code_snippet": "pub fn ser(self) -> IdStr {\n        let u: u64 = zerocopy::transmute!(self);\n        T::ser(u)\n    }"
+}

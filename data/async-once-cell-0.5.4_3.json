@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-once-cell-0.5.4/src/lib.rs",
+    "start_line": 494,
+    "start_col": 1,
+    "end_line": 494,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Inner {\n    fn drop(&mut self) {\n        let queue = *self.queue.get_mut();\n        if !queue.is_null() {\n            // Safety: nobody else could have a reference\n            unsafe {\n                drop(Box::from_raw(queue));\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `lifetime::ValueWriteAccess::<'a, T>::remap`",
+    "file": "intuicio-data-0.47.0/src/lifetime.rs",
+    "start_line": 1372,
+    "start_col": 5,
+    "end_line": 1385,
+    "end_col": 6,
+    "code_snippet": "pub fn remap<U>(\n        self,\n        f: impl FnOnce(&mut T) -> Option<&mut U>,\n    ) -> Result<ValueWriteAccess<'a, U>, Self> {\n        if let Some(data) = f(unsafe { std::mem::transmute::<&mut T, &'a mut T>(&mut *self.data) })\n        {\n            Ok(ValueWriteAccess {\n                lifetime: self.lifetime.clone(),\n                data,\n            })\n        } else {\n            Err(self)\n        }\n    }"
+}

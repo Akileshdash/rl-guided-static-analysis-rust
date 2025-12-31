@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "luminance-gl-0.19.1/src/gl33/buffer.rs",
+    "start_line": 146,
+    "start_col": 1,
+    "end_line": 146,
+    "end_col": 37,
+    "code_snippet": "impl Drop for BufferSliceWrapper<'_> {\n  fn drop(&mut self) {\n    unsafe {\n      self\n        .state\n        .borrow_mut()\n        .bind_array_buffer(self.handle, Bind::Cached);\n\n      gl::UnmapBuffer(gl::ARRAY_BUFFER);\n    }\n  }\n}"
+}

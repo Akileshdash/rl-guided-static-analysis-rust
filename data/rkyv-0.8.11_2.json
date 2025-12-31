@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rkyv-0.8.11/src/util/alloc/aligned_vec.rs",
+    "start_line": 37,
+    "start_col": 1,
+    "end_line": 37,
+    "end_col": 44,
+    "code_snippet": "impl<const A: usize> Drop for AlignedVec<A> {\n    fn drop(&mut self) {\n        if self.cap != 0 {\n            unsafe {\n                dealloc(self.ptr.as_ptr(), self.layout());\n            }\n        }\n    }\n}"
+}

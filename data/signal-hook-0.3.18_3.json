@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `iterator::backend::PendingSignals::<E>::new`",
+    "file": "signal-hook-0.3.18/src/iterator/backend.rs",
+    "start_line": 79,
+    "start_col": 5,
+    "end_line": 96,
+    "end_col": 6,
+    "code_snippet": "fn new(exfiltrator: E) -> Self {\n        // Unfortunately, Default is not implemented for long arrays :-(\n        //\n        // Note that if the default impl panics, the already existing instances are leaked.\n        let mut slots = MaybeUninit::<[E::Storage; MAX_SIGNUM]>::uninit();\n        for i in 0..MAX_SIGNUM {\n            unsafe {\n                let slot: *mut E::Storage = slots.as_mut_ptr() as *mut _;\n                let slot = slot.add(i);\n                ptr::write(slot, E::Storage::default());\n            }\n        }\n\n        Self {\n            exfiltrator,\n            slots: unsafe { slots.assume_init() },\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "memo-map-0.3.3/src/lib.rs",
+    "start_line": 364,
+    "start_col": 1,
+    "end_line": 364,
+    "end_col": 45,
+    "code_snippet": "impl<'a, K, V, S> Drop for Iter<'a, K, V, S> {\n    fn drop(&mut self) {\n        unsafe {\n            ManuallyDrop::drop(&mut self.guard);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glow-0.16.0/src/native.rs",
+    "start_line": 4519,
+    "start_col": 1,
+    "end_line": 4519,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Context {\n    fn drop(&mut self) {\n        match self.debug_callback.take() {\n            Some(_) => {\n                // Unset the debug callback before destroying the context.\n                unsafe {\n                    let gl = &self.raw;\n                    if gl.DebugMessageCallback_is_loaded() {\n                        gl.DebugMessageCallback(None, std::ptr::null());\n                    } else {\n                        gl.DebugMessageCallbackKHR(None, std::ptr::null());\n                    }\n                }\n            }\n            None => {}\n        }\n    }\n}"
+}

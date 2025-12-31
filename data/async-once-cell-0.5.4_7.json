@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "async-once-cell-0.5.4/src/lib.rs",
+    "start_line": 1147,
+    "start_col": 1,
+    "end_line": 1147,
+    "end_col": 57,
+    "code_snippet": "unsafe impl<T: Send + Sync, F: Send> Sync for Lazy<T, F> {}\nunsafe impl<T: Send, F: Send> Send for Lazy<T, F> {}"
+}

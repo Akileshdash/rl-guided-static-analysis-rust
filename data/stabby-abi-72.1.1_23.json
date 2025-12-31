@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "stabby-abi-72.1.1/src/fatptr.rs",
+    "start_line": 456,
+    "start_col": 1,
+    "end_line": 456,
+    "end_col": 84,
+    "code_snippet": "unsafe impl<P: IPtrOwned + Sync, Vt: HasSyncVt + HasDropVt> Sync for Dyn<'_, P, Vt> {}"
+}

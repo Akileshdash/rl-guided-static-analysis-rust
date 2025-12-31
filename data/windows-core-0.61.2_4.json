@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "windows-core-0.61.2/src/weak.rs",
+    "start_line": 27,
+    "start_col": 1,
+    "end_line": 27,
+    "end_col": 43,
+    "code_snippet": "unsafe impl<I: Interface> Send for Weak<I> {}\nunsafe impl<I: Interface> Sync for Weak<I> {}"
+}

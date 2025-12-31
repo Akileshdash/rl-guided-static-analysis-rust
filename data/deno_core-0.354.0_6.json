@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deno_core-0.354.0/arena/unique_arena.rs",
+    "start_line": 105,
+    "start_col": 1,
+    "end_line": 105,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for ArenaBox<T> {\n  #[inline(always)]\n  fn drop(&mut self) {\n    unsafe {\n      ArenaUnique::delete(self.ptr);\n    }\n  }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `fifo::Fifo::<T>::try_send_impl`",
+    "file": "ipc-queue-0.4.0/src/fifo.rs",
+    "start_line": 223,
+    "start_col": 5,
+    "end_line": 252,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn try_send_impl(&self, val: Identified<T>) -> Result</*wake up reader:*/ bool, TrySendError> {\n        let (new, was_empty) = loop {\n            // 1. Load the current offsets.\n            let current = self.current_offsets(Ordering::SeqCst);\n            let was_empty = current.is_empty();\n\n            // 2. If the queue is full, wait, then go to step 1.\n            if current.is_full() {\n                return Err(TrySendError::QueueFull);\n            }\n\n            // 3. Add 1 to the write offset and do an atomic compare-and-swap (CAS)\n            // with the current offsets. If the CAS was not successful, go to step 1.\n            let new = current.increment_write_offset();\n            let current = current.as_usize();\n            if self.offsets.compare_exchange(current, new.as_usize(), SeqCst, SeqCst).is_ok() {\n                break (new, was_empty);\n            }\n        };\n\n        // 4. Write the data, then the `id`.\n        unsafe {\n            let slot = &mut *self.data[new.write_offset()].get();\n            T::write(&mut slot.data, &val.data);\n            slot.id.store(val.id, SeqCst);\n        }\n\n        // 5. If the queue was empty in step 1, signal the reader to wake up.\n        Ok(was_empty)\n    }"
+}

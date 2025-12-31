@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<as_mut::MutAs<'_, T, As> as std::ops::Drop>::drop`",
+    "file": "stabby-abi-72.1.1/src/as_mut.rs",
+    "start_line": 96,
+    "start_col": 5,
+    "end_line": 98,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        unsafe { core::ptr::write(self.source, core::ptr::read(&*self.target).into()) }\n    }"
+}

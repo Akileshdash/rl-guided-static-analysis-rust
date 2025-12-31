@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "windows-core-0.61.2/src/scoped_interface.rs",
+    "start_line": 35,
+    "start_col": 1,
+    "end_line": 35,
+    "end_col": 51,
+    "code_snippet": "impl<T: Interface> Drop for ScopedInterface<'_, T> {\n    fn drop(&mut self) {\n        unsafe {\n            let _ = Box::from_raw(self.interface.as_raw() as *const _ as *mut ScopedHeap);\n        }\n    }\n}"
+}

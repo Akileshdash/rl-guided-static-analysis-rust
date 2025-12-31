@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `perm::permown::<impl perm::generic::Perm<perm::permown::Own<I, N>>>::len`",
+    "file": "faer-0.22.6/src/perm/permown.rs",
+    "start_line": 71,
+    "start_col": 2,
+    "end_line": 73,
+    "end_col": 3,
+    "code_snippet": "pub fn len(&self) -> N {\n\t\tunsafe { N::new_unbound(self.0.forward.len()) }\n\t}"
+}

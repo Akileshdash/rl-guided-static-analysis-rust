@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "netxclient-2.2.0/src/client/impl_client.rs",
+    "start_line": 128,
+    "start_col": 1,
+    "end_line": 128,
+    "end_col": 38,
+    "code_snippet": "unsafe impl<T> Sync for NetXClient<T> {}"
+}

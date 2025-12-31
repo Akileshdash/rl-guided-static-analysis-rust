@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `audio::AudioDevice::<CB>::open`",
+    "file": "sdl2-0.38.0/src/sdl2/audio.rs",
+    "start_line": 904,
+    "start_col": 5,
+    "end_line": 955,
+    "end_col": 6,
+    "code_snippet": "fn open<'a, F, D>(\n        a: &AudioSubsystem,\n        device: D,\n        spec: &AudioSpecDesired,\n        get_callback: F,\n        capture: bool,\n    ) -> Result<AudioDevice<CB>, String>\n    where\n        F: FnOnce(AudioSpec) -> CB,\n        D: Into<Option<&'a str>>,\n    {\n        use std::mem::MaybeUninit;\n\n        let mut userdata: Box<Option<CB>> = Box::new(None);\n        let desired =\n            AudioSpecDesired::convert_to_ll(spec.freq, spec.channels, spec.samples, &mut *userdata);\n\n        let mut obtained = MaybeUninit::uninit();\n        unsafe {\n            let device = device.into().map(|device| CString::new(device).unwrap());\n            // Warning: map_or consumes its argument; `device.map_or()` would therefore consume the\n            // CString and drop it, making device_ptr a dangling pointer! To avoid that we downgrade\n            // device to an Option<&_> first.\n            let device_ptr = device.as_ref().map_or(ptr::null(), |s| s.as_ptr());\n\n            let iscapture_flag = if capture { 1 } else { 0 };\n            let device_id = sys::SDL_OpenAudioDevice(\n                device_ptr as *const c_char,\n                iscapture_flag,\n                &desired,\n                obtained.as_mut_ptr(),\n                0,\n            );\n            match device_id {\n                0 => Err(get_error()),\n                id => {\n                    let obtained = obtained.assume_init();\n                    let device_id = AudioDeviceID::PlaybackDevice(id);\n                    let spec = AudioSpec::convert_from_ll(obtained);\n\n                    *userdata = Some(get_callback(spec));\n\n                    Ok(AudioDevice {\n                        subsystem: a.clone(),\n                        device_id,\n                        userdata,\n                        spec,\n                    })\n                }\n            }\n        }\n    }"
+}

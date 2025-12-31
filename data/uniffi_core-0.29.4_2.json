@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "uniffi_core-0.29.4/src/ffi/rustfuture/future.rs",
+    "start_line": 187,
+    "start_col": 1,
+    "end_line": 190,
+    "end_col": 24,
+    "code_snippet": "unsafe impl<T, UT> Send for WrappedFuture<T, UT>\nwhere\n    T: FutureLowerReturn<UT> + 'static,\n    UT: Send + 'static,\n{\n}"
+}

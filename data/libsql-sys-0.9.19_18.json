@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::insert_frames`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 96,
+    "start_col": 5,
+    "end_line": 114,
+    "end_col": 6,
+    "code_snippet": "fn insert_frames(\n        &mut self,\n        page_size: c_int,\n        page_headers: &mut super::PageHeaders,\n        size_after: u32,\n        is_commit: bool,\n        sync_flags: c_int,\n    ) -> super::Result<usize> {\n        unsafe {\n            (*self.wrapper).insert_frames(\n                &mut *self.wrapped,\n                page_size,\n                page_headers,\n                size_after,\n                is_commit,\n                sync_flags,\n            )\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deno_core-0.354.0/runtime/op_driver/erased_future.rs",
+    "start_line": 77,
+    "start_col": 1,
+    "end_line": 77,
+    "end_col": 58,
+    "code_snippet": "impl<const MAX_SIZE: usize> Drop for TypeErased<MAX_SIZE> {\n  fn drop(&mut self) {\n    (self.drop)(unsafe { Self::raw_ptr(self) })\n  }\n}"
+}

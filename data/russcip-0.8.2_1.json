@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "russcip-0.8.2/src/scip.rs",
+    "start_line": 1692,
+    "start_col": 1,
+    "end_line": 1692,
+    "end_col": 22,
+    "code_snippet": "impl Drop for ScipPtr {\n    fn drop(&mut self) {\n        if self.weak {\n            return;\n        }\n\n        // Rust Model struct keeps at most one copy of each variable and constraint pointers\n        // so we need to release them before freeing the SCIP instance\n\n        // first check if we are in a stage where we have variables and constraints\n        let scip_stage = unsafe { ffi::SCIPgetStage(self.raw) };\n        if scip_stage == ffi::SCIP_Stage_SCIP_STAGE_PROBLEM\n            || scip_stage == ffi::SCIP_Stage_SCIP_STAGE_TRANSFORMED\n            || scip_stage == ffi::SCIP_Stage_SCIP_STAGE_INITPRESOLVE\n            || scip_stage == ffi::SCIP_Stage_SCIP_STAGE_PRESOLVING\n            || scip_stage == ffi::SCIP_Stage_SCIP_STAGE_EXITPRESOLVE\n            || scip_stage == ffi::SCIP_Stage_SCIP_STAGE_PRESOLVED\n            || scip_stage == ffi::SCIP_Stage_SCIP_STAGE_INITSOLVE\n            || scip_stage == ffi::SCIP_Stage_SCIP_STAGE_SOLVING\n            || scip_stage == ffi::SCIP_Stage_SCIP_STAGE_SOLVED\n            || scip_stage == ffi::SCIP_Stage_SCIP_STAGE_EXITSOLVE\n        {\n            // release original variables\n            let n_vars = unsafe { ffi::SCIPgetNOrigVars(self.raw) };\n            let vars = unsafe { ffi::SCIPgetOrigVars(self.raw) };\n            for i in 0..n_vars {\n                let mut var = unsafe { *vars.add(i as usize) };\n                scip_call_panic!(ffi::SCIPreleaseVar(self.raw, &mut var));\n            }\n\n            // release vars added in solving\n            for var_ptr in self.vars_added_in_solving.iter_mut() {\n                scip_call_panic!(ffi::SCIPreleaseVar(self.raw, var_ptr));\n            }\n\n            // release constraints\n            let n_conss = unsafe { ffi::SCIPgetNOrigConss(self.raw) };\n            let conss = unsafe { ffi::SCIPgetOrigConss(self.raw) };\n            for i in 0..n_conss {\n                let mut cons = unsafe { *conss.add(i as usize) };\n                scip_call_panic!(ffi::SCIPreleaseCons(self.raw, &mut cons));\n            }\n        }\n\n        // free SCIP instance\n        unsafe { ffi::SCIPfree(&mut self.raw) };\n    }\n}"
+}

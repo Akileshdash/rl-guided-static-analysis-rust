@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "i-slint-core-1.12.1/model/model_peer.rs",
+    "start_line": 134,
+    "start_col": 15,
+    "end_line": 134,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\n#[derive(Default, derive_more::Deref)]\n/// This is a structure that contains a T which implements [`ModelChangeListener`]\n/// and can provide a [`ModelPeer`] for it when pinned.\npub struct ModelChangeListenerContainer<T: ModelChangeListener> {\n    /// Will be initialized when the ModelPeer is initialized.\n    /// The DependencyNode points to data.\n    peer: OnceCell<DependencyNode<*const dyn ModelChangeListener>>,\n\n    #[pin]\n    #[deref]\n    data: T,\n}"
+}

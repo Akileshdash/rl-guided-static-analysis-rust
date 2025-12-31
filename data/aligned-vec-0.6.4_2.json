@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "aligned-vec-0.6.4/src/lib.rs",
+    "start_line": 211,
+    "start_col": 1,
+    "end_line": 211,
+    "end_col": 24,
+    "code_snippet": "impl Drop for AllocDrop {\n    #[inline]\n    fn drop(&mut self) {\n        if self.size_bytes > 0 {\n            unsafe {\n                alloc::alloc::dealloc(\n                    self.ptr,\n                    alloc::alloc::Layout::from_size_align_unchecked(self.size_bytes, self.align),\n                )\n            }\n        }\n    }\n}"
+}

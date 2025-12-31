@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "refpool-0.4.3/src/pool.rs",
+    "start_line": 206,
+    "start_col": 1,
+    "end_line": 206,
+    "end_col": 25,
+    "code_snippet": "impl<A> Drop for Pool<A> {\n    fn drop(&mut self) {\n        if let Some(ptr) = self.inner.get_ptr_checked() {\n            if unsafe { (*ptr).dec() } == 1 {\n                std::mem::drop(unsafe { Box::from_raw(ptr) });\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<sized_chunk::Chunk<A, N> as std::clone::Clone>::clone`",
+    "file": "imbl-sized-chunks-0.1.3/src/sized_chunk/mod.rs",
+    "start_line": 109,
+    "start_col": 5,
+    "end_line": 121,
+    "end_col": 6,
+    "code_snippet": "fn clone(&self) -> Self {\n        let mut out = Self::new();\n        out.left = self.left;\n        out.right = self.left;\n        for index in self.left..self.right {\n            unsafe { Chunk::force_write(index, (*self.ptr(index)).clone(), &mut out) }\n            // Panic safety, move the right index to cover only the really initialized things. This\n            // way we don't try to drop uninitialized, but also don't leak if we panic in the\n            // middle.\n            out.right = index + 1;\n        }\n        out\n    }"
+}

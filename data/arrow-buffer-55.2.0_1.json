@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "arrow-buffer-55.2.0/src/buffer/mutable.rs",
+    "start_line": 679,
+    "start_col": 1,
+    "end_line": 679,
+    "end_col": 28,
+    "code_snippet": "impl Drop for MutableBuffer {\n    fn drop(&mut self) {\n        if self.layout.size() != 0 {\n            // Safety: data was allocated with standard allocator with given layout\n            unsafe { std::alloc::dealloc(self.data.as_ptr() as _, self.layout) };\n        }\n    }\n}"
+}

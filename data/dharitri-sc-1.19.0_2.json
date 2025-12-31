@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dharitri-sc-1.19.0/src/types/managed/wrapped/managed_vec_ref_mut.rs",
+    "start_line": 50,
+    "start_col": 1,
+    "end_line": 53,
+    "end_col": 23,
+    "code_snippet": "impl<M, T> Drop for ManagedVecRefMut<'_, M, T>\nwhere\n    M: ManagedTypeApi,\n    T: ManagedVecItem,\n{\n    fn drop(&mut self) {\n        let item = unsafe { ManuallyDrop::take(&mut self.item) };\n        unsafe {\n            let _ =\n                ManagedRefMut::<M, ManagedVec<M, T>>::wrap_handle(self.managed_vec_handle.clone())\n                    .set(self.item_index, item);\n        }\n        // core::mem::forget(item);\n    }\n}"
+}

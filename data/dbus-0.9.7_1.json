@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<ffidisp::connection::ConnMsgs<C> as std::iter::Iterator>::next`",
+    "file": "dbus-0.9.7/src/ffidisp/connection.rs",
+    "start_line": 591,
+    "start_col": 5,
+    "end_line": 614,
+    "end_col": 6,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item> {\n\n        loop {\n            let iconn = &self.conn.i;\n            if iconn.filter_cb.borrow().is_none() { panic!(\"ConnMsgs::next called recursively or with a MessageCallback set to None\"); }\n            let i = self.conn.next_msg();\n            if let Some(ci) = i { return Some(ci); }\n\n            if let Some(t) = self.timeout_ms {\n                let r = unsafe { ffi::dbus_connection_read_write_dispatch(self.conn.conn(), t as c_int) };\n                self.conn.check_panic();\n                if !iconn.pending_items.borrow().is_empty() { continue };\n                if r == 0 { return None; }\n            }\n\n            let r = unsafe { ffi::dbus_connection_dispatch(self.conn.conn()) };\n            self.conn.check_panic();\n\n            if !iconn.pending_items.borrow().is_empty() { continue };\n            if r == ffi::DBusDispatchStatus::DataRemains { continue };\n            if r == ffi::DBusDispatchStatus::Complete { return None }\n            panic!(\"dbus_connection_dispatch failed\");\n        }\n    }"
+}

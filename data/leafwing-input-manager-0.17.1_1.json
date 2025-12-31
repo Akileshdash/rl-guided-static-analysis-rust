@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "leafwing-input-manager-0.17.1/src/user_input/updating.rs",
+    "start_line": 220,
+    "start_col": 1,
+    "end_line": 220,
+    "end_col": 40,
+    "code_snippet": "unsafe impl<T> Send for EnabledInput<T> {}\nunsafe impl<T> Sync for EnabledInput<T> {}"
+}

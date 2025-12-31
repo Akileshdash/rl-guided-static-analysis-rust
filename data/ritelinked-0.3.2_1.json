@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ritelinked-0.3.2/src/map.rs",
+    "start_line": 401,
+    "start_col": 9,
+    "end_line": 401,
+    "end_col": 61,
+    "code_snippet": "impl<'a, K, V> Drop for DropFilteredValues<'a, K, V> {\n            fn drop(&mut self) {\n                unsafe {\n                    let end_free = self.cur_free;\n                    while self.cur_free != *self.free {\n                        let cur_free = self.cur_free.as_ptr();\n                        (*cur_free).take_entry();\n                        self.cur_free = (*cur_free).links.free.next;\n                    }\n                    *self.free = end_free;\n                }\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `base::edition::compress_rows`",
+    "file": "nalgebra-0.34.0/src/base/edition.rs",
+    "start_line": 1087,
+    "start_col": 1,
+    "end_line": 1142,
+    "end_col": 2,
+    "code_snippet": "unsafe fn compress_rows<T: Scalar>(\n    data: &mut [T],\n    nrows: usize,\n    ncols: usize,\n    i: usize,\n    nremove: usize,\n) {\n    unsafe {\n        let new_nrows = nrows - nremove;\n\n        if nremove == 0 {\n            return; // Nothing to remove or drop.\n        }\n\n        if new_nrows == 0 || ncols == 0 {\n            // The output matrix is empty, drop everything.\n            ptr::drop_in_place(data);\n            return;\n        }\n\n        // Safety: because `nremove != 0`, the pointers given to `ptr::copy`\n        //         won\u2019t alias.\n        let ptr_in = data.as_ptr();\n        let ptr_out = data.as_mut_ptr();\n\n        let mut curr_i = i;\n\n        for k in 0..ncols - 1 {\n            // Safety: we drop the row elements in-place because we will overwrite these\n            //         entries later with the `ptr::copy`.\n            let s = ptr::slice_from_raw_parts_mut(ptr_out.add(curr_i), nremove);\n            ptr::drop_in_place(s);\n            ptr::copy(\n                ptr_in.add(curr_i + (k + 1) * nremove),\n                ptr_out.add(curr_i),\n                new_nrows,\n            );\n\n            curr_i += new_nrows;\n        }\n\n        /*\n         * Deal with the last column from which less values have to be copied.\n         */\n        // Safety: we drop the row elements in-place because we will overwrite these\n        //         entries later with the `ptr::copy`.\n        let s = ptr::slice_from_raw_parts_mut(ptr_out.add(curr_i), nremove);\n        ptr::drop_in_place(s);\n        let remaining_len = nrows - i - nremove;\n        ptr::copy(\n            ptr_in.add(nrows * ncols - remaining_len),\n            ptr_out.add(curr_i),\n            remaining_len,\n        );\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "monoio-0.2.4/src/io/async_buf_read_ext.rs",
+    "start_line": 16,
+    "start_col": 1,
+    "end_line": 16,
+    "end_col": 28,
+    "code_snippet": "impl<'a> Drop for Guard<'a> {\n    fn drop(&mut self) {\n        unsafe {\n            self.buf.set_len(self.len);\n        }\n    }\n}"
+}

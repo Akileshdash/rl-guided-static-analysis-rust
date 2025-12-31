@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::type_matches_value`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 296,
+    "start_col": 5,
+    "end_line": 296,
+    "end_col": 79,
+    "code_snippet": "fn type_matches_value(&self, _value: Value<'v>, _private: Private) -> bool {\n        unreachable!(\"`type_matches_value` should only be called on special types\")\n    }"
+}

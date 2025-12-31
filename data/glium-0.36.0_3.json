@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/draw_parameters/query.rs",
+    "start_line": 374,
+    "start_col": 1,
+    "end_line": 374,
+    "end_col": 23,
+    "code_snippet": "impl Drop for RawQuery {\n    fn drop(&mut self) {\n        let mut ctxt = self.context.make_current();\n        self.deactivate(&mut ctxt);\n\n        if let Some((id, _)) = ctxt.state.conditional_render {\n            if id == self.id {\n                RawQuery::end_conditional_render(&mut ctxt);\n            }\n        }\n\n        unsafe {\n            if ctxt.version >= &Version(Api::Gl, 1, 5) ||\n               ctxt.version >= &Version(Api::GlEs, 3, 0)\n            {\n                ctxt.gl.DeleteQueries(1, [self.id].as_ptr());\n\n            } else if ctxt.extensions.gl_arb_occlusion_query {\n                ctxt.gl.DeleteQueriesARB(1, [self.id].as_ptr());\n\n            } else if ctxt.extensions.gl_ext_occlusion_query_boolean {\n                ctxt.gl.DeleteQueriesEXT(1, [self.id].as_ptr());\n\n            } else {\n                unreachable!();\n            }\n        }\n    }\n}"
+}

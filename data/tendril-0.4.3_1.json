@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tendril-0.4.3/src/tendril.rs",
+    "start_line": 239,
+    "start_col": 1,
+    "end_line": 242,
+    "end_col": 18,
+    "code_snippet": "impl<F, A> Drop for Tendril<F, A>\nwhere\n    F: fmt::Format,\n    A: Atomicity,\n{\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            let p = self.ptr.get().get();\n            if p <= MAX_INLINE_TAG {\n                return;\n            }\n\n            let (buf, shared, _) = self.assume_buf();\n            if shared {\n                let header = self.header();\n                if (*header).refcount.decrement() == 1 {\n                    A::fence_acquire();\n                    buf.destroy();\n                }\n            } else {\n                buf.destroy();\n            }\n        }\n    }\n}"
+}

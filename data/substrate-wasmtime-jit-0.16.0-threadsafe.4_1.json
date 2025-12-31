@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "substrate-wasmtime-jit-0.16.0-threadsafe.4/src/code_memory.rs",
+    "start_line": 32,
+    "start_col": 1,
+    "end_line": 32,
+    "end_col": 30,
+    "code_snippet": "impl Drop for CodeMemoryEntry {\n    fn drop(&mut self) {\n        unsafe {\n            // The registry needs to be dropped before the mmap\n            ManuallyDrop::drop(&mut self.registry);\n            ManuallyDrop::drop(&mut self.mmap);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `formatter::fast::SpecializedFormatter::<TraitOptions>::format_memory`",
+    "file": "iced-x86-1.21.0/src/formatter/fast.rs",
+    "start_line": 1746,
+    "start_col": 2,
+    "end_line": 1752,
+    "end_col": 3,
+    "code_snippet": "fn format_memory(\n\t\t&mut self, dst: &mut Vec<u8>, mut dst_next_p: *mut u8, instruction: &Instruction, operand: u32, seg_reg: Register, base_reg: Register,\n\t\tindex_reg: Register, scale: u32, displ_size: u32, displ: i64, addr_size: u32,\n\t) -> *mut u8 {\n\t\tformat_memory_code!(self, dst, dst_next_p, instruction, operand, seg_reg, base_reg, index_reg, scale, displ_size, displ, addr_size);\n\t\tdst_next_p\n\t}"
+}

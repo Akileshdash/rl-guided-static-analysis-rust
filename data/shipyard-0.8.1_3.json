@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "shipyard-0.8.1/src/storage/sbox.rs",
+    "start_line": 17,
+    "start_col": 1,
+    "end_line": 17,
+    "end_col": 19,
+    "code_snippet": "impl Drop for SBox {\n    fn drop(&mut self) {\n        // SAFE the pointer came from a `Box` of the same type\n        unsafe {\n            let _ = Box::from_raw(self.0);\n        }\n    }\n}"
+}

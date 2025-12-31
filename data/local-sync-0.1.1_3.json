@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "local-sync-0.1.1/src/mpsc/chan.rs",
+    "start_line": 65,
+    "start_col": 1,
+    "end_line": 67,
+    "end_col": 18,
+    "code_snippet": "impl<T, S> Drop for Chan<T, S>\nwhere\n    S: Semaphore,\n{\n    fn drop(&mut self) {\n        // consume all elements:\n        // we cleared all elements on Rx drop, but there may still some\n        // values sent after permits added.\n        let mut queue = self.queue.borrow_mut();\n        while !queue.is_empty() {\n            drop(unsafe { queue.pop_unchecked() });\n        }\n        // drop all blocks of queue\n        unsafe { queue.free_blocks() }\n    }\n}"
+}

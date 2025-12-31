@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sonic-rs-0.5.3/src/value/node.rs",
+    "start_line": 414,
+    "start_col": 1,
+    "end_line": 414,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Value {\n    fn drop(&mut self) {\n        if self.meta.get_kind() == Meta::STAIC_NODE || self.meta.in_shared() {\n            return;\n        }\n        unsafe {\n            match self.meta.get_type() {\n                Meta::FASTSTR | Meta::RAWNUM_FASTSTR => ManuallyDrop::drop(&mut self.data.str_own),\n                Meta::ARR_MUT => ManuallyDrop::drop(&mut self.data.arr_own),\n                Meta::OBJ_MUT => ManuallyDrop::drop(&mut self.data.obj_own),\n                Meta::ROOT_NODE => {\n                    let dom = self.meta.unpack_root();\n                    drop(Arc::from_raw(dom));\n                }\n                _ => unreachable!(\"should not be dropped\"),\n            }\n        }\n    }\n}"
+}

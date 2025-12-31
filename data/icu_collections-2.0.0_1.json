@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<codepointinvliststringlist::CodePointInversionListAndStringList<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_collections-2.0.0/src/codepointinvliststringlist/mod.rs",
+    "start_line": 31,
+    "start_col": 39,
+    "end_line": 31,
+    "end_col": 47,
+    "code_snippet": "#[derive(Debug, Eq, PartialEq, Clone, Yokeable, ZeroFrom)]\n#[cfg_attr(not(feature = \"alloc\"), zerovec::skip_derive(ZeroMapKV, ToOwned))]\n// Valid to auto-derive Deserialize because the invariants are weakly held\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize, serde::Serialize))]\n#[cfg_attr(feature = \"serde\", zerovec::derive(Serialize, Deserialize, Debug))]\npub struct CodePointInversionListAndStringList<'data> {\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    #[zerovec::varule(CodePointInversionListULE)]\n    cp_inv_list: CodePointInversionList<'data>,\n    // Invariants (weakly held):\n    //   - no input string is length 1 (a length 1 string should be a single code point)\n    //   - the string list is sorted\n    //   - the elements in the string list are unique\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    str_list: VarZeroVec<'data, str>,\n}"
+}

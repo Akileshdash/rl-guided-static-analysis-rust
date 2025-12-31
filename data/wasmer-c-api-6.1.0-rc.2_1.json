@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmer-c-api-6.1.0-rc.2/src/wasm_c_api/value.rs",
+    "start_line": 162,
+    "start_col": 1,
+    "end_line": 162,
+    "end_col": 25,
+    "code_snippet": "impl Drop for wasm_val_t {\n    fn drop(&mut self) {\n        let kind: Result<wasm_valkind_enum, _> = self.kind.try_into();\n        match kind {\n            Ok(wasm_valkind_enum::WASM_EXTERNREF) | Ok(wasm_valkind_enum::WASM_FUNCREF) => unsafe {\n                if !self.of.wref.is_null() {\n                    drop(Box::from_raw(self.of.wref));\n                }\n            },\n            _ => {}\n        }\n    }\n}"
+}

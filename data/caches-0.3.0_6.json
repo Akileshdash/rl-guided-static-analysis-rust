@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<lru::raw::RawLRU<K, V, E, S> as cache_api::Cache<K, V>>::remove`",
+    "file": "caches-0.3.0/src/lru/raw.rs",
+    "start_line": 550,
+    "start_col": 5,
+    "end_line": 567,
+    "end_col": 6,
+    "code_snippet": "fn remove<Q>(&mut self, k: &Q) -> Option<V>\n    where\n        K: Borrow<Q>,\n        Q: Hash + Eq + ?Sized,\n    {\n        match self.map.remove(KeyWrapper::from_ref(k)) {\n            None => None,\n            Some(old_node) => unsafe {\n                let node_ptr = &mut *old_node.as_ptr();\n                self.detach(node_ptr);\n                let mut node = *Box::from_raw(old_node.as_ptr());\n                let val = node.val.assume_init();\n                self.cb(&*node.key.as_ptr(), &val);\n                ptr::drop_in_place(node.key.assume_init_mut());\n                Some(val)\n            },\n        }\n    }"
+}

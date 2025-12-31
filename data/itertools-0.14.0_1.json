@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "itertools-0.14.0/src/next_array.rs",
+    "start_line": 102,
+    "start_col": 1,
+    "end_line": 102,
+    "end_col": 52,
+    "code_snippet": "impl<T, const N: usize> Drop for ArrayBuilder<T, N> {\n    // We provide a non-trivial `Drop` impl, because the trivial impl would be a\n    // no-op; `MaybeUninit<T>` has no innate awareness of its own validity, and\n    // so it can only forget its contents. By leveraging the safety invariant of\n    // `self.arr`, we do know which elements of `self.arr` are valid, and can\n    // selectively run their destructors.\n    fn drop(&mut self) {\n        // SAFETY:\n        // - by invariant on `&mut [T]`, `self.as_mut()` is:\n        //   - valid for reads and writes\n        //   - properly aligned\n        //   - non-null\n        // - the dropped `T` are valid for dropping; they do not have any\n        //   additional library invariants that we've violated\n        // - no other pointers to `valid` exist (since we're in the context of\n        //   `drop`)\n        unsafe { core::ptr::drop_in_place(self.as_mut()) }\n    }\n}"
+}

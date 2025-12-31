@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `StorageMap::<L, std::collections::HashMap<K, V, S>>::prepare_maybe`",
+    "file": "storage-map-0.3.0/src/lib.rs",
+    "start_line": 139,
+    "start_col": 5,
+    "end_line": 163,
+    "end_col": 6,
+    "code_snippet": "pub fn prepare_maybe<F: FnOnce() -> Option<V>>(&self, key: &K, create_fn: F) -> PrepareResult {\n        self.lock.lock_shared();\n        // try mapping for reading first\n        let map = unsafe { &*self.map.get() };\n        let has = map.contains_key(key);\n        unsafe {\n            self.lock.unlock_shared();\n        }\n        if has {\n            return PrepareResult::AlreadyExists;\n        }\n        // try creating a new value\n        let value = match create_fn() {\n            Some(value) => value,\n            None => return PrepareResult::UnableToCreate,\n        };\n        // now actually lock for writes\n        self.lock.lock_exclusive();\n        let map = unsafe { &mut *self.map.get() };\n        map.insert(key.clone(), value);\n        unsafe {\n            self.lock.unlock_exclusive();\n        }\n        PrepareResult::Created\n    }"
+}

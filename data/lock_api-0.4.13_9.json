@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lock_api-0.4.13/src/rwlock.rs",
+    "start_line": 2856,
+    "start_col": 1,
+    "end_line": 2856,
+    "end_col": 86,
+    "code_snippet": "impl<'a, R: RawRwLock + 'a, T: ?Sized + 'a> Drop for MappedRwLockWriteGuard<'a, R, T> {\n    #[inline]\n    fn drop(&mut self) {\n        // Safety: A MappedRwLockWriteGuard always holds an exclusive lock.\n        unsafe {\n            self.raw.unlock_exclusive();\n        }\n    }\n}"
+}

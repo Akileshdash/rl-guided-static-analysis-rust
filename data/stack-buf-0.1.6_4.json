@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `<vec::StackVec<T, N> as std::ops::Drop>::drop`",
+    "file": "stack-buf-0.1.6/src/vec.rs",
+    "start_line": 852,
+    "start_col": 5,
+    "end_line": 854,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        unsafe { ptr::drop_in_place(ptr::slice_from_raw_parts_mut(self.as_mut_ptr(), self.len())) }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `worker::promise_complete`",
+    "file": "nj-core-6.1.0/src/worker.rs",
+    "start_line": 79,
+    "start_col": 1,
+    "end_line": 106,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn promise_complete<O>(\n    env: napi_env,\n    _js_cb: napi_value,\n    _context: *mut ::std::os::raw::c_void,\n    data: *mut ::std::os::raw::c_void,\n) where\n    O: TryIntoJs,\n{\n    if !env.is_null() {\n        trace!(\"promise complete\");\n        let js_env = JsEnv::new(env);\n\n        let worker_result: Box<WorkerResult<O>> =\n            unsafe { Box::from_raw(data as *mut WorkerResult<O>) };\n\n        let result: Result<(), NjError> = match worker_result.result.try_to_js(&js_env) {\n            Ok(val) => {\n                trace!(\"trying to resolve to deferred\");\n                js_env.resolve_deferred(worker_result.deferred.0, val)\n            }\n            Err(js_err) => {\n                trace!(\"trying to resolve to deferred\");\n                js_env.reject_deferred(worker_result.deferred.0, js_err.as_js(&js_env))\n            }\n        };\n        assert_napi!(result)\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/vm/sys/unix/signals.rs",
+    "start_line": 534,
+    "start_col": 5,
+    "end_line": 534,
+    "end_col": 24,
+    "code_snippet": "impl Drop for Stack {\n        fn drop(&mut self) {\n            unsafe {\n                // Deallocate the stack memory.\n                let r = rustix::mm::munmap(self.mmap_ptr, self.mmap_size);\n                debug_assert!(r.is_ok(), \"munmap failed during thread shutdown\");\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ndarray-0.16.1/src/iterators/into_iter.rs",
+    "start_line": 81,
+    "start_col": 1,
+    "end_line": 82,
+    "end_col": 19,
+    "code_snippet": "impl<A, D> Drop for IntoIter<A, D>\nwhere D: Dimension\n{\n    fn drop(&mut self)\n    {\n        if !self.has_unreachable_elements || mem::size_of::<A>() == 0 || !mem::needs_drop::<A>() {\n            return;\n        }\n\n        // iterate til the end\n        while let Some(_) = self.next() {}\n\n        unsafe {\n            let data_ptr = self.array_data.as_nonnull_mut();\n            let view = RawArrayViewMut::new(self.array_head_ptr, self.inner.dim.clone(), self.inner.strides.clone());\n            debug_assert!(self.inner.dim.size() < self.data_len, \"data_len {} and dim size {}\",\n                          self.data_len, self.inner.dim.size());\n            drop_unreachable_raw(view, data_ptr, self.data_len);\n        }\n    }\n}"
+}

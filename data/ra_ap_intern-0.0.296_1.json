@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ra_ap_intern-0.0.296/src/symbol.rs",
+    "start_line": 240,
+    "start_col": 1,
+    "end_line": 240,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Symbol {\n    #[inline]\n    fn drop(&mut self) {\n        // SAFETY: We're dropping, we have ownership.\n        let Some(arc) = (unsafe { self.repr.try_as_arc_owned() }) else {\n            return;\n        };\n        // When the last `Ref` is dropped, remove the object from the global map.\n        if Arc::count(&arc) == 2 {\n            // Only `self` and the global map point to the object.\n\n            Self::drop_slow(&arc);\n        }\n        // decrement the ref count\n        ManuallyDrop::into_inner(arc);\n    }\n}"
+}

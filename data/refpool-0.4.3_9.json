@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ref_handle::PoolRef::<A>::make_mut`",
+    "file": "refpool-0.4.3/src/ref_handle.rs",
+    "start_line": 191,
+    "start_col": 5,
+    "end_line": 206,
+    "end_col": 6,
+    "code_snippet": "pub fn make_mut<'a>(pool: &Pool<A>, this: &'a mut Self) -> &'a mut A\n    where\n        A: PoolClone,\n    {\n        if this.box_ref().is_shared() {\n            let mut new_handle = pool.pop();\n            let mut new_handle = unsafe {\n                this.deref().deref().clone_uninit(data_ptr(&mut new_handle));\n                assume_init(new_handle)\n            };\n            new_handle.inc();\n            this.box_ref_mut().dec();\n            this.handle = ElementPointer::wrap(Box::into_raw(new_handle));\n        }\n        this.box_ref_mut().value_as_mut()\n    }"
+}

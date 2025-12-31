@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rarena-allocator-0.6.0/src/common.rs",
+    "start_line": 66,
+    "start_col": 1,
+    "end_line": 66,
+    "end_col": 25,
+    "code_snippet": "impl Drop for AlignedVec {\n  #[inline]\n  fn drop(&mut self) {\n    if self.cap != 0 {\n      unsafe {\n        dealloc(self.ptr.as_ptr(), self.layout());\n      }\n    }\n  }\n}"
+}

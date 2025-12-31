@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "arrayfire-3.8.0/src/core/array.rs",
+    "start_line": 171,
+    "start_col": 1,
+    "end_line": 171,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T: HasAfEnum> Send for Array<T> {}"
+}

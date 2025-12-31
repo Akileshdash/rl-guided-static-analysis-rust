@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `async_work::complete_impl`",
+    "file": "napi-ohos-1.1.0/src/async_work.rs",
+    "start_line": 209,
+    "start_col": 1,
+    "end_line": 268,
+    "end_col": 2,
+    "code_snippet": "fn complete_impl<'task, T: ScopedTask<'task>>(\n  env: sys::napi_env,\n  status: sys::napi_status,\n  data: *mut c_void,\n) -> Result<()> {\n  let mut work = unsafe { Box::from_raw(data as *mut AsyncWork<T>) };\n  let napi_async_work = mem::replace(&mut work.napi_async_work, ptr::null_mut());\n  let deferred = mem::replace(&mut work.deferred, ptr::null_mut());\n  if status == sys::Status::napi_cancelled {\n    const ABORT_ERROR_NAME: &str = \"AbortError\";\n    let wrapped_env = Env::from_raw(env);\n    let mut error =\n      wrapped_env.create_error(Error::new(Status::Cancelled, ABORT_ERROR_NAME.to_owned()))?;\n    error.set_named_property(\"name\", ABORT_ERROR_NAME)?;\n    check_status!(\n      unsafe { sys::napi_reject_deferred(env, deferred, error.0.value) },\n      \"Reject AbortError failed\"\n    )?;\n  } else {\n    let value_ptr = unsafe { work.value.assume_init() };\n    let value = match value_ptr {\n      Ok(output) => work.inner_task.resolve(\n        // SAFETY: `Env` is long lived\n        unsafe { std::mem::transmute::<&Env, &'task Env>(&Env::from_raw(env)) },\n        output,\n      ),\n      Err(e) => work.inner_task.reject(\n        // SAFETY: `Env` is long lived\n        unsafe { std::mem::transmute::<&Env, &'task Env>(&Env::from_raw(env)) },\n        e,\n      ),\n    };\n    if work.status.get() != 2 {\n      match check_status!(status)\n        .and_then(move |_| value)\n        .and_then(|v| unsafe { ToNapiValue::to_napi_value(env, v) })\n      {\n        Ok(v) => {\n          check_status!(\n            unsafe { sys::napi_resolve_deferred(env, deferred, v) },\n            \"Resolve promise failed\"\n          )?;\n        }\n        Err(e) => {\n          check_status!(\n            unsafe { sys::napi_reject_deferred(env, deferred, JsError::from(e).into_value(env)) },\n            \"Reject promise failed\"\n          )?;\n        }\n      };\n    }\n    work.status.set(1);\n  }\n  work.inner_task.finally(Env::from_raw(env))?;\n  check_status!(\n    unsafe { sys::napi_delete_async_work(env, napi_async_work) },\n    \"Delete async work failed\"\n  )?;\n  Ok(())\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "conquer-once-0.4.0/src/cell.rs",
+    "start_line": 626,
+    "start_col": 1,
+    "end_line": 626,
+    "end_col": 44,
+    "code_snippet": "impl<B: Unblock> Drop for PanicGuard<'_, B> {\n    #[inline]\n    fn drop(&mut self) {\n        let swap = if self.poison { SwapState::Poisoned } else { SwapState::Ready };\n        unsafe {\n            // (guard:2) this acq-rel swap syncs-with the acq-rel CAS (wait:2)\n            // and the acquire loads (cell:1), (cell:2), (wait:1) and the\n            // acquire CAS (guard:1)\n            let prev = self.state.unblock(swap, Ordering::AcqRel);\n            B::on_unblock(prev);\n        }\n    }\n}"
+}

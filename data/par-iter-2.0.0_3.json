@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "par-iter-2.0.0/src/slice/sort.rs",
+    "start_line": 1130,
+    "start_col": 1,
+    "end_line": 1130,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for MergeHole<T> {\n    fn drop(&mut self) {\n        // SAFETY: `T` is not a zero-sized type, and these are pointers into a slice's\n        // elements.\n        unsafe {\n            let len = self.end.offset_from(self.start) as usize;\n            ptr::copy_nonoverlapping(self.start, self.dest, len);\n        }\n    }\n}"
+}

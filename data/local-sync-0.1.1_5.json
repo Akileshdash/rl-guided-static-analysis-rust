@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "local-sync-0.1.1/src/oneshot.rs",
+    "start_line": 787,
+    "start_col": 1,
+    "end_line": 787,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Inner<T> {\n    fn drop(&mut self) {\n        let state = State(*self.state.borrow());\n\n        if state.is_rx_task_set() {\n            unsafe {\n                self.rx_task.drop_task();\n            }\n        }\n\n        if state.is_tx_task_set() {\n            unsafe {\n                self.tx_task.drop_task();\n            }\n        }\n    }\n}"
+}

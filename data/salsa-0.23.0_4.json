@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "salsa-0.23.0/src/zalsa_local.rs",
+    "start_line": 792,
+    "start_col": 1,
+    "end_line": 792,
+    "end_col": 26,
+    "code_snippet": "impl Drop for QueryOrigin {\n    fn drop(&mut self) {\n        match self.kind {\n            QueryOriginKind::Derived | QueryOriginKind::DerivedUntracked => {\n                // SAFETY: `data.input_outputs` is initialized when the tag is `QueryOriginKind::Derived`\n                // or `QueryOriginKind::DerivedUntracked`.\n                let input_outputs = unsafe { self.data.input_outputs };\n                let length = self.metadata as usize;\n\n                // SAFETY: `input_outputs` and `self.metadata` form a valid slice when the\n                // tag is `QueryOriginKind::DerivedUntracked` or `QueryOriginKind::DerivedUntracked`,\n                // and we have `&mut self`.\n                let _input_outputs: Box<[QueryEdge]> = unsafe {\n                    Box::from_raw(ptr::slice_from_raw_parts_mut(\n                        input_outputs.as_ptr(),\n                        length,\n                    ))\n                };\n            }\n\n            // The data stored for this variants is `Copy`.\n            QueryOriginKind::FixpointInitial | QueryOriginKind::Assigned => {}\n        }\n    }\n}"
+}

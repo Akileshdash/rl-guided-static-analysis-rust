@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "qutex-0.2.6/src/qutex.rs",
+    "start_line": 46,
+    "start_col": 1,
+    "end_line": 46,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Guard<T> {\n    fn drop(&mut self) {\n        // unsafe { self.qutex.direct_unlock().expect(\"Error dropping Guard\") };\n        unsafe { self.qutex.direct_unlock() }\n    }\n}"
+}

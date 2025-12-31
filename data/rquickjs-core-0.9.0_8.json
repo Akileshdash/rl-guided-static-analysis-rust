@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `runtime::opaque::Opaque::<'js>::get_or_insert_prototype`",
+    "file": "rquickjs-core-0.9.0/src/runtime/opaque.rs",
+    "start_line": 212,
+    "start_col": 5,
+    "end_line": 227,
+    "end_col": 6,
+    "code_snippet": "pub fn get_or_insert_prototype<C: JsClass<'js>>(\n        &self,\n        ctx: &Ctx<'js>,\n    ) -> Result<Option<Object<'js>>, Error> {\n        unsafe {\n            let vtable = VTable::get::<C>();\n            let id = vtable.id();\n            match (*self.prototypes.get()).entry(id) {\n                Entry::Occupied(x) => Ok(x.get().clone()),\n                Entry::Vacant(x) => {\n                    let proto = C::prototype(ctx)?;\n                    Ok(x.insert(proto).clone())\n                }\n            }\n        }\n    }"
+}

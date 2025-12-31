@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "starlark_map-0.13.0/src/vec2/iter.rs",
+    "start_line": 114,
+    "start_col": 1,
+    "end_line": 114,
+    "end_col": 35,
+    "code_snippet": "impl<A, B> Drop for IntoIter<A, B> {\n    fn drop(&mut self) {\n        unsafe {\n            let rem = self.len();\n            ptr::drop_in_place(slice::from_raw_parts_mut(self.aaa_begin.as_ptr(), rem));\n            ptr::drop_in_place(slice::from_raw_parts_mut(self.bbb_begin.as_ptr(), rem));\n            Vec2::<A, B>::dealloc_impl(self.bbb_ptr, self.cap);\n        }\n    }\n}"
+}

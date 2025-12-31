@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::DecimalSymbols<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_decimal-2.0.0/src/provider.rs",
+    "start_line": 248,
+    "start_col": 35,
+    "end_line": 248,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, PartialEq, Clone, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_decimal::provider))]\npub struct DecimalSymbols<'data> {\n    /// String data for the symbols: +/- affixes and separators\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    // We use a VarZeroCow here to reduce the stack size of DecimalSymbols: instead of serializing multiple strs,\n    // this type will now serialize as a single u8 buffer with optimized indexing that packs all the data together\n    pub strings: VarZeroCow<'data, DecimalSymbolsStrs>,\n\n    /// Settings used to determine where to place groups in the integer part of the number.\n    pub grouping_sizes: GroupingSizes,\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `sum::onlineexactsum::OnlineExactSum::<F>::compact`",
+    "file": "accurate-0.4.1/src/sum/onlineexactsum.rs",
+    "start_line": 54,
+    "start_col": 5,
+    "end_line": 84,
+    "end_col": 6,
+    "code_snippet": "fn compact(&mut self) {\n        // Step 4(6)(a)\n        let mut b1v = vec![F::zero(); F::base_pow_exponent_digits()].into_boxed_slice();\n        let mut b2v = vec![F::zero(); F::base_pow_exponent_digits()].into_boxed_slice();\n\n        // Step 4(6)(b)\n        for &y in self.a1.iter().chain(self.a2.iter()) {\n            // Step 4(6)(b)(i)\n            let j = y.raw_exponent();\n            // These accesses are guaranteed to be within bounds, because:\n            debug_assert_eq!(b1v.len(), F::base_pow_exponent_digits());\n            debug_assert_eq!(b2v.len(), F::base_pow_exponent_digits());\n            debug_assert!(j < F::base_pow_exponent_digits());\n            let b1 = unsafe { b1v.get_unchecked_mut(j) };\n            let b2 = unsafe { b2v.get_unchecked_mut(j) };\n\n            // Step 4(6)(b)(ii)\n            let (b, e) = two_sum(*b1, y);\n            *b1 = b;\n\n            // Step 4(6)(b)(iii)\n            *b2 = *b2 + e;\n        }\n\n        // Step 4(6)(c)\n        self.a1 = b1v;\n        self.a2 = b2v;\n\n        // Step 4(6)(d)\n        self.i = 2 * F::base_pow_exponent_digits();\n    }"
+}

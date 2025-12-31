@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "coco-0.3.4/src/epoch/atomic.rs",
+    "start_line": 612,
+    "start_col": 1,
+    "end_line": 612,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Owned<T> {\n    fn drop(&mut self) {\n        let raw = (self.data & !low_bits::<T>()) as *mut T;\n        unsafe {\n            drop(Box::from_raw(raw));\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "state-0.6.0/src/type_map.rs",
+    "start_line": 383,
+    "start_col": 1,
+    "end_line": 383,
+    "end_col": 41,
+    "code_snippet": "unsafe impl Send for TypeMap<kind::Send> {  }"
+}

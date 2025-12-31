@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "reblessive-0.4.3/src/stack/mod.rs",
+    "start_line": 299,
+    "start_col": 1,
+    "end_line": 299,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Stack {\n    fn drop(&mut self) {\n        // clear some memory, this might leak if the root value had allocations but this leak will\n        // only happen if the Runner was leaked.\n        unsafe { self.clear::<()>() }\n    }\n}"
+}

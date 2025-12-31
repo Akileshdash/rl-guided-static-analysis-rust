@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::bit_not`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 822,
+    "start_col": 5,
+    "end_line": 822,
+    "end_col": 67,
+    "code_snippet": "fn bit_not(&self, _heap: &'v Heap) -> crate::Result<Value<'v>> {\n        ValueError::unsupported(self, \"~\")\n    }"
+}

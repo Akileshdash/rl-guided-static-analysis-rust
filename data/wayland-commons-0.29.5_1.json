@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wayland-commons-0.29.5/src/user_data.rs",
+    "start_line": 76,
+    "start_col": 1,
+    "end_line": 76,
+    "end_col": 23,
+    "code_snippet": "impl Drop for UserData {\n    fn drop(&mut self) {\n        // only drop non-Send user data if we are on the right thread, leak it otherwise\n        if let Some(&mut UserDataInner::NonThreadSafe(ref mut val, threadid)) = self.inner.get_mut()\n        {\n            if threadid == thread::current().id() {\n                unsafe {\n                    ManuallyDrop::drop(&mut **val);\n                }\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `escape::Escape::<T>::unescape`",
+    "file": "rendy-resource-0.5.1/src/escape.rs",
+    "start_line": 43,
+    "start_col": 5,
+    "end_line": 56,
+    "end_col": 6,
+    "code_snippet": "pub fn unescape(escape: Self) -> T {\n        unsafe {\n            // Prevent `<Escape<T> as Drop>::drop` from being executed.\n            let mut escape = ManuallyDrop::new(escape);\n\n            // Release value from `ManuallyDrop`.\n            let value = read(&mut *escape.value);\n\n            // Drop sender. If it panics - value will be dropped.\n            // Relevant values are allowed to be dropped due to panic.\n            drop_in_place(&mut escape.sender);\n            value\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fast_image_resize-5.2.1/src/array_chunks.rs",
+    "start_line": 213,
+    "start_col": 1,
+    "end_line": 213,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for Guard<'_, T> {\n    fn drop(&mut self) {\n        debug_assert!(self.initialized <= self.array_mut.len());\n\n        // SAFETY: this slice will contain only initialized objects.\n        unsafe {\n            core::ptr::drop_in_place(slice_assume_init_mut(\n                self.array_mut.get_unchecked_mut(..self.initialized),\n            ));\n        }\n    }\n}"
+}

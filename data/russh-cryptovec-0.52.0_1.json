@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "russh-cryptovec-0.52.0/src/cryptovec.rs",
+    "start_line": 365,
+    "start_col": 1,
+    "end_line": 365,
+    "end_col": 24,
+    "code_snippet": "impl Drop for CryptoVec {\n    fn drop(&mut self) {\n        if self.capacity > 0 {\n            unsafe {\n                for i in 0..self.size {\n                    std::ptr::write_volatile(self.p.add(i), 0);\n                }\n                let _ = platform::munlock(self.p, self.capacity);\n                let layout = std::alloc::Layout::from_size_align_unchecked(self.capacity, 1);\n                std::alloc::dealloc(self.p, layout);\n            }\n        }\n    }\n}"
+}

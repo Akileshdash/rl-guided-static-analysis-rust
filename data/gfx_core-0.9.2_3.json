@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "gfx_core-0.9.2/src/mapping.rs",
+    "start_line": 103,
+    "start_col": 1,
+    "end_line": 103,
+    "end_col": 42,
+    "code_snippet": "unsafe impl<R: Resources> Sync for Raw<R> {}"
+}

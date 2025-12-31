@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "smallbitvec-2.6.0/src/lib.rs",
+    "start_line": 821,
+    "start_col": 1,
+    "end_line": 821,
+    "end_col": 26,
+    "code_snippet": "impl Drop for SmallBitVec {\n    fn drop(&mut self) {\n        if self.is_heap() {\n            unsafe {\n                let header_ptr = self.header_raw();\n                let alloc_ptr = header_ptr as *mut Storage;\n                let alloc_len = header_len() + (*header_ptr).buffer_len;\n                Vec::from_raw_parts(alloc_ptr, alloc_len, alloc_len);\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "mini-moka-0.10.3/src/sync/iter.rs",
+    "start_line": 50,
+    "start_col": 1,
+    "end_line": 54,
+    "end_col": 33,
+    "code_snippet": "unsafe impl<'a, 'i, K, V, S> Sync for Iter<'i, K, V, S>\nwhere\n    K: 'a + Eq + Hash + Sync,\n    V: 'a + Sync,\n    S: 'a + BuildHasher + Clone,\n{\n}"
+}

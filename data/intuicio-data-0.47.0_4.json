@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "intuicio-data-0.47.0/src/lifetime.rs",
+    "start_line": 1344,
+    "start_col": 1,
+    "end_line": 1344,
+    "end_col": 49,
+    "code_snippet": "impl<T: ?Sized> Drop for ValueWriteAccess<'_, T> {\n    fn drop(&mut self) {\n        unsafe { self.lifetime.lock_unchecked().release_write_access() };\n    }\n}"
+}

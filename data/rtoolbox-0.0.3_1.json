@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rtoolbox-0.0.3/src/safe_string.rs",
+    "start_line": 27,
+    "start_col": 1,
+    "end_line": 27,
+    "end_col": 25,
+    "code_snippet": "impl Drop for SafeString {\n    fn drop(&mut self) {\n        let default = u8::default();\n\n        for c in unsafe { self.inner.as_bytes_mut() } {\n            unsafe { ptr::write_volatile(c, default) };\n        }\n\n        atomic::fence(atomic::Ordering::SeqCst);\n        atomic::compiler_fence(atomic::Ordering::SeqCst);\n    }\n}"
+}

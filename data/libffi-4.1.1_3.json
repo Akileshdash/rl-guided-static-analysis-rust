@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "libffi-4.1.1/src/middle/mod.rs",
+    "start_line": 268,
+    "start_col": 1,
+    "end_line": 268,
+    "end_col": 26,
+    "code_snippet": "impl Drop for Closure<'_> {\n    fn drop(&mut self) {\n        unsafe {\n            low::closure_free(self.alloc);\n        }\n    }\n}"
+}

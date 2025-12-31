@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "netidx-core-0.28.3/src/pool/pooled.rs",
+    "start_line": 133,
+    "start_col": 1,
+    "end_line": 133,
+    "end_col": 58,
+    "code_snippet": "impl<T: Default + Send + Sync + 'static> Drop for PArc<T> {\n    fn drop(&mut self) {\n        if !Arc::is_unique(&self.inner) {\n            unsafe { ManuallyDrop::drop(&mut self.inner) }\n        } else {\n            match self.inner.0.upgrade() {\n                None => unsafe { ManuallyDrop::drop(&mut self.inner) },\n                Some(pool) => pool.insert(unsafe { ptr::read(self) }),\n            }\n        }\n    }\n}"
+}

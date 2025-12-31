@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hdf5-metno-types-0.10.1/src/array.rs",
+    "start_line": 53,
+    "start_col": 1,
+    "end_line": 53,
+    "end_col": 38,
+    "code_snippet": "impl<T: Copy> Drop for VarLenArray<T> {\n    fn drop(&mut self) {\n        if !self.ptr.is_null() {\n            unsafe {\n                crate::free(self.ptr as *mut _);\n            }\n            self.ptr = ptr::null();\n            if self.len != 0 {\n                self.len = 0;\n            }\n        }\n    }\n}"
+}

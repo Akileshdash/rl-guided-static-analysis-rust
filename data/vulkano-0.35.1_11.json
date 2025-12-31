@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkano-0.35.1/src/swapchain/acquire_present.rs",
+    "start_line": 1284,
+    "start_col": 1,
+    "end_line": 1286,
+    "end_col": 18,
+    "code_snippet": "impl<P> Drop for PresentFuture<P>\nwhere\n    P: GpuFuture,\n{\n    fn drop(&mut self) {\n        if thread::panicking() {\n            return;\n        }\n\n        if !*self.flushed.get_mut() {\n            // Flushing may fail, that's okay. We will still wait for the queue later, so any\n            // previous futures that were flushed correctly will still be waited upon.\n            self.flush().ok();\n        }\n\n        if !*self.finished.get_mut() {\n            // Block until the queue finished.\n            self.queue().unwrap().with(|mut q| q.wait_idle()).unwrap();\n            unsafe { self.previous.signal_finished() };\n        }\n    }\n}"
+}

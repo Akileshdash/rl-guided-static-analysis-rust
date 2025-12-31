@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `runtime::jsruntime::near_heap_limit_callback`",
+    "file": "deno_core-0.354.0/runtime/jsruntime.rs",
+    "start_line": 2401,
+    "start_col": 1,
+    "end_line": 2413,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn near_heap_limit_callback<F>(\n  data: *mut c_void,\n  current_heap_limit: usize,\n  initial_heap_limit: usize,\n) -> usize\nwhere\n  F: FnMut(usize, usize) -> usize,\n{\n  // SAFETY: The data is a pointer to the Rust callback function. It is stored\n  // in `JsRuntime::allocations` and thus is guaranteed to outlive the isolate.\n  let callback = unsafe { &mut *(data as *mut F) };\n  callback(current_heap_limit, initial_heap_limit)\n}"
+}

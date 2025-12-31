@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rusty_v8-0.32.1/src/handle.rs",
+    "start_line": 166,
+    "start_col": 1,
+    "end_line": 166,
+    "end_col": 27,
+    "code_snippet": "impl<T> Drop for Global<T> {\n  fn drop(&mut self) {\n    unsafe {\n      if self.isolate_handle.get_isolate_ptr().is_null() {\n        // This `Global` handle is associated with an `Isolate` that has already\n        // been disposed.\n      } else {\n        // Destroy the storage cell that contains the contents of this Global.\n        v8__Global__Reset(self.data.cast().as_ptr())\n      }\n    }\n  }\n}"
+}

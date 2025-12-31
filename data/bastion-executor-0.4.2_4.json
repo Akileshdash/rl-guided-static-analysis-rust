@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "bastion-executor-0.4.2/src/run_queue.rs",
+    "start_line": 491,
+    "start_col": 1,
+    "end_line": 491,
+    "end_col": 41,
+    "code_snippet": "unsafe impl<T: Send> Sync for Stealer<T> {}"
+}

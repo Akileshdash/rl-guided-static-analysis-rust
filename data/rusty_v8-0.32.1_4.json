@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `isolate::Isolate::take_heap_snapshot::trampoline`",
+    "file": "rusty_v8-0.32.1/src/isolate.rs",
+    "start_line": 710,
+    "start_col": 5,
+    "end_line": 722,
+    "end_col": 6,
+    "code_snippet": "extern \"C\" fn trampoline<F>(\n      arg: *mut c_void,\n      data: *const u8,\n      size: usize,\n    ) -> bool\n    where\n      F: FnMut(&[u8]) -> bool,\n    {\n      let p = arg as *mut F;\n      let callback = unsafe { &mut *p };\n      let slice = unsafe { std::slice::from_raw_parts(data, size) };\n      callback(slice)\n    }"
+}

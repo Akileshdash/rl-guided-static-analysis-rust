@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "left-right-0.11.5/src/aliasing.rs",
+    "start_line": 232,
+    "start_col": 1,
+    "end_line": 235,
+    "end_col": 13,
+    "code_snippet": "unsafe impl<T, D> Sync for Aliased<T, D>\nwhere\n    D: DropBehavior,\n    T: Sync,\n{\n}"
+}

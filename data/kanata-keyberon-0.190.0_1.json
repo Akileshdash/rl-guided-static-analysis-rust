@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "kanata-keyberon-0.190.0/src/multikey_buffer.rs",
+    "start_line": 80,
+    "start_col": 1,
+    "end_line": 80,
+    "end_col": 39,
+    "code_snippet": "impl<T> Drop for MultiKeyBuffer<'_, T> {\n    fn drop(&mut self) {\n        unsafe {\n            drop(Box::from_raw(self.ac));\n            drop(Box::from_raw(self.ptr));\n        }\n    }\n}"
+}

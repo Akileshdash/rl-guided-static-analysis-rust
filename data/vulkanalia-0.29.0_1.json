@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkanalia-0.29.0/src/bytecode.rs",
+    "start_line": 89,
+    "start_col": 1,
+    "end_line": 89,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Bytecode {\n    fn drop(&mut self) {\n        let layout = Layout::from_size_align(self.1, 4).unwrap();\n        unsafe { free(self.0, layout) };\n    }\n}"
+}

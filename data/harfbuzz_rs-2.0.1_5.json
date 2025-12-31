@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `face::Face::<'a>::from_table_func::table_func`",
+    "file": "harfbuzz_rs-2.0.1/src/face.rs",
+    "start_line": 68,
+    "start_col": 9,
+    "end_line": 83,
+    "end_col": 10,
+    "code_snippet": "extern \"C\" fn table_func<'b, F>(\n            _: *mut hb::hb_face_t,\n            tag: hb::hb_tag_t,\n            user_data: *mut c_void,\n        ) -> *mut hb::hb_blob_t\n        where\n            F: FnMut(Tag) -> Option<Shared<Blob<'b>>>,\n        {\n            let tag = Tag(tag);\n            let closure = unsafe { &mut *(user_data as *mut F) };\n            let blob = closure(tag);\n            match blob {\n                Some(blob) => Shared::into_raw(blob),\n                None => std::ptr::null_mut(),\n            }\n        }"
+}

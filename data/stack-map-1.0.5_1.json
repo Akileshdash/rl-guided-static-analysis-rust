@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stack-map-1.0.5/src/lib.rs",
+    "start_line": 44,
+    "start_col": 1,
+    "end_line": 44,
+    "end_col": 69,
+    "code_snippet": "impl<K: Ord, V, const FANOUT: usize> Drop for StackMap<K, V, FANOUT> {\n    fn drop(&mut self) {\n        for i in 0..self.len() {\n            let ptr = self.inner[i].as_mut_ptr();\n            unsafe {\n                std::ptr::drop_in_place(ptr);\n            }\n        }\n    }\n}"
+}

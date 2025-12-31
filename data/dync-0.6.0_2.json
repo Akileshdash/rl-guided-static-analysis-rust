@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dync-0.6.0/src/vec_dyn.rs",
+    "start_line": 84,
+    "start_col": 1,
+    "end_line": 84,
+    "end_col": 45,
+    "code_snippet": "impl<V: ?Sized + HasDrop> Drop for VecDyn<V> {\n    fn drop(&mut self) {\n        unsafe {\n            {\n                // Drop the contents using the associated drop function\n                let VecCopy { data, vtable, .. } = &mut *self.data;\n                for elem_bytes in data.byte_chunks_mut() {\n                    vtable.drop_fn()(elem_bytes);\n                }\n            }\n\n            // Drop the vec itself\n            ManuallyDrop::drop(&mut self.data);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rusteron-code-gen-0.1.150/src/common.rs",
+    "start_line": 243,
+    "start_col": 1,
+    "end_line": 243,
+    "end_col": 37,
+    "code_snippet": "impl<T> Drop for ManagedCResource<T> {\n    fn drop(&mut self) {\n        if !self.resource.is_null() {\n            let already_closed = self.close_already_called.get()\n                || self\n                    .check_for_is_closed\n                    .as_ref()\n                    .map_or(false, |f| f(self.resource));\n\n            let resource = if already_closed {\n                self.resource\n            } else {\n                self.resource.clone()\n            };\n\n            if !already_closed {\n                // Ensure the clean-up function is called when the resource is dropped.\n                #[cfg(feature = \"extra-logging\")]\n                log::info!(\"closing c resource: {:?}\", self);\n                let _ = self.close(); // Ignore errors during an automatic drop to avoid panics.\n            }\n            self.close_already_called.set(true);\n\n            if self.cleanup_struct {\n                #[cfg(feature = \"extra-logging\")]\n                log::info!(\"closing rust struct resource: {:?}\", resource);\n                unsafe {\n                    let _ = Box::from_raw(resource);\n                }\n            }\n        }\n    }\n}"
+}

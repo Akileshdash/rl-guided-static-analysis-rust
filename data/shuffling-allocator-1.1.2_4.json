@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `ShufflingArray::<A>::new`",
+    "file": "shuffling-allocator-1.1.2/src/lib.rs",
+    "start_line": 113,
+    "start_col": 5,
+    "end_line": 133,
+    "end_col": 6,
+    "code_snippet": "fn new(size_class: usize, allocator: &'static A) -> Self {\n        let elems = unsafe {\n            let mut elems = MaybeUninit::<[AtomicPtr<u8>; 256]>::uninit();\n            let elems_ptr: *mut [AtomicPtr<u8>; 256] = elems.as_mut_ptr();\n            let elems_ptr: *mut AtomicPtr<u8> = elems_ptr.cast();\n            let layout = Layout::from_size_align_unchecked(size_class, mem::align_of::<usize>());\n            for i in 0..256 {\n                let p = allocator.alloc(layout);\n                if p.is_null() {\n                    handle_alloc_error(layout);\n                }\n                ptr::write(elems_ptr.offset(i), AtomicPtr::new(p));\n            }\n            elems.assume_init()\n        };\n        ShufflingArray {\n            elems,\n            size_class,\n            allocator,\n        }\n    }"
+}

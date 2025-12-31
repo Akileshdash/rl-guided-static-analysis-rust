@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "uefi-0.35.0/src/boot.rs",
+    "start_line": 1560,
+    "start_col": 1,
+    "end_line": 1560,
+    "end_col": 54,
+    "code_snippet": "impl<P: Protocol + ?Sized> Drop for ScopedProtocol<P> {\n    fn drop(&mut self) {\n        let bt = boot_services_raw_panicking();\n        let bt = unsafe { bt.as_ref() };\n\n        let status = unsafe {\n            (bt.close_protocol)(\n                self.open_params.handle.as_ptr(),\n                &P::GUID,\n                self.open_params.agent.as_ptr(),\n                Handle::opt_to_ptr(self.open_params.controller),\n            )\n        };\n        // All of the error cases for close_protocol boil down to\n        // calling it with a different set of parameters than what was\n        // passed to open_protocol. The public API prevents such errors,\n        // and the error can't be propagated out of drop anyway, so just\n        // assert success.\n        assert_eq!(status, Status::SUCCESS);\n    }\n}"
+}

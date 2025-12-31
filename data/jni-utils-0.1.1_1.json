@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "jni-utils-0.1.1/rust/ops.rs",
+    "start_line": 255,
+    "start_col": 1,
+    "end_line": 255,
+    "end_col": 43,
+    "code_snippet": "unsafe impl<T> Sync for SendSyncWrapper<T> {}"
+}

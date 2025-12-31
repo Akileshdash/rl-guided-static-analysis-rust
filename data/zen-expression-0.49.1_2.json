@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arena::UnsafeArena::<'arena>::with_mut`",
+    "file": "zen-expression-0.49.1/src/arena.rs",
+    "start_line": 29,
+    "start_col": 5,
+    "end_line": 35,
+    "end_col": 6,
+    "code_snippet": "pub fn with_mut<F>(&mut self, callback: F)\n    where\n        F: FnOnce(&mut Bump),\n    {\n        let reference = unsafe { &mut *self.arena };\n        callback(reference);\n    }"
+}

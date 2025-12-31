@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "starlark-0.13.0/src/values/types/any_array.rs",
+    "start_line": 67,
+    "start_col": 1,
+    "end_line": 67,
+    "end_col": 46,
+    "code_snippet": "impl<T: Debug + 'static> Drop for AnyArray<T> {\n    fn drop(&mut self) {\n        unsafe {\n            ptr::drop_in_place(ptr::slice_from_raw_parts_mut(\n                self.content.as_mut_ptr(),\n                self.len,\n            ));\n        }\n    }\n}"
+}

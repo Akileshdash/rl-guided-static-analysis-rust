@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `internals::hashmap::simd::leaf_simd_search`",
+    "file": "concread-0.5.7/src/internals/hashmap/simd.rs",
+    "start_line": 178,
+    "start_col": 1,
+    "end_line": 205,
+    "end_col": 2,
+    "code_snippet": "pub(crate) fn leaf_simd_search<K, V, Q>(leaf: &Leaf<K, V>, h: u64, k: &Q) -> KeyLoc\nwhere\n    K: Hash + Eq + Clone + Debug + Borrow<Q>,\n    V: Clone,\n    Q: Eq + ?Sized,\n{\n    debug_assert!(h < u64::MAX);\n\n    for cand_idx in 0..leaf.slots() {\n        if h == unsafe { leaf.ctrl.a.1[cand_idx] } {\n            let bucket = unsafe { (*leaf.values[cand_idx].as_ptr()).as_slice() };\n            for (i, d) in bucket.iter().enumerate() {\n                if k.eq(d.k.borrow()) {\n                    return KeyLoc::Ok(cand_idx, i);\n                }\n            }\n            // Wasn't found despite all the collisions, err.\n            return KeyLoc::Collision(cand_idx);\n        }\n    }\n\n    for i in 0..leaf.slots() {\n        if h < unsafe { leaf.ctrl.a.1[i] } {\n            return KeyLoc::Missing(i);\n        }\n    }\n    KeyLoc::Missing(leaf.slots())\n}"
+}

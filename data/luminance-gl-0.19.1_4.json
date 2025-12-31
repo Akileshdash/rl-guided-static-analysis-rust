@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "luminance-gl-0.19.1/src/gl33/shader.rs",
+    "start_line": 28,
+    "start_col": 1,
+    "end_line": 28,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Stage {\n  fn drop(&mut self) {\n    unsafe {\n      gl::DeleteShader(self.handle);\n    }\n  }\n}"
+}

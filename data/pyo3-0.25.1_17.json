@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `<conversions::std::array::array_try_from_fn::ArrayGuard<T, N> as std::ops::Drop>::drop`",
+    "file": "pyo3-0.25.1/src/conversions/std/array.rs",
+    "start_line": 83,
+    "start_col": 9,
+    "end_line": 89,
+    "end_col": 10,
+    "code_snippet": "fn drop(&mut self) {\n            debug_assert!(self.initialized <= N);\n            let initialized_part = core::ptr::slice_from_raw_parts_mut(self.dst, self.initialized);\n            unsafe {\n                core::ptr::drop_in_place(initialized_part);\n            }\n        }"
+}

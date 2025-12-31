@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ops::array::gather::Gather::eval_bq`",
+    "file": "tract-core-0.21.13/src/ops/array/gather.rs",
+    "start_line": 61,
+    "start_col": 5,
+    "end_line": 100,
+    "end_col": 6,
+    "code_snippet": "fn eval_bq<F: Datum>(&self, data: &BlockQuantValue, indices: &TValue) -> TractResult<Tensor> {\n        ensure!(self.axis == 0);\n        ensure!(data.fact.shape().len() == 2);\n        let data_shape = &data.fact.shape();\n        let output_shape = &*self.compute_output_shape(data_shape, indices.shape())?;\n        let mut output = unsafe { Tensor::uninitialized::<F>(output_shape)? };\n        let indices_slice = indices.as_slice::<i64>()?;\n        let vector_len = data_shape[1];\n\n        let block_len = data.fact.format.block_len();\n        let block_bytes = data.fact.format.block_bytes();\n        if F::datum_type() == f16::datum_type() {\n            let output_slice = output.as_slice_mut::<f16>()?;\n            for (pos, ix) in indices_slice.iter().enumerate() {\n                let slice = &mut output_slice[pos * vector_len..][..vector_len];\n                for i in (0..vector_len).step_by(block_len) {\n                    let offset = data_shape[1] * *ix as usize + i;\n                    let block_id = offset / block_len;\n                    data.fact.format.dequant_block_f16(\n                        &data.value[block_id * block_bytes..][..block_bytes],\n                        &mut slice[i..i + block_len],\n                    );\n                }\n            }\n        } else {\n            let output_slice = output.as_slice_mut::<f32>()?;\n            for (pos, ix) in indices_slice.iter().enumerate() {\n                let slice = &mut output_slice[pos * vector_len..][..vector_len];\n                for i in (0..vector_len).step_by(block_len) {\n                    let offset = data_shape[1] * *ix as usize + i;\n                    let block_id = offset / block_len;\n                    data.fact.format.dequant_block_f32(\n                        &data.value[block_id * block_bytes..][..block_bytes],\n                        &mut slice[i..i + block_len],\n                    );\n                }\n            }\n        }\n        Ok(output)\n    }"
+}

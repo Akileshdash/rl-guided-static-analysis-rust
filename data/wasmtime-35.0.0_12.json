@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/vm/traphandlers.rs",
+    "start_line": 1078,
+    "start_col": 9,
+    "end_line": 1078,
+    "end_col": 32,
+    "code_snippet": "impl Drop for Reset<'_> {\n            #[inline]\n            fn drop(&mut self) {\n                unsafe {\n                    self.state.pop();\n                }\n            }\n        }"
+}

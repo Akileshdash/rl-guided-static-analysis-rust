@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `util::macro_util::try_transmute`",
+    "file": "zerocopy-0.8.26/src/util/macro_util.rs",
+    "start_line": 554,
+    "start_col": 1,
+    "end_line": 601,
+    "end_col": 2,
+    "code_snippet": "pub fn try_transmute<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>\nwhere\n    Src: IntoBytes,\n    Dst: TryFromBytes,\n{\n    static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());\n\n    let mu_src = mem::MaybeUninit::new(src);\n    // SAFETY: By invariant on `&`, the following are satisfied:\n    // - `&mu_src` is valid for reads\n    // - `&mu_src` is properly aligned\n    // - `&mu_src`'s referent is bit-valid\n    let mu_src_copy = unsafe { core::ptr::read(&mu_src) };\n    // SAFETY: `MaybeUninit` has no validity constraints.\n    let mut mu_dst: mem::MaybeUninit<Dst> =\n        unsafe { crate::util::transmute_unchecked(mu_src_copy) };\n\n    let ptr = Ptr::from_mut(&mut mu_dst);\n\n    // SAFETY: Since `Src: IntoBytes`, and since `size_of::<Src>() ==\n    // size_of::<Dst>()` by the preceding assertion, all of `mu_dst`'s bytes are\n    // initialized.\n    let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };\n\n    // SAFETY: `MaybeUninit<T>` and `T` have the same size [1], so this cast\n    // preserves the referent's size. This cast preserves provenance.\n    //\n    // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:\n    //\n    //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and\n    //   ABI as `T`\n    let ptr: Ptr<'_, Dst, _> = unsafe {\n        ptr.cast_unsized(|ptr: crate::pointer::PtrInner<'_, mem::MaybeUninit<Dst>>| {\n            ptr.cast_sized()\n        })\n    };\n\n    if Dst::is_bit_valid(ptr.forget_aligned()) {\n        // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is\n        // bit-valid for `Dst`. `ptr` points to `mu_dst`, and no intervening\n        // operations have mutated it, so it is a bit-valid `Dst`.\n        Ok(unsafe { mu_dst.assume_init() })\n    } else {\n        // SAFETY: `mu_src` was constructed from `src` and never modified, so it\n        // is still bit-valid.\n        Err(ValidityError::new(unsafe { mu_src.assume_init() }))\n    }\n}"
+}

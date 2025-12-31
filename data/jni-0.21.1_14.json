@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::new_global_ref`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 600,
+    "start_col": 5,
+    "end_line": 608,
+    "end_col": 6,
+    "code_snippet": "pub fn new_global_ref<'other_local, O>(&self, obj: O) -> Result<GlobalRef>\n    where\n        O: AsRef<JObject<'other_local>>,\n    {\n        let jvm = self.get_java_vm()?;\n        let new_ref = jni_unchecked!(self.internal, NewGlobalRef, obj.as_ref().as_raw());\n        let global = unsafe { GlobalRef::from_raw(jvm, new_ref) };\n        Ok(global)\n    }"
+}

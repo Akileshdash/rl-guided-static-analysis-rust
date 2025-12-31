@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "futures-intrusive-0.5.0/src/sync/mutex.rs",
+    "start_line": 417,
+    "start_col": 1,
+    "end_line": 418,
+    "end_col": 35,
+    "code_snippet": "unsafe impl<T: Send, MutexType: RawMutex + Sync> Sync\n    for GenericMutex<MutexType, T>\n{\n}"
+}

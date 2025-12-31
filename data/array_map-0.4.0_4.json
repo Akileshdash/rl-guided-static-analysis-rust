@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "array_map-0.4.0/src/set.rs",
+    "start_line": 15,
+    "start_col": 1,
+    "end_line": 15,
+    "end_col": 55,
+    "code_snippet": "unsafe impl<K, const N: usize> Send for ArraySet<K, N> {}\n#[allow(unsafe_code)]"
+}

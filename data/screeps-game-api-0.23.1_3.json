@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `pathfinder::SearchOptions::<F>::as_js_options`",
+    "file": "screeps-game-api-0.23.1/src/pathfinder.rs",
+    "start_line": 206,
+    "start_col": 5,
+    "end_line": 232,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn as_js_options<R>(&mut self, callback: impl Fn(&JsSearchOptions) -> R) -> R {\n        // Serialize the inner options into a JsValue, then cast.\n        let js_options: JsSearchOptions = serde_wasm_bindgen::to_value(&self.inner)\n            .expect(\"Unable to serialize search options.\")\n            .unchecked_into();\n\n        let boxed_callback: Box<dyn FnMut(JsString) -> JsValue> = Box::new(move |room| {\n            let room = room\n                .try_into()\n                .expect(\"expected room name in room callback\");\n            (self.callback)(room).into()\n        });\n\n        // SAFETY\n        //\n        // self.callback is valid during the whole lifetime of the as_js_options call,\n        // and this Box is dropped before the call finishes without the contents\n        // being held on to by JS.\n        let boxed_callback_lifetime_erased: Box<dyn 'static + FnMut(JsString) -> JsValue> =\n            unsafe { std::mem::transmute(boxed_callback) };\n\n        let closure = Closure::wrap(boxed_callback_lifetime_erased);\n\n        js_options.room_callback(&closure);\n\n        callback(&js_options)\n    }"
+}

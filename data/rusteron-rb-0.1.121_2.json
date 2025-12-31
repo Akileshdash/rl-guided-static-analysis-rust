@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `aeron_broadcast_receiver_handler_t_callback`",
+    "file": "rusteron-rb-0.1.121//home/usagers/u139091/Documents/Rudra_Testing/Downloaded_Crates/rusteron-rb-0.1.121/target/x86_64-unknown-linux-gnu/debug/build/rusteron-rb-82a1028996eab621/out/aeron.rs",
+    "start_line": 2595,
+    "start_col": 1,
+    "end_line": 2622,
+    "end_col": 2,
+    "code_snippet": ""
+}

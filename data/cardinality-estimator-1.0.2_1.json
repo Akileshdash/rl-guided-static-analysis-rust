@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cardinality-estimator-1.0.2/src/estimator.rs",
+    "start_line": 155,
+    "start_col": 1,
+    "end_line": 158,
+    "end_col": 25,
+    "code_snippet": "impl<T, H, const P: usize, const W: usize> Drop for CardinalityEstimator<T, H, P, W>\nwhere\n    T: Hash + ?Sized,\n    H: Hasher + Default,\n{\n    /// Free memory occupied by `CardinalityEstimator`\n    #[inline]\n    fn drop(&mut self) {\n        unsafe { self.representation().drop() };\n    }\n}"
+}

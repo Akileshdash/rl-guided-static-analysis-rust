@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::minus`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 664,
+    "start_col": 5,
+    "end_line": 664,
+    "end_col": 65,
+    "code_snippet": "fn minus(&self, _heap: &'v Heap) -> crate::Result<Value<'v>> {\n        ValueError::unsupported(self, \"-\")\n    }"
+}

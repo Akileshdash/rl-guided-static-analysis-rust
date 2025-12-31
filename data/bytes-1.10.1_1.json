@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bytes-1.10.1/src/bytes.rs",
+    "start_line": 1364,
+    "start_col": 1,
+    "end_line": 1364,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Shared {\n    fn drop(&mut self) {\n        unsafe { dealloc(self.buf, Layout::from_size_align(self.cap, 1).unwrap()) }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rarena-allocator-0.6.0/src/object.rs",
+    "start_line": 158,
+    "start_col": 1,
+    "end_line": 158,
+    "end_col": 43,
+    "code_snippet": "impl<T, A: Allocator> Drop for Owned<T, A> {\n  fn drop(&mut self) {\n    match &mut self.kind {\n      Kind::Slot(slot) => {\n        if !self.detached {\n          unsafe {\n            if mem::needs_drop::<T>() {\n              let ptr = slot.as_mut_ptr();\n              if !ptr.is_null() {\n                ptr::drop_in_place(ptr);\n              }\n            }\n          }\n          // SAFETY: offset and offset + size are inbounds of the ARENA.\n          unsafe {\n            self\n              .arena\n              .dealloc(self.allocated.memory_offset, self.allocated.memory_size);\n          }\n        }\n      }\n      Kind::Inline(_) => {\n        if !self.detached {\n          // SAFETY: offset and offset + size are inbounds of the ARENA.\n          unsafe {\n            self\n              .arena\n              .dealloc(self.allocated.memory_offset, self.allocated.memory_size);\n          }\n        }\n      }\n      Kind::Dangling(_) => {}\n    }\n  }\n}"
+}

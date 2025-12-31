@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ops::nn::reduce::max_t`",
+    "file": "tract-core-0.21.13/src/ops/nn/reduce.rs",
+    "start_line": 294,
+    "start_col": 1,
+    "end_line": 305,
+    "end_col": 2,
+    "code_snippet": "fn max_t<T>(v: ArrayViewD<T>, _: ()) -> T\nwhere\n    T: Copy + Datum + num_traits::Bounded + ::std::cmp::PartialOrd,\n{\n    if T::datum_type() == f32::datum_type() {\n        if let Some(slice) = v.as_slice() {\n            let slice = unsafe { transmute::<&[T], &[f32]>(slice) };\n            (tract_linalg::ops().max_f32)().run(slice).unwrap();\n        }\n    }\n    v.fold(T::min_value(), |acc, &v| if acc > v { acc } else { v })\n}"
+}

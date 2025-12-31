@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::get_array_length`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 1652,
+    "start_col": 5,
+    "end_line": 1659,
+    "end_col": 6,
+    "code_snippet": "pub fn get_array_length<'other_local, 'array>(\n        &self,\n        array: &'array impl AsJArrayRaw<'other_local>,\n    ) -> Result<jsize> {\n        non_null!(array.as_jarray_raw(), \"get_array_length array argument\");\n        let len: jsize = jni_unchecked!(self.internal, GetArrayLength, array.as_jarray_raw());\n        Ok(len)\n    }"
+}

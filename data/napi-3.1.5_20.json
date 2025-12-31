@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `bindgen_runtime::js_values::promise_raw::handle_catch_callback`",
+    "file": "napi-3.1.5/src/bindgen_runtime/js_values/promise_raw.rs",
+    "start_line": 376,
+    "start_col": 1,
+    "end_line": 415,
+    "end_col": 2,
+    "code_snippet": "fn handle_catch_callback<E, U, Cb>(\n  env: sys::napi_env,\n  cbinfo: sys::napi_callback_info,\n) -> Result<sys::napi_value>\nwhere\n  E: FromNapiValue,\n  U: ToNapiValue,\n  Cb: FnOnce(CallbackContext<E>) -> Result<U>,\n{\n  let mut callback_values = [ptr::null_mut(); 1];\n  let mut rust_cb = ptr::null_mut();\n  check_status!(\n    unsafe {\n      sys::napi_get_cb_info(\n        env,\n        cbinfo,\n        &mut 1,\n        callback_values.as_mut_ptr(),\n        ptr::null_mut(),\n        &mut rust_cb,\n      )\n    },\n    \"Get callback info from catch callback failed\"\n  )?;\n  let catch_value: E = unsafe { FromNapiValue::from_napi_value(env, callback_values[0]) }?;\n  let cb: Box<(Cb, *mut bool)> = unsafe { Box::from_raw(rust_cb.cast()) };\n\n  let executed = unsafe { Box::leak(Box::from_raw(cb.1)) };\n  *executed = true;\n\n  unsafe {\n    U::to_napi_value(\n      env,\n      cb.0(CallbackContext {\n        env: Env(env),\n        value: catch_value,\n      })?,\n    )\n  }\n}"
+}

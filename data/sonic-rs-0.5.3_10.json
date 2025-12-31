@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `parser::Parser::<R>::skip_space`",
+    "file": "sonic-rs-0.5.3/src/parser.rs",
+    "start_line": 1321,
+    "start_col": 5,
+    "end_line": 1378,
+    "end_col": 6,
+    "code_snippet": "pub fn skip_space(&mut self) -> Option<u8> {\n        let reader = &mut self.read;\n        // fast path 1: for nospace or single space\n        // most JSON is like ` \"name\": \"balabala\" `\n        if let Some(ch) = reader.next() {\n            if !is_whitespace(ch) {\n                return Some(ch);\n            }\n        }\n        if let Some(ch) = reader.next() {\n            if !is_whitespace(ch) {\n                return Some(ch);\n            }\n        }\n\n        // fast path 2: reuse the bitmap for short key or numbers\n        let nospace_offset = (reader.index() as isize) - self.nospace_start;\n        if nospace_offset < 64 {\n            let bitmap = {\n                let mask = !((1 << nospace_offset) - 1);\n                self.nospace_bits & mask\n            };\n            if bitmap != 0 {\n                let cnt = bitmap.trailing_zeros() as usize;\n                let ch = reader.at(self.nospace_start as usize + cnt);\n                reader.set_index(self.nospace_start as usize + cnt + 1);\n\n                return Some(ch);\n            } else {\n                // we can still fast skip the marked space in here.\n                reader.set_index(self.nospace_start as usize + 64);\n            }\n        }\n\n        // then we use simd to accelerate skipping space\n        while let Some(chunk) = reader.peek_n(64) {\n            let chunk = unsafe { &*(chunk.as_ptr() as *const [_; 64]) };\n            let bitmap = unsafe { get_nonspace_bits(chunk) };\n            if bitmap != 0 {\n                self.nospace_bits = bitmap;\n                self.nospace_start = reader.index() as isize;\n                let cnt = bitmap.trailing_zeros() as usize;\n                let ch = chunk[cnt];\n                reader.eat(cnt + 1);\n\n                return Some(ch);\n            }\n            reader.eat(64)\n        }\n\n        while let Some(ch) = reader.next() {\n            if !is_whitespace(ch) {\n                //\n                return Some(ch);\n            }\n        }\n        None\n    }"
+}

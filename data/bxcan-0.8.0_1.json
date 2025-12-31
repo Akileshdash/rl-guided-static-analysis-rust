@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "bxcan-0.8.0/src/pac/generic.rs",
+    "start_line": 30,
+    "start_col": 1,
+    "end_line": 30,
+    "end_col": 47,
+    "code_snippet": "unsafe impl<U: Send, REG> Send for Reg<U, REG> {}"
+}

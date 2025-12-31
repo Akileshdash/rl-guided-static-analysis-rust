@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "worker-0.6.1/src/websocket.rs",
+    "start_line": 289,
+    "start_col": 28,
+    "end_line": 289,
+    "end_col": 38,
+    "code_snippet": "#[pin_project::pin_project(PinnedDrop)]\n#[derive(Debug)]\npub struct EventStream<'ws> {\n    ws: &'ws WebSocket,\n    #[pin]\n    rx: UnboundedReceiver<Result<WebsocketEvent>>,\n    closed: bool,\n    /// Once we have decided we need to finish the stream, we need to remove any listeners we\n    /// registered with the websocket.\n    closures: Option<(\n        EvCallback<web_sys::MessageEvent>,\n        EvCallback<web_sys::ErrorEvent>,\n        EvCallback<web_sys::CloseEvent>,\n    )>,\n}"
+}

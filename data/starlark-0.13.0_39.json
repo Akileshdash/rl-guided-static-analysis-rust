@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::floor_div`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 791,
+    "start_col": 5,
+    "end_line": 791,
+    "end_col": 87,
+    "code_snippet": "fn floor_div(&self, other: Value<'v>, _heap: &'v Heap) -> crate::Result<Value<'v>> {\n        ValueError::unsupported_with(self, \"//\", other)\n    }"
+}

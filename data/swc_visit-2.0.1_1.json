@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<std::vec::Vec<T> as util::move_map::MoveMap<T>>::move_map`",
+    "file": "swc_visit-2.0.1/src/util/move_map.rs",
+    "start_line": 25,
+    "start_col": 5,
+    "end_line": 47,
+    "end_col": 6,
+    "code_snippet": "fn move_map<F>(mut self, mut f: F) -> Self\n    where\n        F: FnMut(T) -> T,\n    {\n        unsafe {\n            let old_len = self.len();\n            self.set_len(0); // make sure we just leak elements in case of panic\n\n            for index in 0..old_len {\n                let item_ptr = self.as_mut_ptr().add(index);\n                // move the item out of the vector and map it\n                let item = ptr::read(item_ptr);\n                let item = f(item);\n\n                ptr::write(item_ptr, item);\n            }\n\n            // restore the original length\n            self.set_len(old_len);\n        }\n\n        self\n    }"
+}

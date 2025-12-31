@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vtable-0.3.0/src/vrc.rs",
+    "start_line": 102,
+    "start_col": 1,
+    "end_line": 102,
+    "end_col": 73,
+    "code_snippet": "impl<VTable: VTableMetaDropInPlace + 'static, X> Drop for VRc<VTable, X> {\n    fn drop(&mut self) {\n        unsafe {\n            let inner = self.inner.as_ptr();\n            if (*inner).strong_ref.fetch_sub(1, Ordering::SeqCst) == 1 {\n                let data =\n                    (inner as *mut u8).add(*core::ptr::addr_of!((*inner).data_offset) as usize);\n                let vtable = core::ptr::addr_of!((*inner).vtable);\n                let mut layout = VTable::drop_in_place(*vtable, data);\n                layout = core::alloc::Layout::new::<VRcInner<VTable, ()>>()\n                    .extend(layout.try_into().unwrap())\n                    .unwrap()\n                    .0\n                    .pad_to_align()\n                    .into();\n                if (*core::ptr::addr_of!((*inner).weak_ref)).load(Ordering::SeqCst) > 1 {\n                    // at this point we are sure that no other thread can access the data\n                    // since we still hold a weak reference, so the other weak references\n                    // in other thread won't start destroying the object.\n                    *(VRcInner::data_ptr(self.inner.cast::<VRcInner<VTable, Layout>>().as_ptr())\n                        as *mut Layout) = layout;\n                }\n                if (*core::ptr::addr_of!((*inner).weak_ref)).fetch_sub(1, Ordering::SeqCst) == 1 {\n                    VTable::dealloc(*vtable, self.inner.cast().as_ptr(), layout);\n                }\n            }\n        }\n    }\n}"
+}

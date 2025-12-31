@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `__rt::scoped_tls::ScopedKey::<T>::with`",
+    "file": "wasm-bindgen-test-0.3.50/src/rt/scoped_tls.rs",
+    "start_line": 69,
+    "start_col": 5,
+    "end_line": 79,
+    "end_col": 6,
+    "code_snippet": "pub fn with<F, R>(&'static self, f: F) -> R\n    where\n        F: FnOnce(&T) -> R,\n    {\n        let val = self.inner.0.get();\n        assert!(\n            !val.is_null(),\n            \"cannot access a scoped thread local variable without calling `set` first\"\n        );\n        unsafe { f(&*(val as *const T)) }\n    }"
+}

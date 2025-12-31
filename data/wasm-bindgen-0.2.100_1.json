@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasm-bindgen-0.2.100/src/closure.rs",
+    "start_line": 513,
+    "start_col": 1,
+    "end_line": 515,
+    "end_col": 15,
+    "code_snippet": "impl<T> Drop for Closure<T>\nwhere\n    T: ?Sized,\n{\n    fn drop(&mut self) {\n        unsafe {\n            // this will implicitly drop our strong reference in addition to\n            // invalidating all future invocations of the closure\n            if super::__wbindgen_cb_drop(self.js.idx) != 0 {\n                ManuallyDrop::drop(&mut self.data);\n            }\n        }\n    }\n}"
+}

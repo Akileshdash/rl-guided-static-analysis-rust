@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<blob_schema::BlobSchema<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_provider_blob-2.0.0/src/blob_schema.rs",
+    "start_line": 13,
+    "start_col": 30,
+    "end_line": 13,
+    "end_col": 44,
+    "code_snippet": "#[derive(serde::Deserialize, yoke::Yokeable)]\n#[yoke(prove_covariance_manually)]\n#[cfg_attr(feature = \"export\", derive(serde::Serialize))]\n#[derive(Debug, Clone)]\npub(crate) enum BlobSchema<'data> {\n    V001(NeverSchema),\n    V002(NeverSchema),\n    V002Bigger(NeverSchema),\n    #[serde(borrow)]\n    V003(BlobSchemaV1<'data, Index16>),\n    #[serde(borrow)]\n    V003Bigger(BlobSchemaV1<'data, Index32>),\n}"
+}

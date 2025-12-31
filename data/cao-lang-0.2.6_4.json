@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cao-lang-0.2.6/src/vm/runtime/cao_lang_string.rs",
+    "start_line": 19,
+    "start_col": 1,
+    "end_line": 19,
+    "end_col": 28,
+    "code_snippet": "impl Drop for CaoLangString {\n    fn drop(&mut self) {\n        unsafe { self.alloc.dealloc(self.ptr, Self::layout(self.len)) }\n    }\n}"
+}

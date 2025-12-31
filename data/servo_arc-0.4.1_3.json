@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "servo_arc-0.4.1/lib.rs",
+    "start_line": 1125,
+    "start_col": 1,
+    "end_line": 1125,
+    "end_col": 35,
+    "code_snippet": "impl<A, B> Drop for ArcUnion<A, B> {\n    fn drop(&mut self) {\n        match self.borrow() {\n            ArcUnionBorrow::First(x) => unsafe {\n                let _ = Arc::from_raw(&*x);\n            },\n            ArcUnionBorrow::Second(x) => unsafe {\n                let _ = Arc::from_raw(&*x);\n            },\n        }\n    }\n}"
+}

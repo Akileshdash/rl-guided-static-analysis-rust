@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rustc_data_structures-0.1.2/src/temp_dir.rs",
+    "start_line": 13,
+    "start_col": 1,
+    "end_line": 13,
+    "end_col": 27,
+    "code_snippet": "impl Drop for MaybeTempDir {\n    fn drop(&mut self) {\n        // SAFETY: We are in the destructor, and no further access will\n        // occur.\n        let dir = unsafe { ManuallyDrop::take(&mut self.dir) };\n        if self.keep {\n            let _ = dir.into_path();\n        }\n    }\n}"
+}

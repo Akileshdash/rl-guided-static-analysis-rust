@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `matmul::components::global::args::TensorInput::<EI, EO, MA>::read_window`",
+    "file": "cubecl-linalg-0.5.0/src/matmul/components/global/args.rs",
+    "start_line": 313,
+    "start_col": 5,
+    "end_line": 320,
+    "end_col": 6,
+    "code_snippet": "pub fn read_window(&self, start: u32, end: u32) -> Slice<Line<EI>> {\n        unsafe {\n            match comptime![&self.ident] {\n                TensorInputIdent::Lhs => MA::read_window_lhs(&(*self.state), start, end),\n                TensorInputIdent::Rhs => MA::read_window_rhs(&(*self.state), start, end),\n            }\n        }\n    }"
+}

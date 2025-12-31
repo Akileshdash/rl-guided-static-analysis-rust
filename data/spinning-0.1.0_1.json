@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "spinning-0.1.0/src/lib.rs",
+    "start_line": 379,
+    "start_col": 1,
+    "end_line": 379,
+    "end_col": 25,
+    "code_snippet": "impl<T> Drop for Once<T> {\n    fn drop(&mut self) {\n        // we do not have to do any complex state manipulation here, since a mutable reference\n        // guarantees that only there is an exclusive borrow to this struct.\n        if *self.state.get_mut() != OnceState::Initialized as u8 {\n            // nothing to drop\n            return;\n        }\n        unsafe { ptr::drop_in_place(self.value.get() as *mut T) }\n    }\n}"
+}

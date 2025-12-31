@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::get_superclass`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 333,
+    "start_col": 5,
+    "end_line": 347,
+    "end_col": 6,
+    "code_snippet": "pub fn get_superclass<'other_local, T>(&mut self, class: T) -> Result<Option<JClass<'local>>>\n    where\n        T: Desc<'local, JClass<'other_local>>,\n    {\n        let class = class.lookup(self)?;\n        let superclass = unsafe {\n            JClass::from_raw(jni_unchecked!(\n                self.internal,\n                GetSuperclass,\n                class.as_ref().as_raw()\n            ))\n        };\n\n        Ok((!superclass.is_null()).then_some(superclass))\n    }"
+}

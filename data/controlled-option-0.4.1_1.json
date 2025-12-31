@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `struct_field_is_none`",
+    "file": "controlled-option-0.4.1/src/lib.rs",
+    "start_line": 328,
+    "start_col": 1,
+    "end_line": 335,
+    "end_col": 2,
+    "code_snippet": "pub fn struct_field_is_none<T>(field: *const T) -> bool\nwhere\n    T: Niche,\n{\n    debug_assert!(Layout::new::<T>() == Layout::new::<T::Output>());\n    let repr = field as *const T::Output;\n    T::is_none(unsafe { &*repr })\n}"
+}

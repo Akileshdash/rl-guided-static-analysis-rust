@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::names::PropertyValueNameToEnumMap<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_properties-2.0.1/src/provider/names.rs",
+    "start_line": 270,
+    "start_col": 35,
+    "end_line": 270,
+    "end_col": 49,
+    "code_snippet": "#[derive(Debug, Clone, PartialEq, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_properties::provider::names))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\npub struct PropertyValueNameToEnumMap<'data> {\n    /// A map from names to their value discriminant\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub map: ZeroTrieSimpleAscii<ZeroVec<'data, u8>>,\n}"
+}

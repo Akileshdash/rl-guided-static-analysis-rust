@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ouroboros_examples-0.18.5/src/lib.rs",
+    "start_line": 78,
+    "start_col": 1,
+    "end_line": 78,
+    "end_col": 32,
+    "code_snippet": "#[self_referencing(pub_extras)]\npub struct Visibility {\n    private_field: Box<i32>,\n    #[borrows(private_field)]\n    pub public_field: &'this i32,\n    #[borrows(private_field)]\n    pub(crate) pub_crate_field: &'this i32,\n}"
+}

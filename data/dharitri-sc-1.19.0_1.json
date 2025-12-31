@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dharitri-sc-1.19.0/src/types/managed/wrapped/managed_vec_ref.rs",
+    "start_line": 29,
+    "start_col": 1,
+    "end_line": 31,
+    "end_col": 23,
+    "code_snippet": "impl<T> Drop for ManagedVecRef<'_, T>\nwhere\n    T: ManagedVecItem,\n{\n    fn drop(&mut self) {\n        // TODO: improve\n        unsafe {\n            ManuallyDrop::drop(&mut self.item);\n        }\n    }\n}"
+}

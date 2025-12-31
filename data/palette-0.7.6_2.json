@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/Transmute/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `cast::array::map_slice_box_in_place`",
+    "file": "palette-0.7.6/src/cast/array.rs",
+    "start_line": 1461,
+    "start_col": 1,
+    "end_line": 1488,
+    "end_col": 2,
+    "code_snippet": "pub fn map_slice_box_in_place<A, B, F>(values: Box<[A]>, mut map: F) -> Box<[B]>\nwhere\n    A: ArrayCast,\n    B: ArrayCast<Array = A::Array>,\n    F: FnMut(A) -> B,\n{\n    // We are checking `B` in advance, to stop the program before any work is\n    // done. `A` is checked when converting to arrays.\n    assert_eq!(core::mem::size_of::<B::Array>(), core::mem::size_of::<B>());\n    assert_eq!(\n        core::mem::align_of::<B::Array>(),\n        core::mem::align_of::<B>()\n    );\n\n    let mut values = ManuallyDrop::new(into_array_slice_box(values));\n\n    for item in &mut **values {\n        // Safety: We will put a new value back below, and `values` will not be dropped on panic.\n        let input = unsafe { core::ptr::read(item) };\n\n        let output = into_array::<B>(map(from_array::<A>(input)));\n\n        // Safety: `output` is derived from the original value, so this is putting it back into place.\n        unsafe { core::ptr::write(item, output) };\n    }\n\n    from_array_slice_box(ManuallyDrop::into_inner(values))\n}"
+}

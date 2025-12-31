@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "three-d-0.18.2/src/core/texture/texture2d_array.rs",
+    "start_line": 318,
+    "start_col": 1,
+    "end_line": 318,
+    "end_col": 29,
+    "code_snippet": "impl Drop for Texture2DArray {\n    fn drop(&mut self) {\n        unsafe {\n            self.context.delete_texture(self.id);\n        }\n    }\n}"
+}

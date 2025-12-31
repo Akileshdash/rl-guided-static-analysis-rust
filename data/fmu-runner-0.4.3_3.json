@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `fmu::FmuSerializeStateCapability::<'fmu, C>::serialize_state`",
+    "file": "fmu-runner-0.4.3/src/fmu.rs",
+    "start_line": 113,
+    "start_col": 5,
+    "end_line": 134,
+    "end_col": 6,
+    "code_snippet": "pub fn serialize_state(&self, state: &FmuState<'fmu, C>) -> Result<Vec<u8>, FmuError> {\n        let mut size: usize = 0;\n        let pfmu2state = std::ptr::addr_of!(state.0);\n        FmuInstance::<C>::ok_or_err(unsafe {\n            self.0.lib.borrow().fmi.fmi2SerializedFMUstateSize(\n                self.0.instance,\n                *pfmu2state,\n                &mut size,\n            )\n        })?;\n        let mut serialized_state = vec![0u8; size];\n        let raw_serialized_state: *mut fmi2Byte = serialized_state.as_mut_ptr() as *mut i8;\n        FmuInstance::<C>::ok_or_err(unsafe {\n            self.0.lib.borrow().fmi.fmi2SerializeFMUstate(\n                self.0.instance,\n                *pfmu2state,\n                raw_serialized_state,\n                size,\n            )\n        })?;\n        Ok(serialized_state)\n    }"
+}

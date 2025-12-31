@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `word_lock::with_thread_data`",
+    "file": "parking_lot_core-0.9.11/src/word_lock.rs",
+    "start_line": 51,
+    "start_col": 1,
+    "end_line": 68,
+    "end_col": 2,
+    "code_snippet": "fn with_thread_data<T>(f: impl FnOnce(&ThreadData) -> T) -> T {\n    let mut thread_data_ptr = ptr::null();\n    // If ThreadData is expensive to construct, then we want to use a cached\n    // version in thread-local storage if possible.\n    if !ThreadParker::IS_CHEAP_TO_CONSTRUCT {\n        thread_local!(static THREAD_DATA: ThreadData = ThreadData::new());\n        if let Ok(tls_thread_data) = THREAD_DATA.try_with(|x| x as *const ThreadData) {\n            thread_data_ptr = tls_thread_data;\n        }\n    }\n    // Otherwise just create a ThreadData on the stack\n    let mut thread_data_storage = None;\n    if thread_data_ptr.is_null() {\n        thread_data_ptr = thread_data_storage.get_or_insert_with(ThreadData::new);\n    }\n\n    f(unsafe { &*thread_data_ptr })\n}"
+}

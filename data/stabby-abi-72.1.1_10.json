@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/alloc/vec.rs",
+    "start_line": 539,
+    "start_col": 1,
+    "end_line": 539,
+    "end_col": 46,
+    "code_snippet": "impl<T, Alloc: IAlloc> Drop for Vec<T, Alloc> {\n    fn drop(&mut self) {\n        unsafe { core::ptr::drop_in_place(self.as_slice_mut()) }\n        if core::mem::size_of::<T>() != 0 && self.capacity() != 0 {\n            unsafe { self.inner.start.free(&mut self.inner.alloc) }\n        }\n    }\n}"
+}

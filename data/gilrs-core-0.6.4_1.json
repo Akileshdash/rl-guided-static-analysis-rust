@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gilrs-core-0.6.4/src/platform/linux/ff.rs",
+    "start_line": 105,
+    "start_col": 1,
+    "end_line": 105,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Device {\n    fn drop(&mut self) {\n        #[cfg(target_os = \"linux\")]\n        let effect = self.effect as ::libc::c_ulong;\n        #[cfg(not(target_os = \"linux\"))]\n        let effect = self.effect as ::libc::c_int;\n\n        if let Err(err) = unsafe { ioctl::eviocrmff(self.file.as_raw_fd(), effect) } {\n            if err != Errno::ENODEV {\n                error!(\n                    \"Failed to remove effect of gamepad {:?}: {}\",\n                    self.file, err\n                )\n            }\n        };\n    }\n}"
+}

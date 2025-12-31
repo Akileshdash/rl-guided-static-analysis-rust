@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `rng::ctr_drbg::CtrDrbg::new`",
+    "file": "mbedtls-0.13.3/src/rng/ctr_drbg.rs",
+    "start_line": 58,
+    "start_col": 5,
+    "end_line": 77,
+    "end_col": 6,
+    "code_snippet": "pub fn new<T: EntropyCallback + 'static>(entropy: Arc<T>, additional_entropy: Option<&[u8]>) -> Result<Self> {\n        let mut inner = Box::new(ctr_drbg_context::default());\n\n        unsafe {\n            ctr_drbg_init(&mut *inner);\n            ctr_drbg_seed(\n                &mut *inner,\n                Some(T::call),\n                entropy.data_ptr(),\n                additional_entropy.map(<[_]>::as_ptr).unwrap_or(::core::ptr::null()),\n                additional_entropy.map(<[_]>::len).unwrap_or(0),\n            )\n            .into_result()?;\n        }\n\n        Ok(CtrDrbg {\n            inner,\n            entropy: EntropyHolder::Shared(entropy),\n        })\n    }"
+}

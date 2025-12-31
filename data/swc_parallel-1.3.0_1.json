@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `MaybeScope::<'a>::with`",
+    "file": "swc_parallel-1.3.0/src/lib.rs",
+    "start_line": 45,
+    "start_col": 5,
+    "end_line": 76,
+    "end_col": 6,
+    "code_snippet": "pub fn with<F, R>(&mut self, f: F) -> R\n    where\n        F: FnOnce(Scope<'a>) -> R,\n    {\n        #[cfg(feature = \"chili\")]\n        let scope: &mut chili::Scope = match &mut self.0 {\n            ScopeLike::Scope(scope) => unsafe {\n                // Safety: chili Scope will be alive until the end of the function, because it's\n                // contract of 'a lifetime in the type.\n                transmute::<&mut chili::Scope, &mut chili::Scope>(&mut scope.0)\n            },\n            #[cfg(feature = \"chili\")]\n            ScopeLike::Global(global_scope) => {\n                // Initialize global scope lazily, and only once.\n                let scope = global_scope.get_or_insert_with(|| chili::Scope::global());\n\n                unsafe {\n                    // Safety: Global scope is not dropped until the end of the program, and no one\n                    // can access this **instance** of the global scope in the same time.\n                    transmute::<&mut chili::Scope, &mut chili::Scope>(scope)\n                }\n            }\n        };\n\n        #[cfg(feature = \"chili\")]\n        let scope = Scope(scope);\n\n        #[cfg(not(feature = \"chili\"))]\n        let scope = Scope(std::marker::PhantomData);\n\n        f(scope)\n    }"
+}

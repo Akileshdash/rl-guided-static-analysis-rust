@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "windows-bindgen-0.62.1/src/winmd/reader.rs",
+    "start_line": 20,
+    "start_col": 1,
+    "end_line": 20,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Reader {\n    fn drop(&mut self) {\n        for file in &self.1 {\n            unsafe {\n                _ = Box::from_raw(*file);\n            }\n        }\n    }\n}"
+}

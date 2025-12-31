@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::throw`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 436,
+    "start_col": 5,
+    "end_line": 451,
+    "end_col": 6,
+    "code_snippet": "pub fn throw<'other_local, E>(&mut self, obj: E) -> Result<()>\n    where\n        E: Desc<'local, JThrowable<'other_local>>,\n    {\n        let throwable = obj.lookup(self)?;\n        let res: i32 = jni_unchecked!(self.internal, Throw, throwable.as_ref().as_raw());\n\n        // Ensure that `throwable` isn't dropped before the JNI call returns.\n        drop(throwable);\n\n        if res == 0 {\n            Ok(())\n        } else {\n            Err(Error::ThrowFailed(res))\n        }\n    }"
+}

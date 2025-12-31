@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "boxcar-0.2.13/src/raw.rs",
+    "start_line": 418,
+    "start_col": 1,
+    "end_line": 418,
+    "end_col": 24,
+    "code_snippet": "impl<T> Drop for Vec<T> {\n    fn drop(&mut self) {\n        for (i, bucket) in self.buckets.iter_mut().enumerate() {\n            let entries = bucket.entries.read_mut();\n\n            if entries.is_null() {\n                break;\n            }\n\n            let len = Location::bucket_capacity(i);\n\n            // Safety: We have `&mut self` and verified that this bucket is\n            // initialized.\n            unsafe { Bucket::dealloc(entries, len) }\n        }\n    }\n}"
+}

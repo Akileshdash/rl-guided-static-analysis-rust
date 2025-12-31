@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "workflow-core-0.18.0/src/sendable.rs",
+    "start_line": 78,
+    "start_col": 1,
+    "end_line": 78,
+    "end_col": 42,
+    "code_snippet": "unsafe impl<T> Sync for SendableFuture<T> {}"
+}

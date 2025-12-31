@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "deno_core-0.354.0/arena/shared_atomic_arena.rs",
+    "start_line": 177,
+    "start_col": 1,
+    "end_line": 177,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for ArenaArc<T> {\n  fn drop(&mut self) {\n    unsafe {\n      let this = self.ptr.as_ref();\n      if this.ref_count.fetch_sub(1, Ordering::Relaxed) == 0 {\n        ArenaSharedAtomic::delete(self.ptr);\n      }\n    }\n  }\n}"
+}

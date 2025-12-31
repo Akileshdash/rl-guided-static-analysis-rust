@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hashlink-0.10.0/src/linked_hash_map.rs",
+    "start_line": 643,
+    "start_col": 1,
+    "end_line": 643,
+    "end_col": 46,
+    "code_snippet": "impl<K, V, S> Drop for LinkedHashMap<K, V, S> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            if let Some(values) = self.values {\n                drop_value_nodes(values);\n                let _ = Box::from_raw(values.as_ptr());\n            }\n            drop_free_nodes(self.free);\n        }\n    }\n}"
+}

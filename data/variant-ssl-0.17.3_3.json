@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "variant-ssl-0.17.3/src/ssl/mod.rs",
+    "start_line": 4294,
+    "start_col": 1,
+    "end_line": 4294,
+    "end_col": 30,
+    "code_snippet": "impl<S> Drop for SslStream<S> {\n    fn drop(&mut self) {\n        // ssl holds a reference to method internally so it has to drop first\n        unsafe {\n            ManuallyDrop::drop(&mut self.ssl);\n            ManuallyDrop::drop(&mut self.method);\n        }\n    }\n}"
+}

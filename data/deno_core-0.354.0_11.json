@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `runtime::op_driver::erased_future::ErasedFuture::<MAX_SIZE, Output>::poll`",
+    "file": "deno_core-0.354.0/runtime/op_driver/erased_future.rs",
+    "start_line": 96,
+    "start_col": 3,
+    "end_line": 109,
+    "end_col": 4,
+    "code_snippet": "unsafe fn poll<F>(\n    pin: Pin<&mut TypeErased<MAX_SIZE>>,\n    cx: &mut Context<'_>,\n  ) -> Poll<Output>\n  where\n    F: Future<Output = Output>,\n  {\n    unsafe {\n      F::poll(\n        std::mem::transmute::<Pin<&mut TypeErased<MAX_SIZE>>, Pin<&mut F>>(pin),\n        cx,\n      )\n    }\n  }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "wasmer-6.1.0-rc.2/src/utils/native/typed_func.rs",
+    "start_line": 25,
+    "start_col": 1,
+    "end_line": 25,
+    "end_col": 59,
+    "code_snippet": "unsafe impl<Args, Rets> Send for TypedFunction<Args, Rets> {}\nunsafe impl<Args, Rets> Sync for TypedFunction<Args, Rets> {}"
+}

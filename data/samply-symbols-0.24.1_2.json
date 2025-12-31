@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<macho::ObjectAndMachOData<'static, T> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "samply-symbols-0.24.1/src/macho.rs",
+    "start_line": 304,
+    "start_col": 10,
+    "end_line": 304,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\npub struct ObjectAndMachOData<'data, T: FileContents + 'static> {\n    object: File<'data, FileContentsRange<'data, T>>,\n    macho_data: MachOData<'data, FileContentsRange<'data, T>>,\n    addr2line_context: Addr2lineContextData,\n}"
+}

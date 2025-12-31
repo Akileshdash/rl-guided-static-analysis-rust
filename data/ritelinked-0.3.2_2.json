@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ritelinked-0.3.2/src/map.rs",
+    "start_line": 632,
+    "start_col": 1,
+    "end_line": 632,
+    "end_col": 46,
+    "code_snippet": "impl<K, V, S> Drop for LinkedHashMap<K, V, S> {\n    #[cfg_attr(feature = \"inline-more\", inline)]\n    fn drop(&mut self) {\n        unsafe {\n            if let Some(values) = self.values {\n                drop_value_nodes(values);\n                Box::from_raw(values.as_ptr());\n            }\n            drop_free_nodes(self.free);\n        }\n    }\n}"
+}

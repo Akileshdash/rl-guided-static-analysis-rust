@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/owned_slice/drain.rs",
+    "start_line": 203,
+    "start_col": 9,
+    "end_line": 203,
+    "end_col": 46,
+    "code_snippet": "impl<T> Drop for DropGuard<'_, '_, T> {\n            fn drop(&mut self) {\n                if self.0.tail_len > 0 {\n                    unsafe {\n                        // memmove back untouched tail, update to new length\n                        let slice_ptr = non_null::as_non_null_ptr(*self.0.slice).as_ptr();\n\n                        let start = self.0.slice.len();\n                        let tail = self.0.tail_start;\n\n                        if tail != start {\n                            let src = slice_ptr.add(tail);\n                            let dst = slice_ptr.add(start);\n                            ptr::copy(src, dst, self.0.tail_len);\n                        }\n\n                        non_null::set_len(self.0.slice, start + self.0.tail_len);\n                    }\n                }\n            }\n        }"
+}

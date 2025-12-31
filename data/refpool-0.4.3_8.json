@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ref_handle::PoolRef::<A>::cloned`",
+    "file": "refpool-0.4.3/src/ref_handle.rs",
+    "start_line": 165,
+    "start_col": 5,
+    "end_line": 175,
+    "end_col": 6,
+    "code_snippet": "pub fn cloned(pool: &Pool<A>, this: &Self) -> Self\n    where\n        A: PoolClone,\n    {\n        let mut handle = pool.pop();\n        unsafe {\n            this.deref().clone_uninit(data_ptr(&mut handle));\n            assume_init(handle)\n        }\n        .into_ref()\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `chunked_array::binary::fill_bytes_hashes`",
+    "file": "polars-core-0.49.1/src/chunked_array/binary.rs",
+    "start_line": 12,
+    "start_col": 1,
+    "end_line": 36,
+    "end_col": 2,
+    "code_snippet": "fn fill_bytes_hashes<'a, T>(\n    ca: &'a ChunkedArray<T>,\n    null_h: u64,\n    hb: PlRandomState,\n) -> Vec<BytesHash<'a>>\nwhere\n    T: PolarsDataType,\n    <<T as PolarsDataType>::Array as StaticArray>::ValueT<'a>: AsRef<[u8]>,\n{\n    let mut byte_hashes = Vec::with_capacity(ca.len());\n    for arr in ca.downcast_iter() {\n        for opt_b in arr.iter() {\n            let opt_b = opt_b.as_ref().map(|v| v.as_ref());\n            // SAFETY:\n            // the underlying data is tied to self\n            let opt_b = unsafe { std::mem::transmute::<Option<&[u8]>, Option<&'a [u8]>>(opt_b) };\n            let hash = match opt_b {\n                Some(s) => hb.hash_one(s),\n                None => null_h,\n            };\n            byte_hashes.push(BytesHash::new(opt_b, hash))\n        }\n    }\n    byte_hashes\n}"
+}

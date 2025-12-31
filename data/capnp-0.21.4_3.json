@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<T as private::layout::PrimitiveElement>::set`",
+    "file": "capnp-0.21.4/src/private/layout.rs",
+    "start_line": 4142,
+    "start_col": 5,
+    "end_line": 4150,
+    "end_col": 6,
+    "code_snippet": "fn set(list_builder: &ListBuilder, index: ElementCount32, value: Self) {\n        let offset =\n            (u64::from(index) * u64::from(list_builder.step) / BITS_PER_BYTE as u64) as u32;\n        unsafe {\n            let ptr: *mut <Self as Primitive>::Raw =\n                list_builder.ptr.offset(offset as isize) as *mut _;\n            <Self as Primitive>::set(&mut *ptr, value);\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rustc-rayon-0.5.1/src/slice/mergesort.rs",
+    "start_line": 510,
+    "start_col": 5,
+    "end_line": 510,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for State<T> {\n        fn drop(&mut self) {\n            let size = size_of::<T>();\n            let left_len = (self.left_end as usize - self.left_start as usize) / size;\n            let right_len = (self.right_end as usize - self.right_start as usize) / size;\n\n            // Copy array `left`, followed by `right`.\n            unsafe {\n                ptr::copy_nonoverlapping(self.left_start, self.dest, left_len);\n                self.dest = self.dest.add(left_len);\n                ptr::copy_nonoverlapping(self.right_start, self.dest, right_len);\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sdl3-0.14.36/src/sdl3/sdl.rs",
+    "start_line": 285,
+    "start_col": 9,
+    "end_line": 285,
+    "end_col": 28,
+    "code_snippet": "impl Drop for $name {\n            #[inline]\n            #[doc(alias = \"SDL_QuitSubSystem\")]\n            fn drop(&mut self) {\n                let prev_count = $counter.fetch_sub(1, Ordering::Relaxed);\n                assert!(prev_count > 0);\n                if prev_count == 1 {\n                    unsafe {\n                        sys::init::SDL_QuitSubSystem($flag);\n                        // The last dropped subsystem instance \"retrieves\" an SdlDrop and drops it.\n                        let _ = SdlDrop::new();\n                    }\n                }\n            }\n        }"
+}

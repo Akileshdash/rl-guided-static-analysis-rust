@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<jitdump::JitDumpSymbolMapInnerWrapper<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "samply-symbols-0.24.1/src/jitdump.rs",
+    "start_line": 214,
+    "start_col": 10,
+    "end_line": 214,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\npub struct JitDumpSymbolMapInnerWrapper<'data>(pub Box<dyn SymbolMapTrait + Send + Sync + 'data>);\n\n#[derive(Debug)]\nstruct JitDumpSymbolMapCache<'a, T: FileContents> {\n    names: HashMap<usize, &'a [u8]>,\n    debug_infos: HashMap<usize, JitCodeDebugInfoRecord<'a>>,\n    data: &'a FileContentsWrapper<T>,\n    index: &'a JitDumpIndex,\n}"
+}

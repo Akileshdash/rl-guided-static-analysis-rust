@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bastion-executor-0.4.2/src/run_queue.rs",
+    "start_line": 1667,
+    "start_col": 1,
+    "end_line": 1667,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for Injector<T> {\n    fn drop(&mut self) {\n        let mut head = self.head.index.load(Ordering::Relaxed);\n        let mut tail = self.tail.index.load(Ordering::Relaxed);\n        let mut block = self.head.block.load(Ordering::Relaxed);\n\n        // Erase the lower bits.\n        head &= !((1 << SHIFT) - 1);\n        tail &= !((1 << SHIFT) - 1);\n\n        unsafe {\n            // Drop all values between `head` and `tail` and deallocate the heap-allocated blocks.\n            while head != tail {\n                let offset = (head >> SHIFT) % LAP;\n\n                if offset < BLOCK_CAP {\n                    // Drop the task in the slot.\n                    let slot = (*block).slots.get_unchecked(offset);\n                    ManuallyDrop::drop(&mut *(*slot).task.get());\n                } else {\n                    // Deallocate the block and move to the next one.\n                    let next = (*block).next.load(Ordering::Relaxed);\n                    drop(Box::from_raw(block));\n                    block = next;\n                }\n\n                head = head.wrapping_add(1 << SHIFT);\n            }\n\n            // Deallocate the last remaining block.\n            drop(Box::from_raw(block));\n        }\n    }\n}"
+}

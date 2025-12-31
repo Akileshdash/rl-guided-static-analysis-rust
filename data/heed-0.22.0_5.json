@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "heed-0.22.0/src/txn.rs",
+    "start_line": 237,
+    "start_col": 1,
+    "end_line": 237,
+    "end_col": 43,
+    "code_snippet": "unsafe impl Send for RoTxn<'_, WithoutTls> {}"
+}

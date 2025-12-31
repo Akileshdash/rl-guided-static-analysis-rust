@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "static_init-1.0.4/src/generic_lazy.rs",
+    "start_line": 215,
+    "start_col": 1,
+    "end_line": 216,
+    "end_col": 34,
+    "code_snippet": "unsafe impl<T: LazyData, M: Sync> Send for GenericLockedLazySeq<T, M> where\n    <T as LazyData>::Target: Send\n{\n}"
+}

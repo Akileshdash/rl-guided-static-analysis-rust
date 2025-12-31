@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "may-0.3.51/src/sync/mutex.rs",
+    "start_line": 28,
+    "start_col": 1,
+    "end_line": 28,
+    "end_col": 48,
+    "code_snippet": "unsafe impl<T: ?Sized + Send> Sync for Mutex<T> {}\nimpl<T: ?Sized> UnwindSafe for Mutex<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "dark-std-0.2.16/src/sync/vec.rs",
+    "start_line": 22,
+    "start_col": 1,
+    "end_line": 22,
+    "end_col": 35,
+    "code_snippet": "unsafe impl<V> Sync for SyncVec<V> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "crossbeam-channel-0.5.15/src/channel.rs",
+    "start_line": 731,
+    "start_col": 1,
+    "end_line": 731,
+    "end_col": 42,
+    "code_snippet": "unsafe impl<T: Send> Sync for Receiver<T> {}"
+}

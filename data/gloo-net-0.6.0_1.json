@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gloo-net-0.6.0/src/eventsource/futures.rs",
+    "start_line": 69,
+    "start_col": 15,
+    "end_line": 69,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\npub struct EventSourceSubscription {\n    #[allow(clippy::type_complexity)]\n    error_callback: Closure<dyn FnMut(web_sys::Event)>,\n    es: web_sys::EventSource,\n    event_type: String,\n    message_callback: Closure<dyn FnMut(MessageEvent)>,\n    #[pin]\n    message_receiver: mpsc::UnboundedReceiver<StreamMessage>,\n}"
+}

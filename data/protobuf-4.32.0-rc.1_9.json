@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "protobuf-4.32.0-rc.1/src/repeated.rs",
+    "start_line": 40,
+    "start_col": 1,
+    "end_line": 40,
+    "end_col": 52,
+    "code_snippet": "unsafe impl<'msg, T> Send for RepeatedView<'msg, T> {}"
+}

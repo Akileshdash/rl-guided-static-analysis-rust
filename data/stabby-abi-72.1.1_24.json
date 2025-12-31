@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "stabby-abi-72.1.1/src/slice.rs",
+    "start_line": 33,
+    "start_col": 1,
+    "end_line": 33,
+    "end_col": 63,
+    "code_snippet": "unsafe impl<'a, T: 'a> Sync for Slice<'a, T> where &'a T: Sync {}\nimpl<'a, T: 'a> Clone for Slice<'a, T> {\n    fn clone(&self) -> Self {\n        *self\n    }\n}"
+}

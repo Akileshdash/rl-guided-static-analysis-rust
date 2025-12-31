@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "wasmer-near-2.4.1/src/sys/externals/function.rs",
+    "start_line": 1162,
+    "start_col": 5,
+    "end_line": 1162,
+    "end_col": 58,
+    "code_snippet": "unsafe impl<Args, Rets> Send for Function<Args, Rets> {}"
+}

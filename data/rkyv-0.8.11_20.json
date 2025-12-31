@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `rel_ptr::RelPtr::<T, O>::as_ptr_raw`",
+    "file": "rkyv-0.8.11/src/rel_ptr.rs",
+    "start_line": 489,
+    "start_col": 5,
+    "end_line": 503,
+    "end_col": 6,
+    "code_snippet": "pub unsafe fn as_ptr_raw(this: *mut Self) -> *mut T {\n        // SAFETY:\n        // - `RelPtr` is `#[repr(C)]`, so the `RawRelPtr` member of the `RelPtr`\n        //   will have the same address as the `RelPtr`. Because `this` is\n        //   non-null, properly-aligned, and points to a valid `RelPtr`, a\n        //   pointer to its first field will also be non-null, properly-aligned,\n        //   and point to a valid `RawRelPtr`.\n        // - The base and offset of the `RawRelPtr` are guaranteed to be the\n        //   same as the base and offset of the `RelPtr`.\n        let data_address = unsafe { RawRelPtr::<O>::as_ptr_raw(this.cast()) };\n        // SAFETY: The caller has guaranteed that `this` points to a valid\n        // `RelPtr`.\n        let metadata = unsafe { T::pointer_metadata(&(*this).metadata) };\n        ptr_meta::from_raw_parts_mut(data_address, metadata)\n    }"
+}

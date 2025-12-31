@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `array::dictionary::DictionaryArray::<K>::try_new`",
+    "file": "polars-arrow-0.49.1/src/array/dictionary/mod.rs",
+    "start_line": 164,
+    "start_col": 5,
+    "end_line": 186,
+    "end_col": 6,
+    "code_snippet": "pub fn try_new(\n        dtype: ArrowDataType,\n        keys: PrimitiveArray<K>,\n        values: Box<dyn Array>,\n    ) -> PolarsResult<Self> {\n        check_dtype(K::KEY_TYPE, &dtype, values.dtype())?;\n\n        if keys.null_count() != keys.len() {\n            if K::always_fits_usize() {\n                // SAFETY: we just checked that conversion to `usize` always\n                // succeeds\n                unsafe { check_indexes_unchecked(keys.values(), values.len()) }?;\n            } else {\n                check_indexes(keys.values(), values.len())?;\n            }\n        }\n\n        Ok(Self {\n            dtype,\n            keys,\n            values,\n        })\n    }"
+}

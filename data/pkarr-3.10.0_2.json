@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `signed_packet::Inner::new`",
+    "file": "pkarr-3.10.0//usagers4/u139091/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/self_cell-1.2.0/src/lib.rs",
+    "start_line": 486,
+    "start_col": 9,
+    "end_line": 497,
+    "end_col": 10,
+    "code_snippet": "$Vis fn new(\n            owner: $Owner,\n            dependent_builder: impl for<'_q> ::core::ops::FnOnce(&'_q $Owner) -> $Dependent<'_q>\n        ) -> Self {\n            type JoinedCell<'_q $(, $OwnerLifetime)?> =\n                    $crate::unsafe_self_cell::JoinedCell<$Owner, $Dependent<'_q>>;\n\n            // unsafe placed here to make sure the body macro can't be abused.\n            unsafe {\n                $crate::_self_cell_new_body!(JoinedCell, owner $(=> $OwnerLifetime)?, dependent_builder)\n            }\n        }"
+}

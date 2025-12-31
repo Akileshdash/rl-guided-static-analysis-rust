@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/alloc/vec.rs",
+    "start_line": 778,
+    "start_col": 1,
+    "end_line": 778,
+    "end_col": 76,
+    "code_snippet": "impl<'a, T: 'a, Alloc: IAlloc + 'a> Drop for DoubleEndedDrain<'a, T, Alloc> {\n    fn drop(&mut self) {\n        let tail_length = self.original_len - self.to;\n        unsafe {\n            core::ptr::drop_in_place(core::slice::from_raw_parts_mut(\n                self.vec.inner.start.as_ptr().add(self.lindex),\n                self.rindex - self.lindex,\n            ));\n            core::ptr::copy(\n                self.vec.inner.start.as_ptr().add(self.to),\n                self.vec.inner.start.as_ptr().add(self.from),\n                tail_length,\n            );\n            self.vec.set_len(tail_length + self.from);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::iter_size_hint`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 535,
+    "start_col": 5,
+    "end_line": 535,
+    "end_col": 77,
+    "code_snippet": "unsafe fn iter_size_hint(&self, _index: usize) -> (usize, Option<usize>) {\n        (0, None)\n    }"
+}

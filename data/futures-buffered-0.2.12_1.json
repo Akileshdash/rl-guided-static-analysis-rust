@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "futures-buffered-0.2.12/src/waker_list.rs",
+    "start_line": 372,
+    "start_col": 1,
+    "end_line": 372,
+    "end_col": 24,
+    "code_snippet": "impl Drop for WakerList {\n    fn drop(&mut self) {\n        let meta = unsafe { &*self.ptr.as_ptr() };\n        if meta.dec_strong() {\n            unsafe { drop_inner(self.ptr.as_ptr().cast(), meta.len) }\n        }\n    }\n}"
+}

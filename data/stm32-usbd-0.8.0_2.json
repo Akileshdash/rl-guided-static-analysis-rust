@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "stm32-usbd-0.8.0/src/endpoint_memory.rs",
+    "start_line": 50,
+    "start_col": 1,
+    "end_line": 50,
+    "end_col": 46,
+    "code_snippet": "unsafe impl<USB> Send for EndpointBuffer<USB> {}"
+}

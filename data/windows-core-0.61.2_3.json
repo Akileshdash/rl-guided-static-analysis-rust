@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "windows-core-0.61.2/src/unknown.rs",
+    "start_line": 42,
+    "start_col": 1,
+    "end_line": 42,
+    "end_col": 23,
+    "code_snippet": "impl Drop for IUnknown {\n    fn drop(&mut self) {\n        unsafe {\n            (self.vtable().Release)(core::mem::transmute_copy(self));\n        }\n    }\n}"
+}

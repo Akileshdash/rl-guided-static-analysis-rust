@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "btree-slab-0.6.1/src/generic/node/item.rs",
+    "start_line": 148,
+    "start_col": 1,
+    "end_line": 148,
+    "end_col": 31,
+    "code_snippet": "impl<K, V> Drop for Item<K, V> {\n\tfn drop(&mut self) {\n\t\tunsafe {\n\t\t\tstd::ptr::drop_in_place(self.key.assume_init_mut());\n\t\t\tstd::ptr::drop_in_place(self.value.assume_init_mut());\n\t\t}\n\t}\n}"
+}

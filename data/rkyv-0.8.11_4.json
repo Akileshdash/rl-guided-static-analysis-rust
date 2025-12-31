@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rkyv-0.8.11/src/util/ser_vec.rs",
+    "start_line": 388,
+    "start_col": 1,
+    "end_line": 388,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for Drain<'_, T> {\n    fn drop(&mut self) {\n        for i in 0..self.remaining {\n            unsafe {\n                self.current.as_ptr().add(i).drop_in_place();\n            }\n        }\n    }\n}"
+}

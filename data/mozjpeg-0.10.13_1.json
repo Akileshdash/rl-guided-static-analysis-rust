@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mozjpeg-0.10.13/src/compress.rs",
+    "start_line": 484,
+    "start_col": 1,
+    "end_line": 484,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Compress {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            self.cinfo.dest = ptr::null_mut();\n            ffi::jpeg_destroy_compress(&mut self.cinfo);\n            // ErrorMgr is destroyed after cinfo can no longer reference it\n            let _ = Box::from_raw(self.own_err);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::set_at`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 867,
+    "start_col": 5,
+    "end_line": 867,
+    "end_col": 84,
+    "code_snippet": "fn set_at(&self, _index: Value<'v>, _new_value: Value<'v>) -> crate::Result<()> {\n        Err(crate::Error::new_other(\n            ValueError::CannotMutateImmutableValue,\n        ))\n    }"
+}

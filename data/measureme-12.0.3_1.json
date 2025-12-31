@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `counters::hw::Counter::access_mmap_page_with_seqlock`",
+    "file": "measureme-12.0.3/src/counters.rs",
+    "start_line": 443,
+    "start_col": 9,
+    "end_line": 468,
+    "end_col": 10,
+    "code_snippet": "fn access_mmap_page_with_seqlock<T>(\n            &self,\n            attempt: impl Fn(&perf_event_mmap_page) -> T,\n        ) -> T {\n            // FIXME(eddyb) it's probably UB to use regular reads, especially\n            // from behind `&T`, with the only synchronization being barriers.\n            // Probably needs atomic reads, and stronger ones at that, for the\n            // `lock` field, than the fields (which would be `Relaxed`?).\n            let mmap_page = unsafe { &*(self.mmap.as_ptr() as *const perf_event_mmap_page) };\n            let barrier = || std::sync::atomic::fence(std::sync::atomic::Ordering::Acquire);\n\n            loop {\n                // Grab the \"seqlock\" - the kernel will update this value when it\n                // updates any of the other fields that may be read in `attempt`.\n                let seq_lock = mmap_page.lock;\n                barrier();\n\n                let result = attempt(mmap_page);\n\n                // If nothing has changed, we're done. Otherwise, keep retrying.\n                barrier();\n                if mmap_page.lock == seq_lock {\n                    return result;\n                }\n            }\n        }"
+}

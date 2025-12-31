@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vecrem-0.1.0/src/lib.rs",
+    "start_line": 430,
+    "start_col": 1,
+    "end_line": 430,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for Entry<'_, '_, T> {\n    fn drop(&mut self) {\n        // Skips element swaping it with the first empty slot.\n\n        unsafe {\n            // ## Safety\n            //\n            // `Entry` type invariants ensure that `self.rem.curr` points to a valid value,\n            // and `self.rem.slot` is writable.\n            ptr::copy(self.curr_mut(), self.slot_mut(), 1);\n            self.rem.slot += 1;\n            self.rem.curr += 1;\n        }\n    }\n}"
+}

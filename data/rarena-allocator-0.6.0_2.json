@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rarena-allocator-0.6.0/src/bytes.rs",
+    "start_line": 182,
+    "start_col": 1,
+    "end_line": 182,
+    "end_col": 40,
+    "code_snippet": "impl<A: Allocator> Drop for BytesMut<A> {\n  #[inline]\n  fn drop(&mut self) {\n    match self.arena {\n      Either::Left(_) if self.detach => {}\n      // SAFETY: offset and offset + size are inbounds of the ARENA.\n      Either::Left(ref mut arena) => unsafe {\n        let _ = arena.dealloc(self.allocated.memory_offset, self.allocated.memory_size);\n      },\n      Either::Right(_) => {}\n    }\n  }\n}"
+}

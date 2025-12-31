@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "bitvec-1.0.1/src/ptr/proxy.rs",
+    "start_line": 399,
+    "start_col": 1,
+    "end_line": 403,
+    "end_col": 14,
+    "code_snippet": "unsafe impl<M, T, O> Send for BitRef<'_, M, T, O>\nwhere\n\tM: Mutability,\n\tT: BitStore + Sync,\n\tO: BitOrder,\n{\n}"
+}

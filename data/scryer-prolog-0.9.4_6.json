@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "scryer-prolog-0.9.4/src/raw_block.rs",
+    "start_line": 109,
+    "start_col": 1,
+    "end_line": 109,
+    "end_col": 45,
+    "code_snippet": "impl<T: RawBlockTraits> Drop for RawBlock<T> {\n    fn drop(&mut self) {\n        if !self.base.is_null() {\n            unsafe {\n                let layout = alloc::Layout::from_size_align_unchecked(self.size(), T::align());\n                alloc::dealloc(self.base as *mut _, layout);\n            }\n\n            self.top = ptr::null();\n            self.base = ptr::null();\n            *self.ptr.get_mut() = ptr::null_mut();\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/store.rs",
+    "start_line": 2332,
+    "start_col": 1,
+    "end_line": 2332,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Store<T> {\n    fn drop(&mut self) {\n        self.run_manual_drop_routines();\n\n        // for documentation on this `unsafe`, see `into_data`.\n        unsafe {\n            ManuallyDrop::drop(&mut self.inner.data);\n            ManuallyDrop::drop(&mut self.inner);\n        }\n    }\n}"
+}

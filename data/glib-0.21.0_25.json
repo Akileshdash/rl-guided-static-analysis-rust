@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `collections::ptr_slice::PtrSlice::<T>::extend_from_slice`",
+    "file": "glib-0.21.0/src/collections/ptr_slice.rs",
+    "start_line": 789,
+    "start_col": 5,
+    "end_line": 806,
+    "end_col": 6,
+    "code_snippet": "pub fn extend_from_slice(&mut self, other: &[T]) {\n        // Nothing new to reserve as there's still enough space\n        if self.len + other.len() + 1 > self.capacity {\n            self.reserve(other.len());\n        }\n\n        unsafe {\n            for item in other {\n                ptr::write(self.ptr.as_ptr().add(self.len) as *mut T, item.clone());\n                self.len += 1;\n            }\n\n            ptr::write(\n                self.ptr.as_ptr().add(self.len),\n                Ptr::from(ptr::null_mut::<<T as GlibPtrDefault>::GlibType>()),\n            );\n        }\n    }"
+}

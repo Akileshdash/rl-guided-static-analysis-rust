@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "object-pool-0.6.0/src/lib.rs",
+    "start_line": 266,
+    "start_col": 1,
+    "end_line": 266,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for ReusableOwned<T> {\n    #[inline]\n    fn drop(&mut self) {\n        let (pool, data) = unsafe { self.take() };\n        pool.attach(data);\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "thingbuf-0.1.6/src/lib.rs",
+    "start_line": 502,
+    "start_col": 1,
+    "end_line": 502,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Core {\n    fn drop(&mut self) {\n        debug_assert!(\n            self.has_dropped_slots,\n            \"tried to drop Core without dropping slots! core={:#?}\",\n            self\n        );\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bevy_ecs-0.16.1/src/storage/blob_vec.rs",
+    "start_line": 403,
+    "start_col": 1,
+    "end_line": 403,
+    "end_col": 22,
+    "code_snippet": "impl Drop for BlobVec {\n    fn drop(&mut self) {\n        self.clear();\n        let array_layout =\n            array_layout(&self.item_layout, self.capacity).expect(\"array layout should be valid\");\n        if array_layout.size() > 0 {\n            // SAFETY: data ptr layout is correct, swap_scratch ptr layout is correct\n            unsafe {\n                alloc::alloc::dealloc(self.get_ptr_mut().as_ptr(), array_layout);\n            }\n        }\n    }\n}"
+}

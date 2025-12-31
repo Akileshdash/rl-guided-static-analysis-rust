@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-task-4.7.1/src/runnable.rs",
+    "start_line": 435,
+    "start_col": 9,
+    "end_line": 435,
+    "end_col": 36,
+    "code_snippet": "impl<F> Drop for Checked<F> {\n            fn drop(&mut self) {\n                assert!(\n                    self.id == thread_id(),\n                    \"local task dropped by a thread that didn't spawn it\"\n                );\n                unsafe {\n                    ManuallyDrop::drop(&mut self.inner);\n                }\n            }\n        }"
+}

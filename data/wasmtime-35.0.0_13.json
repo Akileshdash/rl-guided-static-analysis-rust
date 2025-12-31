@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `runtime::vm::traphandlers::catch_traps::{closure#0}::call_closure`",
+    "file": "wasmtime-35.0.0/src/runtime/vm/traphandlers.rs",
+    "start_line": 412,
+    "start_col": 17,
+    "end_line": 417,
+    "end_col": 18,
+    "code_snippet": "extern \"C\" fn call_closure<F>(payload: *mut u8, caller: NonNull<VMContext>) -> bool\n                where\n                    F: FnMut(NonNull<VMContext>, Option<InterpreterRef<'_>>) -> bool,\n                {\n                    unsafe { (*(payload as *mut F))(caller, None) }\n                }"
+}

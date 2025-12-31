@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `experimental::scene::Handle::<T>::lens`",
+    "file": "macroquad-0.4.14/src/experimental/scene.rs",
+    "start_line": 96,
+    "start_col": 5,
+    "end_line": 114,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn lens<F, T1>(&self, f: F) -> Lens<T1>\n    where\n        F: for<'r> FnOnce(&'r mut T) -> &'r mut T1,\n    {\n        assert!(self.id.is_some());\n\n        let offset = unsafe {\n            let mut base = std::mem::MaybeUninit::<T>::uninit();\n            let field = f(std::mem::transmute(base.as_mut_ptr())) as *mut _ as *mut u8;\n\n            (field as *mut u8).offset_from(base.as_mut_ptr() as *mut u8)\n        };\n\n        Lens {\n            handle: HandleUntyped(self.id.unwrap()),\n            offset,\n            _marker: PhantomData,\n        }\n    }"
+}

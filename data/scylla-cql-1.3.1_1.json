@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<frame::response::result::self_borrowed_metadata::ResultMetadataWrapper<'static> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "scylla-cql-1.3.1/src/frame/response/result.rs",
+    "start_line": 590,
+    "start_col": 28,
+    "end_line": 590,
+    "end_col": 36,
+    "code_snippet": "#[derive(Debug, Clone, Yokeable)]\n    struct ResultMetadataWrapper<'frame>(ResultMetadata<'frame>);\n\n    /// A container that can be considered an `Arc<ResultMetadata>` with an additional capability\n    /// of containing metadata in a borrowed form.\n    ///\n    /// The borrow comes from the `Bytes` that this container holds internally. Therefore,\n    /// the held `ResultMetadata`'s lifetime is covariant with the lifetime of this container\n    /// itself.\n    #[derive(Debug, Clone)]\n    pub struct SelfBorrowedMetadataContainer {\n        metadata_and_raw_rows: Yoke<ResultMetadataWrapper<'static>, BytesWrapper>,\n    }"
+}

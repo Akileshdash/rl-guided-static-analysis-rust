@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `parker::Parking::<T>::park`",
+    "file": "asyncs-sync-0.4.0/src/parker.rs",
+    "start_line": 146,
+    "start_col": 5,
+    "end_line": 165,
+    "end_col": 6,
+    "code_snippet": "pub unsafe fn park(&self, waker: &Waker) -> Poll<()> {\n        let state = self.state.load(T::park_ordering());\n        match state {\n            State::Unparked => Poll::Ready(()),\n            State::Parking(index) => {\n                let index = (index + 1) & 0x01;\n                let wakers = unsafe { &mut *self.wakers.get() };\n                match unsafe { wakers.get_unchecked_mut(index) } {\n                    existing_waker @ None => *existing_waker = Some(waker.clone()),\n                    Some(existing_waker) => existing_waker.clone_from(waker),\n                }\n                // Release store to publish waker.\n                match self.state.compare_exchange(state, State::Parking(index), Release, T::park_ordering()) {\n                    Ok(_) => Poll::Pending,\n                    Err(State::Unparked) => Poll::Ready(()),\n                    Err(_) => unsafe { std::hint::unreachable_unchecked() },\n                }\n            },\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<&'a read::read_cache::ReadCache<R> as read::read_ref::ReadRef<'a>>::read_bytes_at`",
+    "file": "object-0.37.1/src/read/read_cache.rs",
+    "start_line": 105,
+    "start_col": 5,
+    "end_line": 127,
+    "end_col": 6,
+    "code_snippet": "fn read_bytes_at(self, offset: u64, size: u64) -> Result<&'a [u8], ()> {\n        if size == 0 {\n            return Ok(&[]);\n        }\n        let cache = &mut *self.cache.borrow_mut();\n        cache.range_in_bounds(&(offset..(offset.saturating_add(size))))?;\n        let buf = match cache.bufs.entry((offset, size)) {\n            Entry::Occupied(entry) => entry.into_mut(),\n            Entry::Vacant(entry) => {\n                let size = size.try_into().map_err(|_| ())?;\n                cache.read.seek(offset)?;\n                let mut bytes = Vec::new();\n                bytes.try_reserve_exact(size).map_err(|_| ())?;\n                bytes.resize(size, 0);\n                let mut bytes = bytes.into_boxed_slice();\n                cache.read.read_exact(&mut bytes)?;\n                entry.insert(bytes)\n            }\n        };\n        // Extend the lifetime to that of self.\n        // This is OK because we never mutate or remove entries.\n        Ok(unsafe { mem::transmute::<&[u8], &[u8]>(buf) })\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<<typed_arena::Arena<T> as core::ArenaExt<T>>::alloc_fixed::FillRemainingOnDrop<U> as std::ops::Drop>::drop`",
+    "file": "gluon_vm-0.18.2/src/core/mod.rs",
+    "start_line": 745,
+    "start_col": 17,
+    "end_line": 752,
+    "end_col": 18,
+    "code_snippet": "fn drop(&mut self) {\n                    unsafe {\n                        while self.ptr != self.end {\n                            ptr::write(self.ptr, U::default());\n                            self.ptr = self.ptr.add(1);\n                        }\n                    }\n                }"
+}

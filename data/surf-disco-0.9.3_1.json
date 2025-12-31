@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "surf-disco-0.9.3/src/socket.rs",
+    "start_line": 251,
+    "start_col": 1,
+    "end_line": 252,
+    "end_col": 49,
+    "code_snippet": "impl<FromServer, ToServer: ?Sized, E, VER: StaticVersionType> Drop\n    for Connection<FromServer, ToServer, E, VER>\n{\n    fn drop(&mut self) {\n        // This is the idiomatic way to implement [drop] for a type that uses pinning. Since [drop]\n        // is implicitly called with `&mut self` even on types that were pinned, we place any\n        // implementation inside [inner_drop], which takes `Pin<&mut Self>`, when the commpiler will\n        // be able to check that we do not do anything that we couldn't have done on a\n        // `Pin<&mut Self>`.\n        //\n        // The [drop] implementation for this type is trivial, and it would be safe to use the\n        // automatically generated [drop] implementation, but we nonetheless implement [drop]\n        // explicitly in the idiomatic fashion so that it is impossible to accidentally implement an\n        // unsafe version of [drop] for this type in the future.\n\n        // `new_unchecked` is okay because we know this value is never used again after being\n        // dropped.\n        inner_drop(unsafe { Pin::new_unchecked(self) });\n        fn inner_drop<FromServer, ToServer: ?Sized, E, VER: StaticVersionType>(\n            _this: Pin<&mut Connection<FromServer, ToServer, E, VER>>,\n        ) {\n            // Any logic goes here.\n        }\n    }\n}"
+}

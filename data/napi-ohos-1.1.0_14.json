@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "napi-ohos-1.1.0/src/js_values/deferred.rs",
+    "start_line": 132,
+    "start_col": 1,
+    "end_line": 133,
+    "end_col": 33,
+    "code_snippet": "unsafe impl<Data: ToNapiValue, Resolver: FnOnce(Env) -> Result<Data>> Send\n  for JsDeferred<Data, Resolver>\n{\n}"
+}

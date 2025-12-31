@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "wasm-bindgen-0.2.100/src/rt/mod.rs",
+    "start_line": 29,
+    "start_col": 1,
+    "end_line": 29,
+    "end_col": 35,
+    "code_snippet": "unsafe impl<T> Sync for Wrapper<T> {}"
+}

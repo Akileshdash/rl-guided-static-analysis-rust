@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<sum::onlineexactsum::OnlineExactSum<F> as std::ops::AddAssign<F>>::add_assign`",
+    "file": "accurate-0.4.1/src/sum/onlineexactsum.rs",
+    "start_line": 149,
+    "start_col": 5,
+    "end_line": 182,
+    "end_col": 6,
+    "code_snippet": "fn add_assign(&mut self, rhs: F) {\n        // Step 4(2)\n        {\n            let j = rhs.raw_exponent();\n            // These accesses are guaranteed to be within bounds, because:\n            debug_assert_eq!(self.a1.len(), F::base_pow_exponent_digits());\n            debug_assert_eq!(self.a2.len(), F::base_pow_exponent_digits());\n            debug_assert!(j < F::base_pow_exponent_digits());\n            let a1 = unsafe { self.a1.get_unchecked_mut(j) };\n            let a2 = unsafe { self.a2.get_unchecked_mut(j) };\n\n            // Step 4(3)\n            let (a, e) = two_sum(*a1, rhs);\n            *a1 = a;\n\n            // Step 4(4)\n            *a2 = *a2 + e;\n        }\n\n        // Step 4(5)\n        // This addition is guaranteed not to overflow because the next step ascertains that (at\n        // this point):\n        debug_assert!(self.i < F::base_pow_significand_digits_half());\n        // and (for `f32` and `f64`) we have:\n        debug_assert!(F::base_pow_significand_digits_half() < usize::MAX);\n        // thus we can assume:\n        debug_assert!(self.i.checked_add(1).is_some());\n        self.i += 1;\n\n        // Step 4(6)\n        if self.i >= F::base_pow_significand_digits_half() {\n            self.compact();\n        }\n    }"
+}

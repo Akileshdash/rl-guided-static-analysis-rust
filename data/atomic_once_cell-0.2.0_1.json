@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "atomic_once_cell-0.2.0/src/lib.rs",
+    "start_line": 481,
+    "start_col": 1,
+    "end_line": 484,
+    "end_col": 13,
+    "code_snippet": "unsafe impl<T, F> Sync for AtomicLazy<T, F>\nwhere\n    T: Send + Sync,\n    F: Send,\n{\n}"
+}

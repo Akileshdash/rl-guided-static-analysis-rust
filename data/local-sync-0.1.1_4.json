@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "local-sync-0.1.1/src/mpsc/chan.rs",
+    "start_line": 218,
+    "start_col": 1,
+    "end_line": 220,
+    "end_col": 18,
+    "code_snippet": "impl<T, S> Drop for Rx<T, S>\nwhere\n    S: Semaphore,\n{\n    fn drop(&mut self) {\n        // close semaphore on close, this will make tx send await return.\n        self.chan.semaphore.close();\n        // consume all elements\n        let mut queue = self.chan.queue.borrow_mut();\n        let len = queue.len();\n        while !queue.is_empty() {\n            drop(unsafe { queue.pop_unchecked() });\n        }\n        self.chan.semaphore.add_permits(len);\n    }\n}"
+}

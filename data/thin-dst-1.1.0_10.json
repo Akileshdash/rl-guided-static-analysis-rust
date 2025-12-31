@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "thin-dst-1.1.0/src/lib.rs",
+    "start_line": 199,
+    "start_col": 9,
+    "end_line": 200,
+    "end_col": 58,
+    "code_snippet": "unsafe impl<$($a,)* Head, SliceItem> Sync for $thin<$($a,)* Head, SliceItem> where\n            $fat<$($b,)* ThinData<Head, SliceItem>>: Sync\n        {\n        }"
+}

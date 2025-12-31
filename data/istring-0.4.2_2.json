@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "istring-0.4.2/src/ibytes.rs",
+    "start_line": 238,
+    "start_col": 1,
+    "end_line": 238,
+    "end_col": 21,
+    "code_snippet": "impl Drop for IBytes {\n    #[inline]\n    fn drop(&mut self) {\n        if !self.is_inline() {\n            unsafe {\n                let len = self.len();\n                Vec::from_raw_parts(self.union.heap.ptr, len, self.union.heap.cap);\n            }\n        }\n    }\n}"
+}

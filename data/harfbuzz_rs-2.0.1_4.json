@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "harfbuzz_rs-2.0.1/src/font_funcs.rs",
+    "start_line": 664,
+    "start_col": 1,
+    "end_line": 664,
+    "end_col": 41,
+    "code_snippet": "unsafe impl<T> Sync for FontFuncsImpl<T> {}"
+}

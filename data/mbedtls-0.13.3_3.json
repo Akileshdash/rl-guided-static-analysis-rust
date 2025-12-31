@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `pk::Pk::generate_ec`",
+    "file": "mbedtls-0.13.3/src/pk/mod.rs",
+    "start_line": 324,
+    "start_col": 5,
+    "end_line": 334,
+    "end_col": 6,
+    "code_snippet": "pub fn generate_ec<F: Random, C: TryInto<EcGroup, Error = impl Into<Error>>>(rng: &mut F, curve: C) -> Result<Pk> {\n        let mut ret = Self::init();\n        unsafe {\n            let curve: EcGroup = curve.try_into().map_err(|e| e.into())?;\n            pk_setup(&mut ret.inner, pk_info_from_type(Type::Eckey.into())).into_result()?;\n            let ctx = ret.inner.pk_ctx as *mut ecp_keypair;\n            (*ctx).grp = curve.clone().into_inner();\n            ecp_gen_keypair(&mut (*ctx).grp, &mut (*ctx).d, &mut (*ctx).Q, Some(F::call), rng.data_ptr()).into_result()?;\n        }\n        Ok(ret)\n    }"
+}

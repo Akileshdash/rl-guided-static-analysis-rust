@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "libsql_replication-0.9.19/src/injector/sqlite_injector/headers.rs",
+    "start_line": 24,
+    "start_col": 1,
+    "end_line": 24,
+    "end_col": 26,
+    "code_snippet": "impl Drop for Headers<'_> {\n    fn drop(&mut self) {\n        let mut current = self.ptr;\n        while !current.is_null() {\n            let h: Box<PgHdr> = unsafe { Box::from_raw(current as _) };\n            current = h.pDirty;\n        }\n    }\n}"
+}

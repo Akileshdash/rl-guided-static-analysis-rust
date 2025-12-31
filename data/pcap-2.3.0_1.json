@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "pcap-2.3.0/src/capture/mod.rs",
+    "start_line": 100,
+    "start_col": 1,
+    "end_line": 100,
+    "end_col": 51,
+    "code_snippet": "unsafe impl<T: State + ?Sized> Send for Capture<T> {}"
+}

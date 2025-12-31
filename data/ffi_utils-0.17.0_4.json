@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `test_utils::callback_vec`",
+    "file": "ffi_utils-0.17.0/src/test_utils.rs",
+    "start_line": 288,
+    "start_col": 1,
+    "end_line": 311,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn callback_vec<E, T, U>(\n    user_data: *mut c_void,\n    res: *const FfiResult,\n    array: *const U,\n    size: usize,\n) where\n    E: Debug,\n    T: ReprC<C = *const U, Error = E>,\n{\n    unsafe {\n        let result: Result<Vec<T>, i32> = if (*res).error_code == 0 {\n            let slice_ffi = slice::from_raw_parts(array, size);\n            let mut vec = Vec::with_capacity(slice_ffi.len());\n            for elt in slice_ffi {\n                vec.push(unwrap!(T::clone_from_repr_c(elt)));\n            }\n            Ok(vec)\n        } else {\n            Err((*res).error_code)\n        };\n\n        send_via_user_data(user_data, SendWrapper(result))\n    }\n}"
+}

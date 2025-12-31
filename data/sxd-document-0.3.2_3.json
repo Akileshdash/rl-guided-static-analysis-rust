@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `raw::Connections::remove_element_child`",
+    "file": "sxd-document-0.3.2/src/raw.rs",
+    "start_line": 491,
+    "start_col": 5,
+    "end_line": 498,
+    "end_col": 6,
+    "code_snippet": "pub fn remove_element_child<C>(&self, parent: *mut Element, child: C)\n        where C: Into<ChildOfElement>\n    {\n        let parent_r = unsafe { &mut *parent };\n        let child = child.into();\n        child.remove_parent();\n        parent_r.children.retain(|&x| x != child);\n    }"
+}

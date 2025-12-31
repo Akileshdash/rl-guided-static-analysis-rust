@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `menus::MENU_FROM_ITEM_TREE_VT::sub_menu`",
+    "file": "i-slint-core-1.12.1/menus.rs",
+    "start_line": 32,
+    "start_col": 26,
+    "end_line": 32,
+    "end_col": 28,
+    "code_snippet": "sub_menu: extern \"C\" fn(VRef<MenuVTable>, Option<&MenuEntry>, &mut SharedVector<MenuEntry>),\n    /// Handler when the menu entry is activated\n    activate: extern \"C\" fn(VRef<MenuVTable>, &MenuEntry),\n}\n\nstruct ShadowTreeNode {\n    item: ItemWeak,\n    children: SharedVector<MenuEntry>,\n}"
+}

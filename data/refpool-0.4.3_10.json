@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `box_handle::PoolBox::<A>::default`",
+    "file": "refpool-0.4.3/src/box_handle.rs",
+    "start_line": 49,
+    "start_col": 5,
+    "end_line": 59,
+    "end_col": 6,
+    "code_snippet": "pub fn default(pool: &Pool<A>) -> Self\n    where\n        A: PoolDefault,\n    {\n        let mut handle = pool.pop();\n        unsafe {\n            PoolDefault::default_uninit(data_ptr(&mut handle));\n            assume_init(handle)\n        }\n        .into_box()\n    }"
+}

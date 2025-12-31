@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ringbuf-0.4.8/src/wrap/frozen.rs",
+    "start_line": 199,
+    "start_col": 1,
+    "end_line": 199,
+    "end_col": 70,
+    "code_snippet": "impl<R: RbRef, const P: bool, const C: bool> Drop for Frozen<R, P, C> {\n    fn drop(&mut self) {\n        self.commit();\n        unsafe { self.close() };\n    }\n}"
+}

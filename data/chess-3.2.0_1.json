@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `cache_table::CacheTable::<T>::replace_if`",
+    "file": "chess-3.2.0/src/cache_table.rs",
+    "start_line": 82,
+    "start_col": 5,
+    "end_line": 90,
+    "end_col": 6,
+    "code_snippet": "pub fn replace_if<F: Fn(T) -> bool>(&mut self, hash: u64, entry: T, replace: F) {\n        let e = unsafe { self.table.get_unchecked_mut((hash as usize) & self.mask) };\n        if replace(e.entry) {\n            *e = CacheTableEntry {\n                hash: hash,\n                entry: entry,\n            };\n        }\n    }"
+}

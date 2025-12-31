@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `sort::shift_head`",
+    "file": "halo2_legacy_pdqsort-0.1.0/src/sort.rs",
+    "start_line": 36,
+    "start_col": 1,
+    "end_line": 78,
+    "end_col": 2,
+    "code_snippet": "fn shift_head<T, F>(v: &mut [T], is_less: &mut F)\nwhere\n    F: FnMut(&T, &T) -> bool,\n{\n    let len = v.len();\n    // SAFETY: The unsafe operations below involves indexing without a bound check (`get_unchecked` and `get_unchecked_mut`)\n    // and copying memory (`ptr::copy_nonoverlapping`).\n    //\n    // a. Indexing:\n    //  1. We checked the size of the array to >=2.\n    //  2. All the indexing that we will do is always between {0 <= index < len} at most.\n    //\n    // b. Memory copying\n    //  1. We are obtaining pointers to references which are guaranteed to be valid.\n    //  2. They cannot overlap because we obtain pointers to difference indices of the slice.\n    //     Namely, `i` and `i-1`.\n    //  3. If the slice is properly aligned, the elements are properly aligned.\n    //     It is the caller's responsibility to make sure the slice is properly aligned.\n    //\n    // See comments below for further detail.\n    unsafe {\n        // If the first two elements are out-of-order...\n        if len >= 2 && is_less(v.get_unchecked(1), v.get_unchecked(0)) {\n            // Read the first element into a stack-allocated variable. If a following comparison\n            // operation panics, `hole` will get dropped and automatically write the element back\n            // into the slice.\n            let mut tmp = mem::ManuallyDrop::new(ptr::read(v.get_unchecked(0)));\n            let mut hole = CopyOnDrop { src: &mut *tmp, dest: v.get_unchecked_mut(1) };\n            ptr::copy_nonoverlapping(v.get_unchecked(1), v.get_unchecked_mut(0), 1);\n\n            for i in 2..len {\n                if !is_less(v.get_unchecked(i), &*tmp) {\n                    break;\n                }\n\n                // Move `i`-th element one place to the left, thus shifting the hole to the right.\n                ptr::copy_nonoverlapping(v.get_unchecked(i), v.get_unchecked_mut(i - 1), 1);\n                hole.dest = v.get_unchecked_mut(i);\n            }\n            // `hole` gets dropped and thus copies `tmp` into the remaining hole in `v`.\n        }\n    }\n}"
+}

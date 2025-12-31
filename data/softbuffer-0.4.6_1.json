@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "softbuffer-0.4.6/src/backends/x11.rs",
+    "start_line": 775,
+    "start_col": 1,
+    "end_line": 775,
+    "end_col": 25,
+    "code_snippet": "impl Drop for ShmSegment {\n    fn drop(&mut self) {\n        unsafe {\n            // Unmap the shared memory segment.\n            mm::munmap(self.ptr.as_ptr().cast(), self.size).ok();\n        }\n    }\n}"
+}

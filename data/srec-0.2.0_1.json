@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `writer::make_record`",
+    "file": "srec-0.2.0/src/writer.rs",
+    "start_line": 5,
+    "start_col": 1,
+    "end_line": 23,
+    "end_col": 2,
+    "code_snippet": "fn make_record(t: u8, address: &impl Address, data: &[u8]) -> String {\n    assert!(t < 10, \"invalid record type {}\", t);\n\n    let mut bytes = vec![0x00];\n    bytes.extend(address.to_be_bytes());\n    bytes.extend(data);\n    // The length byte doesn't count itself, so subtract one for the length byte\n    // we saved space for when we created the bytes vec. Add one byte for the\n    // checksum that finishes the record.\n    bytes[0] = (bytes.len() - 1 + 1) as u8;\n\n    let bytes_str = bytes\n        .iter()\n        .map(|b| format!(\"{:02X}\", b))\n        .collect::<Vec<_>>()\n        .join(\"\");\n\n    format!(\"S{}{}{:02X}\", t, bytes_str, checksum_of(&bytes))\n}"
+}

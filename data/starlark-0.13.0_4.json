@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "starlark-0.13.0/src/eval/bc/instrs.rs",
+    "start_line": 134,
+    "start_col": 1,
+    "end_line": 134,
+    "end_col": 23,
+    "code_snippet": "impl Drop for BcInstrs {\n    fn drop(&mut self) {\n        match &self.instrs {\n            Either::Left(heap_allocated) => unsafe {\n                drop_instrs(heap_allocated);\n            },\n            Either::Right(_statically_allocated) => {}\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vtable-0.3.0/src/lib.rs",
+    "start_line": 173,
+    "start_col": 1,
+    "end_line": 173,
+    "end_col": 50,
+    "code_snippet": "impl<T: ?Sized + VTableMetaDrop> Drop for VBox<T> {\n    fn drop(&mut self) {\n        unsafe {\n            T::drop(self.inner.deref::<T>() as *mut _);\n        }\n    }\n}"
+}

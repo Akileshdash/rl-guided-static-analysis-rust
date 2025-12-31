@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::callback`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 155,
+    "start_col": 5,
+    "end_line": 157,
+    "end_col": 6,
+    "code_snippet": "fn callback(&self) -> i32 {\n        unsafe { (*self.wrapper).callback(&*self.wrapped) }\n    }"
+}

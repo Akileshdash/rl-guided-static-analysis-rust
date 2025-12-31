@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "papaya-0.2.3/src/raw/mod.rs",
+    "start_line": 2721,
+    "start_col": 1,
+    "end_line": 2721,
+    "end_col": 40,
+    "code_snippet": "impl<K, V, S> Drop for HashMap<K, V, S> {\n    fn drop(&mut self) {\n        let mut raw = *self.table.get_mut();\n\n        // Make sure all objects are reclaimed before the collector is dropped.\n        //\n        // Dropping a table depends on accessing the collector for deferred retirement,\n        // using the shared collector pointer that is invalidated by drop.\n        //\n        // Safety: We have a unique reference to the collector.\n        unsafe { self.collector.reclaim_all() };\n\n        // Drop all nested tables and entries.\n        while !raw.is_null() {\n            // Safety: The root and next tables are always valid pointers to a\n            // table allocation, or null.\n            let mut table = unsafe { Table::from_raw(raw) };\n\n            // Read the next table pointer before dropping the current one.\n            let next = *table.state_mut().next.get_mut();\n\n            // Safety: We have unique access to the table and do\n            // not access the entries after this call.\n            unsafe { drop_entries(table) };\n\n            // Safety: We have unique access to the table and do\n            // not access it after this call.\n            unsafe { drop_table(table, &self.collector) };\n\n            // Continue for all nested tables.\n            raw = next;\n        }\n    }\n}"
+}

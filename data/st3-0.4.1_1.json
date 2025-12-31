@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "st3-0.4.1/src/fifo.rs",
+    "start_line": 210,
+    "start_col": 1,
+    "end_line": 210,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Queue<T> {\n    fn drop(&mut self) {\n        let worker_head = unpack(self.heads.load(Relaxed)).0;\n        let tail = self.tail.load(Relaxed);\n\n        let count = tail.wrapping_sub(worker_head);\n        for offset in 0..count {\n            drop(unsafe { self.read_at(worker_head.wrapping_add(offset)) })\n        }\n    }\n}"
+}

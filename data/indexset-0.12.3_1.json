@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `core::node::search`",
+    "file": "indexset-0.12.3/src/core/node.rs",
+    "start_line": 47,
+    "start_col": 1,
+    "end_line": 73,
+    "end_col": 2,
+    "code_snippet": "fn search<Q, T: Ord>(haystack: &[T], needle: &Q) -> Result<usize, usize>\nwhere\n    T: Borrow<Q> + Ord,\n    Q: Ord + ?Sized,\n{\n    let mut j = haystack.len();\n\n    unsafe {\n        let mut i = 0;\n        let p = haystack.as_ptr().cast::<T>();\n        let mut m = j >> 1;\n        while i != j {\n            match (*p.add(m)).borrow().cmp(&needle) {\n                Ordering::Equal => return Ok(m),\n                Ordering::Less => {\n                    i = m + 1;\n                    m = (i + j) >> 1;\n                }\n                Ordering::Greater => {\n                    j = m;\n                    m = (i + j) >> 1;\n                }\n            }\n        }\n        Err(i)\n    }\n}"
+}

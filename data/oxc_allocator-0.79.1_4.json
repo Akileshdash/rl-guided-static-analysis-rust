@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "oxc_allocator-0.79.1/src/vec2/mod.rs",
+    "start_line": 2811,
+    "start_col": 1,
+    "end_line": 2813,
+    "end_col": 30,
+    "code_snippet": "impl<T, A: Alloc, F> Drop for DrainFilter<'_, '_, T, A, F>\nwhere\n    F: FnMut(&mut T) -> bool,\n{\n    fn drop(&mut self) {\n        self.for_each(drop);\n        unsafe {\n            self.vec.set_len(self.old_len - self.del);\n        }\n    }\n}"
+}

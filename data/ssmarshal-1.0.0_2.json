@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<&'b mut Deserializer<'de> as serde::Deserializer<'de>>::deserialize_f64`",
+    "file": "ssmarshal-1.0.0/src/lib.rs",
+    "start_line": 641,
+    "start_col": 6,
+    "end_line": 643,
+    "end_col": 6,
+    "code_snippet": "fn deserialize_f64<V: Visitor<'de>>(self, visitor: V) -> DeserializeResult<V::Value> {\n        visitor.visit_f64(unsafe { transmute(self.read_u64()?) })\n    }"
+}

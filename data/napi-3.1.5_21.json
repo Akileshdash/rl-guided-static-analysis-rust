@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `bindgen_runtime::raw_finalize_unchecked`",
+    "file": "napi-3.1.5/src/bindgen_runtime/mod.rs",
+    "start_line": 34,
+    "start_col": 1,
+    "end_line": 69,
+    "end_col": 2,
+    "code_snippet": "pub(crate) unsafe extern \"C\" fn raw_finalize_unchecked<T: ObjectFinalize>(\n  env: sys::napi_env,\n  finalize_data: *mut c_void,\n  _finalize_hint: *mut c_void,\n) {\n  let data: Box<T> = unsafe { Box::from_raw(finalize_data.cast()) };\n  if let Err(err) = data.finalize(Env::from_raw(env)) {\n    let e: JsError = err.into();\n    unsafe { e.throw_into(env) };\n    return;\n  }\n  if let Some((_, ref_val, finalize_callbacks_ptr)) =\n    REFERENCE_MAP.with(|cell| cell.borrow_mut(|reference_map| reference_map.remove(&finalize_data)))\n  {\n    let finalize_callbacks_rc = unsafe { Rc::from_raw(finalize_callbacks_ptr) };\n\n    #[cfg(all(debug_assertions, not(target_family = \"wasm\")))]\n    {\n      let rc_strong_count = Rc::strong_count(&finalize_callbacks_rc);\n      // If `Rc` strong count is 2, it means the finalize of referenced `Object` is called before the `fn drop` of the `Reference`\n      // It always happened on exiting process\n      // In general, the `fn drop` would happen first\n      if rc_strong_count != 1 && rc_strong_count != 2 {\n        eprintln!(\"Rc strong count is: {rc_strong_count}, it should be 1 or 2\");\n      }\n    }\n    let finalize = unsafe { Box::from_raw(finalize_callbacks_rc.get()) };\n    finalize();\n    let delete_reference_status = unsafe { sys::napi_delete_reference(env, ref_val) };\n    debug_assert!(\n      delete_reference_status == sys::Status::napi_ok,\n      \"Delete reference in finalize callback failed {}\",\n      Status::from(delete_reference_status)\n    );\n  }\n}"
+}

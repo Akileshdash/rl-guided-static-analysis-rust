@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "tagptr-0.2.0/src/imp/atomic.rs",
+    "start_line": 11,
+    "start_col": 1,
+    "end_line": 11,
+    "end_col": 59,
+    "code_snippet": "unsafe impl<T, const N: usize> Send for AtomicTagPtr<T, N> {}\nunsafe impl<T, const N: usize> Sync for AtomicTagPtr<T, N> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "istring-0.4.2/src/small.rs",
+    "start_line": 209,
+    "start_col": 1,
+    "end_line": 209,
+    "end_col": 25,
+    "code_snippet": "impl Drop for SmallBytes {\n    #[inline]\n    fn drop(&mut self) {\n        if !self.is_inline() {\n            unsafe {\n                box_slice_from_raw_parts(self.union.heap.ptr, self.union.heap.len);\n            }\n        }\n    }\n}"
+}

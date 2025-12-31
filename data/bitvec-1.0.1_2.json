@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bitvec-1.0.1/src/vec/iter.rs",
+    "start_line": 515,
+    "start_col": 1,
+    "end_line": 518,
+    "end_col": 14,
+    "code_snippet": "impl<T, O> Drop for Drain<'_, T, O>\nwhere\n\tT: BitStore,\n\tO: BitOrder,\n{\n\t#[inline]\n\tfn drop(&mut self) {\n\t\tlet tail = mem::take(&mut self.tail);\n\t\tlet tail_len = tail.len();\n\t\tif tail_len == 0 {\n\t\t\treturn;\n\t\t}\n\n\t\tlet bv = &mut *self.source;\n\t\tlet old_len = bv.len();\n\t\tunsafe {\n\t\t\tbv.set_len_unchecked(tail.end);\n\t\t\tbv.copy_within_unchecked(tail, old_len);\n\t\t\tbv.set_len_unchecked(old_len + tail_len);\n\t\t}\n\t}\n}"
+}

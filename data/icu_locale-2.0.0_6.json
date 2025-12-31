@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::Parents<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_locale-2.0.0/src/provider.rs",
+    "start_line": 422,
+    "start_col": 44,
+    "end_line": 422,
+    "end_col": 58,
+    "code_snippet": "#[derive(Default, Clone, PartialEq, Debug, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_locale::provider))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[yoke(prove_covariance_manually)]\npub struct Parents<'data> {\n    /// Map from language identifier to language identifier, indicating that the language on the\n    /// left should inherit from the language on the right.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub parents: ZeroMap<'data, PotentialUtf8, (Language, Option<Script>, Option<Region>)>,\n}"
+}

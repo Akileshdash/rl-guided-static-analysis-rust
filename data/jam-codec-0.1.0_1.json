@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jam-codec-0.1.0/src/codec.rs",
+    "start_line": 976,
+    "start_col": 3,
+    "end_line": 976,
+    "end_col": 51,
+    "code_snippet": "impl<T, const N: usize> Drop for State<'_, T, N> {\n\t\t\tfn drop(&mut self) {\n\t\t\t\tif !mem::needs_drop::<T>() {\n\t\t\t\t\t// If the types don't actually need to be dropped then don't even\n\t\t\t\t\t// try to run the loop below.\n\t\t\t\t\t//\n\t\t\t\t\t// Most likely won't make a difference in release mode, but will\n\t\t\t\t\t// make a difference in debug mode.\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\t// TODO: Use `MaybeUninit::slice_assume_init_mut` + `core::ptr::drop_in_place`\n\t\t\t\t//       once `slice_assume_init_mut` is stable.\n\t\t\t\tfor item in &mut self.slice[..self.count] {\n\t\t\t\t\t// SAFETY: Each time we've read a new element we incremented `count`,\n\t\t\t\t\t//         and we only drop at most `count` elements here,\n\t\t\t\t\t//         so all of the elements we drop here are valid.\n\t\t\t\t\tunsafe {\n\t\t\t\t\t\titem.assume_init_drop();\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}"
+}

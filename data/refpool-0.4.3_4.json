@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "refpool-0.4.3/src/ref_handle.rs",
+    "start_line": 392,
+    "start_col": 1,
+    "end_line": 392,
+    "end_col": 28,
+    "code_snippet": "impl<A> Drop for PoolRef<A> {\n    fn drop(&mut self) {\n        if self.box_ref_mut().dec() != 1 {\n            return;\n        }\n        let handle = unsafe { Box::from_raw(self.handle.get_ptr()) };\n        handle.return_to_pool();\n    }\n}"
+}

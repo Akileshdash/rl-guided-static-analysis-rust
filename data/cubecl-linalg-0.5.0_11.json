@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `matmul::components::global::args::TensorInput::<EI, EO, MA>::rank`",
+    "file": "cubecl-linalg-0.5.0/src/matmul/components/global/args.rs",
+    "start_line": 353,
+    "start_col": 5,
+    "end_line": 360,
+    "end_col": 6,
+    "code_snippet": "pub fn rank(&self) -> u32 {\n        unsafe {\n            match comptime![&self.ident] {\n                TensorInputIdent::Lhs => MA::rank_lhs(&(*self.state)),\n                TensorInputIdent::Rhs => MA::rank_rhs(&(*self.state)),\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "secp256k1-0.31.1/src/lib.rs",
+    "start_line": 362,
+    "start_col": 1,
+    "end_line": 362,
+    "end_col": 46,
+    "code_snippet": "unsafe impl<C: Context> Send for Secp256k1<C> {}\n// The API does not permit any mutation of `Secp256k1` objects except through `&mut` references."
+}

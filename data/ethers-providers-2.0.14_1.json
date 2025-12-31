@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ethers-providers-2.0.14/src/rpc/pubsub.rs",
+    "start_line": 28,
+    "start_col": 15,
+    "end_line": 28,
+    "end_col": 25,
+    "code_snippet": "#[pin_project(PinnedDrop)]\n/// Streams data from an installed filter via `eth_subscribe`\npub struct SubscriptionStream<'a, P: PubsubClient, R: DeserializeOwned> {\n    /// The subscription's installed id on the ethereum node\n    pub id: U256,\n\n    loaded_elements: VecDeque<R>,\n\n    pub(crate) provider: &'a Provider<P>,\n\n    #[pin]\n    rx: P::NotificationStream,\n\n    ret: PhantomData<R>,\n}"
+}

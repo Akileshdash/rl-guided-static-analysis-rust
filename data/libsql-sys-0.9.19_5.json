@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<wal::wrapper::WalRef<T, W> as wal::Wal>::limit`",
+    "file": "libsql-sys-0.9.19/src/wal/wrapper.rs",
+    "start_line": 44,
+    "start_col": 5,
+    "end_line": 46,
+    "end_col": 6,
+    "code_snippet": "fn limit(&mut self, size: i64) {\n        unsafe { (*self.wrapper).limit(&mut *self.wrapped, size) }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "funty-3.0.0-rc2/src/ptr.rs",
+    "start_line": 1434,
+    "start_col": 1,
+    "end_line": 1437,
+    "end_col": 16,
+    "code_snippet": "unsafe impl<T, P> Send for NullPtrError<T, P>\nwhere\n\tT: ?Sized,\n\tP: Permission,\n{\n}"
+}

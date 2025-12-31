@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "slave-pool-0.4.0/src/oneshot.rs",
+    "start_line": 263,
+    "start_col": 1,
+    "end_line": 263,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for Receiver<T> {\n    #[inline(always)]\n    fn drop(&mut self) {\n        //Make sure to guarantee we acquire SEND_CLOSED prior setting RECV_CLOSED\n        let state = self.payload().state.fetch_or(RECV_CLOSED, Ordering::AcqRel);\n        if state & SEND_CLOSED == SEND_CLOSED {\n            unsafe {\n                let _ = Box::from_raw(self.payload.as_ptr());\n            }\n        }\n    }\n}"
+}

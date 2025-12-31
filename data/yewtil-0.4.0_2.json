@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "yewtil-0.4.0/src/ptr/mrc.rs",
+    "start_line": 239,
+    "start_col": 1,
+    "end_line": 239,
+    "end_col": 24,
+    "code_snippet": "impl<T> Drop for Mrc<T> {\n    fn drop(&mut self) {\n        unsafe { decrement_and_possibly_deallocate(self.ptr) }\n    }\n}"
+}

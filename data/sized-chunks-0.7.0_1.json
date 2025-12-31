@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sized-chunks-0.7.0/src/inline_array/mod.rs",
+    "start_line": 409,
+    "start_col": 1,
+    "end_line": 409,
+    "end_col": 38,
+    "code_snippet": "impl<A, T> Drop for InlineArray<A, T> {\n    fn drop(&mut self) {\n        unsafe { self.drop_contents() }\n    }\n}"
+}

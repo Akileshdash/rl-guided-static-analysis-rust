@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "s2n-quic-platform-0.63.0/src/message.rs",
+    "start_line": 67,
+    "start_col": 1,
+    "end_line": 67,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Storage {\n    fn drop(&mut self) {\n        unsafe {\n            // Safety: pointer was allocated with self.layout\n            alloc::alloc::dealloc(self.as_ptr(), self.layout)\n        }\n    }\n}"
+}

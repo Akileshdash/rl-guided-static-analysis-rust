@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<std::boxed::Box<T> as util::map::Map<T>>::map`",
+    "file": "swc_visit-2.0.1/src/util/map.rs",
+    "start_line": 16,
+    "start_col": 5,
+    "end_line": 32,
+    "end_col": 6,
+    "code_snippet": "fn map<F>(self, f: F) -> Self\n    where\n        F: FnOnce(T) -> T,\n    {\n        // Leak self in case of panic.\n        // FIXME(eddyb) Use some sort of \"free guard\" that\n        // only deallocates, without dropping the pointee,\n        // in case the call the `f` below ends in a panic.\n        let p = Box::into_raw(self);\n\n        unsafe {\n            ptr::write(p, f(ptr::read(p)));\n\n            // Recreate self from the raw pointer.\n            Box::from_raw(p)\n        }\n    }"
+}

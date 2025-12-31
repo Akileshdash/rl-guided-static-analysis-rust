@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<utils::linked_list::DrainFilter<'a, T, F> as std::iter::Iterator>::next`",
+    "file": "monoio-0.2.4/src/utils/linked_list.rs",
+    "start_line": 263,
+    "start_col": 5,
+    "end_line": 275,
+    "end_col": 6,
+    "code_snippet": "fn next(&mut self) -> Option<Self::Item> {\n        while let Some(curr) = self.curr {\n            // safety: the pointer references data contained by the list\n            self.curr = unsafe { T::pointers(curr).as_ref() }.get_next();\n\n            // safety: the value is still owned by the linked list.\n            if (self.filter)(unsafe { &mut *curr.as_ptr() }) {\n                return unsafe { self.list.remove(curr) };\n            }\n        }\n\n        None\n    }"
+}

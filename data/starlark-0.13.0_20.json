@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::at2`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 454,
+    "start_col": 5,
+    "end_line": 460,
+    "end_col": 34,
+    "code_snippet": "fn at2(\n        &self,\n        _index0: Value<'v>,\n        _index1: Value<'v>,\n        _heap: &'v Heap,\n        _private: Private,\n    ) -> crate::Result<Value<'v>> {\n        ValueError::unsupported(self, \"[,]\")\n    }"
+}

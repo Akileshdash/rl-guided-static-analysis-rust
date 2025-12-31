@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `proto::sync_framed::MySyncFramed::<T>::next_packet`",
+    "file": "mysql_common-0.35.5/src/proto/sync_framed.rs",
+    "start_line": 137,
+    "start_col": 5,
+    "end_line": 171,
+    "end_col": 6,
+    "code_snippet": "pub fn next_packet<U>(&mut self, dst: &mut U) -> Result<bool, PacketCodecError>\n    where\n        U: AsRef<[u8]>,\n        U: BufMut,\n    {\n        loop {\n            if self.eof {\n                return match self.codec.decode(&mut self.in_buf, dst)? {\n                    true => Ok(true),\n                    false => {\n                        if self.in_buf.is_empty() {\n                            Ok(false)\n                        } else {\n                            Err(Error::new(Other, \"bytes remaining on stream\").into())\n                        }\n                    }\n                };\n            } else {\n                match self.codec.decode(&mut self.in_buf, dst)? {\n                    true => return Ok(true),\n                    false => unsafe {\n                        self.in_buf.reserve(1);\n                        match with_interrupt!(self.stream.read(&mut *slice_from_raw_parts_mut(\n                            self.in_buf.chunk_mut().as_mut_ptr(),\n                            self.in_buf.chunk_mut().len()\n                        ))) {\n                            Ok(0) => self.eof = true,\n                            Ok(x) => self.in_buf.advance_mut(x),\n                            Err(err) => return Err(From::from(err)),\n                        }\n                    },\n                }\n            }\n        }\n    }"
+}

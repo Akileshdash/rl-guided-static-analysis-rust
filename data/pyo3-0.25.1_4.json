@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "pyo3-0.25.1/src/instance.rs",
+    "start_line": 1783,
+    "start_col": 1,
+    "end_line": 1783,
+    "end_col": 23,
+    "code_snippet": "impl<T> Drop for Py<T> {\n    #[track_caller]\n    fn drop(&mut self) {\n        unsafe {\n            gil::register_decref(self.0);\n        }\n    }\n}"
+}

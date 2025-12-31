@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `parser::Parser::<R>::skip_container`",
+    "file": "sonic-rs-0.5.3/src/parser.rs",
+    "start_line": 1275,
+    "start_col": 5,
+    "end_line": 1318,
+    "end_col": 6,
+    "code_snippet": "fn skip_container(&mut self, left: u8, right: u8) -> Result<()> {\n        let mut prev_instring = 0;\n        let mut prev_escaped = 0;\n        let mut rbrace_num = 0;\n        let mut lbrace_num = 0;\n        let reader = &mut self.read;\n\n        while let Some(chunk) = reader.peek_n(64) {\n            let input = unsafe { &*(chunk.as_ptr() as *const [_; 64]) };\n            if let Some(count) = skip_container_loop(\n                input,\n                &mut prev_instring,\n                &mut prev_escaped,\n                &mut lbrace_num,\n                &mut rbrace_num,\n                left,\n                right,\n            ) {\n                reader.eat(count.get() as usize);\n                return Ok(());\n            }\n            reader.eat(64);\n        }\n\n        let mut remain = [0u8; 64];\n        unsafe {\n            let n = reader.remain();\n            remain[..n].copy_from_slice(reader.peek_n(n).unwrap_unchecked());\n        }\n        if let Some(count) = skip_container_loop(\n            &remain,\n            &mut prev_instring,\n            &mut prev_escaped,\n            &mut lbrace_num,\n            &mut rbrace_num,\n            left,\n            right,\n        ) {\n            reader.eat(count.get() as usize);\n            return Ok(());\n        }\n\n        perr!(self, EofWhileParsing)\n    }"
+}

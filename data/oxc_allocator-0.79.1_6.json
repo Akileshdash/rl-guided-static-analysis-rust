@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "oxc_allocator-0.79.1/src/vec2/mod.rs",
+    "start_line": 2601,
+    "start_col": 1,
+    "end_line": 2601,
+    "end_col": 60,
+    "code_snippet": "unsafe impl<T: Send, A: Alloc> Send for Drain<'_, '_, T, A> {}"
+}

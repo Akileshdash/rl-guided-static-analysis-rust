@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "alto-3.0.4/src/al/mod.rs",
+    "start_line": 672,
+    "start_col": 1,
+    "end_line": 672,
+    "end_col": 27,
+    "code_snippet": "impl Drop for ContextInner {\n\tfn drop(&mut self) {\n\t\tlet _lock = Context::make_raw_current(&self.dev, ptr::null_mut());\n\t\tunsafe { self.dev.0.alto.0.api.alcDestroyContext(self.ctx); }\n\t}\n}"
+}

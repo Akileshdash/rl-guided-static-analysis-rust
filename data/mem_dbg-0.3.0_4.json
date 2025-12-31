@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `impl_mem_size::<impl MemSize for std::cell::UnsafeCell<T>>::mem_size`",
+    "file": "mem_dbg-0.3.0/src/impl_mem_size.rs",
+    "start_line": 525,
+    "start_col": 5,
+    "end_line": 528,
+    "end_col": 6,
+    "code_snippet": "fn mem_size(&self, flags: SizeFlags) -> usize {\n        core::mem::size_of::<Self>() - core::mem::size_of::<T>()\n            + unsafe { <T as MemSize>::mem_size(&*self.get(), flags) }\n    }"
+}

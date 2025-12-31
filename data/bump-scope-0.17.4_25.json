@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/owned_str/drain.rs",
+    "start_line": 34,
+    "start_col": 1,
+    "end_line": 34,
+    "end_col": 24,
+    "code_snippet": "impl Drop for Drain<'_> {\n    fn drop(&mut self) {\n        unsafe {\n            // Use `BumpBox::<[u8]>::drain`. \"Reaffirm\" the bounds checks to avoid\n            // panic code being inserted again.\n            let self_vec = self.string.as_mut().as_mut_bytes();\n\n            if self.start <= self.end && self.end <= self_vec.len() {\n                self_vec.drain(self.start..self.end);\n            }\n        }\n    }\n}"
+}

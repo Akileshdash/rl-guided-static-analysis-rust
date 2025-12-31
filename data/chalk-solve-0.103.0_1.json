@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wf::WfSolver::<'a, I>::verify_opaque_ty_decl`",
+    "file": "chalk-solve-0.103.0/src/wf.rs",
+    "start_line": 346,
+    "start_col": 5,
+    "end_line": 398,
+    "end_col": 6,
+    "code_snippet": "pub fn verify_opaque_ty_decl(&self, opaque_ty_id: OpaqueTyId<I>) -> Result<(), WfError<I>> {\n        // Given an opaque type like\n        // ```notrust\n        // opaque type Foo<T>: Clone where T: Bar = Baz;\n        // ```\n        let interner = self.db.interner();\n\n        let mut gb = GoalBuilder::new(self.db);\n\n        let datum = self.db.opaque_ty_data(opaque_ty_id);\n        let bound = &datum.bound;\n\n        // We make a goal like\n        //\n        // forall<T>\n        let goal = gb.forall(bound, opaque_ty_id, |gb, _, bound, opaque_ty_id| {\n            let interner = gb.interner();\n\n            let subst = Substitution::from1(interner, gb.db().hidden_opaque_type(opaque_ty_id));\n\n            let bounds = bound.bounds.clone().substitute(interner, &subst);\n            let where_clauses = bound.where_clauses.clone().substitute(interner, &subst);\n\n            let clauses = where_clauses\n                .iter()\n                .cloned()\n                .map(|wc| wc.into_from_env_goal(interner));\n\n            // if (WellFormed(T: Bar))\n            gb.implies(clauses, |gb| {\n                let interner = gb.interner();\n\n                // all(WellFormed(Baz: Clone))\n                gb.all(\n                    bounds\n                        .iter()\n                        .cloned()\n                        .map(|b| b.into_well_formed_goal(interner)),\n                )\n            })\n        });\n\n        debug!(\"WF opaque type goal: {:#?}\", goal);\n\n        let mut new_solver = (self.solver_builder)();\n        let is_legal = new_solver.has_unique_solution(self.db, &goal.into_closed_goal(interner));\n\n        if is_legal {\n            Ok(())\n        } else {\n            Err(WfError::IllFormedOpaqueTypeDecl(opaque_ty_id))\n        }\n    }"
+}

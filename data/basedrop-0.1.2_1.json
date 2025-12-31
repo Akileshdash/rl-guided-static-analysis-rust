@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "basedrop-0.1.2/src/owned.rs",
+    "start_line": 63,
+    "start_col": 1,
+    "end_line": 63,
+    "end_col": 26,
+    "code_snippet": "impl<T> Drop for Owned<T> {\n    fn drop(&mut self) {\n        unsafe {\n            Node::queue_drop(self.node.as_ptr());\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::RegionDisplayNamesV1<'static> as icu_provider::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_displaynames-0.11.2/src/provider.rs",
+    "start_line": 62,
+    "start_col": 1,
+    "end_line": 62,
+    "end_col": 84,
+    "code_snippet": "#[icu_provider::data_struct(RegionDisplayNamesV1Marker = \"displaynames/regions@1\")]\n#[derive(Debug, PartialEq, Clone, Default)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(\n    feature = \"datagen\",\n    derive(serde::Serialize, databake::Bake),\n    databake(path = icu_displaynames::provider),\n)]\n#[yoke(prove_covariance_manually)]\n/// RegionDisplayNames provides mapping between a region code and locale display name.\npub struct RegionDisplayNamesV1<'data> {\n    /// Mapping for region to locale display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub names: ZeroMap<'data, UnvalidatedRegion, str>,\n    /// Mapping for region to locale display short name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub short_names: ZeroMap<'data, UnvalidatedRegion, str>,\n}"
+}

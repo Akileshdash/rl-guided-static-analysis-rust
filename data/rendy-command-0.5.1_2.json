@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rendy-command-0.5.1/src/buffer/encoder.rs",
+    "start_line": 615,
+    "start_col": 1,
+    "end_line": 617,
+    "end_col": 33,
+    "code_snippet": "impl<'a, B> Drop for RenderPassSecondaryEncoder<'a, B>\nwhere\n    B: rendy_core::hal::Backend,\n{\n    fn drop(&mut self) {\n        unsafe { rendy_core::hal::command::CommandBuffer::end_render_pass(self.inner.raw) }\n    }\n}"
+}

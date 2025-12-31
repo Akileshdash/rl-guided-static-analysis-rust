@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "objc_id-0.1.1/src/id.rs",
+    "start_line": 83,
+    "start_col": 1,
+    "end_line": 83,
+    "end_col": 50,
+    "code_snippet": "unsafe impl<T, O> Sync for Id<T, O> where T: Sync { }"
+}

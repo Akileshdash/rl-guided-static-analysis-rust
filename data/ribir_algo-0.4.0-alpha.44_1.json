@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ribir_algo-0.4.0-alpha.44/src/frame_cache.rs",
+    "start_line": 877,
+    "start_col": 1,
+    "end_line": 877,
+    "end_col": 56,
+    "code_snippet": "impl<'a, K: Hash + Eq, V> Drop for FrameDrain<'a, K, V> {\n  fn drop(&mut self) {\n    while self.next().is_some() {}\n\n    if self.size > 0 {\n      log::info!(\n        \"Frame[{}]: cache hit percent is {:.1}%\",\n        self.label,\n        self.cache.len() as f32 / self.size as f32\n      );\n    }\n  }\n}"
+}

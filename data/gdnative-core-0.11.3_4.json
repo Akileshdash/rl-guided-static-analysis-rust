@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "gdnative-core-0.11.3/src/object/mod.rs",
+    "start_line": 305,
+    "start_col": 1,
+    "end_line": 305,
+    "end_col": 72,
+    "code_snippet": "unsafe impl<T: GodotObject, Own: Ownership + Send> Send for Ref<T, Own> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rayon-1.10.0/src/slice/mergesort.rs",
+    "start_line": 33,
+    "start_col": 1,
+    "end_line": 33,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for CopyOnDrop<T> {\n    fn drop(&mut self) {\n        unsafe {\n            ptr::copy_nonoverlapping(self.src, self.dest, self.len);\n        }\n    }\n}"
+}

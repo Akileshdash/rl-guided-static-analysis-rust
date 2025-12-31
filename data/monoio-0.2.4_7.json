@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "monoio-0.2.4/src/macros/scoped_tls.rs",
+    "start_line": 59,
+    "start_col": 1,
+    "end_line": 59,
+    "end_col": 37,
+    "code_snippet": "unsafe impl<T> Sync for ScopedKey<T> {}"
+}

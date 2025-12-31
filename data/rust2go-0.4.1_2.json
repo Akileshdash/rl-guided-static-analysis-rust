@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rust2go-0.4.1/src/slot.rs",
+    "start_line": 160,
+    "start_col": 1,
+    "end_line": 160,
+    "end_col": 37,
+    "code_snippet": "impl<T, A> Drop for SlotReader<T, A> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            if self\n                .0\n                .as_ref()\n                .state\n                .fetch_update_action(|curr| (curr & 0b001 != 0, Some(0b010 | curr)))\n            {\n                drop(Box::from_raw(self.0.as_ptr()));\n            }\n        }\n    }\n}"
+}

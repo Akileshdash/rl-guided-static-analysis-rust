@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "as_derive_utils-0.11.0/src/utils.rs",
+    "start_line": 78,
+    "start_col": 1,
+    "end_line": 78,
+    "end_col": 33,
+    "code_snippet": "impl<T> Drop for LinearResult<T> {\n    fn drop(&mut self) {\n        let res = unsafe { take_manuallydrop(&mut self.errors) };\n        res.expect(\"Expected LinearResult to be handled\");\n    }\n}"
+}

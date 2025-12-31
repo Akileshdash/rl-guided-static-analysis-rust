@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `verify::merkle::MerkleTreeVerifier::<'a>::new`",
+    "file": "risc0-zkp-3.0.0-rc.2/src/verify/merkle.rs",
+    "start_line": 84,
+    "start_col": 5,
+    "end_line": 127,
+    "end_col": 6,
+    "code_snippet": "pub fn new<F: Field>(\n        iop: &mut ReadIOP<'a, F>,\n        hashfn: &dyn HashFn<F>,\n        row_size: usize,\n        col_size: usize,\n        queries: usize,\n    ) -> Self {\n        let params = MerkleTreeParams::new(row_size, col_size, queries);\n\n        // Fill top vector with digests from IOP.\n        let top = iop.read_pod_slice(params.top_size);\n        // Populate hashes up to the root of the tree.\n        let mut rest = Vec::with_capacity(params.top_size - 1);\n\n        let fill_rest = rest.spare_capacity_mut();\n\n        if !fill_rest.is_empty() {\n            for i in (params.top_size / 2..params.top_size).rev() {\n                let top_idx = params.idx_to_top(2 * i);\n                fill_rest[params.idx_to_rest(i)]\n                    .write(hashfn.hash_pair(&top[top_idx], &top[top_idx + 1]));\n            }\n        }\n        for i in (1..params.top_size / 2).rev() {\n            // SAFETY: We're working from the top down, so we will\n            // have already filled elements at upper_rest_idx.\n            let upper_rest_idx = params.idx_to_rest(i * 2);\n            fill_rest[params.idx_to_rest(i)].write(hashfn.hash_pair(\n                unsafe { fill_rest[upper_rest_idx].assume_init_ref() },\n                unsafe { fill_rest[upper_rest_idx + 1].assume_init_ref() },\n            ));\n        }\n\n        // SAFETY: These are all the elements we just filled.\n        unsafe {\n            let filled = fill_rest.len();\n            rest.set_len(filled);\n        };\n\n        // Commit to root (index 1).\n        let verifier = MerkleTreeVerifier { params, top, rest };\n        iop.commit(verifier.root());\n        verifier\n    }"
+}

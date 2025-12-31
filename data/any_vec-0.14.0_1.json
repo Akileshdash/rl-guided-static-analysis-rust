@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "any_vec-0.14.0/src/ops/temp.rs",
+    "start_line": 106,
+    "start_col": 1,
+    "end_line": 106,
+    "end_col": 43,
+    "code_snippet": "impl<Op: Operation> Drop for TempValue<Op>{\n    #[inline]\n    fn drop(&mut self) {\n        unsafe{\n            let drop_fn = self.any_vec_raw().drop_fn;\n            let element = self.op.bytes() as *mut u8;\n\n            // compile-time check\n            if Unknown::is::<<Self as AnyValueSizeless>::Type>() {\n                if let Some(drop_fn) = drop_fn{\n                    (drop_fn)(element, 1);\n                }\n            } else {\n                ptr::drop_in_place(element as *mut <Self as AnyValueSizeless>::Type);\n            }\n        }\n        self.op.consume();\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sanakirja-1.4.3/src/environment/mod.rs",
+    "start_line": 549,
+    "start_col": 1,
+    "end_line": 549,
+    "end_col": 37,
+    "code_snippet": "impl<E: Borrow<Env>> Drop for Txn<E> {\n    fn drop(&mut self) {\n        let env = self.env.borrow();\n        unsafe { env.roots[self.root].rw.unlock_shared() }\n        let old_n_txn = env.roots[self.root].n_txn.fetch_sub(1, Ordering::SeqCst);\n        if old_n_txn == 1 {\n            env.unlock(self.root).unwrap_or(())\n        }\n    }\n}"
+}

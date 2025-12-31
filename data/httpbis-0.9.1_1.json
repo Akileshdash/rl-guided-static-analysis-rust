@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "httpbis-0.9.1/src/common/atomic_box_option.rs",
+    "start_line": 12,
+    "start_col": 1,
+    "end_line": 12,
+    "end_col": 36,
+    "code_snippet": "impl<T> Drop for AtomicBoxOption<T> {\n    fn drop(&mut self) {\n        let ptr = self.load_raw(Ordering::Relaxed);\n        if !ptr.is_null() {\n            unsafe {\n                Box::from_raw(ptr);\n            }\n        }\n    }\n}"
+}

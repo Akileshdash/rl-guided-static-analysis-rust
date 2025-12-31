@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "s2n-quic-platform-0.63.0/src/socket/ring.rs",
+    "start_line": 126,
+    "start_col": 1,
+    "end_line": 126,
+    "end_col": 45,
+    "code_snippet": "unsafe impl<T: Message> Sync for Consumer<T> {}"
+}

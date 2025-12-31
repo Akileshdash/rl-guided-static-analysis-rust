@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `grammar::symbol::Terminal::format`",
+    "file": "parol-4.0.0/src/grammar/symbol.rs",
+    "start_line": 192,
+    "start_col": 5,
+    "end_line": 235,
+    "end_col": 6,
+    "code_snippet": "pub fn format<R, S>(&self, scanner_state_resolver: &R, user_type_resolver: &S) -> Result<String>\n    where\n        R: Fn(&[usize]) -> String,\n        S: Fn(&str) -> Option<String>,\n    {\n        match self {\n            Self::Trm(t, k, s, a, u, m, l) => {\n                let mut d = String::new();\n                let delimiter = k.delimiter();\n                a.decorate(&mut d, &format!(\"{delimiter}{t}{delimiter}\"))\n                    .map_err(|e| anyhow!(\"Decorate error!: {}\", e))?;\n                if let Some(la) = l {\n                    write!(d, \" {}\", la.to_par()).map_err(|e| anyhow!(e))?;\n                }\n                if let Some(member) = m {\n                    if l.is_some() {\n                        // Add space between lookahead expression and member\n                        write!(d, \" \").map_err(|e| anyhow!(e))?;\n                    }\n                    write!(d, \"@{member}\").map_err(|e| anyhow!(e))?;\n                }\n                if let Some(user_type) = u {\n                    let user_type =\n                        if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {\n                            alias\n                        } else {\n                            user_type.to_string()\n                        };\n                    if user_type != \"%t_type\" {\n                        // Don't print user type if it is the globally defined type\n                        write!(d, \" : {user_type}\").map_err(|e| anyhow!(e))?;\n                    }\n                }\n                if *s == vec![0] {\n                    // Don't print state if terminal is only in state INITIAL (0)\n                    Ok(d)\n                } else {\n                    Ok(format!(\"<{}>{}\", scanner_state_resolver(s), d))\n                }\n            }\n            Self::Eps => Ok(\"\\u{03B5}\".to_string()), // Lower creek letter Epsilon (\u03b5)\n            Self::End => Ok(\"$\".to_string()),\n        }\n    }"
+}

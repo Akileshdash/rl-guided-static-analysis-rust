@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gdnative-core-0.11.3/src/export/user_data.rs",
+    "start_line": 553,
+    "start_col": 5,
+    "end_line": 553,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for LocalCell<T> {\n        fn drop(&mut self) {\n            if self.thread_id == thread::current().id() {\n                unsafe {\n                    ManuallyDrop::drop(self.cell.get_mut());\n                }\n            }\n        }\n    }"
+}

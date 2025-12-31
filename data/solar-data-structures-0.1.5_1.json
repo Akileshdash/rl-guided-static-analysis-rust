@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "solar-data-structures-0.1.5/src/on_drop.rs",
+    "start_line": 63,
+    "start_col": 1,
+    "end_line": 63,
+    "end_col": 44,
+    "code_snippet": "impl<T, F: FnOnce(T)> Drop for OnDrop<T, F> {\n    #[inline(always)]\n    fn drop(&mut self) {\n        unsafe {\n            if let Some(f) = self.0.1.take() {\n                f(std::ptr::read(&self.0.0));\n            } else {\n                ManuallyDrop::drop(&mut self.0);\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "chalk-ir-0.103.0/src/fold/in_place.rs",
+    "start_line": 122,
+    "start_col": 1,
+    "end_line": 122,
+    "end_col": 43,
+    "code_snippet": "impl<T, U> Drop for VecMappedInPlace<T, U> {\n    fn drop(&mut self) {\n        // Drop mapped elements of type `U`.\n        for i in 0..self.map_in_progress {\n            unsafe {\n                ptr::drop_in_place(self.ptr.add(i) as *mut U);\n            }\n        }\n\n        // Drop unmapped elements of type `T`.\n        for i in (self.map_in_progress + 1)..self.len {\n            unsafe {\n                ptr::drop_in_place(self.ptr.add(i));\n            }\n        }\n\n        // Free the underlying storage for the `Vec`.\n        // `len` is 0 because the elements were handled above.\n        unsafe {\n            Vec::from_raw_parts(self.ptr, 0, self.cap);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `userdata::push_userdata`",
+    "file": "tlua-6.0.1/src/userdata.rs",
+    "start_line": 92,
+    "start_col": 1,
+    "end_line": 145,
+    "end_col": 2,
+    "code_snippet": "pub fn push_userdata<L, T, F>(data: T, lua: L, metatable: F) -> PushGuard<L>\nwhere\n    F: for<'a> FnOnce(LuaTable<&'a PushGuard<L>>),\n    L: AsLua,\n    T: 'static + Any,\n{\n    unsafe {\n        let typeid = TypeId::of::<T>();\n\n        let lua_data = {\n            let tot_size = mem::size_of_val(&typeid) + mem::size_of_val(&data);\n            ffi::lua_newuserdata(lua.as_lua(), tot_size as libc::size_t)\n        };\n\n        // We check the alignment requirements.\n        debug_assert_eq!(lua_data as usize % mem::align_of_val(&data), 0);\n        // Since the size of a `TypeId` should always be a usize, this assert should pass every\n        // time as well.\n        debug_assert_eq!(mem::size_of_val(&typeid) % mem::align_of_val(&data), 0);\n\n        // We write the `TypeId` first, and the data right next to it.\n        ptr::write(lua_data as *mut TypeId, typeid);\n        let data_loc = lua_data.cast::<u8>().add(mem::size_of_val(&typeid));\n        ptr::write(data_loc as *mut _, data);\n\n        // Creating a metatable.\n        ffi::lua_newtable(lua.as_lua());\n\n        // Index \"__gc\" in the metatable calls the object's destructor.\n\n        // TODO: Could use std::intrinsics::needs_drop to avoid that if not needed.\n        // After some discussion on IRC, it would be acceptable to add a reexport in libcore\n        // without going through the RFC process.\n        {\n            match \"__gc\".push_to_lua(lua.as_lua()) {\n                Ok(p) => p.forget(),\n                Err(_) => unreachable!(),\n            };\n\n            ffi::lua_pushcfunction(lua.as_lua(), destructor_wrapper::<T>);\n            ffi::lua_settable(lua.as_lua(), -3);\n        }\n\n        let lua_state = lua.as_lua();\n\n        // Calling the metatable closure.\n        let guard = PushGuard::new(lua, 1);\n        metatable(LuaTable::lua_read(&guard).ok().unwrap());\n\n        ffi::lua_setmetatable(lua_state, -2);\n\n        guard\n    }\n}"
+}

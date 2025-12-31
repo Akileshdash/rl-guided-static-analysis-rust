@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<sanakirja_core::btree::Db_<K, V, P> as debug::Check>::add_refs`",
+    "file": "sanakirja-1.4.3/src/debug.rs",
+    "start_line": 158,
+    "start_col": 5,
+    "end_line": 204,
+    "end_col": 6,
+    "code_snippet": "fn add_refs<T: LoadPage>(\n        &self,\n        txn: &T,\n        pages: &mut std::collections::BTreeMap<u64, usize>,\n    ) -> Result<(), T::Error>\n    where\n        T::Error: std::fmt::Debug,\n    {\n        use std::collections::btree_map::Entry;\n        let mut stack = vec![self.db];\n        while let Some(p) = stack.pop() {\n            match pages.entry(p.into()) {\n                Entry::Vacant(e) => {\n                    debug!(\"add_refs: 0x{:x}\", p);\n                    e.insert(1);\n                    let p = unsafe { txn.load_page(p.into())? };\n                    let mut c = P::cursor_first(&p);\n                    let l: u64 = P::left_child(p.as_page(), &c);\n                    if l > 0 {\n                        stack.push(core::num::NonZeroU64::new(l).unwrap());\n                    }\n                    let mut kv = None;\n                    while let Some((k, v, r)) = P::next(txn, p.as_page(), &mut c) {\n                        debug!(\"{:?} {:?} {:?}\", k, v, kv);\n                        if let Some((k_, v_)) = kv {\n                            // Test whether the elements on the page are in order.\n                            debug!(\"{:?} {:?} {:?}\", k_ > k, k_ == k, v_ > v);\n                            if k_ > k || (k_ == k && v_ > v) {\n                                debug(txn, &[self], \"debug_ord\", true);\n                                panic!(\"{:?} {:?} {:?} {:?} {:?}\", kv, k_, v_, k_ > k, v_ > v);\n                            }\n                        }\n                        k.add_refs(txn, pages)?;\n                        v.add_refs(txn, pages)?;\n                        kv = Some((k, v));\n                        if r > 0 {\n                            stack.push(core::num::NonZeroU64::new(r).unwrap())\n                        }\n                    }\n                }\n                Entry::Occupied(mut e) => {\n                    e.insert(e.get() + 1);\n                }\n            }\n        }\n        Ok(())\n    }"
+}

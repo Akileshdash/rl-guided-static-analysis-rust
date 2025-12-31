@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gc-arena-0.5.3/src/context.rs",
+    "start_line": 146,
+    "start_col": 9,
+    "end_line": 146,
+    "end_col": 30,
+    "code_snippet": "impl Drop for DropAll {\n            fn drop(&mut self) {\n                if let Some(gc_box) = self.0.take() {\n                    let mut drop_resume = DropAll(Some(gc_box));\n                    while let Some(gc_box) = drop_resume.0.take() {\n                        drop_resume.0 = gc_box.header().next();\n                        // SAFETY: the context owns its GC'd objects\n                        unsafe { free_gc_box(gc_box) }\n                    }\n                }\n            }\n        }"
+}

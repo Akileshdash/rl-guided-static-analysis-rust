@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::get_hash`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 403,
+    "start_col": 5,
+    "end_line": 403,
+    "end_col": 78,
+    "code_snippet": "fn get_hash(&self, _private: Private) -> crate::Result<StarlarkHashValue> {\n        let mut hasher = StarlarkHasher::new();\n        self.write_hash(&mut hasher)?;\n        Ok(hasher.finish_small())\n    }"
+}

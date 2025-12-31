@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wita-0.20.0/src/ime.rs",
+    "start_line": 312,
+    "start_col": 1,
+    "end_line": 312,
+    "end_col": 18,
+    "code_snippet": "impl Drop for Imc {\n    fn drop(&mut self) {\n        unsafe {\n            ImmReleaseContext(self.hwnd, self.himc);\n        }\n    }\n}"
+}

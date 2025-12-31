@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "concurrent-map-5.0.37/src/lib.rs",
+    "start_line": 169,
+    "start_col": 1,
+    "end_line": 173,
+    "end_col": 38,
+    "code_snippet": "impl<\n        K: 'static + Clone + Minimum + Send + Sync + Ord,\n        V: 'static + Clone + Send + Sync,\n        const FANOUT: usize,\n    > Drop for Deferred<K, V, FANOUT>\n{\n    fn drop(&mut self) {\n        if let Deferred::BoxedAtomicPtr(id) = self {\n            assert!(!id.0.is_null());\n            let reclaimed: Box<AtomicPtr<Node<K, V, FANOUT>>> =\n                unsafe { Box::from_raw(id.0 as *mut _) };\n            drop(reclaimed);\n        }\n    }\n}"
+}

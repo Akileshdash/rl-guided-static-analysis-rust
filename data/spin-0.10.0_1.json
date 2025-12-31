@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "spin-0.10.0/src/once.rs",
+    "start_line": 498,
+    "start_col": 1,
+    "end_line": 498,
+    "end_col": 31,
+    "code_snippet": "impl<T, R> Drop for Once<T, R> {\n    fn drop(&mut self) {\n        // No need to do any atomic access here, we have &mut!\n        if *self.status.get_mut() == Status::Complete {\n            unsafe {\n                //TODO: Use MaybeUninit::assume_init_drop once stabilised\n                core::ptr::drop_in_place((*self.data.get()).as_mut_ptr());\n            }\n        }\n    }\n}"
+}

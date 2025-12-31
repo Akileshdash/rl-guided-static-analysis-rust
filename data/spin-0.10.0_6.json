@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "spin-0.10.0/src/rwlock.rs",
+    "start_line": 111,
+    "start_col": 1,
+    "end_line": 111,
+    "end_col": 55,
+    "code_snippet": "unsafe impl<T: ?Sized + Send, R> Send for RwLock<T, R> {}\nunsafe impl<T: ?Sized + Send + Sync, R> Sync for RwLock<T, R> {}"
+}

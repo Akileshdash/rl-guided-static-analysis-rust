@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `vec_dyn::VecDyn::<V>::resize`",
+    "file": "dync-0.6.0/src/vec_dyn.rs",
+    "start_line": 676,
+    "start_col": 5,
+    "end_line": 697,
+    "end_col": 6,
+    "code_snippet": "pub fn resize<T: Elem + Clone>(&mut self, new_len: usize, value: T) -> Option<&mut Self> {\n        self.check_ref::<T>()?;\n        if new_len >= self.len() {\n            let diff = new_len - self.len();\n            self.data.reserve(diff);\n            for _ in 0..diff {\n                self.data.push_as(value.clone());\n            }\n        } else {\n            // Drop trailing elements manually.\n            unsafe {\n                let VecCopy { data, vtable, .. } = &mut *self.data;\n                for elem_bytes in data.byte_chunks_mut().skip(new_len) {\n                    vtable.drop_fn()(elem_bytes);\n                }\n            }\n\n            // Truncate data\n            self.data.data.truncate(new_len);\n        }\n        Some(self)\n    }"
+}

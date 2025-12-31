@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `encoders::ArithmeticEncoder::<T>::done`",
+    "file": "laz-0.10.0/src/encoders.rs",
+    "start_line": 140,
+    "start_col": 5,
+    "end_line": 189,
+    "end_col": 6,
+    "code_snippet": "pub fn done(&mut self) -> std::io::Result<()> {\n        // done encoding: set final data bytes\n        let init_base = self.base;\n        let mut another_byte = true;\n\n        if self.length > 2 * AC_MIN_LENGTH {\n            // base offset\n            self.base = self.base.wrapping_add(AC_MIN_LENGTH);\n            // set new length for 1 more byte\n            self.length = AC_MIN_LENGTH >> 1;\n        } else {\n            // base offset\n            self.base = self.base.wrapping_add(AC_MIN_LENGTH >> 1);\n            // set new length for 2 more bytes\n            self.length = AC_MIN_LENGTH >> 9;\n            another_byte = false;\n        }\n\n        if init_base > self.base {\n            self.propagate_carry();\n        }\n        self.renorm_enc_interval()?;\n\n        if self.end_byte != self.end_of_buffer() {\n            debug_assert!(\n                (self.out_byte.cast_const())\n                    < self.out_buffer.as_ptr().wrapping_add(AC_BUFFER_SIZE)\n            );\n            let slc = unsafe {\n                std::slice::from_raw_parts(\n                    self.out_buffer.as_ptr().wrapping_add(AC_BUFFER_SIZE),\n                    AC_BUFFER_SIZE,\n                )\n            };\n            self.out_stream.write_all(&slc)?;\n        }\n\n        let buffer_size = self.out_byte as isize - self.out_buffer.as_ptr() as isize;\n        if buffer_size != 0 {\n            let slc = &self.out_buffer[..buffer_size as usize];\n            self.out_stream.write_all(&slc)?\n        }\n\n        self.out_stream.write_all(&[0u8, 0u8])?;\n\n        if another_byte {\n            self.out_stream.write_all(&[0u8])?\n        }\n        Ok(())\n    }"
+}

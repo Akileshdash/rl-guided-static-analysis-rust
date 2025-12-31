@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "gennaro-dkg-1.0.0-rc6/src/participant.rs",
+    "start_line": 90,
+    "start_col": 1,
+    "end_line": 93,
+    "end_col": 62,
+    "code_snippet": "unsafe impl<I, G> Send for Participant<I, G>\nwhere\n    I: ParticipantImpl<G> + Default,\n    G: GroupHasher + SumOfProducts + GroupEncoding + Default,\n{\n}"
+}

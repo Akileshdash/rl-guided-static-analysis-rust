@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "widestring-1.2.0/src/utfstring/iter.rs",
+    "start_line": 84,
+    "start_col": 1,
+    "end_line": 84,
+    "end_col": 29,
+    "code_snippet": "impl Drop for DrainUtf32<'_> {\n    fn drop(&mut self) {\n        unsafe {\n            // Use Vec::drain. \"Reaffirm\" the bounds checks to avoid\n            // panic code being inserted again.\n            let self_vec = (*self.string).as_mut_vec();\n            if self.start <= self.end && self.end <= self_vec.len() {\n                self_vec.drain(self.start..self.end);\n            }\n        }\n    }\n}"
+}

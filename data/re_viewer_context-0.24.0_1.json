@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `image_info::ImageInfo::to_slice`",
+    "file": "re_viewer_context-0.24.0/src/image_info.rs",
+    "start_line": 204,
+    "start_col": 5,
+    "end_line": 230,
+    "end_col": 6,
+    "code_snippet": "pub fn to_slice<T: bytemuck::Pod>(&self) -> Cow<'_, [T]> {\n        let element_size = std::mem::size_of::<T>();\n        let num_elements = self.buffer.len() / element_size;\n        let num_bytes = num_elements * element_size;\n        let bytes = &self.buffer[..num_bytes];\n\n        if let Ok(slice) = bytemuck::try_cast_slice(bytes) {\n            Cow::Borrowed(slice)\n        } else {\n            // This should happen very rarely.\n            // But it can happen, e.g. when logging a `1x1xu8` image followed by a `1x1xf32` image\n            // to the same entity path, and they are put in the same chunk.\n\n            if cfg!(debug_assertions) {\n                re_log::warn_once!(\n                    \"The image buffer was not aligned to the element type {}\",\n                    std::any::type_name::<T>()\n                );\n            }\n            re_tracing::profile_scope!(\"copy_image_buffer\");\n\n            let mut dest = vec![T::zeroed(); num_elements];\n            let dest_bytes: &mut [u8] = bytemuck::cast_slice_mut(&mut dest);\n            dest_bytes.copy_from_slice(bytes);\n            Cow::Owned(dest)\n        }\n    }"
+}

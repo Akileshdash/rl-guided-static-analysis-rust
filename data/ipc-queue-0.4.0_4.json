@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `fifo::Fifo::<T>::try_recv_impl`",
+    "file": "ipc-queue-0.4.0/src/fifo.rs",
+    "start_line": 254,
+    "start_col": 5,
+    "end_line": 293,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn try_recv_impl(&self) -> Result<(Identified<T>, /*wake up writer:*/ bool, /*read offset wrapped around:*/ bool), TryRecvError> {\n        // 1. Load the current offsets.\n        let current = self.current_offsets(Ordering::SeqCst);\n\n        // 2. If the queue is empty, wait, then go to step 1.\n        if current.is_empty() {\n            return Err(TryRecvError::QueueEmpty);\n        }\n\n        // 3. Add 1 to the read offset.\n        let new = current.increment_read_offset();\n\n        let (slot, id) = loop {\n            // 4. Read the `id` at the new read offset.\n            let slot = unsafe { &mut *self.data[new.read_offset()].get() };\n            let id = slot.id.load(SeqCst);\n\n            // 5. If `id` is `0`, go to step 4 (spin). Spinning is OK because data is\n            //    expected to be written imminently.\n            if id != 0 {\n                break (slot, id);\n            }\n        };\n\n        // 6. Read the data, then store `0` in the `id`.\n        let data = unsafe { T::read(&slot.data) };\n        let val = Identified { id, data };\n        slot.id.store(0, SeqCst);\n\n        // 7. Store the new read offset, retrieving the old offsets.\n        let before = fetch_adjust(\n            self.offsets,\n            new.read as isize - current.read as isize,\n            SeqCst,\n        );\n\n        // 8. If the queue was full before step 7, signal the writer to wake up.\n        let was_full = Offsets::new(before, self.data.len() as u32).is_full();\n        Ok((val, was_full, new.read_offset() == 0))\n    }"
+}

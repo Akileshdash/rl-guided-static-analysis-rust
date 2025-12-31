@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `read_buffer::ReadBuffer::<R>::parse_with`",
+    "file": "pcap-file-3.0.0-rc1/src/read_buffer.rs",
+    "start_line": 35,
+    "start_col": 5,
+    "end_line": 68,
+    "end_col": 6,
+    "code_snippet": "pub fn parse_with<'a, 'b: 'a, 'c: 'a, F, O>(&'c mut self, mut parser: F) -> Result<O, PcapError>\n    where\n        F: FnMut(&'a [u8]) -> Result<(&'a [u8], O), PcapError>,\n        F: 'b,\n        O: 'a,\n    {\n        loop {\n            let buf = &self.buffer[self.pos..self.len];\n\n            // Sound because 'b and 'c must outlive 'a so the buffer cannot be modified while someone has a ref on it\n            let buf: &'a [u8] = unsafe { std::mem::transmute(buf) };\n\n            match parser(buf) {\n                Ok((rem, value)) => {\n                    self.advance_with_slice(rem);\n                    return Ok(value);\n                },\n\n                Err(PcapError::IncompleteBuffer) => {\n                    // The parsed data len should never be more than the buffer capacity\n                    if buf.len() == self.buffer.len() {\n                        return Err(PcapError::IoError(Error::from(ErrorKind::UnexpectedEof)));\n                    }\n\n                    let nb_read = self.fill_buf().map_err(PcapError::IoError)?;\n                    if nb_read == 0 {\n                        return Err(PcapError::IoError(Error::from(ErrorKind::UnexpectedEof)));\n                    }\n                },\n\n                Err(e) => return Err(e),\n            }\n        }\n    }"
+}

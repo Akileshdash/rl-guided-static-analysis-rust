@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "polars-arrow-0.49.1/src/storage.rs",
+    "start_line": 85,
+    "start_col": 1,
+    "end_line": 85,
+    "end_col": 39,
+    "code_snippet": "impl<T> Drop for SharedStorageInner<T> {\n    fn drop(&mut self) {\n        match core::mem::replace(&mut self.backing, BackingStorage::External) {\n            BackingStorage::InternalArrowArray(a) => drop(a),\n            BackingStorage::Vec {\n                original_capacity,\n                vtable,\n            } => unsafe {\n                // Drop the elements in our slice.\n                if std::mem::needs_drop::<T>() {\n                    core::ptr::drop_in_place(core::ptr::slice_from_raw_parts_mut(\n                        self.ptr,\n                        self.length_in_bytes / size_of::<T>(),\n                    ));\n                }\n\n                // Free the buffer.\n                if original_capacity > 0 {\n                    (vtable.drop_buffer)(self.ptr.cast(), original_capacity);\n                }\n            },\n            BackingStorage::External | BackingStorage::Leaked => {},\n        }\n    }\n}"
+}

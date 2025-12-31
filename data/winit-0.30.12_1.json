@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "winit-0.30.12/src/platform_impl/linux/x11/ime/mod.rs",
+    "start_line": 226,
+    "start_col": 1,
+    "end_line": 226,
+    "end_col": 18,
+    "code_snippet": "impl Drop for Ime {\n    fn drop(&mut self) {\n        unsafe {\n            let _ = self.inner.destroy_all_contexts_if_necessary();\n            let _ = self.inner.close_im_if_necessary();\n        }\n    }\n}"
+}

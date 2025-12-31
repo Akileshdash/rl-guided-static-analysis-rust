@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "indexed-0.2.0/src/lib.rs",
+    "start_line": 702,
+    "start_col": 1,
+    "end_line": 702,
+    "end_col": 33,
+    "code_snippet": "impl<T:Indexed> Drop for Pool<T> {\n    fn drop( &mut self ) {\n        let len = self.chunks.len();\n        if self.managed && len > 0 {\n            for i in 0..len-1 {\n                let chunk = unsafe{ self.chunks.get_unchecked_mut(i) };\n                unsafe{ chunk.0.set_len( 0 ); }\n                for j in 0..chunk_len::<T>() {\n                    unsafe{ drop_in_place( &mut chunk[j] ); }\n                }\n            }\n            unsafe {\n                let last_chunk = self.chunks.get_unchecked_mut( len-1 );\n                for j in 0..=self.subidx {\n                    last_chunk.0.set_len( 0 );\n                    drop_in_place( &mut last_chunk[ j ]);\n                }\n            }\n        }\n    }\n}"
+}

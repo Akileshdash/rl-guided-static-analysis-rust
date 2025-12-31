@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hstr-2.0.1/src/lib.rs",
+    "start_line": 345,
+    "start_col": 1,
+    "end_line": 345,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Atom {\n    #[inline(always)]\n    fn drop(&mut self) {\n        if self.is_dynamic() {\n            unsafe { drop(crate::dynamic::restore_arc(self.unsafe_data)) }\n        }\n    }\n}"
+}

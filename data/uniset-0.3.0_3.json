@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "uniset-0.3.0/src/lib.rs",
+    "start_line": 1601,
+    "start_col": 5,
+    "end_line": 1601,
+    "end_col": 31,
+    "code_snippet": "impl<T> Drop for Layers<T> {\n        #[inline]\n        fn drop(&mut self) {\n            drop(unsafe { Vec::from_raw_parts(self.data, self.len, self.cap) });\n        }\n    }"
+}

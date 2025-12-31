@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "embassy-sync-0.7.0/src/mutex.rs",
+    "start_line": 49,
+    "start_col": 1,
+    "end_line": 49,
+    "end_col": 71,
+    "code_snippet": "unsafe impl<M: RawMutex + Sync, T: ?Sized + Send> Sync for Mutex<M, T> {}"
+}

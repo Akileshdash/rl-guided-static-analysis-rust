@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "circular-buffer-1.1.0/src/lib.rs",
+    "start_line": 1936,
+    "start_col": 13,
+    "end_line": 1936,
+    "end_col": 42,
+    "code_snippet": "impl<T> Drop for Guard<'_, T> {\n                fn drop(&mut self) {\n                    let initialized = &mut self.dst[..self.initialized];\n                    // SAFETY: this slice contain only initialized objects; `MaybeUninit<T>` has\n                    // the same alignment and size as `T`\n                    unsafe {\n                        let initialized =\n                            &mut *(initialized as *mut [MaybeUninit<T>] as *mut [T]);\n                        ptr::drop_in_place(initialized);\n                    }\n                }\n            }"
+}

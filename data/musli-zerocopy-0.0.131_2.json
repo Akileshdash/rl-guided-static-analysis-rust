@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "musli-zerocopy-0.0.131/src/buf/owned_buf.rs",
+    "start_line": 1139,
+    "start_col": 1,
+    "end_line": 1139,
+    "end_col": 30,
+    "code_snippet": "unsafe impl Send for OwnedBuf {}\n/// `OwnedBuf` are `Sync` since they are `Send` and the data they reference is"
+}

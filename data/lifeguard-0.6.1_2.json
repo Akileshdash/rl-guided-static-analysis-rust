@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `<RecycledInner<P, T> as std::ops::Drop>::drop`",
+    "file": "lifeguard-0.6.1/src/lib.rs",
+    "start_line": 274,
+    "start_col": 3,
+    "end_line": 296,
+    "end_col": 4,
+    "code_snippet": "fn drop(&mut self) {\n    // We need to rescue `self.value` from `self` and then allow `self` to drop normally.\n    let value = unsafe {\n      // Make a byte-for-byte copy of `self.value`\n      ptr::read(&self.value as *const ManuallyDrop<T>)\n      // Because its type is ManuallyDrop<T>, the original value inside of `self` will not be\n      // dropped when `self` drops.\n    };\n\n    // Convert our newly-rescued `ManuallyDrop<T>` into a `T` so it will eventually drop normally.\n    let mut value = ManuallyDrop::into_inner(value);\n\n    // If there's no room left in the pool, drop the value here.\n    let pool_ref = self.pool.borrow();\n    if pool_ref.borrow().is_full() {\n      drop(value);\n      return;\n    }\n\n    // Otherwise, reset value and return it to the pool.\n    value.reset();\n    pool_ref.borrow_mut().insert_prepared_value(value);\n  }"
+}

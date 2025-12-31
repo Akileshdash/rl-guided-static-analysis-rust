@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "harfbuzz_rs-2.0.1/src/common.rs",
+    "start_line": 401,
+    "start_col": 1,
+    "end_line": 401,
+    "end_col": 43,
+    "code_snippet": "impl<T: HarfbuzzObject> Drop for Shared<T> {\n    fn drop(&mut self) {\n        unsafe { self.dereference() }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "orbclient-0.3.48/src/sys/sdl2.rs",
+    "start_line": 76,
+    "start_col": 1,
+    "end_line": 76,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Window {\n    fn drop(&mut self) {\n        unsafe {\n            cleanup();\n        }\n    }\n}"
+}

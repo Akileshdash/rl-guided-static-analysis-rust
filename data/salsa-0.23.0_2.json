@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "salsa-0.23.0/src/interned.rs",
+    "start_line": 671,
+    "start_col": 9,
+    "end_line": 671,
+    "end_col": 41,
+    "code_snippet": "impl Drop for TableDropGuard<'_> {\n            fn drop(&mut self) {\n                // SAFETY: We have `&mut MemoTable`, so no more references to these memos exist and we are good\n                // to drop them.\n                unsafe { self.0.drop() };\n            }\n        }"
+}

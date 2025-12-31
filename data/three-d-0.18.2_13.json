@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "three-d-0.18.2/src/core/render_target.rs",
+    "start_line": 337,
+    "start_col": 1,
+    "end_line": 337,
+    "end_col": 31,
+    "code_snippet": "impl Drop for RenderTarget<'_> {\n    fn drop(&mut self) {\n        unsafe {\n            if let Some(id) = self.id {\n                self.context.delete_framebuffer(id);\n            }\n        }\n    }\n}"
+}

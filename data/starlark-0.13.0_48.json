@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::export_as`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 847,
+    "start_col": 5,
+    "end_line": 851,
+    "end_col": 27,
+    "code_snippet": "fn export_as(\n        &self,\n        _variable_name: &str,\n        _eval: &mut Evaluator<'v, '_, '_>,\n    ) -> crate::Result<()> {\n        // Most data types ignore how they are exported\n        // but rules/providers like to use it as a helpful hint for users\n        Ok(())\n    }"
+}

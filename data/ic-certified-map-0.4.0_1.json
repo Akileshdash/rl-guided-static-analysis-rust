@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<rbtree::DebugView<'a, K, V> as std::fmt::Debug>::fmt::go`",
+    "file": "ic-certified-map-0.4.0/src/rbtree.rs",
+    "start_line": 998,
+    "start_col": 9,
+    "end_line": 1018,
+    "end_col": 10,
+    "code_snippet": "fn go<K: AsRef<[u8]>, V>(\n            f: &mut fmt::Formatter<'_>,\n            node: &NodeRef<K, V>,\n            offset: usize,\n        ) -> fmt::Result {\n            match node {\n                None => writeln!(f, \"{:width$}[B] <null>\", \"\", width = offset),\n                Some(ref h) => {\n                    writeln!(\n                        f,\n                        \"{:width$}[{}] {:?}\",\n                        \"\",\n                        if is_red(node) { \"R\" } else { \"B\" },\n                        h.key.as_ref(),\n                        width = offset\n                    )?;\n                    go(f, &h.left, offset + 2)?;\n                    go(f, &h.right, offset + 2)\n                }\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bumpalo-3.19.0/src/lib.rs",
+    "start_line": 386,
+    "start_col": 1,
+    "end_line": 386,
+    "end_col": 54,
+    "code_snippet": "impl<const MIN_ALIGN: usize> Drop for Bump<MIN_ALIGN> {\n    fn drop(&mut self) {\n        unsafe {\n            dealloc_chunk_list(self.current_chunk_footer.get());\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `cpu_backend::utils::unary_map_vec`",
+    "file": "candle-core-0.9.1/src/cpu_backend/utils.rs",
+    "start_line": 334,
+    "start_col": 1,
+    "end_line": 384,
+    "end_col": 2,
+    "code_snippet": "pub fn unary_map_vec<T: Copy, U: Copy, F: FnMut(T) -> U, FV: FnMut(&[T], &mut [U])>(\n    vs: &[T],\n    layout: &Layout,\n    mut f: F,\n    mut f_vec: FV,\n) -> Vec<U> {\n    match layout.strided_blocks() {\n        crate::StridedBlocks::SingleBlock { start_offset, len } => {\n            let mut ys: Vec<U> = Vec::with_capacity(len);\n            let ys_to_set = ys.spare_capacity_mut();\n            let ys_to_set = unsafe {\n                std::mem::transmute::<&mut [std::mem::MaybeUninit<U>], &mut [U]>(ys_to_set)\n            };\n            f_vec(&vs[start_offset..start_offset + len], ys_to_set);\n            // SAFETY: values are all set by f_vec.\n            unsafe { ys.set_len(len) };\n            ys\n        }\n        crate::StridedBlocks::MultipleBlocks {\n            block_start_index,\n            block_len,\n        } => {\n            let el_count = layout.shape().elem_count();\n            // Specialize the case where block_len is one to avoid the second loop.\n            if block_len == 1 {\n                let mut result = Vec::with_capacity(el_count);\n                for index in block_start_index {\n                    let v = unsafe { vs.get_unchecked(index) };\n                    result.push(f(*v))\n                }\n                result\n            } else {\n                let mut ys: Vec<U> = Vec::with_capacity(el_count);\n                let ys_to_set = ys.spare_capacity_mut();\n                let ys_to_set = unsafe {\n                    std::mem::transmute::<&mut [std::mem::MaybeUninit<U>], &mut [U]>(ys_to_set)\n                };\n                let mut dst_index = 0;\n                for src_index in block_start_index {\n                    let vs = &vs[src_index..src_index + block_len];\n                    let ys = &mut ys_to_set[dst_index..dst_index + block_len];\n                    f_vec(vs, ys);\n                    dst_index += block_len;\n                }\n                // SAFETY: values are all set by f_vec.\n                unsafe { ys.set_len(el_count) };\n                ys\n            }\n        }\n    }\n}"
+}

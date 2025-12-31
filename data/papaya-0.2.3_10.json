@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `raw::ComputeState::<F, K, V, T>::next`",
+    "file": "papaya-0.2.3/src/raw/mod.rs",
+    "start_line": 1288,
+    "start_col": 5,
+    "end_line": 1312,
+    "end_col": 6,
+    "code_snippet": "unsafe fn next(&mut self, entry: Option<*mut Entry<K, V>>) -> Operation<V, T> {\n        let Some(entry) = entry else {\n            // If there is no current entry, perform a transition for the insert.\n            return match self.insert.take() {\n                // Use the cached insert.\n                Some(value) => Operation::Insert(value),\n\n                // Otherwise, compute the value to insert.\n                None => (self.compute)(None),\n            };\n        };\n\n        // Otherwise, perform an update transition.\n        match self.update.take() {\n            // Used the cached update if the entry has not changed.\n            Some(CachedUpdate { input, output }) if input == entry => output,\n\n            // Otherwise, compute the value to update.\n            _ => {\n                // Safety: The caller guarantees that `entry` is valid for reads.\n                let entry_ref = unsafe { &*entry };\n                (self.compute)(Some((&entry_ref.key, &entry_ref.value)))\n            }\n        }\n    }"
+}

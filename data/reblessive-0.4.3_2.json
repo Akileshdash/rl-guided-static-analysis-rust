@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "reblessive-0.4.3/src/defer.rs",
+    "start_line": 40,
+    "start_col": 1,
+    "end_line": 42,
+    "end_col": 23,
+    "code_snippet": "impl<T, F> Drop for Defer<T, F>\nwhere\n    F: FnOnce(&mut T),\n{\n    fn drop(&mut self) {\n        if let Some(x) = self.f.take() {\n            (x)(&mut *self.value);\n            unsafe { ManuallyDrop::drop(&mut self.value) }\n        }\n    }\n}"
+}

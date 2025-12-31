@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<frame::lut::LutImpl<K> as frame::lut::Lut>::run`",
+    "file": "tract-linalg-0.21.13/src/frame/lut.rs",
+    "start_line": 40,
+    "start_col": 5,
+    "end_line": 65,
+    "end_col": 6,
+    "code_snippet": "fn run(&self, buf: &mut [u8]) {\n        unsafe {\n            let table: *const u8 = self.table.as_ptr_unchecked();\n            let align = K::input_alignment_bytes();\n            let aligned_start = (buf.as_ptr() as usize).next_multiple_of(align);\n            let prefix = (aligned_start - buf.as_ptr() as usize).min(buf.len());\n            for i in 0..(prefix as isize) {\n                let ptr = buf.as_mut_ptr().offset(i);\n                *ptr = *table.offset(*ptr as isize);\n            }\n            let remaining = buf.len() - prefix;\n            if remaining == 0 {\n                return;\n            }\n            let n = K::n();\n            let aligned_len = remaining / n * n;\n            if aligned_len > 0 {\n                K::run(buf.as_mut_ptr().add(prefix), aligned_len, table);\n            }\n            let remaining = buf.len() - aligned_len - prefix;\n            for i in 0..remaining {\n                let ptr = buf.as_mut_ptr().add(i + prefix + aligned_len);\n                *ptr = *table.offset(*ptr as isize);\n            }\n        }\n    }"
+}

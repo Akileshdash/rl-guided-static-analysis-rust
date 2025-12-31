@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkano-0.35.1/src/memory/mod.rs",
+    "start_line": 494,
+    "start_col": 1,
+    "end_line": 494,
+    "end_col": 29,
+    "code_snippet": "impl Drop for ResourceMemory {\n    #[inline]\n    fn drop(&mut self) {\n        let device_memory = unsafe { ManuallyDrop::take(&mut self.device_memory) }.0;\n\n        if let Some(allocator) = &self.allocator {\n            let allocation = MemoryAlloc {\n                device_memory,\n                suballocation: self.suballocation(),\n                allocation_handle: self.allocation_handle,\n            };\n\n            // SAFETY: Enforced by the safety contract of [`ResourceMemory::from_allocation`].\n            unsafe { allocator.deallocate(allocation) };\n        }\n    }\n}"
+}

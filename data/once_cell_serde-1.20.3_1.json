@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "once_cell_serde-1.20.3/src/race.rs",
+    "start_line": 318,
+    "start_col": 5,
+    "end_line": 318,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for OnceBox<T> {\n        fn drop(&mut self) {\n            let ptr = *self.inner.get_mut();\n            if !ptr.is_null() {\n                drop(unsafe { Box::from_raw(ptr) })\n            }\n        }\n    }"
+}

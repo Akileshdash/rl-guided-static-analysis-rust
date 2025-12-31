@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `simple::<impl Array<T, N>>::zip_map`",
+    "file": "array-bin-ops-0.1.6/src/simple.rs",
+    "start_line": 8,
+    "start_col": 5,
+    "end_line": 38,
+    "end_col": 6,
+    "code_snippet": "pub fn zip_map<U, O>(self, rhs: [U; N], mut op: impl FnMut(T, U) -> O) -> [O; N] {\n        if needs_drop::<T>() || needs_drop::<U>() || needs_drop::<O>() {\n            let mut lhs = Slice::full(self.0);\n            let mut rhs = Slice::full(rhs);\n            let mut output = Slice::new();\n\n            for _ in 0..N {\n                unsafe {\n                    let lhs = lhs.pop_front_unchecked();\n                    let rhs = rhs.pop_front_unchecked();\n                    output.push_unchecked(op(lhs, rhs));\n                }\n            }\n\n            unsafe { output.output() }\n        } else {\n            // SAFETY:\n            // we will not read from output, and caller ensures that O is non-drop\n            let mut output: [MaybeUninit<O>; N] = uninit_array();\n\n            for i in 0..N {\n                unsafe {\n                    let lhs = core::ptr::read(&self.0[i]);\n                    let rhs = core::ptr::read(&rhs[i]);\n                    output[i].write(op(lhs, rhs));\n                }\n            }\n\n            unsafe { core::ptr::read(&output as *const [MaybeUninit<O>; N] as *const [O; N]) }\n        }\n    }"
+}

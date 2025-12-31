@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/fiber.rs",
+    "start_line": 727,
+    "start_col": 5,
+    "end_line": 727,
+    "end_col": 34,
+    "code_snippet": "impl Drop for Restore<'_, '_> {\n        fn drop(&mut self) {\n            self.fiber.state = Some(unsafe { self.state.take().unwrap().replace(self.store) });\n        }\n    }"
+}

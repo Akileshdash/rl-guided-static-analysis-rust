@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "shipyard-0.8.1/src/public_transport.rs",
+    "start_line": 38,
+    "start_col": 1,
+    "end_line": 38,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for ReadGuard<'_, T> {\n    fn drop(&mut self) {\n        match self {\n            Self::Custom { lock, .. } => unsafe {\n                lock.unlock_shared();\n            },\n            #[cfg(feature = \"std\")]\n            Self::Std { .. } => {}\n        }\n    }\n}"
+}

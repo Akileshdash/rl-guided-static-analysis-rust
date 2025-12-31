@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "futures-intrusive-0.5.0/src/sync/mutex.rs",
+    "start_line": 332,
+    "start_col": 1,
+    "end_line": 333,
+    "end_col": 49,
+    "code_snippet": "unsafe impl<'a, MutexType: RawMutex + Sync, T: 'a> Send\n    for GenericMutexLockFuture<'a, MutexType, T>\n{\n}"
+}

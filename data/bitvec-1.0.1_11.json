@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "bitvec-1.0.1/src/slice/iter.rs",
+    "start_line": 489,
+    "start_col": 3,
+    "end_line": 493,
+    "end_col": 25,
+    "code_snippet": "unsafe impl<T, O> Sync for $iter<'_, T, O>\n\t\twhere\n\t\t\tT: BitStore,\n\t\t\tO: BitOrder,\n\t\t\tBitSlice<T, O>: Sync,\n\t\t{\n\t\t}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sled-1.0.0-alpha.124/src/flush_epoch.rs",
+    "start_line": 163,
+    "start_col": 1,
+    "end_line": 163,
+    "end_col": 30,
+    "code_snippet": "impl Drop for FlushEpochInner {\n    fn drop(&mut self) {\n        let vacancy_mu = self.roll_mu.lock().unwrap();\n        let old_ptr =\n            self.current_active.swap(std::ptr::null_mut(), Ordering::SeqCst);\n        if !old_ptr.is_null() {\n            //let old: &EpochTracker = &*old_ptr;\n            unsafe { drop(Box::from_raw(old_ptr)) }\n        }\n        drop(vacancy_mu);\n    }\n}"
+}

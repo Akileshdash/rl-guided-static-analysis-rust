@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "legion-0.4.0/src/internals/query/mod.rs",
+    "start_line": 1015,
+    "start_col": 5,
+    "end_line": 1018,
+    "end_col": 31,
+    "code_snippet": "unsafe impl<'a, V, D> Send for ParChunkIter<'a, V, D>\n    where\n        V: View<'a>,\n        D: DynamicFilter + 'a,\n    {\n    }"
+}

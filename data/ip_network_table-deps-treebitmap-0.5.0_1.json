@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ip_network_table-deps-treebitmap-0.5.0/src/tree_bitmap/allocator.rs",
+    "start_line": 44,
+    "start_col": 1,
+    "end_line": 44,
+    "end_col": 27,
+    "code_snippet": "impl<T> Drop for RawVec<T> {\n    fn drop(&mut self) {\n        unsafe {\n            Vec::from_raw_parts(self.mem, 0, self.cap);\n        }\n    }\n}"
+}

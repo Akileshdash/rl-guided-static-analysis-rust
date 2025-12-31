@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "patricia_tree-0.9.0/src/node.rs",
+    "start_line": 757,
+    "start_col": 1,
+    "end_line": 757,
+    "end_col": 25,
+    "code_snippet": "impl<V> Drop for Node<V> {\n    fn drop(&mut self) {\n        let _ = self.take_value();\n        let _ = self.take_child();\n        let _ = self.take_sibling();\n\n        let mut layout = Self::initial_layout(self.label_len());\n        if self.flags().contains(Flags::VALUE_ALLOCATED) {\n            layout = layout.extend(Layout::new::<V>()).expect(\"unreachable\").0;\n        }\n        if self.flags().contains(Flags::CHILD_ALLOCATED) {\n            layout = layout.extend(Layout::new::<Self>()).expect(\"unreachable\").0;\n        }\n        if self.flags().contains(Flags::SIBLING_ALLOCATED) {\n            layout = layout.extend(Layout::new::<Self>()).expect(\"unreachable\").0;\n        }\n\n        unsafe { dealloc(self.ptr, layout.pad_to_align()) }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dlopen2-0.8.0/src/raw/common.rs",
+    "start_line": 262,
+    "start_col": 1,
+    "end_line": 262,
+    "end_col": 34,
+    "code_snippet": "impl Drop for AddressInfoObtainer {\n    fn drop(&mut self) {\n        unsafe { addr_info_cleanup() }\n    }\n}"
+}

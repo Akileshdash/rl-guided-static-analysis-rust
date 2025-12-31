@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mallumo-gls-0.43.0/src/buffer/mapped_mutable_buffer.rs",
+    "start_line": 77,
+    "start_col": 1,
+    "end_line": 77,
+    "end_col": 34,
+    "code_snippet": "impl Drop for MappedMutableBuffer {\n    fn drop(&mut self) {\n        unsafe {\n            delete_buffer(self.id);\n        }\n    }\n}"
+}

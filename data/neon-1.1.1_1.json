@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "neon-1.1.1/src/sys/scope.rs",
+    "start_line": 26,
+    "start_col": 1,
+    "end_line": 26,
+    "end_col": 26,
+    "code_snippet": "impl Drop for HandleScope {\n    fn drop(&mut self) {\n        unsafe {\n            let _status = napi::close_handle_scope(self.env, self.scope);\n\n            debug_assert_eq!(_status, Ok(()),);\n        }\n    }\n}"
+}

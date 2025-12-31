@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "grenad-0.5.0/src/sorter.rs",
+    "start_line": 412,
+    "start_col": 1,
+    "end_line": 412,
+    "end_col": 38,
+    "code_snippet": "impl Drop for EntryBoundAlignedBuffer {\n    fn drop(&mut self) {\n        let layout = Layout::from_size_align(self.0.len(), align_of::<EntryBound>()).unwrap();\n        unsafe { dealloc(self.0.as_mut_ptr(), layout) }\n    }\n}"
+}

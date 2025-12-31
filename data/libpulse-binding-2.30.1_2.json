@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "libpulse-binding-2.30.1/src/operation.rs",
+    "start_line": 40,
+    "start_col": 1,
+    "end_line": 40,
+    "end_col": 67,
+    "code_snippet": "unsafe impl<ClosureProto: ?Sized> Sync for Operation<ClosureProto> {}"
+}

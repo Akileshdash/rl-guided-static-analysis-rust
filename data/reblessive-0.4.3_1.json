@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "reblessive-0.4.3/src/allocator.rs",
+    "start_line": 214,
+    "start_col": 1,
+    "end_line": 214,
+    "end_col": 29,
+    "code_snippet": "impl Drop for StackAllocator {\n    fn drop(&mut self) {\n        let mut cur = self.block;\n        while let Some(b) = cur {\n            unsafe {\n                cur = b.as_ref().previous;\n                Self::dealloc_old_block(b);\n            }\n        }\n    }\n}"
+}

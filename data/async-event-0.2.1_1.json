@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-event-0.2.1/src/lib.rs",
+    "start_line": 241,
+    "start_col": 1,
+    "end_line": 241,
+    "end_col": 62,
+    "code_snippet": "impl<F: FnMut() -> Option<T>, T> Drop for WaitUntil<'_, F, T> {\n    fn drop(&mut self) {\n        if let WaitUntilState::Polled(notifier) = self.state {\n            // If we are in the `Polled` stated, it means that the future was\n            // cancelled and its notifier may still be in the wait set: it is\n            // necessary to cancel the notifier so that another event sink can\n            // be notified if one is registered, and then to deallocate the\n            // notifier.\n            //\n            // Safety: all notifiers in the wait set are guaranteed to be alive\n            // since this drop handler ensures that notifiers are removed from\n            // the wait set before they are deallocated. After the notifier is\n            // removed from the list we can claim unique ownership and\n            // deallocate the notifier.\n            unsafe {\n                self.wait_set.cancel(notifier);\n                let _ = Box::from_raw(notifier.as_ptr());\n            }\n        }\n    }\n}"
+}

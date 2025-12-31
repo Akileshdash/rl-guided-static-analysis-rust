@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `vec_dyn::VecDyn::<V>::clear`",
+    "file": "dync-0.6.0/src/vec_dyn.rs",
+    "start_line": 258,
+    "start_col": 5,
+    "end_line": 267,
+    "end_col": 6,
+    "code_snippet": "pub fn clear(&mut self) {\n        // Drop all elements manually.\n        unsafe {\n            let VecCopy { data, vtable, .. } = &mut *self.data;\n            for elem_bytes in data.byte_chunks_mut() {\n                vtable.drop_fn()(elem_bytes);\n            }\n            data.clear();\n        }\n    }"
+}

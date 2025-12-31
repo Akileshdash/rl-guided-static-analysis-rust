@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "oxc_allocator-0.79.1/src/pool.rs",
+    "start_line": 66,
+    "start_col": 1,
+    "end_line": 66,
+    "end_col": 33,
+    "code_snippet": "impl Drop for AllocatorGuard<'_> {\n    /// Return [`Allocator`] back to the pool.\n    fn drop(&mut self) {\n        // SAFETY: After taking ownership of the `Allocator`, we do not touch the `ManuallyDrop` again\n        let mut allocator = unsafe { ManuallyDrop::take(&mut self.allocator) };\n        allocator.reset();\n        self.pool.add(allocator);\n    }\n}"
+}

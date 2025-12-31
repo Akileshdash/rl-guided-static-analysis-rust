@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "femtovg-0.15.0/src/renderer/opengl.rs",
+    "start_line": 880,
+    "start_col": 1,
+    "end_line": 880,
+    "end_col": 21,
+    "code_snippet": "impl Drop for OpenGl {\n    fn drop(&mut self) {\n        if let Some(vert_arr) = self.vert_arr {\n            unsafe {\n                self.context.delete_vertex_array(vert_arr);\n            }\n        }\n\n        if let Some(vert_buff) = self.vert_buff {\n            unsafe {\n                self.context.delete_buffer(vert_buff);\n            }\n        }\n    }\n}"
+}

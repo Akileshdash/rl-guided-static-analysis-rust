@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `<provided_types::SliceWithHeader<Header, Item>::new::InProgress<Header, Item> as core::ops::Drop>::drop`",
+    "file": "slice-dst-1.6.0/src/provided_types.rs",
+    "start_line": 61,
+    "start_col": 13,
+    "end_line": 68,
+    "end_col": 14,
+    "code_snippet": "fn drop(&mut self) {\n                unsafe {\n                    ptr::drop_in_place(ptr::slice_from_raw_parts_mut(\n                        self.raw().add(self.slice_offset).cast::<Item>(),\n                        self.written,\n                    ));\n                }\n            }"
+}

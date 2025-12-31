@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "uniset-0.3.0/src/lib.rs",
+    "start_line": 1335,
+    "start_col": 1,
+    "end_line": 1335,
+    "end_col": 26,
+    "code_snippet": "impl Drop for AtomicLayer {\n    #[inline]\n    fn drop(&mut self) {\n        // Safety: We keep track of the capacity internally.\n        unsafe {\n            drop(Vec::from_raw_parts(self.bits, self.cap, self.cap));\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `rc::ArchivedRc::<T, F>::resolve_from_ref`",
+    "file": "rkyv-0.8.11/src/rc.rs",
+    "start_line": 75,
+    "start_col": 5,
+    "end_line": 86,
+    "end_col": 6,
+    "code_snippet": "pub fn resolve_from_ref<U: ArchiveUnsized<Archived = T> + ?Sized>(\n        value: &U,\n        resolver: RcResolver,\n        out: Place<Self>,\n    ) {\n        munge!(let ArchivedRc { ptr, .. } = out);\n        RelPtr::emplace_unsized(\n            resolver.pos as usize,\n            value.archived_metadata(),\n            ptr,\n        );\n    }"
+}

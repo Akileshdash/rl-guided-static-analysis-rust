@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stabby-abi-72.1.1/src/alloc/sync.rs",
+    "start_line": 603,
+    "start_col": 1,
+    "end_line": 603,
+    "end_col": 51,
+    "code_snippet": "impl<T, Alloc: IAlloc> Drop for ArcSlice<T, Alloc> {\n    fn drop(&mut self) {\n        if unsafe { self.inner.start.prefix() }\n            .strong\n            .fetch_sub(1, Ordering::Relaxed)\n            != 1\n        {\n            return;\n        }\n        unsafe { core::ptr::drop_in_place(self.as_slice_mut_unchecked()) }\n        _ = WeakSlice { inner: self.inner };\n    }\n}"
+}

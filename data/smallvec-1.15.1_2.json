@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "smallvec-1.15.1/src/lib.rs",
+    "start_line": 1466,
+    "start_col": 9,
+    "end_line": 1466,
+    "end_col": 40,
+    "code_snippet": "impl<T> Drop for DropOnPanic<T> {\n            fn drop(&mut self) {\n                for i in 0..self.len {\n                    if !self.skip.contains(&i) {\n                        unsafe {\n                            ptr::drop_in_place(self.start.add(i));\n                        }\n                    }\n                }\n            }\n        }"
+}

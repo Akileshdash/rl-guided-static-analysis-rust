@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bump-scope-0.17.4/src/bump.rs",
+    "start_line": 223,
+    "start_col": 1,
+    "end_line": 227,
+    "end_col": 44,
+    "code_snippet": "impl<A, const MIN_ALIGN: usize, const UP: bool, const GUARANTEED_ALLOCATED: bool> Drop\n    for Bump<A, MIN_ALIGN, UP, GUARANTEED_ALLOCATED>\nwhere\n    MinimumAlignment<MIN_ALIGN>: SupportedMinimumAlignment,\n    A: BaseAllocator<GUARANTEED_ALLOCATED>,\n{\n    fn drop(&mut self) {\n        if self.as_scope().is_unallocated() {\n            return;\n        }\n\n        unsafe {\n            let chunk = self.chunk.get();\n            chunk.for_each_prev(|chunk| chunk.deallocate());\n            chunk.for_each_next(|chunk| chunk.deallocate());\n            chunk.deallocate();\n        }\n    }\n}"
+}

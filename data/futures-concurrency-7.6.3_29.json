@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "futures-concurrency-7.6.3/src/future/try_join/tuple.rs",
+    "start_line": 188,
+    "start_col": 23,
+    "end_line": 188,
+    "end_col": 33,
+    "code_snippet": "#[pin_project(PinnedDrop)]\n        #[must_use = \"futures do nothing unless you `.await` or poll them\"]\n        #[allow(non_snake_case)]\n        pub struct $StructName<$($F, $T,)+ Err> {\n            #[pin]\n            futures: $mod_name::Futures<$($F,)+>,\n            outputs: ($(MaybeUninit<$T>,)+),\n            // trace the state of outputs, marking them as ready or consumed\n            // then, drop the non-consumed values, if any\n            state: PollArray<{$mod_name::LEN}>,\n            wakers: WakerArray<{$mod_name::LEN}>,\n            completed: usize,\n            consumed: bool,\n            _phantom: PhantomData<Err>,\n        }"
+}

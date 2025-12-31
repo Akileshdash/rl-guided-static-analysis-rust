@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wal::ffi::frame_count`",
+    "file": "libsql-sys-0.9.19/src/wal/ffi.rs",
+    "start_line": 298,
+    "start_col": 1,
+    "end_line": 315,
+    "end_col": 2,
+    "code_snippet": "pub unsafe extern \"C\" fn frame_count<T: Wal>(\n    wal: *mut wal_impl,\n    locked: i32,\n    out: *mut c_uint,\n) -> c_int {\n    let this = &mut (*(wal as *mut T));\n    match this.frame_count(locked) {\n        Ok(n) => {\n            if !out.is_null() {\n                unsafe {\n                    *out = n as _;\n                }\n            }\n            SQLITE_OK\n        }\n        Err(code) => code.extended_code,\n    }\n}"
+}

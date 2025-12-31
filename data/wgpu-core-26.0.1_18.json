@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/resource.rs",
+    "start_line": 1166,
+    "start_col": 1,
+    "end_line": 1166,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Texture {\n    fn drop(&mut self) {\n        match *self.clear_mode.write() {\n            TextureClearMode::Surface {\n                ref mut clear_view, ..\n            } => {\n                // SAFETY: We are in the Drop impl and we don't use clear_view anymore after this point.\n                let raw = unsafe { ManuallyDrop::take(clear_view) };\n                unsafe {\n                    self.device.raw().destroy_texture_view(raw);\n                }\n            }\n            TextureClearMode::RenderPass {\n                ref mut clear_views,\n                ..\n            } => {\n                clear_views.iter_mut().for_each(|clear_view| {\n                    // SAFETY: We are in the Drop impl and we don't use clear_view anymore after this point.\n                    let raw = unsafe { ManuallyDrop::take(clear_view) };\n                    unsafe {\n                        self.device.raw().destroy_texture_view(raw);\n                    }\n                });\n            }\n            _ => {}\n        };\n\n        if let Some(TextureInner::Native { raw }) = self.inner.take() {\n            resource_log!(\"Destroy raw {}\", self.error_ident());\n            unsafe {\n                self.device.raw().destroy_texture(raw);\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cranelift-jit-0.122.0/src/memory/arena.rs",
+    "start_line": 207,
+    "start_col": 1,
+    "end_line": 207,
+    "end_col": 34,
+    "code_snippet": "impl Drop for ArenaMemoryProvider {\n    fn drop(&mut self) {\n        if self.ptr == ptr::null_mut() {\n            return;\n        }\n        let is_live = self.segments.iter().any(|seg| seg.finalized);\n        if !is_live {\n            // Only free memory if it's not been finalized yet.\n            // Otherwise, leak it since JIT memory may still be in use.\n            unsafe { self.free_memory() };\n        }\n    }\n}"
+}

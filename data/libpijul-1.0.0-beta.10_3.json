@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `tag::restore`",
+    "file": "libpijul-1.0.0-beta.10/src/tag.rs",
+    "start_line": 325,
+    "start_col": 1,
+    "end_line": 386,
+    "end_col": 2,
+    "code_snippet": "fn restore<\n    K: ::sanakirja::UnsizedStorable + PartialEq,\n    V: ::sanakirja::UnsizedStorable + PartialEq,\n    P: ::sanakirja::btree::BTreeMutPage<K, V>,\n    F,\n>(\n    file_txn: &Txn,\n    txn: &mut crate::pristine::sanakirja::MutTxn<()>,\n    pending: u64,\n    f: F,\n) -> Result<::sanakirja::btree::Db_<K, V, P>, TxnErr<SanakirjaError>>\nwhere\n    F: Fn(\n        &Txn,\n        &mut crate::pristine::sanakirja::MutTxn<()>,\n        &K,\n        &V,\n    ) -> Result<(K, V), TxnErr<SanakirjaError>>,\n{\n    use ::sanakirja::AllocPage;\n    let mut dict = HashSet::default();\n    let page = unsafe { txn.txn.alloc_page()? };\n    let result = page.0.offset;\n    let mut pending = vec![(pending, page)];\n    while let Some((offset, mut new_page_)) = pending.pop() {\n        debug!(\"{:?}\", offset);\n        let page = ::sanakirja::CowPage {\n            data: unsafe { file_txn.data.offset(offset as isize) },\n            offset,\n        };\n        let mut curs = P::cursor_first(&page);\n        let mut new_curs = P::cursor_first(&new_page_.0);\n        P::init(&mut new_page_);\n        unsafe {\n            let left = P::left_child(page.as_page(), &curs);\n            if left != 0 {\n                assert!(dict.insert(left));\n                let new_page = txn.txn.alloc_page()?;\n                let off = new_page.0.offset;\n                P::set_left_child(&mut new_page_, &new_curs, off);\n                pending.push((left, new_page));\n            }\n        }\n        while let Some((k_, v_, r)) = P::next(&txn.txn, page.as_page(), &mut curs) {\n            let (k, v) = f(file_txn, txn, k_, v_)?;\n            assert_eq!(&k, k_);\n            assert_eq!(&v, v_);\n            let r = if r > 0 {\n                assert!(dict.insert(r));\n                let new_page = unsafe { txn.txn.alloc_page()? };\n                let off = new_page.0.offset;\n                pending.push((r, new_page));\n                off\n            } else {\n                0\n            };\n            unsafe { P::put_mut(&mut txn.txn, &mut new_page_, &mut new_curs, &k, &v, r) }\n            P::move_next(&mut new_curs);\n        }\n    }\n    Ok(unsafe { ::sanakirja::btree::Db_::from_page(result) })\n}"
+}

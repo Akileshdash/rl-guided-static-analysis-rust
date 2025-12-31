@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "monoio-0.2.4/src/driver/uring/mod.rs",
+    "start_line": 584,
+    "start_col": 1,
+    "end_line": 584,
+    "end_col": 25,
+    "code_snippet": "impl Drop for UringInner {\n    fn drop(&mut self) {\n        // no need to wait for completion, as the kernel will clean up the ring asynchronically.\n        let _ = self.uring.submitter().submit();\n        unsafe {\n            ManuallyDrop::drop(&mut self.uring);\n        }\n    }\n}"
+}

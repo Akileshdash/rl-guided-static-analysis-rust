@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `types_impl::boxed::JsBox::<T>::create_external`",
+    "file": "neon-1.1.1/src/types_impl/boxed.rs",
+    "start_line": 260,
+    "start_col": 5,
+    "end_line": 272,
+    "end_col": 6,
+    "code_snippet": "fn create_external<'cx, C: Context<'cx>>(\n        cx: &mut C,\n        value: T,\n        finalizer: fn(raw::Env, BoxAny),\n    ) -> Handle<'cx, JsBox<T>> {\n        let v = Box::new(value) as BoxAny;\n\n        // Since this value was just constructed, we know it is `T`\n        let raw_data = &*v as *const dyn Any as *const T;\n        let local = unsafe { external::create(cx.env().to_raw(), v, finalizer) };\n\n        Handle::new_internal(JsBox(JsBoxInner { local, raw_data }))\n    }"
+}

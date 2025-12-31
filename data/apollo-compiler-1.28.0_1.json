@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "apollo-compiler-1.28.0/src/name.rs",
+    "start_line": 311,
+    "start_col": 1,
+    "end_line": 311,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Name {\n    fn drop(&mut self) {\n        if let Some(arc) = &mut self.as_arc() {\n            // SAFETY: neither the dropped `ManuallyDrop` nor `self.ptr` is used again\n            unsafe { ManuallyDrop::drop(arc) }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `ssl::callbacks::raw_alpn_select`",
+    "file": "variant-ssl-0.17.3/src/ssl/callbacks.rs",
+    "start_line": 184,
+    "start_col": 1,
+    "end_line": 213,
+    "end_col": 2,
+    "code_snippet": "pub extern \"C\" fn raw_alpn_select<F>(\n    ssl: *mut ffi::SSL,\n    out: *mut *const c_uchar,\n    outlen: *mut c_uchar,\n    inbuf: *const c_uchar,\n    inlen: c_uint,\n    _arg: *mut c_void,\n) -> c_int\nwhere\n    F: for<'a> Fn(&mut SslRef, &'a [u8]) -> Result<&'a [u8], AlpnError> + 'static + Sync + Send,\n{\n    unsafe {\n        let ssl = SslRef::from_ptr_mut(ssl);\n        let callback = ssl\n            .ssl_context()\n            .ex_data(SslContext::cached_ex_index::<F>())\n            .expect(\"BUG: alpn callback missing\") as *const F;\n        #[allow(clippy::unnecessary_cast)]\n        let protos = util::from_raw_parts(inbuf as *const u8, inlen as usize);\n\n        match (*callback)(ssl, protos) {\n            Ok(proto) => {\n                *out = proto.as_ptr() as *const c_uchar;\n                *outlen = proto.len() as c_uchar;\n                ffi::SSL_TLSEXT_ERR_OK\n            }\n            Err(e) => e.0,\n        }\n    }\n}"
+}

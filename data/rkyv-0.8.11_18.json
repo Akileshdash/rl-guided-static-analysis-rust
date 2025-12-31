@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<ffi::ArchivedCString as bytecheck::CheckBytes<__C>>::check_bytes`",
+    "file": "rkyv-0.8.11/src/ffi.rs",
+    "start_line": 26,
+    "start_col": 12,
+    "end_line": 26,
+    "end_col": 33,
+    "code_snippet": "derive(bytecheck::CheckBytes),\n    bytecheck(verify)\n)]\n#[repr(transparent)]\npub struct ArchivedCString {\n    ptr: RelPtr<CStr>,\n}"
+}

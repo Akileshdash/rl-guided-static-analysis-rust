@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glfw-0.59.0/src/lib.rs",
+    "start_line": 3386,
+    "start_col": 1,
+    "end_line": 3386,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Window {\n    /// Closes the window and performs the necessary cleanups. This will block\n    /// until all associated `RenderContext`s were also dropped, and emit a\n    /// `debug!` message to that effect.\n    ///\n    /// Wrapper for `glfwDestroyWindow`.\n    fn drop(&mut self) {\n        drop(self.drop_sender.take());\n\n        // Check if all senders from the child `RenderContext`s have hung up.\n        #[cfg(feature = \"log\")]\n        if self.drop_receiver.try_recv() != Err(std::sync::mpsc::TryRecvError::Disconnected) {\n            debug!(\"Attempted to drop a Window before the `RenderContext` was dropped.\");\n            debug!(\"Blocking until the `RenderContext` was dropped.\");\n            let _ = self.drop_receiver.recv();\n        }\n\n        if !self.ptr.is_null() {\n            unsafe {\n                let _: Box<WindowCallbacks> =\n                    mem::transmute(ffi::glfwGetWindowUserPointer(self.ptr));\n            }\n        }\n\n        if !self.is_shared {\n            unsafe {\n                ffi::glfwDestroyWindow(self.ptr);\n            }\n        }\n    }\n}"
+}

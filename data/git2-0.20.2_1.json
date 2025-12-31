@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "git2-0.20.2/src/indexer.rs",
+    "start_line": 206,
+    "start_col": 1,
+    "end_line": 206,
+    "end_col": 26,
+    "code_snippet": "impl Drop for Indexer<'_> {\n    fn drop(&mut self) {\n        unsafe {\n            raw::git_indexer_free(self.raw);\n            drop(Box::from_raw(self.progress_payload_ptr))\n        }\n    }\n}"
+}

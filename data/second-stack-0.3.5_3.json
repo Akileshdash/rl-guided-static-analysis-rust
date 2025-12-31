@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `Stack::uninit_slice`",
+    "file": "second-stack-0.3.5/src/lib.rs",
+    "start_line": 52,
+    "start_col": 5,
+    "end_line": 87,
+    "end_col": 6,
+    "code_snippet": "pub fn uninit_slice<T, F, R>(&self, len: usize, f: F) -> R\n    where\n        F: FnOnce(&mut [MaybeUninit<T>]) -> R,\n    {\n        // Special case for ZST that disregards the rest of the code,\n        // so that none of that code need account for ZSTs.\n        // The reason this is convenient is that a ZST may use\n        // the stack without bumping the pointer, which will\n        // lead other code to free that memory while still in-use.\n        // See also: 2ec61cda-e074-4b26-a9a5-a01b70706585\n        // There may be other issues also.\n        if std::mem::size_of::<T>() == 0 {\n            let mut tmp = Vec::<T>::with_capacity(len);\n            // We do need to take a slice here, because suprisingly\n            // tmp.capacity() returns 18446744073709551615\n            let slice = &mut tmp.spare_capacity_mut()[..len];\n            return f(slice);\n        }\n\n        // Required for correctness\n        // See also: 26936c11-5b7c-472e-8f63-7922e63a5425\n        if len == 0 {\n            return f(&mut []);\n        }\n\n        // Get the new slice, and the old allocation to\n        // restore once the function is finished running.\n        let (_restore, (ptr, len)) = unsafe {\n            let stack = &mut *self.0.get();\n            stack.get_slice(&self.0, len)\n        };\n\n        let slice = unsafe { slice::from_raw_parts_mut(ptr as *mut MaybeUninit<T>, len) };\n\n        f(slice)\n    }"
+}

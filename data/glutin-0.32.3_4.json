@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "glutin-0.32.3/src/api/glx/surface.rs",
+    "start_line": 163,
+    "start_col": 1,
+    "end_line": 163,
+    "end_col": 53,
+    "code_snippet": "unsafe impl<T: SurfaceTypeTrait> Send for Surface<T> {}"
+}

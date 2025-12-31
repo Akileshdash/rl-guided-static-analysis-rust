@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `tensors::Header::write`",
+    "file": "tract-nnef-0.21.13/src/tensors.rs",
+    "start_line": 36,
+    "start_col": 5,
+    "end_line": 40,
+    "end_col": 6,
+    "code_snippet": "pub fn write(&self, w: &mut impl Write) -> TractResult<()> {\n        let slice = unsafe { std::mem::transmute::<&Header, &[u8; 128]>(self) };\n        w.write_all(slice)?;\n        Ok(())\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `CursorMutKey::<'a, K, V, A>::insert_after_unchecked`",
+    "file": "btree_experiment-0.1.106/src/lib.rs",
+    "start_line": 2646,
+    "start_col": 5,
+    "end_line": 2668,
+    "end_col": 6,
+    "code_snippet": "pub unsafe fn insert_after_unchecked(&mut self, key: K, value: V) {\n        unsafe {\n            (*self.map).len += 1;\n            let mut leaf = self.leaf.unwrap_unchecked();\n            if (*leaf).full() {\n                let a = &(*self.map).atune;\n                match a.full_action(self.index, (*leaf).0.len()) {\n                    FullAction::Split(b, a1, a2) => {\n                        let (med, right) = (*leaf).0.split(b, a1, a2);\n                        let right = Tree::L(Leaf(right));\n                        let r = usize::from(self.index > b);\n                        self.index -= r * (b + 1);\n                        assert!(self.index < if r == 1 { a2 } else { a1 });\n                        let t = self.save_split(med, right, r);\n                        leaf = (*t).leaf();\n                        self.leaf = Some(leaf);\n                    }\n                    FullAction::Extend(to) => (*leaf).0.set_alloc(to),\n                }\n            }\n            (*leaf).0.insert(self.index, (key, value));\n        }\n    }"
+}

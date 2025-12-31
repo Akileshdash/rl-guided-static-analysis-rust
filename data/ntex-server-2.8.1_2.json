@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "ntex-server-2.8.1/src/net/config.rs",
+    "start_line": 352,
+    "start_col": 1,
+    "end_line": 352,
+    "end_col": 74,
+    "code_snippet": "unsafe impl<F, R, E> Send for OnWorkerStartWrapper<F, R, E> where F: Send {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "compact_str-0.9.0/src/lib.rs",
+    "start_line": 2517,
+    "start_col": 1,
+    "end_line": 2517,
+    "end_col": 24,
+    "code_snippet": "impl Drop for Drain<'_> {\n    #[inline]\n    fn drop(&mut self) {\n        // SAFETY: Drain keeps a mutable reference to compact_string, so one one else can access\n        //         the CompactString, but this function right now. CompactString::drain() ensured\n        //         that the new extracted range does not split a UTF-8 character.\n        unsafe { (*self.compact_string).replace_range_shrink(self.start, self.end, \"\") };\n    }\n}"
+}

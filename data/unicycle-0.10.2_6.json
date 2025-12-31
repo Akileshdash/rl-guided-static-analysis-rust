@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "unicycle-0.10.2/src/lib.rs",
+    "start_line": 299,
+    "start_col": 1,
+    "end_line": 302,
+    "end_col": 17,
+    "code_snippet": "unsafe impl<T, S> Sync for Unordered<T, S>\nwhere\n    T: Sync,\n    S: Sentinel,\n{\n}"
+}

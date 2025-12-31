@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `algo::bfs_pred::BfsPred::<'a, D>::shortest_path`",
+    "file": "graaf-0.111.0/src/algo/bfs_pred.rs",
+    "start_line": 548,
+    "start_col": 5,
+    "end_line": 573,
+    "end_col": 6,
+    "code_snippet": "pub fn shortest_path<P>(&mut self, is_target: P) -> Option<Vec<usize>>\n    where\n        D: Order + OutNeighbors,\n        P: Fn(usize) -> bool,\n    {\n        let order = self.digraph.order();\n        let mut pred = PredecessorTree::new(order);\n        let pred_ptr = pred.pred.as_mut_ptr();\n\n        for (u, v) in self.by_ref() {\n            unsafe {\n                *pred_ptr.add(v) = u;\n            }\n\n            if is_target(v) {\n                return pred.search_by(v, |_, b| b.is_none()).map(\n                    |mut path| {\n                        path.reverse();\n                        path\n                    },\n                );\n            }\n        }\n\n        None\n    }"
+}

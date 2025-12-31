@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<IniMutexGuard<'_, T> as std::fmt::Debug>::fmt`",
+    "file": "gstuff-0.8.23/gstuff.rs",
+    "start_line": 1037,
+    "start_col": 3,
+    "end_line": 1039,
+    "end_col": 50,
+    "code_snippet": "fn fmt (&self, ft: &mut fmt::Formatter) -> fmt::Result {\n    let vc = unsafe {&mut *self.lo.vc.get()};\n    unsafe {fmt::Debug::fmt (&*vc.as_ptr(), ft)}}}\n\nimpl<T: fmt::Display> fmt::Display for IniMutexGuard<'_, T> {"
+}

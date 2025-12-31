@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "unicycle-0.10.2/src/lib.rs",
+    "start_line": 290,
+    "start_col": 1,
+    "end_line": 293,
+    "end_col": 17,
+    "code_snippet": "unsafe impl<T, S> Send for Unordered<T, S>\nwhere\n    T: Send,\n    S: Sentinel,\n{\n}"
+}

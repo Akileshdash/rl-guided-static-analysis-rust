@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `region::Region::tree_traverse_at::traverse_cb`",
+    "file": "onig-6.5.1/src/region.rs",
+    "start_line": 162,
+    "start_col": 9,
+    "end_line": 179,
+    "end_col": 10,
+    "code_snippet": "extern \"C\" fn traverse_cb<F>(\n            group: c_int,\n            beg: c_int,\n            end: c_int,\n            level: c_int,\n            _at: c_int,\n            ud: *mut c_void,\n        ) -> c_int\n        where\n            F: Fn(u32, (usize, usize), u32) -> bool,\n        {\n            let callback = unsafe { &*(ud as *mut F) };\n            if callback(group as u32, (beg as usize, end as usize), level as u32) {\n                0\n            } else {\n                -1\n            }\n        }"
+}

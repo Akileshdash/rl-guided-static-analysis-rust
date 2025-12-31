@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "harfbuzz_rs-2.0.1/src/font_funcs.rs",
+    "start_line": 663,
+    "start_col": 1,
+    "end_line": 663,
+    "end_col": 41,
+    "code_snippet": "unsafe impl<T> Send for FontFuncsImpl<T> {}\nunsafe impl<T> Sync for FontFuncsImpl<T> {}"
+}

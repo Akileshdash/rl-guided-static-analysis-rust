@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<tri_hash_map::imp::TriHashMap<T, S, A> as core::fmt::Debug>::fmt`",
+    "file": "iddqd-0.3.9/src/tri_hash_map/imp.rs",
+    "start_line": 2267,
+    "start_col": 5,
+    "end_line": 2293,
+    "end_col": 6,
+    "code_snippet": "fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {\n        let mut map = f.debug_map();\n        for item in self.items.values() {\n            let key: KeyMap<'_, T> = KeyMap {\n                key1: item.key1(),\n                key2: item.key2(),\n                key3: item.key3(),\n            };\n\n            // SAFETY:\n            //\n            // * Lifetime extension: for a type T and two lifetime params 'a and\n            //   'b, T<'a> and T<'b> aren't guaranteed to have the same layout,\n            //   but (a) that is true today and (b) it would be shocking and\n            //   break half the Rust ecosystem if that were to change in the\n            //   future.\n            // * We only use key within the scope of this block before immediately\n            //   dropping it. In particular, map.entry calls key.fmt() without\n            //   holding a reference to it.\n            let key: KeyMap<'a, T> = unsafe {\n                core::mem::transmute::<KeyMap<'_, T>, KeyMap<'a, T>>(key)\n            };\n\n            map.entry(&key, item);\n        }\n        map.finish()\n    }"
+}

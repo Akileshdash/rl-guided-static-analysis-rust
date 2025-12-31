@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<lua_functions::LuaCodeFromReader<R> as PushInto<L>>::push_into_lua::reader`",
+    "file": "tlua-6.0.1/src/lua_functions.rs",
+    "start_line": 111,
+    "start_col": 13,
+    "end_line": 138,
+    "end_col": 14,
+    "code_snippet": "extern \"C\" fn reader<R>(\n                _: LuaState,\n                data: *mut libc::c_void,\n                size: *mut libc::size_t,\n            ) -> *const libc::c_char\n            where\n                R: Read,\n            {\n                unsafe {\n                    let data: *mut ReadData<R> = data as *mut _;\n                    let data: &mut ReadData<R> = &mut *data;\n\n                    if data.triggered_error.is_some() {\n                        (*size) = 0;\n                        return data.buffer.as_ptr() as *const libc::c_char;\n                    }\n\n                    match data.reader.read(&mut data.buffer) {\n                        Ok(len) => (*size) = len as libc::size_t,\n                        Err(e) => {\n                            (*size) = 0;\n                            data.triggered_error = Some(e);\n                        }\n                    };\n\n                    data.buffer.as_ptr() as *const libc::c_char\n                }\n            }"
+}

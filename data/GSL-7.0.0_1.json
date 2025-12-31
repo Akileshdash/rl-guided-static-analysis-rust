@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `types::histograms::Histogram::print`",
+    "file": "GSL-7.0.0/src/types/histograms.rs",
+    "start_line": 299,
+    "start_col": 5,
+    "end_line": 318,
+    "end_col": 6,
+    "code_snippet": "pub fn print<W: Write>(\n        &self,\n        stream: &mut W, /*, range_format: &str, bin_format: &str*/\n    ) -> io::Result<()> {\n        unsafe {\n            let n = (*self.unwrap_shared()).n as isize;\n\n            for i in 0isize..n {\n                writeln!(\n                    stream,\n                    \"{} {} {}\",\n                    *(*self.unwrap_shared()).range.offset(i),\n                    *(*self.unwrap_shared()).range.offset(i + 1),\n                    *(*self.unwrap_shared()).range.offset(i),\n                )?;\n            }\n\n            Ok(())\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/resource.rs",
+    "start_line": 1326,
+    "start_col": 1,
+    "end_line": 1326,
+    "end_col": 31,
+    "code_snippet": "impl Drop for DestroyedTexture {\n    fn drop(&mut self) {\n        let device = &self.device;\n\n        let mut deferred = device.deferred_destroy.lock();\n        deferred.push(DeferredDestroy::TextureViews(mem::take(&mut self.views)));\n        deferred.push(DeferredDestroy::BindGroups(mem::take(\n            &mut self.bind_groups,\n        )));\n        drop(deferred);\n\n        match mem::replace(&mut self.clear_mode, TextureClearMode::None) {\n            TextureClearMode::RenderPass { clear_views, .. } => {\n                for clear_view in clear_views {\n                    let raw = ManuallyDrop::into_inner(clear_view);\n                    unsafe { self.device.raw().destroy_texture_view(raw) };\n                }\n            }\n            TextureClearMode::Surface { clear_view } => {\n                let raw = ManuallyDrop::into_inner(clear_view);\n                unsafe { self.device.raw().destroy_texture_view(raw) };\n            }\n            _ => (),\n        }\n\n        resource_log!(\"Destroy raw Texture (destroyed) {:?}\", self.label());\n        // SAFETY: We are in the Drop impl and we don't use self.raw anymore after this point.\n        let raw = unsafe { ManuallyDrop::take(&mut self.raw) };\n        unsafe {\n            self.device.raw().destroy_texture(raw);\n        }\n    }\n}"
+}

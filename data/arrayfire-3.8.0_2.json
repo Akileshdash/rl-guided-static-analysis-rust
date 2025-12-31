@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "arrayfire-3.8.0/src/core/array.rs",
+    "start_line": 173,
+    "start_col": 1,
+    "end_line": 173,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T: HasAfEnum> Sync for Array<T> {}"
+}

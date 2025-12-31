@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14) as runtime::component::func::typed::Lower>::linear_lower_to_flat`",
+    "file": "wasmtime-35.0.0/src/runtime/component/func/typed.rs",
+    "start_line": 2546,
+    "start_col": 13,
+    "end_line": 2563,
+    "end_col": 14,
+    "code_snippet": "fn linear_lower_to_flat<U>(\n                &self,\n                cx: &mut LowerContext<'_, U>,\n                ty: InterfaceType,\n                _dst: &mut MaybeUninit<Self::Lower>,\n            ) -> Result<()> {\n                let types = match ty {\n                    InterfaceType::Tuple(t) => &cx.types[t].types,\n                    _ => bad_type_info(),\n                };\n                let ($($t,)*) = self;\n                let mut _types = types.iter();\n                $(\n                    let ty = *_types.next().unwrap_or_else(bad_type_info);\n                    $t.linear_lower_to_flat(cx, ty, map_maybe_uninit!(_dst.$t))?;\n                )*\n                Ok(())\n            }"
+}

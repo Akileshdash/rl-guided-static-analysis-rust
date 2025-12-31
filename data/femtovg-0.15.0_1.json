@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "femtovg-0.15.0/src/renderer/opengl/program.rs",
+    "start_line": 50,
+    "start_col": 1,
+    "end_line": 50,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Shader {\n    fn drop(&mut self) {\n        unsafe {\n            self.context.delete_shader(self.id);\n        }\n    }\n}"
+}

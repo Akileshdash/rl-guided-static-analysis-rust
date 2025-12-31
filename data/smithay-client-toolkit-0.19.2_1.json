@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "smithay-client-toolkit-0.19.2/src/seat/keyboard/mod.rs",
+    "start_line": 359,
+    "start_col": 1,
+    "end_line": 359,
+    "end_col": 40,
+    "code_snippet": "unsafe impl<T> Sync for KeyboardData<T> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "spin-0.10.0/src/once.rs",
+    "start_line": 54,
+    "start_col": 1,
+    "end_line": 54,
+    "end_col": 51,
+    "code_snippet": "unsafe impl<T: Send + Sync, R> Sync for Once<T, R> {}\nunsafe impl<T: Send, R> Send for Once<T, R> {}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "concurrent-queue-2.5.0/src/lib.rs",
+    "start_line": 116,
+    "start_col": 1,
+    "end_line": 116,
+    "end_col": 49,
+    "code_snippet": "unsafe impl<T: Send> Sync for ConcurrentQueue<T> {}"
+}

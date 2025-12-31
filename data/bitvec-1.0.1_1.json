@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bitvec-1.0.1/src/ptr/proxy.rs",
+    "start_line": 445,
+    "start_col": 1,
+    "end_line": 449,
+    "end_col": 14,
+    "code_snippet": "impl<M, T, O> Drop for BitRef<'_, M, T, O>\nwhere\n\tM: Mutability,\n\tT: BitStore,\n\tO: BitOrder,\n{\n\t#[inline]\n\tfn drop(&mut self) {\n\t\t//  `Drop` cannot specialize on type parameters, but only mutable\n\t\t//  proxies can commit to memory.\n\t\tif M::CONTAINS_MUTABILITY {\n\t\t\tunsafe {\n\t\t\t\tself.bitptr.to_mut().write(self.data);\n\t\t\t}\n\t\t}\n\t}\n}"
+}

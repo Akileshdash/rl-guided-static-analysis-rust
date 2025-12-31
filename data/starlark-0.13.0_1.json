@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "starlark-0.13.0/src/collections/alloca.rs",
+    "start_line": 59,
+    "start_col": 1,
+    "end_line": 59,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Buffer {\n    fn drop(&mut self) {\n        unsafe { dealloc(self.ptr.as_ptr().cast(), self.layout) }\n    }\n}"
+}

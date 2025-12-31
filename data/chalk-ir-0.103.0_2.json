@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/Transmute",
+    "description": "Potential unsafe dataflow issue in `fold::in_place::fallible_map_box`",
+    "file": "chalk-ir-0.103.0/src/fold/in_place.rs",
+    "start_line": 15,
+    "start_col": 1,
+    "end_line": 41,
+    "end_col": 2,
+    "code_snippet": "pub(super) fn fallible_map_box<T, U, E>(\n    b: Box<T>,\n    map: impl FnOnce(T) -> Result<U, E>,\n) -> Result<Box<U>, E> {\n    // This optimization is only valid when `T` and `U` have the same size/alignment and is not\n    // useful for ZSTs.\n    if !is_layout_identical::<T, U>() || is_zst::<T>() {\n        return map(*b).map(Box::new);\n    }\n\n    let raw = Box::into_raw(b);\n    unsafe {\n        let val = ptr::read(raw);\n\n        // Box<T> -> Box<MaybeUninit<U>>\n        let mut raw: Box<mem::MaybeUninit<U>> = Box::from_raw(raw.cast());\n\n        // If `map` panics or returns an error, `raw` will free the memory associated with `b`, but\n        // not drop the boxed value itself since it is wrapped in `MaybeUninit`. This is what we\n        // want since the boxed value was moved into `map`.\n        let mapped_val = map(val)?;\n        ptr::write(raw.as_mut_ptr(), mapped_val);\n\n        // Box<MaybeUninit<U>> -> Box<U>\n        Ok(Box::from_raw(Box::into_raw(raw).cast()))\n    }\n}"
+}

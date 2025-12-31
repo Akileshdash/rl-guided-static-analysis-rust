@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cryptimitives-0.20.0/src/hmac/sha512.rs",
+    "start_line": 15,
+    "start_col": 1,
+    "end_line": 15,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Hmac {\n    fn drop(&mut self) {\n        unsafe { ManuallyDrop::drop(&mut self.0) }\n    }\n}"
+}

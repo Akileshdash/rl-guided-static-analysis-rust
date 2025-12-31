@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "stabby-abi-72.1.1/src/slice.rs",
+    "start_line": 128,
+    "start_col": 1,
+    "end_line": 128,
+    "end_col": 70,
+    "code_snippet": "unsafe impl<'a, T: 'a> Sync for SliceMut<'a, T> where &'a mut T: Sync {}\nimpl<T> Deref for SliceMut<'_, T> {\n    type Target = [T];\n    fn deref(&self) -> &Self::Target {\n        unsafe { core::slice::from_raw_parts(self.start.as_ref(), self.len) }\n    }\n}"
+}

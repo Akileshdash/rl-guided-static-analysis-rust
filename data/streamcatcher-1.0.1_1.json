@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "streamcatcher-1.0.1/src/standard.rs",
+    "start_line": 767,
+    "start_col": 1,
+    "end_line": 767,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T, Tx> Sync for RawStore<T, Tx> {}\nunsafe impl<T, Tx> Send for RawStore<T, Tx> {}"
+}

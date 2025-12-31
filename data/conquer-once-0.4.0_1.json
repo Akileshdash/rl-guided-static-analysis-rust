@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "conquer-once-0.4.0/src/cell.rs",
+    "start_line": 501,
+    "start_col": 1,
+    "end_line": 501,
+    "end_col": 35,
+    "code_snippet": "impl<T, B> Drop for OnceCell<T, B> {\n    #[inline]\n    fn drop(&mut self) {\n        // drop must never panic, so poisoning is ignored\n        // SAFETY: take_inner cannot be called again after drop has been called\n        mem::drop(unsafe { self.take_inner(true) })\n    }\n}"
+}

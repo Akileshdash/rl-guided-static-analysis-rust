@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "bevy_ecs-0.16.1/src/storage/table/mod.rs",
+    "start_line": 807,
+    "start_col": 1,
+    "end_line": 807,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Table {\n    fn drop(&mut self) {\n        let len = self.entity_count();\n        let cap = self.capacity();\n        self.entities.clear();\n        for col in self.columns.values_mut() {\n            // SAFETY: `cap` and `len` are correct\n            unsafe {\n                col.drop(cap, len);\n            }\n        }\n    }\n}"
+}

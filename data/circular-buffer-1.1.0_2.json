@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "circular-buffer-1.1.0/src/drain.rs",
+    "start_line": 215,
+    "start_col": 9,
+    "end_line": 215,
+    "end_col": 40,
+    "code_snippet": "impl<T> Drop for Dropper<'_, T> {\n            fn drop(&mut self) {\n                // SAFETY: the slice is guaranteed to be valid for read and writes as the `Drain`\n                // holds a mutable reference to the `CircularBuffer` that contains the data\n                // referenced by the slices.\n                unsafe {\n                    ptr::drop_in_place(self.0);\n                }\n            }\n        }"
+}

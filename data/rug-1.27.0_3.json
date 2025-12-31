@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rug-1.27.0/src/rational/traits.rs",
+    "start_line": 63,
+    "start_col": 1,
+    "end_line": 63,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Rational {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            xmpq::clear(self);\n        }\n    }\n}"
+}

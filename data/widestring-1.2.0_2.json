@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "widestring-1.2.0/src/ucstring.rs",
+    "start_line": 455,
+    "start_col": 9,
+    "end_line": 455,
+    "end_col": 32,
+    "code_snippet": "impl Drop for $ucstring {\n            #[inline]\n            fn drop(&mut self) {\n                unsafe {\n                    *self.inner.get_unchecked_mut(0) = Self::NUL_TERMINATOR;\n                }\n            }\n        }"
+}

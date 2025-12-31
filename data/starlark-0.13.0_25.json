@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::attr_ty`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 580,
+    "start_col": 5,
+    "end_line": 580,
+    "end_col": 42,
+    "code_snippet": "fn attr_ty(_name: &str) -> Option<Ty> {\n        Some(Ty::any())\n    }"
+}

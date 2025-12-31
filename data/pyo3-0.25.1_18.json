@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `pyclass_init::PyClassInitializer::<T>::create_class_object_of_type`",
+    "file": "pyo3-0.25.1/src/pyclass_init.rs",
+    "start_line": 160,
+    "start_col": 5,
+    "end_line": 200,
+    "end_col": 6,
+    "code_snippet": "pub(crate) unsafe fn create_class_object_of_type(\n        self,\n        py: Python<'_>,\n        target_type: *mut crate::ffi::PyTypeObject,\n    ) -> PyResult<Bound<'_, T>>\n    where\n        T: PyClass,\n    {\n        /// Layout of a PyClassObject after base new has been called, but the contents have not yet been\n        /// written.\n        #[repr(C)]\n        struct PartiallyInitializedClassObject<T: PyClass> {\n            _ob_base: <T::BaseType as PyClassBaseType>::LayoutAsBase,\n            contents: MaybeUninit<PyClassObjectContents<T>>,\n        }\n\n        let (init, super_init) = match self.0 {\n            PyClassInitializerImpl::Existing(value) => return Ok(value.into_bound(py)),\n            PyClassInitializerImpl::New { init, super_init } => (init, super_init),\n        };\n\n        let obj = unsafe { super_init.into_new_object(py, target_type)? };\n\n        let part_init: *mut PartiallyInitializedClassObject<T> = obj.cast();\n        unsafe {\n            std::ptr::write(\n                (*part_init).contents.as_mut_ptr(),\n                PyClassObjectContents {\n                    value: ManuallyDrop::new(UnsafeCell::new(init)),\n                    borrow_checker: <T::PyClassMutability as PyClassMutability>::Storage::new(),\n                    thread_checker: T::ThreadChecker::new(),\n                    dict: T::Dict::INIT,\n                    weakref: T::WeakRef::INIT,\n                },\n            );\n        }\n\n        // Safety: obj is a valid pointer to an object of type `target_type`, which` is a known\n        // subclass of `T`\n        Ok(unsafe { obj.assume_owned(py).downcast_into_unchecked() })\n    }"
+}

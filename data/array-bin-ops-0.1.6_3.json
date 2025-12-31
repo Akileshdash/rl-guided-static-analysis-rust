@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `assign::<impl Array<T, N>>::zip_mut_map`",
+    "file": "array-bin-ops-0.1.6/src/assign.rs",
+    "start_line": 7,
+    "start_col": 5,
+    "end_line": 31,
+    "end_col": 6,
+    "code_snippet": "pub fn zip_mut_map<U>(&mut self, rhs: [U; N], op: impl Fn(&mut T, U) + Copy) {\n        if needs_drop::<U>() {\n            let mut rhs = Slice::full(rhs);\n\n            for i in 0..N {\n                // SAFETY:\n                // Will only be called a maximum of N times\n                unsafe {\n                    let lhs = self.0.get_unchecked_mut(i);\n                    let rhs = rhs.pop_front_unchecked();\n                    op(lhs, rhs)\n                }\n            }\n        } else {\n            for i in 0..N {\n                // SAFETY:\n                // Will only be called a maximum of N times\n                unsafe {\n                    let lhs = self.0.get_unchecked_mut(i);\n                    let rhs = core::ptr::read(&rhs[i]);\n                    op(lhs, rhs)\n                }\n            }\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "faer-core-0.17.1/src/lib.rs",
+    "start_line": 10264,
+    "start_col": 1,
+    "end_line": 10264,
+    "end_col": 31,
+    "code_snippet": "unsafe impl<T> Sync for Ptr<T> {}\nimpl<T> Copy for Ptr<T> {}"
+}

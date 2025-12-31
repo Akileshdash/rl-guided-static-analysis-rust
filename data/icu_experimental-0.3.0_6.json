@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<dimension::provider::percent::PercentEssentials<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_experimental-0.3.0/src/dimension/provider/percent.rs",
+    "start_line": 35,
+    "start_col": 35,
+    "end_line": 35,
+    "end_col": 49,
+    "code_snippet": "#[derive(Clone, PartialEq, Debug, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_experimental::dimension::provider::percent))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n/// A struct including the essentials to create a Percent.\n///\n/// If an `approximate` or `explicit plus` are required, use the negative pattern as explained below:\n/// <https://www.unicode.org/reports/tr35/tr35-numbers.html#approximate-number-formatting>\n/// <https://www.unicode.org/reports/tr35/tr35-numbers.html#explicit-plus-signs>\npub struct PercentEssentials<'data> {\n    #[cfg_attr(\n        feature = \"serde\",\n        serde(\n            borrow,\n            deserialize_with = \"icu_pattern::deserialize_borrowed_cow::<DoublePlaceholder, _>\"\n        )\n    )]\n    /// Represents the standard pattern for signed percents.\n    /// NOTE: place holder 0 is the place of the percent value.\n    ///       place holder 1 is the place of the plus, minus, or approximate signs.\n    pub signed_pattern: Cow<'data, DoublePlaceholderPattern>,\n\n    #[cfg_attr(\n        feature = \"serde\",\n        serde(\n            borrow,\n            deserialize_with = \"icu_pattern::deserialize_borrowed_cow::<SinglePlaceholder, _>\"\n        )\n    )]\n    /// Represents the standard pattern for unsigned percents.\n    pub unsigned_pattern: Cow<'data, SinglePlaceholderPattern>,\n\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    /// The localize approximate sign.\n    pub approximately_sign: Cow<'data, str>,\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    /// The localize minus sign.\n    pub minus_sign: Cow<'data, str>,\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    /// The localize plus sign.\n    pub plus_sign: Cow<'data, str>,\n}"
+}

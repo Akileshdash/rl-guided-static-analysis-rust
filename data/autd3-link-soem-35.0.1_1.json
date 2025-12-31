@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "autd3-link-soem-35.0.1/src/local/link_soem.rs",
+    "start_line": 507,
+    "start_col": 1,
+    "end_line": 507,
+    "end_col": 32,
+    "code_snippet": "impl Drop for SOEMDCConfigGuard {\n    fn drop(&mut self) {\n        unsafe {\n            if ecx_context.userdata.is_null() {\n                return;\n            }\n\n            let cyc_time = Box::from_raw(ecx_context.userdata as *mut Duration);\n            let cyc_time = cyc_time.as_nanos() as _;\n            (1..=ec_slavecount as u16).for_each(|i| {\n                ec_dcsync0(i, 0, cyc_time, 0);\n            });\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `InstancePointers::load`",
+    "file": "vk-sys-0.7.0/src/lib.rs",
+    "start_line": 4084,
+    "start_col": 13,
+    "end_line": 4097,
+    "end_col": 14,
+    "code_snippet": "pub fn load<F>(mut f: F) -> $struct_name\n                where F: FnMut(&CStr) -> *const c_void\n            {\n                $struct_name {\n                    $(\n                        $name: unsafe {\n                            extern \"system\" fn $name($(_: $param_ty),*) { panic!(\"function pointer `{}` not loaded\", stringify!($name)) }\n                            let name = CStr::from_bytes_with_nul_unchecked(concat!(\"vk\", stringify!($name), \"\\0\").as_bytes());\n                            let val = f(name);\n                            if val.is_null() { mem::transmute($name as *const ()) } else { mem::transmute(val) }\n                        },\n                    )+\n                }\n            }"
+}

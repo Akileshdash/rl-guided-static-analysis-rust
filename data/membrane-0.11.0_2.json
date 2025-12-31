@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `emitter::emitter_impl::run_is_done_closure`",
+    "file": "membrane-0.11.0/src/emitter.rs",
+    "start_line": 214,
+    "start_col": 3,
+    "end_line": 226,
+    "end_col": 4,
+    "code_snippet": "extern \"C\" fn run_is_done_closure<F>(closure: *mut std::ffi::c_void) -> bool\n  where\n    F: (FnMut() -> bool),\n  {\n    let ptr = closure as *mut F;\n    if ptr.is_null() {\n      eprintln!(\"run_is_done_closure was called with a NULL pointer\");\n      return false;\n    }\n    let callback = unsafe { &mut *ptr };\n\n    callback()\n  }"
+}

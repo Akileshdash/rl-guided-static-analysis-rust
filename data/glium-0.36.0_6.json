@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glium-0.36.0/src/program/raw.rs",
+    "start_line": 716,
+    "start_col": 1,
+    "end_line": 716,
+    "end_col": 25,
+    "code_snippet": "impl Drop for RawProgram {\n    fn drop(&mut self) {\n        let mut ctxt = self.context.make_current();\n\n        // removing VAOs which contain this program\n        VertexAttributesSystem::purge_program(&mut ctxt, self.id);\n\n        // sending the destroy command\n        unsafe {\n            match self.id {\n                Handle::Id(id) => {\n                    assert!(ctxt.version >= &Version(Api::Gl, 2, 0) ||\n                            ctxt.version >= &Version(Api::GlEs, 2, 0));\n\n                    if ctxt.state.program == Handle::Id(id) {\n                        ctxt.gl.UseProgram(0);\n                        ctxt.state.program = Handle::Id(0);\n                        self.uniform_values.flush_subroutine_uniforms();\n                    }\n\n                    ctxt.gl.DeleteProgram(id);\n                },\n                Handle::Handle(id) => {\n                    assert!(ctxt.extensions.gl_arb_shader_objects);\n\n                    if ctxt.state.program == Handle::Handle(id) {\n                        ctxt.gl.UseProgramObjectARB(0 as gl::types::GLhandleARB);\n                        ctxt.state.program = Handle::Handle(0 as gl::types::GLhandleARB);\n                        self.uniform_values.flush_subroutine_uniforms();\n                    }\n\n                    ctxt.gl.DeleteObjectARB(id);\n                }\n            }\n        }\n    }\n}"
+}

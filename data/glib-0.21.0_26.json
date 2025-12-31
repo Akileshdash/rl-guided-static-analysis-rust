@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `collections::ptr_slice::PtrSlice::<T>::insert`",
+    "file": "glib-0.21.0/src/collections/ptr_slice.rs",
+    "start_line": 812,
+    "start_col": 5,
+    "end_line": 836,
+    "end_col": 6,
+    "code_snippet": "pub fn insert(&mut self, index: usize, item: T) {\n        assert!(index <= self.len);\n\n        // Nothing new to reserve as there's still enough space\n        if self.len + 1 + 1 > self.capacity {\n            self.reserve(1);\n        }\n\n        unsafe {\n            if index == self.len {\n                ptr::write(self.ptr.as_ptr().add(self.len) as *mut T, item);\n            } else {\n                let p = self.ptr.as_ptr().add(index);\n                ptr::copy(p, p.add(1), self.len - index);\n                ptr::write(self.ptr.as_ptr().add(index) as *mut T, item);\n            }\n\n            self.len += 1;\n\n            ptr::write(\n                self.ptr.as_ptr().add(self.len),\n                Ptr::from(ptr::null_mut::<<T as GlibPtrDefault>::GlibType>()),\n            );\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "matrixmultiply-0.3.10/src/ptr.rs",
+    "start_line": 15,
+    "start_col": 1,
+    "end_line": 15,
+    "end_col": 38,
+    "code_snippet": "unsafe impl<T> Sync for Ptr<*const T> { }\nunsafe impl<T> Sync for Ptr<*mut T> { }"
+}

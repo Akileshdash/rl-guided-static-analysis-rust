@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sled-1.0.0-alpha.124/src/metadata_store.rs",
+    "start_line": 209,
+    "start_col": 1,
+    "end_line": 209,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Inner {\n    fn drop(&mut self) {\n        // NB: this is the only place where the global error should be\n        // reclaimed in the whole sled codebase, as this Inner is only held\n        // by the background writer and the heap (in an Arc) so when this\n        // drop happens, it's because the whole system is going down, not\n        // because any particular Db instance that may have been cloned\n        // by a thread is dropping.\n        let error_ptr =\n            self.global_error.swap(std::ptr::null_mut(), Ordering::Acquire);\n        if !error_ptr.is_null() {\n            unsafe {\n                drop(Box::from_raw(error_ptr));\n            }\n        }\n    }\n}"
+}

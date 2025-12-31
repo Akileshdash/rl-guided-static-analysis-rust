@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "imagequant-sys-4.1.0/src/ffi.rs",
+    "start_line": 108,
+    "start_col": 1,
+    "end_line": 108,
+    "end_col": 28,
+    "code_snippet": "impl Drop for liq_image<'_> {\n    fn drop(&mut self) {\n        if bad_object!(self, LIQ_IMAGE_MAGIC) { return; }\n        unsafe { ManuallyDrop::drop(&mut self.inner); }\n        self.magic_header = LIQ_FREED_MAGIC;\n    }\n}"
+}

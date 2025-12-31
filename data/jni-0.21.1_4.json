@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jni-0.21.1/src/wrapper/objects/auto_elements.rs",
+    "start_line": 226,
+    "start_col": 1,
+    "end_line": 227,
+    "end_col": 54,
+    "code_snippet": "impl<'local, 'other_local, 'array, T: TypeArray> Drop\n    for AutoElements<'local, 'other_local, 'array, T>\n{\n    fn drop(&mut self) {\n        // Safety: `self.mode` is valid and the array has not yet been released.\n        let res = unsafe { self.release_array_elements(self.mode as i32) };\n\n        match res {\n            Ok(()) => {}\n            Err(e) => error!(\"error releasing array: {:#?}\", e),\n        }\n    }\n}"
+}

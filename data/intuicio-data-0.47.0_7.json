@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "intuicio-data-0.47.0/src/managed.rs",
+    "start_line": 755,
+    "start_col": 1,
+    "end_line": 755,
+    "end_col": 29,
+    "code_snippet": "impl Drop for DynamicManaged {\n    fn drop(&mut self) {\n        if self.drop {\n            unsafe {\n                if self.memory.is_null() {\n                    return;\n                }\n                let data_pointer = self.memory.cast::<()>();\n                (self.finalizer)(data_pointer);\n                non_zero_dealloc(self.memory, self.layout);\n                self.memory = std::ptr::null_mut();\n            }\n        }\n    }\n}"
+}

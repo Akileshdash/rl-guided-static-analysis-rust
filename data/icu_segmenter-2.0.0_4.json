@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::lstm::LstmMatrix1<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_segmenter-2.0.0/src/provider/lstm.rs",
+    "start_line": 25,
+    "start_col": 63,
+    "end_line": 25,
+    "end_col": 77,
+    "code_snippet": "#[derive(PartialEq, Debug, Clone, zerofrom::ZeroFrom, yoke::Yokeable)]\n        #[cfg_attr(feature = \"datagen\", derive(serde::Serialize))]\n        pub struct $name<'data> {\n            // Invariant: dims.product() == data.len()\n            #[allow(missing_docs)]\n            pub(crate) dims: [u16; $generic],\n            #[allow(missing_docs)]\n            pub(crate) data: ZeroVec<'data, f32>,\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmer-near-2.4.1/src/sys/env.rs",
+    "start_line": 207,
+    "start_col": 1,
+    "end_line": 207,
+    "end_col": 29,
+    "code_snippet": "impl<T> Drop for LazyInit<T> {\n    fn drop(&mut self) {\n        if self.initialized {\n            unsafe {\n                let ptr = self.data.as_mut_ptr();\n                std::ptr::drop_in_place(ptr);\n            };\n        }\n    }\n}"
+}

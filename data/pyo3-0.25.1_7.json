@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "pyo3-0.25.1/src/buffer.rs",
+    "start_line": 36,
+    "start_col": 1,
+    "end_line": 36,
+    "end_col": 36,
+    "code_snippet": "unsafe impl<T> Send for PyBuffer<T> {}\nunsafe impl<T> Sync for PyBuffer<T> {}"
+}

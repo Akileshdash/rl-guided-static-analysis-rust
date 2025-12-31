@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "mvutils-1.5.2/src/thread.rs",
+    "start_line": 74,
+    "start_col": 1,
+    "end_line": 74,
+    "end_col": 38,
+    "code_snippet": "unsafe impl<T> Sync for ThreadSafe<T> {}"
+}

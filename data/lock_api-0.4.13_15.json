@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "lock_api-0.4.13/src/mutex.rs",
+    "start_line": 144,
+    "start_col": 1,
+    "end_line": 144,
+    "end_col": 71,
+    "code_snippet": "unsafe impl<R: RawMutex + Sync, T: ?Sized + Send> Sync for Mutex<R, T> {}"
+}

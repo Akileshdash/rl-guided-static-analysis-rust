@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "heed-0.22.0/src/txn.rs",
+    "start_line": 172,
+    "start_col": 1,
+    "end_line": 172,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for RoTxn<'_, T> {\n    fn drop(&mut self) {\n        if let Some(mut txn) = self.inner.txn.take() {\n            // Asserts that the transaction hasn't been already\n            // committed/aborter and ensure we cannot use it twice.\n            unsafe { ffi::mdb_txn_abort(txn.as_mut()) }\n        }\n    }\n}"
+}

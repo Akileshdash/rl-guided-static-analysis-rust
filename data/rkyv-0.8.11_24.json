@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<collections::btree::map::ArchivedBTreeMap<K, V, E> as bytecheck::CheckBytes<__C>>::check_bytes`",
+    "file": "rkyv-0.8.11/src/collections/btree/map/mod.rs",
+    "start_line": 157,
+    "start_col": 12,
+    "end_line": 157,
+    "end_col": 33,
+    "code_snippet": "derive(bytecheck::CheckBytes),\n    bytecheck(verify)\n)]\n#[derive(Portable)]\n#[rkyv(crate)]\n#[repr(C)]\npub struct ArchivedBTreeMap<K, V, const E: usize = 5> {\n    // The type of the root node is determined at runtime because it may point\n    // to:\n    // - Nothing if the length is zero\n    // - A leaf node if there is only one node\n    // - Or an inner node if there are multiple nodes\n    root: RelPtr<Node<K, V, E>>,\n    len: ArchivedUsize,\n    _phantom: PhantomData<(K, V)>,\n}"
+}

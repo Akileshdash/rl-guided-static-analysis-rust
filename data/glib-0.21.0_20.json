@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<variant::Variant as std::convert::From<variant::FixedSizeVariantArray<A, T>>>::from`",
+    "file": "glib-0.21.0/src/variant.rs",
+    "start_line": 1939,
+    "start_col": 5,
+    "end_line": 1962,
+    "end_col": 6,
+    "code_snippet": "fn from(a: FixedSizeVariantArray<A, T>) -> Self {\n        unsafe {\n            let data = Box::new(a.0);\n            let (data_ptr, len) = {\n                let data = (*data).as_ref();\n                (data.as_ptr(), mem::size_of_val(data))\n            };\n\n            unsafe extern \"C\" fn free_data<A: AsRef<[T]>, T: FixedSizeVariantType>(\n                ptr: ffi::gpointer,\n            ) {\n                let _ = Box::from_raw(ptr as *mut A);\n            }\n\n            from_glib_none(ffi::g_variant_new_from_data(\n                T::static_variant_type().to_glib_none().0,\n                data_ptr as ffi::gconstpointer,\n                len,\n                false.into_glib(),\n                Some(free_data::<A, T>),\n                Box::into_raw(data) as ffi::gpointer,\n            ))\n        }\n    }"
+}

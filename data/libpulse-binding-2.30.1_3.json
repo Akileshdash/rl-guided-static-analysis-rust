@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `context::Context::rttime_new`",
+    "file": "libpulse-binding-2.30.1/src/context/mod.rs",
+    "start_line": 545,
+    "start_col": 5,
+    "end_line": 566,
+    "end_col": 6,
+    "code_snippet": "pub fn rttime_new<T, F>(&self, mainloop: &dyn Mainloop<MI=T::MI>, time: MonotonicTs,\n        mut callback: F) -> Option<TimeEvent<T::MI>>\n        where T: Mainloop + 'static,\n              F: FnMut(TimeEventRef<T::MI>) + 'static\n    {\n        let inner_for_wrapper = mainloop.inner();\n        let wrapper_cb = Box::new(move |ptr| {\n            let ref_obj = TimeEventRef::<T::MI>::from_raw(ptr, Rc::clone(&inner_for_wrapper));\n            callback(ref_obj);\n        });\n\n        let to_save = events::timer::EventCb::new(Some(wrapper_cb));\n        let (cb_fn, cb_data) = to_save.get_capi_params(events::timer::event_cb_proxy);\n\n        let ptr = unsafe {\n            capi::pa_context_rttime_new(self.ptr, (time.0).0, std::mem::transmute(cb_fn), cb_data)\n        };\n        match ptr.is_null() {\n            false => Some(TimeEvent::<T::MI>::from_raw(ptr, mainloop.inner(), to_save)),\n            true => None,\n        }\n    }"
+}

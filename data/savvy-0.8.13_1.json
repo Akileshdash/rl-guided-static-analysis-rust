@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `unwind_protect::unwind_protect::do_call`",
+    "file": "savvy-0.8.13/src/unwind_protect.rs",
+    "start_line": 21,
+    "start_col": 9,
+    "end_line": 30,
+    "end_col": 10,
+    "code_snippet": "unsafe extern \"C\" fn do_call<F>(data: *mut c_void) -> SEXP\n        where\n            F: FnOnce() -> SEXP + Copy,\n        {\n            unsafe {\n                let data = data as *const ();\n                let f: &F = &*(data as *const F);\n                f()\n            }\n        }"
+}

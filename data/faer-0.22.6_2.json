@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "faer-0.22.6/src/mat/matown.rs",
+    "start_line": 255,
+    "start_col": 1,
+    "end_line": 255,
+    "end_col": 28,
+    "code_snippet": "impl<T> Drop for DropCol<T> {\n\t#[inline]\n\tfn drop(&mut self) {\n\t\tif try_const! { core::mem::needs_drop::<T>() } {\n\t\t\tunsafe {\n\t\t\t\tlet slice = core::slice::from_raw_parts_mut(self.ptr, self.nrows);\n\t\t\t\tcore::ptr::drop_in_place(slice);\n\t\t\t}\n\t\t}\n\t}\n}"
+}

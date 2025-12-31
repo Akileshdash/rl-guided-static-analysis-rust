@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "atomicbox-0.4.0/src/atomic_option_box.rs",
+    "start_line": 223,
+    "start_col": 1,
+    "end_line": 223,
+    "end_col": 36,
+    "code_snippet": "impl<T> Drop for AtomicOptionBox<T> {\n    /// Dropping an `AtomicOptionBox<T>` drops the final `Box<T>` value (if\n    /// any) stored in it.\n    fn drop(&mut self) {\n        let last_ptr = self.ptr.load(Ordering::Acquire);\n        unsafe {\n            from_ptr(last_ptr);\n        }\n    }\n}"
+}

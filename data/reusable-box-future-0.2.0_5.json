@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "reusable-box-future-0.2.0/src/box_future.rs",
+    "start_line": 151,
+    "start_col": 1,
+    "end_line": 151,
+    "end_col": 45,
+    "code_snippet": "unsafe impl<T> Sync for ReusableBoxFuture<T> {}"
+}

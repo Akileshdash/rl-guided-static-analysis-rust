@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<de::impls::<impl de::Deserialize for alloc::boxed::Box<T>>::begin::Place<alloc::boxed::Box<T>> as de::Visitor>::seq`",
+    "file": "miniserde-0.1.42/src/de/impls.rs",
+    "start_line": 212,
+    "start_col": 13,
+    "end_line": 220,
+    "end_col": 14,
+    "code_snippet": "fn seq(&mut self) -> Result<Box<dyn Seq + '_>> {\n                let mut value = NonuniqueBox::new(None);\n                let ptr = unsafe { extend_lifetime!(&mut *value as &mut Option<T>) };\n                Ok(Box::new(BoxSeq {\n                    out: &mut self.out,\n                    value,\n                    seq: ManuallyDrop::new(Deserialize::begin(ptr).seq()?),\n                }))\n            }"
+}

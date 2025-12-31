@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "second-stack-0.3.5/src/lib.rs",
+    "start_line": 137,
+    "start_col": 9,
+    "end_line": 137,
+    "end_col": 39,
+    "code_snippet": "impl<T> Drop for Writer<'_, T> {\n            fn drop(&mut self) {\n                unsafe {\n                    for i in 0..self.len {\n                        self.base.add(i).drop_in_place()\n                    }\n                }\n            }\n        }"
+}

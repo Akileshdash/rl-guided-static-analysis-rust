@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "arrayvec-0.7.6/src/arrayvec.rs",
+    "start_line": 932,
+    "start_col": 1,
+    "end_line": 932,
+    "end_col": 52,
+    "code_snippet": "impl<T, const CAP: usize> Drop for IntoIter<T, CAP> {\n    fn drop(&mut self) {\n        // panic safety: Set length to 0 before dropping elements.\n        let index = self.index;\n        let len = self.v.len();\n        unsafe {\n            self.v.set_len(0);\n            let elements = slice::from_raw_parts_mut(\n                self.v.get_unchecked_ptr(index),\n                len - index);\n            ptr::drop_in_place(elements);\n        }\n    }\n}"
+}

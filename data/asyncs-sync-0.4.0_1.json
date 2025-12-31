@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "asyncs-sync-0.4.0/src/notify.rs",
+    "start_line": 584,
+    "start_col": 1,
+    "end_line": 584,
+    "end_col": 24,
+    "code_snippet": "impl Drop for WakerList {\n    fn drop(&mut self) {\n        while self.next != 0 {\n            self.next -= 1;\n            unsafe {\n                self.wakers[self.next].assume_init_drop();\n            }\n        }\n    }\n}"
+}

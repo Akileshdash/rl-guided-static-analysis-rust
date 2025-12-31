@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "poldercast-1.2.1/src/priority_map.rs",
+    "start_line": 212,
+    "start_col": 1,
+    "end_line": 212,
+    "end_col": 57,
+    "code_snippet": "unsafe impl<K: Send, V: Send> Send for PriorityMap<K, V> {}\nunsafe impl<K: Sync, V: Sync> Sync for PriorityMap<K, V> {}"
+}

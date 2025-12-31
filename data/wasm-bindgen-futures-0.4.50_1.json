@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "wasm-bindgen-futures-0.4.50/src/queue.rs",
+    "start_line": 116,
+    "start_col": 9,
+    "end_line": 116,
+    "end_col": 43,
+    "code_snippet": "unsafe impl<T> Sync for Wrapper<T> {}"
+}

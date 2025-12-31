@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "ptr_meta-0.3.0/src/lib.rs",
+    "start_line": 385,
+    "start_col": 1,
+    "end_line": 385,
+    "end_col": 51,
+    "code_snippet": "unsafe impl<Dyn: ?Sized> Send for DynMetadata<Dyn> {}\n// SAFETY: References to trait object vtables are guaranteed to be `Sync`."
+}

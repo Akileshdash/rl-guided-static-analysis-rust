@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "alloc-from-pool-1.0.5/src/pool.rs",
+    "start_line": 65,
+    "start_col": 1,
+    "end_line": 65,
+    "end_col": 25,
+    "code_snippet": "impl<T> Drop for Pool<T> {\n    fn drop(&mut self) {\n        unsafe {\n            drop(Box::from_raw(self.slots as *mut UnsafeCell<Vec<Box<T>>>));\n            #[cfg(test)]\n            drop(Box::from_raw(self.allocations));\n        }\n    }\n}"
+}

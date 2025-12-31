@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "luminance-gl-0.19.1/src/gl33/framebuffer.rs",
+    "start_line": 27,
+    "start_col": 1,
+    "end_line": 29,
+    "end_col": 20,
+    "code_snippet": "impl<D> Drop for Framebuffer<D>\nwhere\n  D: Dimensionable,\n{\n  fn drop(&mut self) {\n    unsafe {\n      if let Some(renderbuffer) = self.renderbuffer {\n        gl::DeleteRenderbuffers(1, &renderbuffer);\n        gl::BindRenderbuffer(gl::RENDERBUFFER, 0);\n      }\n\n      if self.handle != 0 {\n        gl::DeleteFramebuffers(1, &self.handle);\n        self.state.borrow_mut().bind_vertex_array(0, Bind::Cached);\n      }\n    }\n  }\n}"
+}

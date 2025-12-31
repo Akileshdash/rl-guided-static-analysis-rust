@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "nusb-0.2.0/src/transfer/internal.rs",
+    "start_line": 205,
+    "start_col": 1,
+    "end_line": 205,
+    "end_col": 28,
+    "code_snippet": "impl<P> Drop for Pending<P> {\n    fn drop(&mut self) {\n        match self.state().swap(STATE_ABANDONED, Ordering::AcqRel) {\n            STATE_PENDING => { /* handler responsible for dropping */ }\n            STATE_IDLE => {\n                // SAFETY: state means there is no concurrent access\n                unsafe { drop(Box::from_raw(self.ptr.as_ptr())) }\n            }\n            s => panic!(\"Dropping transfer in unexpected state {s}\"),\n        }\n    }\n}"
+}

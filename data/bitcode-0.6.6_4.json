@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<derive::array::ArrayDecoder<'a, T, N> as coder::Decoder<'a, [T; N]>>::decode_in_place`",
+    "file": "bitcode-0.6.6/src/derive/array.rs",
+    "start_line": 88,
+    "start_col": 5,
+    "end_line": 94,
+    "end_col": 6,
+    "code_snippet": "fn decode_in_place(&mut self, out: &mut MaybeUninit<[T; N]>) {\n        // Safety: Equivalent to nightly MaybeUninit::transpose.\n        let out = unsafe { &mut *(out.as_mut_ptr() as *mut [MaybeUninit<T>; N]) };\n        for out in out {\n            self.0.decode_in_place(out);\n        }\n    }"
+}

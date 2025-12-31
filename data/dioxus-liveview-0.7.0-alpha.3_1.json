@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "dioxus-liveview-0.7.0-alpha.3/src/query.rs",
+    "start_line": 238,
+    "start_col": 1,
+    "end_line": 238,
+    "end_col": 44,
+    "code_snippet": "impl<V: DeserializeOwned> Drop for Query<V> {\n    fn drop(&mut self) {\n        self.query_engine\n            .active_requests\n            .slab\n            .borrow_mut()\n            .remove(self.id);\n        let queue_id = self.id;\n\n        _ = self.query_engine.query_tx.send(format!(\n            r#\"\n            if (!window.{QUEUE_NAME}) {{\n                window.{QUEUE_NAME} = [];\n            }}\n\n            if (window.{QUEUE_NAME}[{queue_id}]) {{\n                window.{QUEUE_NAME}[{queue_id}] = [];\n            }}\n            \"#\n        ));\n    }\n}"
+}

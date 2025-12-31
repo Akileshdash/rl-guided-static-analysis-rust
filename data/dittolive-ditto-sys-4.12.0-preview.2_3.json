@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "dittolive-ditto-sys-4.12.0-preview.2/ffi_utils.rs",
+    "start_line": 411,
+    "start_col": 5,
+    "end_line": 414,
+    "end_col": 35,
+    "code_snippet": "unsafe impl<T> Sync for ThinArc<T>\n    where\n        T: FfiDropArc,\n        ::std::sync::Arc<T>: Sync,\n    {\n    }"
+}

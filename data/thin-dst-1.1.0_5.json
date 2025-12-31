@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "thin-dst-1.1.0/src/lib.rs",
+    "start_line": 195,
+    "start_col": 9,
+    "end_line": 196,
+    "end_col": 58,
+    "code_snippet": "unsafe impl<$($a,)* Head, SliceItem> Send for $thin<$($a,)* Head, SliceItem> where\n            $fat<$($b,)* ThinData<Head, SliceItem>>: Send\n        {\n        }"
+}

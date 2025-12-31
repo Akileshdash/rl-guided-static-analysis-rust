@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "juniper-0.16.2/src/types/containers.rs",
+    "start_line": 361,
+    "start_col": 9,
+    "end_line": 361,
+    "end_col": 73,
+    "code_snippet": "impl<T, const N: usize> Drop for PartiallyInitializedArray<T, N> {\n            fn drop(&mut self) {\n                if self.no_drop {\n                    return;\n                }\n                // Dropping a `MaybeUninit` does nothing, thus we need to drop\n                // the initialized elements manually, otherwise we may introduce\n                // a memory/resource leak if `T: Drop`.\n                for elem in &mut self.arr[0..self.init_len] {\n                    // SAFETY: This is safe, because `self.init_len` represents\n                    //         exactly the number of initialized elements.\n                    unsafe {\n                        ptr::drop_in_place(elem.as_mut_ptr());\n                    }\n                }\n            }\n        }"
+}

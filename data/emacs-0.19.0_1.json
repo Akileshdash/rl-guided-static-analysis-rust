@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "emacs-0.19.0/src/env.rs",
+    "start_line": 106,
+    "start_col": 1,
+    "end_line": 106,
+    "end_col": 18,
+    "code_snippet": "impl Drop for Env {\n    fn drop(&mut self) {\n        if let Some(protected) = &self.protected {\n            #[cfg(build = \"debug\")]\n            println!(\"Unrooting {} values protected by {:?}\", protected.borrow().len(), self);\n            // If the `defun` returned a non-local exit, we clear it so that `free_global_ref` doesn't\n            // bail out early. Afterwards we restore the non-local exit status and associated data.\n            // It's kind of like an `unwind-protect`.\n            let mut symbol = MaybeUninit::uninit();\n            let mut data = MaybeUninit::uninit();\n            // TODO: Check whether calling non_local_exit_check first makes a difference in performance.\n            let status = self.non_local_exit_get(&mut symbol, &mut data);\n            if status == error::SIGNAL || status == error::THROW {\n                self.non_local_exit_clear();\n            }\n            for raw in protected.borrow().iter() {\n                // TODO: Do we want to stop if `free_global_ref` returned a non-local exit?\n                // Safety: We assume user code doesn't directly call C function `free_global_ref`.\n                unsafe_raw_call_no_exit!(self, free_global_ref, *raw);\n            }\n            match status {\n                error::SIGNAL => unsafe { self.non_local_exit_signal(symbol.assume_init(), data.assume_init()); }\n                error::THROW => unsafe { self.non_local_exit_throw(symbol.assume_init(), data.assume_init()); }\n                _ => ()\n            }\n        }\n    }\n}"
+}

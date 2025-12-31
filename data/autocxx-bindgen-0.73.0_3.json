@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "autocxx-bindgen-0.73.0/clang.rs",
+    "start_line": 1817,
+    "start_col": 1,
+    "end_line": 1817,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Index {\n    fn drop(&mut self) {\n        unsafe {\n            clang_disposeIndex(self.x);\n        }\n    }\n}"
+}

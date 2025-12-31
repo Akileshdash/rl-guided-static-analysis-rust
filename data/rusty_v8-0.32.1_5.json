@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wasm::trampoline::c_fn`",
+    "file": "rusty_v8-0.32.1/src/wasm.rs",
+    "start_line": 153,
+    "start_col": 3,
+    "end_line": 168,
+    "end_col": 4,
+    "code_snippet": "extern \"C\" fn c_fn<F>(info: *const FunctionCallbackInfo)\n  where\n    F: UnitType + Fn(&mut HandleScope, Local<Value>, WasmStreaming),\n  {\n    let scope = &mut unsafe { CallbackScope::new(&*info) };\n    let args = FunctionCallbackArguments::from_function_callback_info(info);\n    let data = args.data().unwrap(); // Always present.\n    let data = &*data as *const Value;\n    let zero = null_mut();\n    let mut that = WasmStreamingSharedPtr([zero, zero]);\n    unsafe {\n      v8__WasmStreaming__Unpack(scope.get_isolate_ptr(), data, &mut that)\n    };\n    let source = args.get(0);\n    (F::get())(scope, source, WasmStreaming(that));\n  }"
+}

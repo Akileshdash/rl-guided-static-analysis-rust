@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkano-0.35.1/src/buffer/allocator.rs",
+    "start_line": 383,
+    "start_col": 1,
+    "end_line": 383,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Arena {\n    fn drop(&mut self) {\n        let buffer = unsafe { ManuallyDrop::take(&mut self.buffer) }.0;\n        let _ = self.reserve.push(buffer);\n    }\n}"
+}

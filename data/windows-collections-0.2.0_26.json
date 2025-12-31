@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `bindings::IVector_Vtbl::<T>::new::Append`",
+    "file": "windows-collections-0.2.0/src/bindings.rs",
+    "start_line": 1540,
+    "start_col": 9,
+    "end_line": 1553,
+    "end_col": 10,
+    "code_snippet": "unsafe extern \"system\" fn Append<\n            T: windows_core::RuntimeType + 'static,\n            Identity: IVector_Impl<T>,\n            const OFFSET: isize,\n        >(\n            this: *mut core::ffi::c_void,\n            value: windows_core::AbiType<T>,\n        ) -> windows_core::HRESULT {\n            unsafe {\n                let this: &Identity =\n                    &*((this as *const *const ()).offset(OFFSET) as *const Identity);\n                IVector_Impl::Append(this, core::mem::transmute_copy(&value)).into()\n            }\n        }"
+}

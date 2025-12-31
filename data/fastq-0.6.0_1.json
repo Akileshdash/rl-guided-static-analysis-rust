@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `parse_path`",
+    "file": "fastq-0.6.0/src/lib.rs",
+    "start_line": 173,
+    "start_col": 1,
+    "end_line": 206,
+    "end_col": 2,
+    "code_snippet": "pub fn parse_path<P, F, O>(path: Option<P>, func: F) -> Result<O>\n        where P: AsRef<Path>,\n              F: FnOnce(Parser<&mut Read>) -> O\n{\n    let mut reader: Box<Read + Send> = match path {\n        None => {\n            Box::new(std::io::stdin())\n        },\n        Some(path) => {\n            Box::new(std::fs::File::open(path)?)\n        }\n    };\n    let mut magic_bytes = [0u8; 4];\n    reader.read_exact(&mut magic_bytes)?;\n    let mut reader = Cursor::new(magic_bytes.to_vec()).chain(reader);\n    if unsafe { std::mem::transmute::<_, u32>(magic_bytes.clone()) }.to_le() ==  0x184D2204 {\n        let bufsize = 1<<22;\n        let queuelen = 2;\n        return Ok(thread_reader(bufsize, queuelen, Decoder::new(reader)?, |mut reader| {\n            func(Parser::new(&mut reader))\n        }).expect(\"lz4 reader thread paniced\"))\n    } else if &magic_bytes[..2] == b\"\\x1f\\x8b\" {\n        let bufsize = 1<<22;\n        let queuelen = 2;\n        let reader = MultiGzDecoder::new(reader);\n        return Ok(thread_reader(bufsize, queuelen, reader, |mut reader| {\n            func(Parser::new(&mut reader))\n        }).expect(\"gzip reader thread paniced\"))\n    } else if magic_bytes[0] == b'@' {\n        Ok(func(Parser::new(&mut reader)))\n    } else {\n        return Err(Error::new(ErrorKind::InvalidData, \"Not a gzip, lz4 or plain fastq file\"))\n    }\n}"
+}

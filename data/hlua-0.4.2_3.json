@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `functions_write::wrapper`",
+    "file": "hlua-0.4.2/src/functions_write.rs",
+    "start_line": 386,
+    "start_col": 1,
+    "end_line": 423,
+    "end_col": 2,
+    "code_snippet": "extern \"C\" fn wrapper<T, P, R>(lua: *mut ffi::lua_State) -> libc::c_int\n    where T: FunctionExt<P, Output = R>,\n          P: for<'p> LuaRead<&'p mut InsideCallback> + 'static,\n          R: for<'p> Push<&'p mut InsideCallback>\n{\n    // loading the object that we want to call from the Lua context\n    let data_raw = unsafe { ffi::lua_touserdata(lua, ffi::lua_upvalueindex(1)) };\n    let data: &mut T = unsafe { mem::transmute(data_raw) };\n\n    // creating a temporary Lua context in order to pass it to push & read functions\n    let mut tmp_lua = InsideCallback { lua: LuaContext(lua) };\n\n    // trying to read the arguments\n    let arguments_count = unsafe { ffi::lua_gettop(lua) } as i32;\n    let args = match LuaRead::lua_read_at_position(&mut tmp_lua, -arguments_count as libc::c_int) {      // TODO: what if the user has the wrong params?\n        Err(_) => {\n            let err_msg = format!(\"wrong parameter types for callback function\");\n            match err_msg.push_to_lua(&mut tmp_lua) {\n                Ok(p) => p.forget_internal(),\n                Err(_) => unreachable!(),\n            };\n            unsafe {\n                ffi::lua_error(lua);\n            }\n            unreachable!()\n        }\n        Ok(a) => a,\n    };\n\n    let ret_value = data.call_mut(args);\n\n    // pushing back the result of the function on the stack\n    let nb = match ret_value.push_to_lua(&mut tmp_lua) {\n        Ok(p) => p.forget_internal(),\n        Err(_) => panic!(),      // TODO: wrong\n    };\n    nb as libc::c_int\n}"
+}

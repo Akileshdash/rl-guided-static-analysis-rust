@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fragile-2.0.1/src/sticky.rs",
+    "start_line": 36,
+    "start_col": 1,
+    "end_line": 36,
+    "end_col": 27,
+    "code_snippet": "impl<T> Drop for Sticky<T> {\n    fn drop(&mut self) {\n        // if the type needs dropping we can only do so on the right thread.\n        // worst case we leak the value until the thread dies when drop will be\n        // called by the registry.\n        if mem::needs_drop::<T>() {\n            unsafe {\n                if self.is_valid() {\n                    self.unsafe_take_value();\n                }\n            }\n        }\n    }\n}"
+}

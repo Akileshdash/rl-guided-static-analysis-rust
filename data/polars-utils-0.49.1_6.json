@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "polars-utils-0.49.1/src/sync.rs",
+    "start_line": 46,
+    "start_col": 1,
+    "end_line": 46,
+    "end_col": 35,
+    "code_snippet": "unsafe impl<T> Sync for SyncPtr<T> {}\nunsafe impl<T> Send for SyncPtr<T> {}"
+}

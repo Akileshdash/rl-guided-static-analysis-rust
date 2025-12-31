@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "fast-able-1.18.6/src/static_type.rs",
+    "start_line": 108,
+    "start_col": 1,
+    "end_line": 108,
+    "end_col": 38,
+    "code_snippet": "unsafe impl<T> Sync for StaticType<T> {}"
+}

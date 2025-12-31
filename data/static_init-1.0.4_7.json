@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "static_init-1.0.4/src/phase_locker/sync.rs",
+    "start_line": 231,
+    "start_col": 1,
+    "end_line": 231,
+    "end_col": 39,
+    "code_snippet": "unsafe impl<T: Send> Sync for Mutex<T> {}"
+}

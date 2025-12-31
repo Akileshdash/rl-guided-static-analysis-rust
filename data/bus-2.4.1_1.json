@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "bus-2.4.1/src/lib.rs",
+    "start_line": 125,
+    "start_col": 1,
+    "end_line": 125,
+    "end_col": 40,
+    "code_snippet": "unsafe impl<T> Sync for MutSeatState<T> {}\nimpl<T> Deref for MutSeatState<T> {\n    type Target = UnsafeCell<SeatState<T>>;\n    fn deref(&self) -> &Self::Target {\n        &self.0\n    }\n}"
+}

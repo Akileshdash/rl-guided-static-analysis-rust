@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `values::traits::StarlarkValueVTableGet::<'v, T>::VTABLE::is_in`",
+    "file": "starlark-0.13.0/src/values/traits.rs",
+    "start_line": 638,
+    "start_col": 5,
+    "end_line": 638,
+    "end_col": 61,
+    "code_snippet": "fn is_in(&self, other: Value<'v>) -> crate::Result<bool> {\n        ValueError::unsupported_owned(other.get_type(), \"in\", Some(Self::TYPE))\n    }"
+}

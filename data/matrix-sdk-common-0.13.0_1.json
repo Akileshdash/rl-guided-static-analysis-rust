@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "matrix-sdk-common-0.13.0/src/linked_chunk/mod.rs",
+    "start_line": 1119,
+    "start_col": 1,
+    "end_line": 1119,
+    "end_col": 71,
+    "code_snippet": "impl<const CAP: usize, Item, Gap> Drop for LinkedChunk<CAP, Item, Gap> {\n    fn drop(&mut self) {\n        // Clear the links, which will drop all the chunks.\n        //\n        // Calling `Self::clear` would be an error as we don't want to emit an\n        // `Update::Clear` when `self` is dropped. Instead, we only care about\n        // freeing memory correctly. Rust can take care of everything except the\n        // pointers in `self.links`, hence the specific call to `self.links.clear()`.\n        //\n        // SAFETY: this is the last use of the linked chunk, so leaving it in a dangling\n        // state is fine.\n        unsafe {\n            self.links.clear();\n        }\n    }\n}"
+}

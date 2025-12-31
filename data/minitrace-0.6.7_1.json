@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "minitrace-0.6.7/src/util/object_pool.rs",
+    "start_line": 146,
+    "start_col": 1,
+    "end_line": 146,
+    "end_col": 37,
+    "code_snippet": "impl<'a, T> Drop for Reusable<'a, T> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            self.pool.recycle(ManuallyDrop::take(&mut self.obj));\n        }\n    }\n}"
+}

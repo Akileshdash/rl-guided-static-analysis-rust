@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "yoke-0.8.0/src/cartable_ptr.rs",
+    "start_line": 327,
+    "start_col": 1,
+    "end_line": 329,
+    "end_col": 28,
+    "code_snippet": "impl<C> Drop for CartableOptionPointer<C>\nwhere\n    C: CartablePointerLike,\n{\n    #[inline]\n    fn drop(&mut self) {\n        let ptr = self.inner;\n        if ptr != sentinel_for::<C::Raw>() {\n            // By the invariants, `ptr` is a valid raw value since it's\n            // either that or sentinel, and we just checked for sentinel.\n            // We will replace it with the sentinel and then drop `ptr`.\n            self.inner = sentinel_for::<C::Raw>();\n            // Safety: by the invariants, `ptr` is a valid raw value.\n            unsafe { C::drop_raw(ptr) }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stackvector-1.1.1/src/lib.rs",
+    "start_line": 288,
+    "start_col": 1,
+    "end_line": 288,
+    "end_col": 32,
+    "code_snippet": "impl<T> Drop for DropOnPanic<T> {\n    fn drop(&mut self) {\n        for i in 0..self.len {\n            if !self.skip.contains(&i) {\n                unsafe {\n                    ptr::drop_in_place(self.start.add(i));\n                }\n            }\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `parma::raw::RawTable::<K, V>::find_impl`",
+    "file": "polars-utils-0.49.1/src/parma/raw/mod.rs",
+    "start_line": 443,
+    "start_col": 5,
+    "end_line": 493,
+    "end_col": 6,
+    "code_snippet": "fn find_impl(\n        alloc: *mut AllocHeader<K, V>,\n        hash: usize,\n        mut eq: impl FnMut(&K) -> bool,\n    ) -> Result<(*mut EntryHeader<K, V>, usize), Prober> {\n        unsafe {\n            let mut prober = Prober::new(hash);\n\n            let header = &*alloc;\n            let tags = header.tags(alloc);\n            let entries = header.entries(alloc);\n            let group_mask = TagGroup::idx_mask(header.num_entries);\n            let mut needle = TagGroup::all_occupied(hash);\n            loop {\n                let group_idx = prober.get() & group_mask;\n                let mut tag_group = TagGroup::load(tags.get_unchecked(group_idx));\n                let mut matches = tag_group.matches(&mut needle);\n                while matches.has_matches() {\n                    let idx_in_group = matches.get();\n                    let entry_idx = size_of::<TagGroup>() * group_idx + idx_in_group;\n                    let entry_ptr = entries.get_unchecked(entry_idx).load(Ordering::Acquire);\n\n                    // Matching tag but unclaimed, racy insert in process but definitely missing.\n                    if entry_ptr.addr() == UNCLAIMED {\n                        return Err(prober);\n                    }\n\n                    if entry_ptr.addr() != DELETED {\n                        let state = (*EntryHeader::state_ptr(entry_ptr)).load(Ordering::Acquire);\n                        if state.addr() & DELETE_BIT == 0\n                            && eq(K::get(EntryHeader::<K, V>::key_ptr(entry_ptr)))\n                        {\n                            // Not deleted and a key hit, either a racy insert or a hit.\n                            return if state.addr() & INIT_BIT != 0 {\n                                Ok((entry_ptr, entry_idx))\n                            } else {\n                                Err(prober)\n                            };\n                        }\n                    }\n                    matches.advance();\n                }\n\n                if tag_group.empties().has_matches() {\n                    return Err(prober);\n                }\n\n                prober.advance();\n            }\n        }\n    }"
+}

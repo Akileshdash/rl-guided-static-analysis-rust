@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `unique::Observable::<T, L>::into_shared`",
+    "file": "eyeball-0.8.8/src/unique.rs",
+    "start_line": 260,
+    "start_col": 5,
+    "end_line": 267,
+    "end_col": 6,
+    "code_snippet": "pub fn into_shared(this: Self) -> SharedObservable<T, L> {\n        // Destructure `this` without running `Drop`.\n        let state = unsafe { ptr::read(&this.state) };\n        mem::forget(this);\n\n        let rwlock = L::shared_into_inner(state);\n        SharedObservable::from_inner(rwlock)\n    }"
+}

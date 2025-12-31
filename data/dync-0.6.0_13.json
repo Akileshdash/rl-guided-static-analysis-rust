@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<value::Value<B, V> as std::ops::Drop>::drop`",
+    "file": "dync-0.6.0/src/value.rs",
+    "start_line": 325,
+    "start_col": 5,
+    "end_line": 334,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        unsafe {\n            // SAFETY: Self will never be used after this call.\n            self.vtable.drop_fn()(self.bytes.get_bytes_mut());\n\n            // Manually drop what we promised.\n            self.bytes.drop_as_aligned(self.alignment);\n            ManuallyDrop::drop(&mut self.vtable);\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "objc_id-0.1.1/src/id.rs",
+    "start_line": 87,
+    "start_col": 1,
+    "end_line": 87,
+    "end_col": 52,
+    "code_snippet": "unsafe impl<T> Send for Id<T, Shared> where T: Sync { }"
+}

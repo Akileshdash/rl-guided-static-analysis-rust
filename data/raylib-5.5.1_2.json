@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "raylib-5.5.1/src/core/text.rs",
+    "start_line": 26,
+    "start_col": 1,
+    "end_line": 26,
+    "end_col": 30,
+    "code_snippet": "impl Drop for RSliceGlyphInfo {\n    #[allow(unused_unsafe)]\n    fn drop(&mut self) {\n        unsafe {\n            let inner = std::mem::ManuallyDrop::take(&mut self.0);\n            let len = inner.len();\n            ffi::UnloadFontData(\n                std::boxed::Box::leak(inner).as_mut_ptr() as *mut _,\n                len as i32,\n            );\n        }\n    }\n}"
+}

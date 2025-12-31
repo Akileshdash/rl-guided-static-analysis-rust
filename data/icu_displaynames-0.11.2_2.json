@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::LocaleDisplayNamesV1<'static> as icu_provider::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_displaynames-0.11.2/src/provider.rs",
+    "start_line": 125,
+    "start_col": 1,
+    "end_line": 125,
+    "end_col": 84,
+    "code_snippet": "#[icu_provider::data_struct(LocaleDisplayNamesV1Marker = \"displaynames/locales@1\")]\n#[derive(Debug, PartialEq, Clone, Default)]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\n#[cfg_attr(\n    feature = \"datagen\",\n    derive(serde::Serialize, databake::Bake),\n    databake(path = icu_displaynames::provider),\n)]\n#[yoke(prove_covariance_manually)]\n/// LocaleDisplayNames provides mapping between locales and display names.\npub struct LocaleDisplayNamesV1<'data> {\n    /// Mapping for locale to display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub names: ZeroMap<'data, UnvalidatedLocale, str>,\n    /// Mapping for locale to short display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub short_names: ZeroMap<'data, UnvalidatedLocale, str>,\n    /// Mapping for locale to long display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub long_names: ZeroMap<'data, UnvalidatedLocale, str>,\n    /// Mapping for locale to menu variant display name.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub menu_names: ZeroMap<'data, UnvalidatedLocale, str>,\n}"
+}

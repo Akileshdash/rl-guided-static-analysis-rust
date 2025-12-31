@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "polars-utils-0.49.1/src/sparse_init_vec.rs",
+    "start_line": 66,
+    "start_col": 1,
+    "end_line": 66,
+    "end_col": 34,
+    "code_snippet": "impl<T> Drop for SparseInitVec<T> {\n    fn drop(&mut self) {\n        unsafe {\n            // Make sure storage gets dropped even if element drop panics.\n            let _storage = Vec::from_raw_parts(self.ptr, 0, self.cap);\n\n            for idx in 0..self.len {\n                let init_mask_byte = self.init_mask.get_unchecked_mut(idx / 8);\n                let bit_mask = 1 << (idx % 8);\n                if *init_mask_byte.get_mut() & bit_mask != 0 {\n                    self.ptr.add(idx).drop_in_place();\n                }\n            }\n        }\n    }\n}"
+}

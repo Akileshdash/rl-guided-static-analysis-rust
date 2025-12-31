@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "fibers-0.1.13/src/sync/mpsc.rs",
+    "start_line": 247,
+    "start_col": 1,
+    "end_line": 247,
+    "end_col": 44,
+    "code_snippet": "unsafe impl<T: Send> Sync for SyncSender<T> {}\nimpl<T> Clone for SyncSender<T> {\n    fn clone(&self) -> Self {\n        SyncSender {\n            inner: self.inner.clone(),\n            notifier: self.notifier.clone(),\n        }\n    }\n}"
+}

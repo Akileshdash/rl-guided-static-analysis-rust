@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<windows::PeObject<'static, T> as yoke::Yokeable<'a>>::transform_mut`",
+    "file": "samply-symbols-0.24.1/src/windows.rs",
+    "start_line": 81,
+    "start_col": 10,
+    "end_line": 81,
+    "end_col": 18,
+    "code_snippet": "#[derive(Yokeable)]\nstruct PeObject<'data, T: FileContents> {\n    file_data: &'data FileContentsWrapper<T>,\n    object: File<'data, &'data FileContentsWrapper<T>>,\n    addr2line_context: Addr2lineContextData,\n}"
+}

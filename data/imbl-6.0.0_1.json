@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `nodes::hamt::Node::<A, P>::with`",
+    "file": "imbl-6.0.0/src/nodes/hamt.rs",
+    "start_line": 116,
+    "start_col": 5,
+    "end_line": 134,
+    "end_col": 6,
+    "code_snippet": "fn with(with: impl FnOnce(&mut Self)) -> SharedPointer<Self, P> {\n        let result: SharedPointer<UnsafeCell<mem::MaybeUninit<Self>>, P> =\n            SharedPointer::new(UnsafeCell::new(mem::MaybeUninit::uninit()));\n        #[allow(unsafe_code)]\n        unsafe {\n            // Initialize the MaybeUninit node\n            (&mut *result.get()).write(Node::new());\n            // Dereference all the way to the newly initialized &mut Node\n            let mut_ptr = &mut *UnsafeCell::raw_get(&*result);\n            let mut_ptr = MaybeUninit::as_mut_ptr(mut_ptr);\n            with(&mut *mut_ptr);\n            // Note that transmute isn't usable with the generic argument P, so we have to use\n            // a combination of transmute_copy and ManuallyDrop\n            // Safety: UnsafeCell<_> and UnsafeCell<MaybeUninit<_>> have the same memory representation\n            //         and ManuallyDrop<T> and T have the same memory representation\n            let result = ManuallyDrop::new(result);\n            mem::transmute_copy(&result)\n        }\n    }"
+}

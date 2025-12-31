@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `<wake_list::WakeList as std::ops::Drop>::drop`",
+    "file": "local-sync-0.1.1/src/wake_list.rs",
+    "start_line": 51,
+    "start_col": 5,
+    "end_line": 54,
+    "end_col": 6,
+    "code_snippet": "fn drop(&mut self) {\n        let slice = ptr::slice_from_raw_parts_mut(self.inner.as_mut_ptr() as *mut Waker, self.curr);\n        unsafe { ptr::drop_in_place(slice) };\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `broadcast::BroadcastContext::<'a>::with`",
+    "file": "rayon-core-1.12.1/src/broadcast/mod.rs",
+    "start_line": 53,
+    "start_col": 5,
+    "end_line": 60,
+    "end_col": 6,
+    "code_snippet": "pub(super) fn with<R>(f: impl FnOnce(BroadcastContext<'_>) -> R) -> R {\n        let worker_thread = WorkerThread::current();\n        assert!(!worker_thread.is_null());\n        f(BroadcastContext {\n            worker: unsafe { &*worker_thread },\n            _marker: PhantomData,\n        })\n    }"
+}

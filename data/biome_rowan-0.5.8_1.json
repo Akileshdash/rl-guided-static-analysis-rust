@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "biome_rowan-0.5.8/src/green/node_cache.rs",
+    "start_line": 86,
+    "start_col": 1,
+    "end_line": 86,
+    "end_col": 56,
+    "code_snippet": "impl<T: IntoRawPointer> Drop for GenerationalPointer<T> {\n    fn drop(&mut self) {\n        let ptr = self.value() as *const _ as *mut _;\n        let value = unsafe { T::from_raw(ptr) };\n        drop(value);\n    }\n}"
+}

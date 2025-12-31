@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<object::ObjectValueTypeChecker<T> as value::ValueTypeChecker>::check`",
+    "file": "glib-0.21.0/src/object.rs",
+    "start_line": 4378,
+    "start_col": 5,
+    "end_line": 4426,
+    "end_col": 6,
+    "code_snippet": "fn check(value: &Value) -> Result<(), Self::Error> {\n        // g_type_check_value_holds() only checks for the GType of the GValue. This might be\n        // initialized to a parent type of the expected type and would then fail while it's\n        // still valid to retrieve the value.\n\n        unsafe {\n            let requested_type = T::static_type().into_glib();\n            let type_ = value.inner.g_type;\n\n            // Direct match or value type is a subtype of the requested type.\n            if gobject_ffi::g_type_is_a(type_, requested_type) != ffi::GFALSE {\n                let obj = gobject_ffi::g_value_get_object(&value.inner);\n                if obj.is_null() {\n                    return Err(Self::Error::UnexpectedNone);\n                } else {\n                    return Ok(());\n                }\n            }\n\n            // If the value type is not a GObject or subtype of GObject then there's a mismatch.\n            if gobject_ffi::g_type_is_a(type_, gobject_ffi::G_TYPE_OBJECT) == ffi::GFALSE {\n                return Err(crate::value::ValueTypeMismatchError::new(\n                    Type::from_glib(type_),\n                    T::static_type(),\n                )\n                .into());\n            }\n\n            // Otherwise peek at the actual object and its concrete type.\n            let obj = gobject_ffi::g_value_get_object(&value.inner);\n\n            // Allow any types if the object is NULL.\n            if obj.is_null() {\n                return Err(Self::Error::UnexpectedNone);\n            }\n\n            let type_ = (*(*obj).g_type_instance.g_class).g_type;\n            // Direct match or concrete type is a subtype of the requested type.\n            if gobject_ffi::g_type_is_a(type_, requested_type) != ffi::GFALSE {\n                Ok(())\n            } else {\n                Err(crate::value::ValueTypeMismatchError::new(\n                    Type::from_glib(type_),\n                    T::static_type(),\n                )\n                .into())\n            }\n        }\n    }"
+}

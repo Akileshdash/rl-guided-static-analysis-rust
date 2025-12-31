@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<reader::ReaderPtr<R> as std::io::Read>::read`",
+    "file": "sevenz-rust-0.6.1/src/reader.rs",
+    "start_line": 1499,
+    "start_col": 5,
+    "end_line": 1501,
+    "end_col": 6,
+    "code_snippet": "fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {\n        unsafe { (*self.reader).read(buf) }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "smallbox-0.8.8/src/smallbox.rs",
+    "start_line": 461,
+    "start_col": 1,
+    "end_line": 461,
+    "end_col": 56,
+    "code_snippet": "impl<T: ?Sized, Space> ops::Drop for SmallBox<T, Space> {\n    fn drop(&mut self) {\n        unsafe {\n            let layout = Layout::for_value::<T>(&*self)\n                .align_to(MIN_ALIGNMENT)\n                .unwrap_or_else(|_| unreachable_unchecked());\n\n            ptr::drop_in_place::<T>(&mut **self);\n            if self.is_heap() && layout.size() != 0 {\n                alloc::dealloc(self.ptr.as_ptr().cast::<u8>(), layout);\n            }\n        }\n    }\n}"
+}

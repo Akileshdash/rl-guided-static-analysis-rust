@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "zerocopy-0.8.26/src/wrappers.rs",
+    "start_line": 342,
+    "start_col": 9,
+    "end_line": 342,
+    "end_col": 44,
+    "code_snippet": "impl<T> Drop for WriteBackOnDrop<T> {\n            fn drop(&mut self) {\n                // SAFETY: We never use `copy` again as required by\n                // `ManuallyDrop::take`.\n                let copy = unsafe { ManuallyDrop::take(&mut self.copy) };\n                // SAFETY: `slf` is the raw pointer value of `self`. We know it\n                // is valid for writes and properly aligned because `self` is a\n                // mutable reference, which guarantees both of these properties.\n                unsafe { ptr::write(self.slf, Unalign::new(copy)) };\n            }\n        }"
+}

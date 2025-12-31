@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "malloced-1.3.1/src/iter.rs",
+    "start_line": 26,
+    "start_col": 1,
+    "end_line": 26,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for SliceIter<T> {\n    #[inline]\n    fn drop(&mut self) {\n        struct DeallocGuard<'a, T: 'a>(&'a mut SliceIter<T>);\n\n        impl<'a, T> Drop for DeallocGuard<'a, T> {\n            #[inline]\n            fn drop(&mut self) {\n                unsafe {\n                    sys::free(self.0.buf.as_ptr() as _);\n                }\n            }\n        }\n\n        // Deallocates the memory slice's on drop. If dropping the elements\n        // panics, the memory will still be deallocated.\n        let guard = DeallocGuard(self);\n\n        // Drop remaining elements.\n        unsafe {\n            ptr::drop_in_place(guard.0.as_raw_mut_slice());\n        }\n    }\n}"
+}

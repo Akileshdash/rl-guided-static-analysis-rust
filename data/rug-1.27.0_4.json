@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "rug-1.27.0/src/complex/big.rs",
+    "start_line": 1013,
+    "start_col": 9,
+    "end_line": 1013,
+    "end_col": 42,
+    "code_snippet": "impl Drop for SplitOnDrop<'_, '_> {\n            fn drop(&mut self) {\n                // Safety: the values of the complex number parts are individually valid.\n                unsafe {\n                    *self.1.inner_mut() = *self.0.real().inner();\n                    *self.2.inner_mut() = *self.0.imag().inner();\n                }\n            }\n        }"
+}

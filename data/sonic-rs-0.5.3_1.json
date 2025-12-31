@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "sonic-rs-0.5.3/src/lazyvalue/owned.rs",
+    "start_line": 120,
+    "start_col": 1,
+    "end_line": 120,
+    "end_col": 22,
+    "code_snippet": "impl Drop for LazyRaw {\n    fn drop(&mut self) {\n        let ptr = self.parsed.get_mut();\n        if !(*ptr).is_null() {\n            unsafe {\n                drop(Box::from_raw(*ptr));\n            }\n        }\n    }\n}"
+}

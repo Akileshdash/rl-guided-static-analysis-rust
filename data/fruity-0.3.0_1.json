@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fruity-0.3.0/src/core/arc.rs",
+    "start_line": 25,
+    "start_col": 1,
+    "end_line": 25,
+    "end_col": 36,
+    "code_snippet": "impl<T: ObjectType> Drop for Arc<T> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe { T::release(self.obj.cast()) };\n    }\n}"
+}

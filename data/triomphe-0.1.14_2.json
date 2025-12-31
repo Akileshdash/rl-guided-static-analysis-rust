@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "triomphe-0.1.14/src/arc_union.rs",
+    "start_line": 128,
+    "start_col": 1,
+    "end_line": 128,
+    "end_col": 35,
+    "code_snippet": "impl<A, B> Drop for ArcUnion<A, B> {\n    fn drop(&mut self) {\n        match self.borrow() {\n            ArcUnionBorrow::First(x) => unsafe {\n                let _ = Arc::from_raw(&*x);\n            },\n            ArcUnionBorrow::Second(x) => unsafe {\n                let _ = Arc::from_raw(&*x);\n            },\n        }\n    }\n}"
+}

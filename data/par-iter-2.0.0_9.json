@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow/Transmute",
+    "description": "Potential unsafe dataflow issue in `slice::sort::insert_tail`",
+    "file": "par-iter-2.0.0/src/slice/sort.rs",
+    "start_line": 51,
+    "start_col": 1,
+    "end_line": 103,
+    "end_col": 2,
+    "code_snippet": "unsafe fn insert_tail<T, F>(v: &mut [T], is_less: &F)\nwhere\n    F: Fn(&T, &T) -> bool,\n{\n    debug_assert!(v.len() >= 2);\n\n    let arr_ptr = v.as_mut_ptr();\n    let i = v.len() - 1;\n\n    // SAFETY: caller must ensure v is at least len 2.\n    unsafe {\n        // See insert_head which talks about why this approach is beneficial.\n        let i_ptr = arr_ptr.add(i);\n\n        // It's important that we use i_ptr here. If this check is positive and we\n        // continue, We want to make sure that no other copy of the value was\n        // seen by is_less. Otherwise we would have to copy it back.\n        if is_less(&*i_ptr, &*i_ptr.sub(1)) {\n            // It's important, that we use tmp for comparison from now on. As it is the\n            // value that will be copied back. And notionally we could have\n            // created a divergence if we copy back the wrong value.\n            let tmp = mem::ManuallyDrop::new(ptr::read(i_ptr));\n            // Intermediate state of the insertion process is always tracked by `hole`,\n            // which serves two purposes:\n            // 1. Protects integrity of `v` from panics in `is_less`.\n            // 2. Fills the remaining hole in `v` in the end.\n            //\n            // Panic safety:\n            //\n            // If `is_less` panics at any point during the process, `hole` will get dropped\n            // and fill the hole in `v` with `tmp`, thus ensuring that `v` still\n            // holds every object it initially held exactly once.\n            let mut hole = InsertionHole {\n                src: &*tmp,\n                dest: i_ptr.sub(1),\n            };\n            ptr::copy_nonoverlapping(hole.dest, i_ptr, 1);\n\n            // SAFETY: We know i is at least 1.\n            for j in (0..(i - 1)).rev() {\n                let j_ptr = arr_ptr.add(j);\n                if !is_less(&*tmp, &*j_ptr) {\n                    break;\n                }\n\n                ptr::copy_nonoverlapping(j_ptr, hole.dest, 1);\n                hole.dest = j_ptr;\n            }\n            // `hole` gets dropped and thus copies `tmp` into the remaining hole\n            // in `v`.\n        }\n    }\n}"
+}

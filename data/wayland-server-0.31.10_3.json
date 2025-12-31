@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "wayland-server-0.31.10/src/global.rs",
+    "start_line": 16,
+    "start_col": 1,
+    "end_line": 16,
+    "end_col": 63,
+    "code_snippet": "unsafe impl<I, D, U: Send + Sync> Sync for GlobalData<I, U, D> {}"
+}

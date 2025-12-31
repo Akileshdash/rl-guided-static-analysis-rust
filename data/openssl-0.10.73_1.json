@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "openssl-0.10.73//usagers4/u139091/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/foreign-types-0.3.2/src/lib.rs",
+    "start_line": 238,
+    "start_col": 9,
+    "end_line": 238,
+    "end_col": 29,
+    "code_snippet": "impl Drop for $owned {\n            #[inline]\n            fn drop(&mut self) {\n                unsafe { $drop(self.0) }\n            }\n        }"
+}

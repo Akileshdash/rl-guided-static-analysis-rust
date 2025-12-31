@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "uefi-0.35.0/src/boot.rs",
+    "start_line": 1630,
+    "start_col": 1,
+    "end_line": 1630,
+    "end_col": 23,
+    "code_snippet": "impl Drop for TplGuard {\n    fn drop(&mut self) {\n        let bt = boot_services_raw_panicking();\n        let bt = unsafe { bt.as_ref() };\n\n        unsafe {\n            (bt.restore_tpl)(self.old_tpl);\n        }\n    }\n}"
+}

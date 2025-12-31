@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "safe_drive-0.4.3/src/clock.rs",
+    "start_line": 36,
+    "start_col": 1,
+    "end_line": 36,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Clock {\n    fn drop(&mut self) {\n        let guard = rcl::MT_UNSAFE_FN.lock();\n        let _ = guard.rcl_ros_clock_fini(self.clock);\n        let _ = unsafe { Box::from_raw(self.clock) };\n    }\n}"
+}

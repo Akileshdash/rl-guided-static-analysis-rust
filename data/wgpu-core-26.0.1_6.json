@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wgpu-core-26.0.1/src/command/mod.rs",
+    "start_line": 567,
+    "start_col": 1,
+    "end_line": 567,
+    "end_col": 29,
+    "code_snippet": "impl Drop for CommandEncoder {\n    fn drop(&mut self) {\n        if self.is_open {\n            unsafe { self.raw.discard_encoding() };\n        }\n        unsafe {\n            self.raw.reset_all(mem::take(&mut self.list));\n        }\n        // SAFETY: We are in the Drop impl and we don't use self.raw anymore after this point.\n        let raw = unsafe { ManuallyDrop::take(&mut self.raw) };\n        self.device.command_allocator.release_encoder(raw);\n    }\n}"
+}

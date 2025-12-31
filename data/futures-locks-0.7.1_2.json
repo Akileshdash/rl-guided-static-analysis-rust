@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "futures-locks-0.7.1/src/mutex.rs",
+    "start_line": 434,
+    "start_col": 1,
+    "end_line": 434,
+    "end_col": 48,
+    "code_snippet": "unsafe impl<T: ?Sized + Send> Sync for Mutex<T> {}"
+}

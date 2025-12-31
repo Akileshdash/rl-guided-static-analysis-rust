@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "yffi-0.24.0/src/lib.rs",
+    "start_line": 4044,
+    "start_col": 1,
+    "end_line": 4044,
+    "end_col": 25,
+    "code_snippet": "impl Drop for YDeleteSet {\n    fn drop(&mut self) {\n        let len = self.entries_count as usize;\n        drop(unsafe { Vec::from_raw_parts(self.client_ids, len, len) });\n        drop(unsafe { Vec::from_raw_parts(self.ranges, len, len) });\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "mini-moka-0.10.3/src/sync/iter.rs",
+    "start_line": 42,
+    "start_col": 1,
+    "end_line": 46,
+    "end_col": 33,
+    "code_snippet": "unsafe impl<'a, 'i, K, V, S> Send for Iter<'i, K, V, S>\nwhere\n    K: 'a + Eq + Hash + Send,\n    V: 'a + Send,\n    S: 'a + BuildHasher + Clone,\n{\n}"
+}

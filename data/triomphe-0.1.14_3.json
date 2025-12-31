@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "ReadFlow",
+    "description": "Potential unsafe dataflow issue in `arc::Arc::<T>::with_raw_offset_arc`",
+    "file": "triomphe-0.1.14/src/arc.rs",
+    "start_line": 97,
+    "start_col": 5,
+    "end_line": 107,
+    "end_col": 6,
+    "code_snippet": "pub fn with_raw_offset_arc<F, U>(&self, f: F) -> U\n    where\n        F: FnOnce(&OffsetArc<T>) -> U,\n    {\n        // Synthesize transient Arc, which never touches the refcount of the ArcInner.\n        // Store transient in `ManuallyDrop`, to leave the refcount untouched.\n        let transient = unsafe { ManuallyDrop::new(Arc::into_raw_offset(ptr::read(self))) };\n\n        // Expose the transient Arc to the callback, which may clone it if it wants.\n        f(&transient)\n    }"
+}

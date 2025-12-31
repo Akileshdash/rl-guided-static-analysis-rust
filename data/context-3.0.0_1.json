@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "context-3.0.0/src/stack.rs",
+    "start_line": 189,
+    "start_col": 1,
+    "end_line": 189,
+    "end_col": 29,
+    "code_snippet": "impl Drop for FixedSizeStack {\n    fn drop(&mut self) {\n        unsafe {\n            sys::deallocate_stack(self.0.bottom(), self.0.len());\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "ouroboros_examples-0.18.5/src/lib.rs",
+    "start_line": 40,
+    "start_col": 1,
+    "end_line": 40,
+    "end_col": 20,
+    "code_snippet": "#[self_referencing]\n/// The example provided in the documentation.\npub struct DocumentationExample {\n    int_data: i32,\n    float_data: f32,\n    #[borrows(int_data)]\n    int_reference: &'this i32,\n    #[borrows(mut float_data)]\n    float_reference: &'this mut f32,\n}"
+}

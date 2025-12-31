@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "vulkano-0.35.1/src/descriptor_set/sys.rs",
+    "start_line": 172,
+    "start_col": 1,
+    "end_line": 172,
+    "end_col": 31,
+    "code_snippet": "impl Drop for RawDescriptorSet {\n    #[inline]\n    fn drop(&mut self) {\n        let allocation = unsafe { ManuallyDrop::take(&mut self.allocation) };\n        unsafe { self.allocator.deallocate(allocation) };\n    }\n}"
+}

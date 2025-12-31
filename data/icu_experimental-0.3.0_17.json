@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<measure::provider::trie::UnitsTrie<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_experimental-0.3.0/src/measure/provider/trie.rs",
+    "start_line": 40,
+    "start_col": 35,
+    "end_line": 40,
+    "end_col": 49,
+    "code_snippet": "#[derive(Clone, PartialEq, Debug, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize, databake::Bake))]\n#[cfg_attr(feature = \"datagen\", databake(path = icu_experimental::measure::provider::trie))]\n#[cfg_attr(feature = \"serde\", derive(serde::Deserialize))]\npub struct UnitsTrie<'data> {\n    /// Maps from a unit name (e.g., \"foot\" or \"meter\") to its corresponding unit ID.\n    /// This ID represents the index of this unit in the `UnitsInfo` struct and can be used to retrieve the conversion information.\n    #[cfg_attr(feature = \"serde\", serde(borrow))]\n    pub trie: ZeroTrieSimpleAscii<ZeroVec<'data, u8>>,\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "crossfire-2.0.13/src/blocking_rx.rs",
+    "start_line": 178,
+    "start_col": 1,
+    "end_line": 178,
+    "end_col": 37,
+    "code_snippet": "unsafe impl<T: Send> Sync for MRx<T> {}"
+}

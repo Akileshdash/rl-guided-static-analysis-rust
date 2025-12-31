@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "atomicbox-0.4.0/src/atomic_box.rs",
+    "start_line": 161,
+    "start_col": 1,
+    "end_line": 161,
+    "end_col": 30,
+    "code_snippet": "impl<T> Drop for AtomicBox<T> {\n    /// Dropping an `AtomicBox<T>` drops the final `Box<T>` value stored in it.\n    fn drop(&mut self) {\n        let last_ptr = self.ptr.load(Ordering::Acquire);\n        unsafe {\n            Box::from_raw(last_ptr);\n        }\n    }\n}"
+}

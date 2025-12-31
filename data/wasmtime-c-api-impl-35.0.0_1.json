@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-c-api-impl-35.0.0/src/extern.rs",
+    "start_line": 99,
+    "start_col": 1,
+    "end_line": 99,
+    "end_col": 32,
+    "code_snippet": "impl Drop for wasmtime_extern_t {\n    fn drop(&mut self) {\n        if self.kind == WASMTIME_EXTERN_SHAREDMEMORY {\n            unsafe {\n                ManuallyDrop::drop(&mut self.of.sharedmemory);\n            }\n        }\n    }\n}"
+}

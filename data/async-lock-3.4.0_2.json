@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "async-lock-3.4.0/src/mutex.rs",
+    "start_line": 661,
+    "start_col": 1,
+    "end_line": 661,
+    "end_col": 43,
+    "code_snippet": "impl<T: ?Sized> Drop for MutexGuard<'_, T> {\n    #[inline]\n    fn drop(&mut self) {\n        // SAFETY: we are dropping the mutex guard, therefore unlocking the mutex.\n        unsafe {\n            self.0.unlock_unchecked();\n        }\n    }\n}"
+}

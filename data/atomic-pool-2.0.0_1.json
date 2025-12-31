@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "atomic-pool-2.0.0/src/lib.rs",
+    "start_line": 105,
+    "start_col": 1,
+    "end_line": 105,
+    "end_col": 30,
+    "code_snippet": "impl<P: Pool> Drop for Box<P> {\n    fn drop(&mut self) {\n        unsafe {\n            //trace!(\"dropping {:u32}\", self.ptr as u32);\n            self.ptr.as_ptr().drop_in_place();\n            P::get().free(self.ptr);\n        };\n    }\n}"
+}

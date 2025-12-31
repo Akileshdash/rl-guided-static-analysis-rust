@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "accurate-0.4.1/src/sum/cascaded.rs",
+    "start_line": 82,
+    "start_col": 1,
+    "end_line": 85,
+    "end_col": 13,
+    "code_snippet": "unsafe impl<F, C, T> Send for Cascaded<F, C, T>\nwhere\n    F: Send,\n    C: Send,\n{\n}"
+}

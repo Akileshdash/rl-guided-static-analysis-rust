@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<decoder::Decoder<R> as std::io::Read>::read`",
+    "file": "lz4-1.28.1/src/decoder.rs",
+    "start_line": 65,
+    "start_col": 5,
+    "end_line": 116,
+    "end_col": 6,
+    "code_snippet": "fn read(&mut self, buf: &mut [u8]) -> Result<usize> {\n        if self.next == 0 || buf.is_empty() {\n            return Ok(0);\n        }\n        let mut dst_offset: usize = 0;\n        while dst_offset == 0 {\n            if self.pos >= self.len {\n                let need = if self.buf.len() < self.next {\n                    self.buf.len()\n                } else {\n                    self.next\n                };\n                self.len = self.r.read(&mut self.buf[0..need])?;\n                // NOTE: we do not exit here if there was nothing read\n                // The lz4 context may still have more bytes to emit.\n\n                self.pos = 0;\n                self.next -= self.len;\n            }\n            while (dst_offset < buf.len()) && ((self.pos < self.len) || self.len == 0) {\n                let mut src_size = (self.len - self.pos) as size_t;\n                let mut dst_size = (buf.len() - dst_offset) as size_t;\n                let len = check_error(unsafe {\n                    LZ4F_decompress(\n                        self.c.c,\n                        buf[dst_offset..].as_mut_ptr(),\n                        &mut dst_size,\n                        self.buf[self.pos..].as_ptr(),\n                        &mut src_size,\n                        ptr::null(),\n                    )\n                })?;\n                self.pos += src_size as usize;\n                dst_offset += dst_size as usize;\n\n                // We need to keep trying to read bytes from the decompressor\n                // until it is no longer emitting them, even after it\n                // has finished reading bytes.\n                if dst_size == 0 && src_size == 0 {\n                    return Ok(dst_offset);\n                }\n\n                if len == 0 {\n                    self.next = 0;\n                    return Ok(dst_offset);\n                } else if self.next < len {\n                    self.next = len;\n                }\n            }\n        }\n        Ok(dst_offset)\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "libbpf-rs-0.26.0-beta.0/src/skeleton.rs",
+    "start_line": 289,
+    "start_col": 1,
+    "end_line": 289,
+    "end_col": 39,
+    "code_snippet": "impl Drop for ObjectSkeletonConfig<'_> {\n    // Note we do *not* run `libbpf_sys::bpf_object__destroy_skeleton` here.\n    //\n    // Couple reasons:\n    //\n    // 1) We did not allocate `libbpf_sys::bpf_object_skeleton` on the heap and\n    //    `libbpf_sys::bpf_object__destroy_skeleton` will try to free from heap\n    //\n    // 2) `libbpf_object_skeleton` assumes it \"owns\" the object and everything inside it.\n    //    libbpf-cargo's generated skeleton instead gives ownership of the object to\n    //    libbpf-rs::*Object. The destructors in libbpf-rs::*Object will know when and how to do\n    //    cleanup.\n    fn drop(&mut self) {\n        assert_eq!(self.maps_layout.is_none(), self.inner.maps.is_null());\n        assert_eq!(self.progs_layout.is_none(), self.inner.progs.is_null());\n\n        if let Some(layout) = self.maps_layout {\n            unsafe {\n                dealloc(self.inner.maps as _, layout);\n            }\n        }\n\n        if let Some(layout) = self.progs_layout {\n            unsafe {\n                dealloc(self.inner.progs as _, layout);\n            }\n        }\n\n        let () = drop(unsafe { Box::from_raw(self.inner.obj) });\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tiny-xlib-0.2.4/src/lib.rs",
+    "start_line": 447,
+    "start_col": 1,
+    "end_line": 447,
+    "end_col": 22,
+    "code_snippet": "impl Drop for Display {\n    fn drop(&mut self) {\n        // SAFETY: We own the display pointer, so we can drop it.\n        if let Ok(xlib) = get_xlib(&XLIB) {\n            unsafe {\n                xlib.close_display(self.ptr.as_ptr());\n            }\n        }\n    }\n}"
+}

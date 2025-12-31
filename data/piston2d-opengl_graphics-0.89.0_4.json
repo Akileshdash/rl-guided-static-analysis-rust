@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "piston2d-opengl_graphics-0.89.0/src/back_end.rs",
+    "start_line": 313,
+    "start_col": 1,
+    "end_line": 313,
+    "end_col": 28,
+    "code_snippet": "impl Drop for TexturedColor {\n    fn drop(&mut self) {\n        unsafe {\n            gl::DeleteVertexArrays(1, &self.vao);\n            gl::DeleteProgram(self.program);\n            gl::DeleteShader(self.vertex_shader);\n            gl::DeleteShader(self.fragment_shader);\n        }\n    }\n}"
+}

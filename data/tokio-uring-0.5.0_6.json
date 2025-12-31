@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "tokio-uring-0.5.0/src/buf/fixed/plumbing/registry.rs",
+    "start_line": 121,
+    "start_col": 1,
+    "end_line": 121,
+    "end_col": 39,
+    "code_snippet": "impl<T: IoBufMut> Drop for Registry<T> {\n    fn drop(&mut self) {\n        for (i, state) in self.states.iter().enumerate() {\n            match state {\n                BufState::Free { init_len, .. } => {\n                    // Update buffer initialization.\n                    // The buffer is about to be dropped, but this may release it\n                    // from Registry ownership, rather than deallocate.\n                    unsafe { self.buffers[i].set_init(*init_len) };\n                }\n                BufState::CheckedOut => unreachable!(\"all buffers must be checked in\"),\n            }\n        }\n\n        // Rebuild Vec<iovec>, so it's dropped\n        let _ = unsafe {\n            Vec::from_raw_parts(self.raw_bufs.as_ptr(), self.states.len(), self.orig_cap)\n        };\n    }\n}"
+}

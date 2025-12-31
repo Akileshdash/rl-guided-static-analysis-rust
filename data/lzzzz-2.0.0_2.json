@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lzzzz-2.0.0/src/lz4/stream/api.rs",
+    "start_line": 171,
+    "start_col": 1,
+    "end_line": 171,
+    "end_col": 35,
+    "code_snippet": "impl Drop for DecompressionContext {\n    fn drop(&mut self) {\n        unsafe {\n            binding::LZ4_freeStreamDecode(self.stream.as_mut());\n        }\n    }\n}"
+}

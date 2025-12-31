@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "capstone-0.13.0/src/instruction.rs",
+    "start_line": 352,
+    "start_col": 1,
+    "end_line": 352,
+    "end_col": 28,
+    "code_snippet": "impl Drop for OwnedInsn<'_> {\n    fn drop(&mut self) {\n        if let Some(ptr) = core::ptr::NonNull::new(self.insn.detail) {\n            unsafe { drop(Box::from_raw(ptr.as_ptr())) }\n        }\n    }\n}"
+}

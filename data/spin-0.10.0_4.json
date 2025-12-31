@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "PhantomSendForSend/NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "spin-0.10.0/src/mutex.rs",
+    "start_line": 118,
+    "start_col": 1,
+    "end_line": 118,
+    "end_col": 54,
+    "code_snippet": "unsafe impl<T: ?Sized + Send, R> Send for Mutex<T, R> {}"
+}

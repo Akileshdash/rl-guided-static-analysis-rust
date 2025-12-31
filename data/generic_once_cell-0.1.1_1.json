@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "generic_once_cell-0.1.1/src/lib.rs",
+    "start_line": 441,
+    "start_col": 1,
+    "end_line": 441,
+    "end_col": 77,
+    "code_snippet": "unsafe impl<R, T, F: Send> Sync for Lazy<R, T, F> where OnceCell<R, T>: Sync {}\n// auto-derived `Send` impl is OK."
+}

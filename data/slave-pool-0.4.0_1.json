@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "slave-pool-0.4.0/src/oneshot.rs",
+    "start_line": 55,
+    "start_col": 1,
+    "end_line": 55,
+    "end_col": 28,
+    "code_snippet": "impl<T> Drop for Payload<T> {\n    fn drop(&mut self) {\n        let state = self.state.load(Ordering::Relaxed);\n        match (state & READY == READY) && (state & CONSUMED != CONSUMED) {\n            true => unsafe {\n                ptr::drop_in_place((*self.value.get()).as_mut_ptr());\n            },\n            _ => (),\n        }\n\n        //If no one is interested in waker, then just drop it without waking up\n        if state & WAKER_SET == WAKER_SET {\n            self.take_notifier();\n        }\n    }\n}"
+}

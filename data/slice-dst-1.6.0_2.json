@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "slice-dst-1.6.0/src/provided_types.rs",
+    "start_line": 60,
+    "start_col": 9,
+    "end_line": 60,
+    "end_col": 61,
+    "code_snippet": "impl<Header, Item> Drop for InProgress<Header, Item> {\n            fn drop(&mut self) {\n                unsafe {\n                    ptr::drop_in_place(ptr::slice_from_raw_parts_mut(\n                        self.raw().add(self.slice_offset).cast::<Item>(),\n                        self.written,\n                    ));\n                }\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `scoped::Scope::<'a, T, Sp>::spawn_blocking`",
+    "file": "async-scoped-0.9.0/src/scoped.rs",
+    "start_line": 93,
+    "start_col": 5,
+    "end_line": 104,
+    "end_col": 6,
+    "code_snippet": "pub fn spawn_blocking<F: FnOnce() -> T + Send + 'a>(&mut self, f: F)\n    where\n        Sp: FuncSpawner<T, SpawnHandle = <Sp as Spawner<T>>::SpawnHandle>,\n    {\n        let handle = self.spawner().spawn_func(unsafe {\n            std::mem::transmute::<_, Box<dyn FnOnce() -> T + Send>>(\n                Box::new(f) as Box<dyn FnOnce() -> T + Send>\n            )\n        });\n        self.futs.push_back(handle);\n        self.len += 1;\n    }"
+}

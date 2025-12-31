@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fastly-0.11.5/src/http/body/handle.rs",
+    "start_line": 446,
+    "start_col": 1,
+    "end_line": 446,
+    "end_col": 25,
+    "code_snippet": "impl Drop for BodyHandle {\n    fn drop(&mut self) {\n        if self.is_valid() {\n            unsafe { abi::fastly_http_body::close(self.as_u32()) }\n                .result()\n                .expect(\"fastly_http_body::close failed\");\n        }\n    }\n}"
+}

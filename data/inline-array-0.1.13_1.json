@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "inline-array-0.1.13/src/lib.rs",
+    "start_line": 166,
+    "start_col": 1,
+    "end_line": 166,
+    "end_col": 26,
+    "code_snippet": "impl Drop for InlineArray {\n    fn drop(&mut self) {\n        let kind = self.kind();\n\n        if kind == Kind::SmallRemote {\n            let small_trailer = self.deref_small_trailer();\n            let rc = small_trailer.rc.fetch_sub(1, Ordering::Release) - 1;\n\n            if rc == 0 {\n                std::sync::atomic::fence(Ordering::Acquire);\n\n                let layout = Layout::from_size_align(\n                    small_trailer.len() + size_of::<SmallRemoteTrailer>(),\n                    8,\n                )\n                .unwrap();\n\n                unsafe {\n                    let ptr = self.remote_ptr().sub(small_trailer.len());\n                    dealloc(ptr as *mut u8, layout);\n                }\n            }\n        } else if kind == Kind::BigRemote {\n            let big_header = self.deref_big_header();\n            let rc = big_header.rc.fetch_sub(1, Ordering::Release) - 1;\n\n            if rc == 0 {\n                std::sync::atomic::fence(Ordering::Acquire);\n\n                let layout =\n                    Layout::from_size_align(big_header.len() + size_of::<BigRemoteHeader>(), 8)\n                        .unwrap();\n\n                unsafe {\n                    dealloc(self.remote_ptr() as *mut u8, layout);\n                }\n            }\n        }\n    }\n}"
+}

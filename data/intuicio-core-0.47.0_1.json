@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "intuicio-core-0.47.0/src/object.rs",
+    "start_line": 19,
+    "start_col": 1,
+    "end_line": 19,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Object {\n    fn drop(&mut self) {\n        if self.drop {\n            unsafe {\n                if self.memory.is_null() {\n                    return;\n                }\n                if self.handle.is_native() {\n                    self.handle.finalize(self.memory.cast::<()>());\n                } else {\n                    match &*self.handle {\n                        Type::Struct(type_) => {\n                            for field in type_.fields() {\n                                field\n                                    .type_handle()\n                                    .finalize(self.memory.add(field.address_offset()).cast::<()>());\n                            }\n                        }\n                        Type::Enum(type_) => {\n                            let discriminant = self.memory.read();\n                            if let Some(variant) = type_.find_variant_by_discriminant(discriminant)\n                            {\n                                for field in &variant.fields {\n                                    field.type_handle().finalize(\n                                        self.memory.add(field.address_offset()).cast::<()>(),\n                                    );\n                                }\n                            }\n                        }\n                    }\n                }\n                non_zero_dealloc(self.memory, *self.handle.layout());\n                self.memory = std::ptr::null_mut();\n            }\n        }\n    }\n}"
+}

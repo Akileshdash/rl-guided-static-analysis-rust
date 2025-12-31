@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "SliceFromRaw",
+    "description": "Potential unsafe dataflow issue in `alloc_slice_dst_in`",
+    "file": "slice-dst-1.6.0/src/lib.rs",
+    "start_line": 215,
+    "start_col": 1,
+    "end_line": 231,
+    "end_col": 2,
+    "code_snippet": "pub fn alloc_slice_dst_in<S: ?Sized + SliceDst, F>(container: F, len: usize) -> ptr::NonNull<S>\nwhere\n    F: FnOnce(Layout) -> Layout,\n{\n    let layout = container(S::layout_for(len));\n    unsafe {\n        let ptr = if layout.size() == 0 {\n            // Do not allocate in the ZST case! CAD97/pointer-utils#23\n            ptr::NonNull::new(polyfill::ptr_dangling_at(layout.align()))\n        } else {\n            ptr::NonNull::new(alloc(layout) as *mut ())\n        }\n        .unwrap_or_else(|| handle_alloc_error(layout));\n        let ptr = ptr::NonNull::new_unchecked(ptr::slice_from_raw_parts_mut(ptr.as_ptr(), len));\n        S::retype(ptr)\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<timer::posix::PosixTimer as timer::SyncTimer>::init`",
+    "file": "async-timer-1.0.0-beta.15/src/timer/posix.rs",
+    "start_line": 212,
+    "start_col": 5,
+    "end_line": 236,
+    "end_col": 6,
+    "code_snippet": "fn init<R, F: Fn(&TimerState) -> R>(&mut self, init: F) -> R {\n        #[cfg(not(feature = \"c_wrapper\"))]\n        {\n            extern crate std;\n            static RUNTIME: std::sync::Once = std::sync::Once::new();\n            RUNTIME.call_once(init_sig);\n        }\n\n        if let State::Init(timeout) = self.state {\n            let state = Box::into_raw(Box::new(TimerState::new()));\n            let fd = time_create(state);\n\n            let state = unsafe { Box::from_raw(state) };\n            init(&state);\n\n            set_timer_value(fd, timeout);\n\n            self.state = State::Running(fd, state)\n        }\n\n        match &self.state {\n            State::Running(_, ref state) => init(state),\n            State::Init(_) => unreach!(),\n        }\n    }"
+}

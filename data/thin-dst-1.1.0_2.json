@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "thin-dst-1.1.0/src/lib.rs",
+    "start_line": 302,
+    "start_col": 9,
+    "end_line": 302,
+    "end_col": 67,
+    "code_snippet": "impl<Head, SliceItem> Drop for InProgress<Head, SliceItem> {\n            fn drop(&mut self) {\n                let raw_ptr = ThinData::erase(self.raw).as_ptr();\n                unsafe {\n                    let slice = make_slice_mut(\n                        raw_ptr.add(self.slice_offset).cast::<SliceItem>(),\n                        self.written_len,\n                    );\n                    ptr::drop_in_place(slice);\n                    dealloc(raw_ptr.cast(), self.layout);\n                }\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "yffi-0.24.0/src/lib.rs",
+    "start_line": 5075,
+    "start_col": 1,
+    "end_line": 5075,
+    "end_col": 27,
+    "code_snippet": "impl Drop for YEventChange {\n    fn drop(&mut self) {\n        if self.tag == Y_EVENT_CHANGE_ADD {\n            unsafe {\n                let len = self.len as usize;\n                let values = Vec::from_raw_parts(self.values as *mut YOutput, len, len);\n                drop(values);\n            }\n        }\n    }\n}"
+}

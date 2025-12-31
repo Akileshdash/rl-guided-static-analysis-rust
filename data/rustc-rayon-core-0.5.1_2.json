@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `registry::in_worker`",
+    "file": "rustc-rayon-core-0.5.1/src/registry.rs",
+    "start_line": 992,
+    "start_col": 1,
+    "end_line": 1008,
+    "end_col": 2,
+    "code_snippet": "pub(super) fn in_worker<OP, R>(op: OP) -> R\nwhere\n    OP: FnOnce(&WorkerThread, bool) -> R + Send,\n    R: Send,\n{\n    unsafe {\n        let owner_thread = WorkerThread::current();\n        if !owner_thread.is_null() {\n            // Perfectly valid to give them a `&T`: this is the\n            // current thread, so we know the data structure won't be\n            // invalidated until we return.\n            op(&*owner_thread, false)\n        } else {\n            global_registry().in_worker(op)\n        }\n    }\n}"
+}

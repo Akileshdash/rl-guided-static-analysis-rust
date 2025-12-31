@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "ApiSyncforSync/NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "aqueue-1.4.1/src/inner_store.rs",
+    "start_line": 7,
+    "start_col": 1,
+    "end_line": 7,
+    "end_col": 38,
+    "code_snippet": "unsafe impl<T> Sync for InnerStore<T> {}\nunsafe impl<T> Send for InnerStore<T> {}"
+}

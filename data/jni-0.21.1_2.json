@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jni-0.21.1/src/wrapper/objects/weak_ref.rs",
+    "start_line": 153,
+    "start_col": 1,
+    "end_line": 153,
+    "end_col": 27,
+    "code_snippet": "impl Drop for WeakRefGuard {\n    fn drop(&mut self) {\n        fn drop_impl(env: &JNIEnv, raw: sys::jweak) -> Result<()> {\n            let internal = env.get_native_interface();\n            // This method is safe to call in case of pending exceptions (see chapter 2 of the spec)\n            jni_unchecked!(internal, DeleteWeakGlobalRef, raw);\n            Ok(())\n        }\n\n        let res = match self.vm.get_env() {\n            Ok(env) => drop_impl(&env, self.raw),\n            Err(_) => {\n                warn!(\"Dropping a WeakRef in a detached thread. Fix your code if this message appears frequently (see the WeakRef docs).\");\n                self.vm\n                    .attach_current_thread()\n                    .and_then(|env| drop_impl(&env, self.raw))\n            }\n        };\n\n        if let Err(err) = res {\n            debug!(\"error dropping weak ref: {:#?}\", err);\n        }\n    }\n}"
+}

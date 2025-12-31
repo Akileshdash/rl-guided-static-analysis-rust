@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `dbi::DatabaseOptions::entry_cmp_as`",
+    "file": "lmdb-zero-0.4.4/src/dbi.rs",
+    "start_line": 563,
+    "start_col": 5,
+    "end_line": 574,
+    "end_col": 6,
+    "code_snippet": "extern fn entry_cmp_as<V : LmdbOrdKey + ?Sized>(\n        ap: *const ffi::MDB_val, bp: *const ffi::MDB_val) -> c_int\n    {\n        match unsafe {\n            V::from_lmdb_bytes(mdb_val_as_bytes(&ap, &*ap)).cmp(\n                &V::from_lmdb_bytes(mdb_val_as_bytes(&bp, &*bp)))\n        } {\n            Ordering::Less => -1,\n            Ordering::Equal => 0,\n            Ordering::Greater => 1,\n        }\n    }"
+}

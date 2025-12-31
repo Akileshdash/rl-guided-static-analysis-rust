@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `btree::get_shared`",
+    "file": "sanakirja-core-1.4.1/src/btree/mod.rs",
+    "start_line": 347,
+    "start_col": 1,
+    "end_line": 393,
+    "end_col": 2,
+    "code_snippet": "pub fn get_shared<\n    'a,\n    T: LoadPage,\n    K: Storable + ?Sized,\n    V: Storable + ?Sized,\n    P: BTreePage<K, V>,\n>(\n    txn: &'a T,\n    db: &Db_<K, V, P>,\n    k: &K,\n    v: Option<&V>,\n) -> Result<Option<(&'a K, &'a V, bool)>, T::Error> {\n    // Set the \"cursor stack\" by setting a skip list cursor in\n    // each page from the root to the appropriate leaf.\n    let mut last_match = None;\n    let mut page = unsafe { txn.load_page(db.db.into())? };\n    let mut is_shared = txn.rc(db.db.into())? >= 2;\n    // This is a for loop, to allow the compiler to unroll (maybe).\n    for _ in 0..cursor::N_CURSORS {\n        let mut cursor = P::cursor_before(&page);\n        if let Ok((kk, vv, _)) = P::set_cursor(txn, page.as_page(), &mut cursor, k, v) {\n            if v.is_some() {\n                return Ok(Some((kk, vv, is_shared)));\n            }\n            last_match = Some((kk, vv, is_shared));\n        } else if let Some((k, v, _)) = P::current(txn, page.as_page(), &cursor) {\n            // Here, Rust says that `k` and `v` have the same lifetime\n            // as `page`, but we actually know that they're alive for\n            // as long as `txn` doesn't change, so we can safely\n            // extend their lifetimes:\n            unsafe {\n                last_match = Some((core::mem::transmute(k), core::mem::transmute(v), is_shared))\n            }\n        }\n        // The cursor is set to the first element greater than or\n        // equal to the (k, v) we're looking for, so we need to\n        // explore the left subtree.\n        let next_page = P::left_child(page.as_page(), &cursor);\n        if next_page > 0 {\n            page = unsafe { txn.load_page(next_page)? };\n            is_shared |= txn.rc(db.db.into())? >= 2;\n        } else {\n            break;\n        }\n    }\n    Ok(last_match)\n}"
+}

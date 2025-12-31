@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `game::map::FindRouteOptions::<F>::into_js_options`",
+    "file": "screeps-game-api-0.23.1/src/game/map.rs",
+    "start_line": 180,
+    "start_col": 5,
+    "end_line": 226,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn into_js_options<R>(self, callback: impl Fn(&JsFindRouteOptions) -> R) -> R {\n        let mut raw_callback = self.route_callback;\n\n        let mut owned_callback = move |to_room: RoomName, from_room: RoomName| -> f64 {\n            raw_callback(to_room, from_room)\n        };\n\n        //\n        // Type erased and boxed callback: no longer a type specific to the closure\n        // passed in, now unified as &Fn\n        //\n\n        let callback_type_erased: &mut dyn FnMut(RoomName, RoomName) -> f64 = &mut owned_callback;\n\n        // Overwrite lifetime of reference so it can be passed to javascript.\n        // It's now pretending to be static data. This should be entirely safe\n        // because we control the only use of it and it remains valid during the\n        // pathfinder callback. This transmute is necessary because \"some lifetime\n        // above the current scope but otherwise unknown\" is not a valid lifetime.\n        //\n\n        let callback_lifetime_erased: &'static mut dyn FnMut(RoomName, RoomName) -> f64 =\n            unsafe { std::mem::transmute(callback_type_erased) };\n\n        let boxed_callback = Box::new(move |to_room: JsString, from_room: JsString| -> f64 {\n            let to_room = to_room\n                .try_into()\n                .expect(\"expected 'to' room name in route callback\");\n            let from_room = from_room\n                .try_into()\n                .expect(\"expected 'rom' room name in route callback\");\n\n            callback_lifetime_erased(to_room, from_room)\n        }) as Box<dyn FnMut(JsString, JsString) -> f64>;\n\n        let closure = Closure::wrap(boxed_callback);\n\n        //\n        // Create JS object and set properties.\n        //\n\n        let js_options = JsFindRouteOptions::new();\n\n        js_options.route_callback(&closure);\n\n        callback(&js_options)\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "paho-mqtt-0.13.3/src/properties.rs",
+    "start_line": 774,
+    "start_col": 1,
+    "end_line": 774,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Property {\n    /// Drops the property.\n    /// For string any binary types, the heap memory will be freed.\n    fn drop(&mut self) {\n        unsafe {\n            match self.property_type() {\n                PropertyType::BinaryData => {\n                    debug!(\n                        \"Dropping binary property: {:?}\",\n                        self.cprop.value.__bindgen_anon_1.data.data\n                    );\n                    let n = self.cprop.value.__bindgen_anon_1.data.len as usize;\n                    let _ = Vec::from_raw_parts(self.cprop.value.__bindgen_anon_1.data.data, n, n);\n                }\n                PropertyType::Utf8EncodedString => {\n                    debug!(\n                        \"Dropping string property: {:?}\",\n                        self.cprop.value.__bindgen_anon_1.data.data\n                    );\n                    let _ = CString::from_raw(self.cprop.value.__bindgen_anon_1.data.data);\n                }\n                PropertyType::Utf8StringPair => {\n                    debug!(\n                        \"Dropping string pair property: {:?}, {:?}\",\n                        self.cprop.value.__bindgen_anon_1.data.data,\n                        self.cprop.value.__bindgen_anon_1.value.data\n                    );\n                    let _ = CString::from_raw(self.cprop.value.__bindgen_anon_1.data.data);\n                    let _ = CString::from_raw(self.cprop.value.__bindgen_anon_1.value.data);\n                }\n                _ => (),\n            }\n        }\n    }\n}"
+}

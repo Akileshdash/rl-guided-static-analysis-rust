@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::set_object_array_element`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 1715,
+    "start_col": 5,
+    "end_line": 1730,
+    "end_col": 6,
+    "code_snippet": "pub fn set_object_array_element<'other_local_1, 'other_local_2>(\n        &self,\n        array: impl AsRef<JObjectArray<'other_local_1>>,\n        index: jsize,\n        value: impl AsRef<JObject<'other_local_2>>,\n    ) -> Result<()> {\n        non_null!(array.as_ref(), \"set_object_array_element array argument\");\n        jni_void_call!(\n            self.internal,\n            SetObjectArrayElement,\n            array.as_ref().as_raw(),\n            index,\n            value.as_ref().as_raw()\n        );\n        Ok(())\n    }"
+}

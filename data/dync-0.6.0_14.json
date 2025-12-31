@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<value::Value<B, V> as std::hash::Hash>::hash`",
+    "file": "dync-0.6.0/src/value.rs",
+    "start_line": 355,
+    "start_col": 5,
+    "end_line": 359,
+    "end_col": 6,
+    "code_snippet": "fn hash<H: Hasher>(&self, state: &mut H) {\n        unsafe {\n            self.vtable.hash_fn()(self.bytes.get_bytes_ref(), state);\n        }\n    }"
+}

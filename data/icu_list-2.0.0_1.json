@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<provider::ListJoinerPattern<'static> as icu_provider::prelude::yoke::Yokeable<'a>>::transform_mut`",
+    "file": "icu_list-2.0.0/src/provider/mod.rs",
+    "start_line": 198,
+    "start_col": 35,
+    "end_line": 198,
+    "end_col": 49,
+    "code_snippet": "#[derive(Clone, Debug, PartialEq, yoke::Yokeable, zerofrom::ZeroFrom)]\n#[cfg_attr(feature = \"datagen\", derive(serde::Serialize))]\npub struct ListJoinerPattern<'data> {\n    /// The pattern string without the placeholders\n    pub(crate) string: VarZeroCow<'data, str>,\n    /// The index of the first placeholder. Always <= index_1.\n    // Always 0 for CLDR data, so we don't need to serialize it.\n    // In-memory we have free space for it as index_1 doesn't\n    // fill a word.\n    #[cfg_attr(feature = \"datagen\", serde(skip))]\n    pub(crate) index_0: u8,\n    /// The index of the second placeholder. Always < string.len().\n    pub(crate) index_1: u8,\n}"
+}

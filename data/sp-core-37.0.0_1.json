@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `crypto_bytes::_::<impl parity_scale_codec::Decode for crypto_bytes::CryptoBytes<N, T>>::decode_into`",
+    "file": "sp-core-37.0.0/src/crypto_bytes.rs",
+    "start_line": 48,
+    "start_col": 18,
+    "end_line": 48,
+    "end_col": 24,
+    "code_snippet": "#[derive(Encode, Decode, DecodeWithMemTracking, MaxEncodedLen)]\n#[repr(transparent)]\npub struct CryptoBytes<const N: usize, T = ()>(pub [u8; N], PhantomData<fn() -> T>);\n\nimpl<const N: usize, T> Copy for CryptoBytes<N, T> {}"
+}

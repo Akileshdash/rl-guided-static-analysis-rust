@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lock_api-0.4.13/src/remutex.rs",
+    "start_line": 1025,
+    "start_col": 1,
+    "end_line": 1026,
+    "end_col": 47,
+    "code_snippet": "impl<'a, R: RawMutex + 'a, G: GetThreadId + 'a, T: ?Sized + 'a> Drop\n    for MappedReentrantMutexGuard<'a, R, G, T>\n{\n    #[inline]\n    fn drop(&mut self) {\n        // Safety: A MappedReentrantMutexGuard always holds the lock.\n        unsafe {\n            self.raw.unlock();\n        }\n    }\n}"
+}

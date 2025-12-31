@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `input::IngredientImpl::<C>::set_field`",
+    "file": "salsa-0.23.0/src/input.rs",
+    "start_line": 136,
+    "start_col": 5,
+    "end_line": 161,
+    "end_col": 6,
+    "code_snippet": "pub fn set_field<R>(\n        &mut self,\n        runtime: &mut Runtime,\n        id: C::Struct,\n        field_index: usize,\n        durability: Option<Durability>,\n        setter: impl FnOnce(&mut C::Fields) -> R,\n    ) -> R {\n        let id: Id = id.as_id();\n\n        let data_raw = Self::data_raw(runtime.table(), id);\n\n        // SAFETY: We hold `&mut` on the runtime so no `&`-references can be active.\n        // Also, we don't access any other data from the table while `r` is active.\n        let data = unsafe { &mut *data_raw };\n\n        data.revisions[field_index] = runtime.current_revision();\n\n        let field_durability = &mut data.durabilities[field_index];\n        if *field_durability != Durability::MIN {\n            runtime.report_tracked_write(*field_durability);\n        }\n        *field_durability = durability.unwrap_or(*field_durability);\n\n        setter(&mut data.fields)\n    }"
+}

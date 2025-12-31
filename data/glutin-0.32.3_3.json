@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "glutin-0.32.3/src/api/egl/surface.rs",
+    "start_line": 324,
+    "start_col": 1,
+    "end_line": 324,
+    "end_col": 46,
+    "code_snippet": "impl<T: SurfaceTypeTrait> Drop for Surface<T> {\n    fn drop(&mut self) {\n        unsafe {\n            self.display.inner.egl.DestroySurface(*self.display.inner.raw, self.raw);\n        }\n    }\n}"
+}

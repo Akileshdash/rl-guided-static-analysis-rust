@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `wrapper::jnienv::JNIEnv::<'local>::new_local_ref`",
+    "file": "jni-0.21.1/src/wrapper/jnienv.rs",
+    "start_line": 742,
+    "start_col": 5,
+    "end_line": 748,
+    "end_col": 6,
+    "code_snippet": "pub fn new_local_ref<'other_local, O>(&self, obj: O) -> Result<JObject<'local>>\n    where\n        O: AsRef<JObject<'other_local>>,\n    {\n        let local = jni_unchecked!(self.internal, NewLocalRef, obj.as_ref().as_raw());\n        Ok(unsafe { JObject::from_raw(local) })\n    }"
+}

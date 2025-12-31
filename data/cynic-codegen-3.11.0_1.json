@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "cynic-codegen-3.11.0/src/schema/type_index/schema_backed.rs",
+    "start_line": 19,
+    "start_col": 1,
+    "end_line": 19,
+    "end_col": 31,
+    "code_snippet": "#[ouroboros::self_referencing]\npub struct SchemaBackedTypeIndex {\n    ast: cynic_parser::TypeSystemDocument,\n    query_root: String,\n    mutation_root: Option<String>,\n    subscription_root: Option<String>,\n    typename_field: FieldDefinitionId,\n    #[borrows(ast)]\n    #[covariant]\n    types: HashMap<&'this str, TypeDefinition<'this>>,\n    #[borrows(ast)]\n    #[covariant]\n    directives: HashMap<&'this str, DirectiveDefinition<'this>>,\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "streamunordered-0.5.4/src/ready_to_run_queue.rs",
+    "start_line": 90,
+    "start_col": 1,
+    "end_line": 90,
+    "end_col": 36,
+    "code_snippet": "impl<S> Drop for ReadyToRunQueue<S> {\n    fn drop(&mut self) {\n        // Once we're in the destructor for `Inner<S>` we need to clear out\n        // the ready to run queue of tasks if there's anything left in there.\n        //\n        // Note that each task has a strong reference count associated with it\n        // which is owned by the ready to run queue. All tasks should have had\n        // their streams dropped already by the `StreamUnordered` destructor\n        // above, so we're just pulling out tasks and dropping their refcounts.\n        unsafe {\n            loop {\n                match self.dequeue() {\n                    Dequeue::Empty => break,\n                    Dequeue::Inconsistent => abort(\"inconsistent in drop\"),\n                    Dequeue::Data(ptr) => drop(Arc::from_raw(ptr)),\n                }\n            }\n        }\n    }\n}"
+}

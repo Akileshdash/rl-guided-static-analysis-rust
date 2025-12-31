@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "mmap-rs-0.6.1/src/os_impl/unix.rs",
+    "start_line": 207,
+    "start_col": 1,
+    "end_line": 207,
+    "end_col": 19,
+    "code_snippet": "impl Drop for Mmap {\n    fn drop(&mut self) {\n        let _ = unsafe { munmap(self.ptr as *mut _, self.size) };\n    }\n}"
+}

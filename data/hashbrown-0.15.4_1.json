@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "hashbrown-0.15.4/src/raw/mod.rs",
+    "start_line": 3354,
+    "start_col": 1,
+    "end_line": 3354,
+    "end_col": 46,
+    "code_snippet": "impl<T, A: Allocator> Drop for RawTable<T, A> {\n    #[cfg_attr(feature = \"inline-more\", inline)]\n    fn drop(&mut self) {\n        unsafe {\n            // SAFETY:\n            // 1. We call the function only once;\n            // 2. We know for sure that `alloc` and `table_layout` matches the [`Allocator`]\n            //    and [`TableLayout`] that were used to allocate this table.\n            // 3. If the drop function of any elements fails, then only a memory leak will occur,\n            //    and we don't care because we are inside the `Drop` function of the `RawTable`,\n            //    so there won't be any table left in an inconsistent state.\n            self.table\n                .drop_inner_table::<T, _>(&self.alloc, Self::TABLE_LAYOUT);\n        }\n    }\n}"
+}

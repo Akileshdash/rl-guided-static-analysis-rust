@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<&[std::string::String] as collections::strv::IntoStrV>::run_with_strv`",
+    "file": "glib-0.21.0/src/collections/strv.rs",
+    "start_line": 1281,
+    "start_col": 5,
+    "end_line": 1306,
+    "end_col": 6,
+    "code_snippet": "fn run_with_strv<R, F: FnOnce(&[*mut c_char]) -> R>(self, f: F) -> R {\n        let required_len = (self.len() + 1) * mem::size_of::<*mut c_char>()\n            + self.iter().map(|s| s.len() + 1).sum::<usize>();\n\n        if required_len < MAX_STACK_ALLOCATION * mem::size_of::<*mut c_char>() {\n            unsafe {\n                let mut s = mem::MaybeUninit::<[*mut c_char; MAX_STACK_ALLOCATION]>::uninit();\n                let ptrs = s.as_mut_ptr() as *mut *mut c_char;\n                let mut strs = ptrs.add(self.len() + 1) as *mut c_char;\n\n                for (i, item) in self.iter().enumerate() {\n                    ptr::copy_nonoverlapping(item.as_ptr() as *const _, strs, item.len());\n                    *strs.add(item.len()) = 0;\n                    *ptrs.add(i) = strs;\n                    strs = strs.add(item.len() + 1);\n                }\n                *ptrs.add(self.len()) = ptr::null_mut();\n\n                f(std::slice::from_raw_parts(ptrs, self.len()))\n            }\n        } else {\n            let mut s = StrV::with_capacity(self.len());\n            s.extend_from_slice(self);\n            s.run_with_strv(f)\n        }\n    }"
+}

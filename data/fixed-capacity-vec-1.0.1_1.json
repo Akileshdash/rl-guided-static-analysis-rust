@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "fixed-capacity-vec-1.0.1/src/lib.rs",
+    "start_line": 237,
+    "start_col": 1,
+    "end_line": 237,
+    "end_col": 56,
+    "code_snippet": "impl<T, const N: usize> Drop for FixedCapacityVec<T, N> {\n    #[inline]\n    fn drop(&mut self) {\n        unsafe {\n            // SAFETY\n            //\n            // We are about to break the invariants!  This is OK, because it cannot\n            // be observed by anyone: we have &mut Self, so no-one else can see it,\n            // and even if a panic unwinds from here, `self` will no longer be considered\n            // valid by the language.\n            if mem::needs_drop::<T>() {\n                let data: NonNull<[T]> = self.slice();\n                // This causes the supposedly-valid portion of data to become totally\n                // invalid, breaking the invariants.  See above.\n                ptr::drop_in_place(data.as_ptr());\n            }\n            // SAFETY: this causes self.data to become totally invalid, breaking\n            // the invariants.  That's OK; see above.\n            if Self::NZST {\n                alloc::dealloc(self.data.as_ptr() as _, Self::LAYOUT);\n            }\n        }\n    }\n}"
+}

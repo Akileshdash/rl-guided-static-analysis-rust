@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "elfo-core-0.2.0-alpha.19/src/envelope.rs",
+    "start_line": 67,
+    "start_col": 1,
+    "end_line": 67,
+    "end_col": 23,
+    "code_snippet": "impl Drop for Envelope {\n    fn drop(&mut self) {\n        let message = self.message();\n        let message_layout = message._repr_layout();\n        let (layout, message_offset) = envelope_repr_layout(message_layout);\n        debug_assert_eq!(message_offset, self.header().message_offset);\n\n        // Drop the message.\n        // SAFETY: the message is not accessed anymore below.\n        unsafe { message.drop_in_place() };\n\n        // Drop the header.\n        // SAFETY: the header is not accessed anymore below.\n        unsafe { ptr::drop_in_place(self.0.as_ptr()) }\n\n        // Deallocate the whole envelope.\n        // SAFETY: memory was allocated by `alloc::alloc` with the same layout.\n        unsafe { alloc::dealloc(self.0.as_ptr().cast(), layout) };\n    }\n}"
+}

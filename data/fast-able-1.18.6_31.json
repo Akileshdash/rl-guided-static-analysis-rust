@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `static_type_std::StaticTypeForStd::<T, F>::init_static`",
+    "file": "fast-able-1.18.6/src/static_type_std.rs",
+    "start_line": 25,
+    "start_col": 5,
+    "end_line": 36,
+    "end_col": 6,
+    "code_snippet": "pub fn init_static(&self) {\n        let mut lock = self.is_init_lock.lock();\n        if !*lock {\n            unsafe {\n                let f = ManuallyDrop::take(&mut *self.call_fun.get());\n                *self.val.get() = Some(f());\n            }\n            *lock = true;\n        } else {\n            // warn!(\"StaticType is already initialized\");\n        }\n    }"
+}

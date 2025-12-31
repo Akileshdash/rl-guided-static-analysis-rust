@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "intuicio-data-0.47.0/src/lifetime.rs",
+    "start_line": 698,
+    "start_col": 1,
+    "end_line": 698,
+    "end_col": 29,
+    "code_snippet": "impl Drop for LifetimeRefMut {\n    fn drop(&mut self) {\n        if let Some(state) = unsafe { self.0.upgrade_unchecked() } {\n            if let Some(mut access) = state.try_lock() {\n                access.release_writer(self.1);\n            }\n        }\n    }\n}"
+}

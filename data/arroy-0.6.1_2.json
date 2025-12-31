@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "arroy-0.6.1/src/parallel.rs",
+    "start_line": 338,
+    "start_col": 1,
+    "end_line": 338,
+    "end_col": 46,
+    "code_snippet": "unsafe impl<D> Sync for ImmutableLeafs<'_, D> {}"
+}

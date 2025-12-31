@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "linked-hash-map-0.5.6/src/lib.rs",
+    "start_line": 924,
+    "start_col": 1,
+    "end_line": 924,
+    "end_col": 46,
+    "code_snippet": "impl<K, V, S> Drop for LinkedHashMap<K, V, S> {\n    fn drop(&mut self) {\n        if !self.head.is_null() {\n            unsafe {\n                self.drop_entries();\n                drop_empty_node(self.head);\n            }\n        }\n        self.clear_free_list();\n    }\n}"
+}

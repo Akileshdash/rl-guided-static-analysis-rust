@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "WriteFlow",
+    "description": "Potential unsafe dataflow issue in `<u8 as internal::Enum<T>>::from_function::create_arr`",
+    "file": "enum-map-internals-0.2.2//usagers4/u139091/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/array-macro-1.0.5/src/lib.rs",
+    "start_line": 80,
+    "start_col": 9,
+    "end_line": 101,
+    "end_col": 10,
+    "code_snippet": "fn create_arr<T>(mut callback: impl FnMut(usize) -> T) -> [T; COUNT] {\n            let mut arr = $crate::__core::mem::MaybeUninit::uninit();\n            let mut vec = $crate::__ArrayVec::<T>::new((&mut arr).as_mut_ptr() as *mut T);\n            unsafe {\n                // Loop invariant: vec[..vec.length] is valid\n                for i in 0..COUNT {\n                    // On the first iteration the value of `i` is `0`, making this a no-op.\n                    //\n                    // We don't need to store length for the last iteration as `vec` is\n                    // forgotten after leaving this loop.\n                    //\n                    // The value is set before writing the value to avoid need to perform\n                    // addition by 1.\n                    *(&mut vec).length() = i;\n                    $crate::__core::ptr::write((&vec).start().add(i), callback(i));\n                }\n                // Loop escaped without panicking, avoid dropping elements.\n                $crate::__core::mem::forget(vec);\n                // All elements were written, assuming array is valid.\n                arr.assume_init()\n            }\n        }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "jni-0.21.1/src/wrapper/objects/auto_local.rs",
+    "start_line": 97,
+    "start_col": 1,
+    "end_line": 99,
+    "end_col": 30,
+    "code_snippet": "impl<'local, T> Drop for AutoLocal<'local, T>\nwhere\n    T: Into<JObject<'local>>,\n{\n    fn drop(&mut self) {\n        // Extract the local reference from `self.obj` so that we can delete it.\n        //\n        // This is needed because it is not allowed to move out of `self` during drop. A safe\n        // alternative would be to wrap `self.obj` in `Option`, but that would incur a run-time\n        // performance penalty from constantly checking if it's `None`.\n        //\n        // Safety: `self.obj` is not used again after this `take` call.\n        let obj = unsafe { ManuallyDrop::take(&mut self.obj) };\n\n        // Delete the extracted local reference.\n        let res = self.env.delete_local_ref(obj);\n        match res {\n            Ok(()) => {}\n            Err(e) => debug!(\"error dropping global ref: {:#?}\", e),\n        }\n    }\n}"
+}

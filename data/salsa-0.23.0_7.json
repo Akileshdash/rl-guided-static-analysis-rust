@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `update::update_fallback`",
+    "file": "salsa-0.23.0/src/update.rs",
+    "start_line": 84,
+    "start_col": 1,
+    "end_line": 101,
+    "end_col": 2,
+    "code_snippet": "pub unsafe fn update_fallback<T>(old_pointer: *mut T, new_value: T) -> bool\nwhere\n    T: 'static + PartialEq,\n{\n    // SAFETY: Because everything is owned, this ref is simply a valid `&mut`\n    let old_ref: &mut T = unsafe { &mut *old_pointer };\n\n    if *old_ref != new_value {\n        *old_ref = new_value;\n        true\n    } else {\n        // Subtle but important: Eq impls can be buggy or define equality\n        // in surprising ways. If it says that the value has not changed,\n        // we do not modify the existing value, and thus do not have to\n        // update the revision, as downstream code will not see the new value.\n        false\n    }\n}"
+}

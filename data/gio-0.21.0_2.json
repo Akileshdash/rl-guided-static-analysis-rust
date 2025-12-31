@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "gio-0.21.0/src/task.rs",
+    "start_line": 467,
+    "start_col": 1,
+    "end_line": 467,
+    "end_col": 50,
+    "code_snippet": "unsafe impl<V: ValueType + Send> Sync for Task<V> {}"
+}

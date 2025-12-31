@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `arcache::ll::LL::<K>::extract`",
+    "file": "concread-0.5.7/src/arcache/ll.rs",
+    "start_line": 288,
+    "start_col": 5,
+    "end_line": 320,
+    "end_col": 6,
+    "code_snippet": "pub(crate) fn extract(&mut self, n: LLNodeRef<K>) -> LLNodeOwned<K> {\n        assert!(self.size > 0);\n        assert!(!n.is_null());\n        unsafe {\n            // We should have a prev and next\n            debug_assert!(!(*n.inner).prev.is_null());\n            debug_assert!(!(*n.inner).next.is_null());\n            // And that prev's next is us, and next's prev is us.\n            debug_assert!(!(*(*n.inner).prev).next.is_null());\n            debug_assert!(!(*(*n.inner).next).prev.is_null());\n            debug_assert!((*(*n.inner).prev).next == n.inner);\n            debug_assert!((*(*n.inner).next).prev == n.inner);\n            // And we belong to this set\n            // assert!((*n).tag == self.tag);\n            self.size -= (*(*n.inner).k.as_ptr()).ll_weight();\n        }\n\n        unsafe {\n            let prev = (*n.inner).prev;\n            let next = (*n.inner).next;\n            // prev <-> n <-> next\n            (*next).prev = prev;\n            (*prev).next = next;\n            // Null things for paranoia.\n            if cfg!(test) || cfg!(debug_assertions) {\n                (*n.inner).prev = ptr::null_mut();\n                (*n.inner).next = ptr::null_mut();\n            }\n            // (*n).tag = 0;\n        }\n\n        LLNodeOwned { inner: n.inner }\n    }"
+}

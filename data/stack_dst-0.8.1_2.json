@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "stack_dst-0.8.1/src/lib.rs",
+    "start_line": 347,
+    "start_col": 5,
+    "end_line": 347,
+    "end_col": 56,
+    "code_snippet": "impl<'a, T> ::core::ops::Drop for PanicState<'a, T> {\n        fn drop(&mut self) {\n            if self.0.is_null() {\n                return ;\n            }\n            // Reset the state of the data structure (leaking items)\n            *self.2 = self.3;\n            // Drop all partially-populated items\n            unsafe {\n                while self.1 != 0 {\n                    ptr::drop_in_place(&mut *self.0);\n                    ptr::write_bytes(self.0 as *mut u8, 0, mem::size_of::<T>());\n                    self.0 = self.0.offset(1);\n                    self.1 -= 1;\n                }\n            }\n        }\n    }"
+}

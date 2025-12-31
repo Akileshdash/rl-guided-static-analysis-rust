@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lock_api-0.4.13/src/rwlock.rs",
+    "start_line": 2710,
+    "start_col": 1,
+    "end_line": 2710,
+    "end_col": 85,
+    "code_snippet": "impl<'a, R: RawRwLock + 'a, T: ?Sized + 'a> Drop for MappedRwLockReadGuard<'a, R, T> {\n    #[inline]\n    fn drop(&mut self) {\n        // Safety: A MappedRwLockReadGuard always holds a shared lock.\n        unsafe {\n            self.raw.unlock_shared();\n        }\n    }\n}"
+}

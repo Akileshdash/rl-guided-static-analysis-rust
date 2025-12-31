@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<std::boxed::Box<T> as codec::WrapperTypeDecode>::decode_wrapped`",
+    "file": "parity-scale-codec-3.7.5/src/codec.rs",
+    "start_line": 543,
+    "start_col": 2,
+    "end_line": 593,
+    "end_col": 3,
+    "code_snippet": "fn decode_wrapped<I: Input>(input: &mut I) -> Result<Self, Error>\n\twhere\n\t\tSelf::Wrapped: Decode,\n\t{\n\t\tinput.descend_ref()?;\n\n\t\t// Placement new is not yet stable, but we can just manually allocate a chunk of memory\n\t\t// and convert it to a `Box` ourselves.\n\t\t//\n\t\t// The explicit types here are written out for clarity.\n\t\t//\n\t\t// TODO: Use `Box::new_uninit` once that's stable.\n\t\tlet layout = core::alloc::Layout::new::<MaybeUninit<T>>();\n\n\t\tinput.on_before_alloc_mem(layout.size())?;\n\t\tlet ptr: *mut MaybeUninit<T> = if layout.size() == 0 {\n\t\t\tcore::ptr::NonNull::dangling().as_ptr()\n\t\t} else {\n\t\t\t// SAFETY: Layout has a non-zero size so calling this is safe.\n\t\t\tlet ptr: *mut u8 = unsafe { crate::alloc::alloc::alloc(layout) };\n\n\t\t\tif ptr.is_null() {\n\t\t\t\tcrate::alloc::alloc::handle_alloc_error(layout);\n\t\t\t}\n\n\t\t\tptr.cast()\n\t\t};\n\n\t\t// SAFETY: Constructing a `Box` from a piece of memory allocated with `std::alloc::alloc`\n\t\t//         is explicitly allowed as long as it was allocated with the global allocator\n\t\t//         and the memory layout matches.\n\t\t//\n\t\t//         Constructing a `Box` from `NonNull::dangling` is also always safe as long\n\t\t//         as the underlying type is zero-sized.\n\t\tlet mut boxed: Box<MaybeUninit<T>> = unsafe { Box::from_raw(ptr) };\n\n\t\tT::decode_into(input, &mut boxed)?;\n\n\t\t// Decoding succeeded, so let's get rid of `MaybeUninit`.\n\t\t//\n\t\t// TODO: Use `Box::assume_init` once that's stable.\n\t\tlet ptr: *mut MaybeUninit<T> = Box::into_raw(boxed);\n\t\tlet ptr: *mut T = ptr.cast();\n\n\t\t// SAFETY: `MaybeUninit` doesn't affect the memory layout, so casting the pointer back\n\t\t//         into a `Box` is safe.\n\t\tlet boxed: Box<T> = unsafe { Box::from_raw(ptr) };\n\n\t\tinput.ascend_ref();\n\t\tOk(boxed)\n\t}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "heed-types-0.21.0/src/serde_json.rs",
+    "start_line": 35,
+    "start_col": 1,
+    "end_line": 35,
+    "end_col": 37,
+    "code_snippet": "unsafe impl<T> Sync for SerdeJson<T> {}"
+}

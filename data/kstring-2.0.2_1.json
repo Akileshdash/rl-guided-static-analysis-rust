@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "kstring-2.0.2/src/string.rs",
+    "start_line": 677,
+    "start_col": 5,
+    "end_line": 677,
+    "end_col": 37,
+    "code_snippet": "impl<B> Drop for KStringInner<B> {\n        fn drop(&mut self) {\n            let tag = self.tag();\n            if tag.is_owned() {\n                unsafe {\n                    // SAFETY: `tag` ensures we are using the right variant\n                    std::mem::ManuallyDrop::drop(&mut self.owned)\n                }\n            }\n        }\n    }"
+}

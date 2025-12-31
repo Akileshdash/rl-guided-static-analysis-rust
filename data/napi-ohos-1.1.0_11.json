@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "napi-ohos-1.1.0/src/bindgen_runtime/js_values/external.rs",
+    "start_line": 256,
+    "start_col": 1,
+    "end_line": 256,
+    "end_col": 41,
+    "code_snippet": "impl<T: 'static> Drop for ExternalRef<T> {\n  fn drop(&mut self) {\n    check_status_or_throw!(\n      self.env,\n      unsafe { sys::napi_delete_reference(self.env, self.raw) },\n      \"Failed to delete reference on external value\"\n    );\n  }\n}"
+}

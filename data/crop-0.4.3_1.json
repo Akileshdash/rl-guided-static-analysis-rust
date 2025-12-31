@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "crop-0.4.3/src/tree/tiny_arc.rs",
+    "start_line": 145,
+    "start_col": 1,
+    "end_line": 145,
+    "end_col": 24,
+    "code_snippet": "impl<T> Drop for Arc<T> {\n    #[inline]\n    fn drop(&mut self) {\n        let old = self.inner().counter.fetch_sub(1, atomic::Ordering::Release);\n\n        if old == 1 {\n            atomic::fence(atomic::Ordering::Acquire);\n\n            // SAFETY: this is the last owner of the `Arc` so the memory has\n            // not yet been reclaimed by a previous call to `Box::from_raw()`.\n            let _ = unsafe { Box::from_raw(self.ptr.as_ptr()) };\n        }\n    }\n}"
+}

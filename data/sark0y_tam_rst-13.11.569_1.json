@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `atomic_op::stdin_write`",
+    "file": "sark0y_tam_rst-13.11.569/src/atomic.rs",
+    "start_line": 7,
+    "start_col": 1,
+    "end_line": 39,
+    "end_col": 2,
+    "code_snippet": "pub fn stdin_write <T: ToString + STRN > (strn: Option < T > ) {\n  //  static mut fd0: Lazy < Option < std::fs::File > > = Lazy::new (|| { None });\n  //  static mut fst_run: bool = true;\n    unsafe {\n  //      if fst_run {\n            let mut file = std::fs::File::from_raw_fd(0/*stdin*/);\n      //      let mut undead = ManuallyDrop::new (file );\n    //        *fd0 = Some( ManuallyDrop::into_inner (undead) );\n            \n    //    }\n        let fn_name = \"stdin_write\".strn();\n    let mut mutex_state = false;\n    let mut mutex: crate::enums::custom_mutex = crate::enums::custom_mutex::new( &fn_name );\n    if let Some ( x ) = crate::smart_lags::mamed_mutexes (&fn_name, named_mutex::set, &mut mutex ) {mutex_state = x}\n    //else { crate::smart_lags::mamed_mutexes (&fn_name, named_mutex::set, &mut mutex ); mutex_state = true;}\n    //if crate::smart_lags::mamed_mutexes (&fn_name, named_mutex::get ).is_none() {mutex = false }\n    let mut cond = unsafe { ( *mutex.owner == u64::MAX || *mutex.owner == mutex.id ) };\n    while cond == false {\n        cond = unsafe { ( *mutex.owner == u64::MAX || *mutex.owner == mutex.id ) };\n        if let Some ( x ) = crate::smart_lags::mamed_mutexes (&fn_name, named_mutex::set, &mut mutex ) {mutex_state = x}\n        unsafe { dbg! (*mutex.owner ); dbg! (mutex.id ); }\n    }\n    //libc::pthread_cancel( abort.as_pthread_t() ); \n    //if strn.is_none () { (*fd0.as_mut().unwrap()).flush (); return }\n    //if strn.is_none () { fd0.as_ref().unwrap().write(\"\".strn().as_bytes() ); return }\n    if strn.is_none () { file.write(\"\".strn().as_bytes() ); return }\n    //fd0.as_ref().unwrap().write(strn.unwrap().strn().as_bytes() );\n    file.write(strn.unwrap().strn().as_bytes() );\n    std::mem::forget ( file );\n  //  std::mem::drop (writeIn_stdin);\n    crate::smart_lags::forcely_set_mamed_mutexes (&fn_name, named_mutex::unset, &mut mutex ); //dbg!(\"end\");\n    }\n}"
+}

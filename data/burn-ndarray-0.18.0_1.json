@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync/RelaxSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "burn-ndarray-0.18.0/src/sharing.rs",
+    "start_line": 8,
+    "start_col": 1,
+    "end_line": 8,
+    "end_col": 47,
+    "code_snippet": "unsafe impl<T> Sync for UnsafeSharedRef<'_, T> {}"
+}

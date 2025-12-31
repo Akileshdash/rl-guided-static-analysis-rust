@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "byte-pool-0.2.4/src/pool.rs",
+    "start_line": 91,
+    "start_col": 1,
+    "end_line": 91,
+    "end_col": 44,
+    "code_snippet": "impl<'a, T: Poolable> Drop for Block<'a, T> {\n    fn drop(&mut self) {\n        let data = mem::ManuallyDrop::into_inner(unsafe { ptr::read(&self.data) });\n        self.pool.push_raw_block(data);\n    }\n}"
+}

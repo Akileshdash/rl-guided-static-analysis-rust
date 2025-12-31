@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `tensors::Header::read`",
+    "file": "tract-nnef-0.21.13/src/tensors.rs",
+    "start_line": 42,
+    "start_col": 5,
+    "end_line": 57,
+    "end_col": 6,
+    "code_snippet": "pub fn read(reader: &mut impl Read) -> TractResult<Header> {\n        let mut header: Header = unsafe { std::mem::zeroed() };\n        reader.read_exact(unsafe {\n            std::mem::transmute::<&mut Header, &mut [u8; 128]>(&mut header)\n        })?;\n        if header.magic != [0x4e, 0xef] {\n            bail!(\"Wrong magic number\");\n        };\n        if header.version_maj != 1 && header.version_min != 0 {\n            bail!(\"Wrong version number\");\n        }\n        if header.rank > 8 {\n            bail!(\"Wrong tensor rank {}\", header.rank);\n        }\n        Ok(header)\n    }"
+}

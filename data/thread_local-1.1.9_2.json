@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "thread_local-1.1.9/src/lib.rs",
+    "start_line": 137,
+    "start_col": 1,
+    "end_line": 137,
+    "end_col": 38,
+    "code_snippet": "impl<T: Send> Drop for ThreadLocal<T> {\n    fn drop(&mut self) {\n        // Free each non-null bucket\n        for (i, bucket) in self.buckets.iter_mut().enumerate() {\n            let bucket_ptr = *bucket.get_mut();\n\n            let this_bucket_size = 1 << i;\n\n            if bucket_ptr.is_null() {\n                continue;\n            }\n\n            unsafe { deallocate_bucket(bucket_ptr, this_bucket_size) };\n        }\n    }\n}"
+}

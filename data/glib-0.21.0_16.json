@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `subclass::type_module::load`",
+    "file": "glib-0.21.0/src/subclass/type_module.rs",
+    "start_line": 71,
+    "start_col": 1,
+    "end_line": 91,
+    "end_col": 2,
+    "code_snippet": "unsafe extern \"C\" fn load<T: TypeModuleImpl>(\n    type_module: *mut gobject_ffi::GTypeModule,\n) -> ffi::gboolean {\n    let instance = &*(type_module as *mut T::Instance);\n    let imp = instance.imp();\n\n    let res = imp.load();\n    // GLib type system expects a module to never be disposed if types has been\n    // successfully loaded.\n    // The following code prevents the Rust wrapper (`glib::TypeModule` subclass)\n    // to dispose the module when dropped by ensuring the reference count is > 1.\n    // Nothing is done if loading types has failed, allowing application to drop\n    // and dispose the invalid module.\n    if res && (*(type_module as *const gobject_ffi::GObject)).ref_count == 1 {\n        unsafe {\n            gobject_ffi::g_object_ref(type_module as _);\n        }\n    }\n\n    res.into_glib()\n}"
+}

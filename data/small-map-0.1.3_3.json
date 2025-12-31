@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSendForSend",
+    "description": "Suspicious impl of `Send` found",
+    "file": "small-map-0.1.3/src/raw/mod.rs",
+    "start_line": 77,
+    "start_col": 1,
+    "end_line": 77,
+    "end_col": 40,
+    "code_snippet": "unsafe impl<T> Send for RawIterInner<T> {}\nunsafe impl<T> Sync for RawIterInner<T> {}"
+}

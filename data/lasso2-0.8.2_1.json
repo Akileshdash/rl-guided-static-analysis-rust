@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "lasso2-0.8.2/src/arenas/bucket.rs",
+    "start_line": 97,
+    "start_col": 1,
+    "end_line": 97,
+    "end_col": 21,
+    "code_snippet": "impl Drop for Bucket {\n    fn drop(&mut self) {\n        // Safety: We have exclusive access to the pointers since the contract of\n        //         `store_str` should be withheld\n        unsafe {\n            let items = self.items.as_ptr();\n\n            debug_assert!(Layout::from_size_align(\n                size_of::<u8>() * self.capacity.get(),\n                align_of::<u8>(),\n            )\n            .is_ok());\n\n            // Deallocate all memory that the bucket allocated\n            dealloc(\n                items,\n                // Safety: Align will always be a non-zero power of two and the\n                //         size will not overflow when rounded up\n                Layout::from_size_align_unchecked(\n                    size_of::<u8>() * self.capacity.get(),\n                    align_of::<u8>(),\n                ),\n            );\n        }\n    }\n}"
+}

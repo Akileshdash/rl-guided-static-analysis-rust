@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "aws-lc-rs-1.13.3/src/cipher/key.rs",
+    "start_line": 28,
+    "start_col": 1,
+    "end_line": 28,
+    "end_col": 33,
+    "code_snippet": "impl Drop for SymmetricCipherKey {\n    fn drop(&mut self) {\n        // Aes128Key, Aes256Key and ChaCha20Key implement Drop separately.\n        match self {\n            SymmetricCipherKey::Aes128 { enc_key, dec_key }\n            | SymmetricCipherKey::Aes192 { enc_key, dec_key }\n            | SymmetricCipherKey::Aes256 { enc_key, dec_key } => unsafe {\n                let enc_bytes: &mut [u8; size_of::<AES_KEY>()] = (enc_key as *mut AES_KEY)\n                    .cast::<[u8; size_of::<AES_KEY>()]>()\n                    .as_mut()\n                    .unwrap();\n                enc_bytes.zeroize();\n                let dec_bytes: &mut [u8; size_of::<AES_KEY>()] = (dec_key as *mut AES_KEY)\n                    .cast::<[u8; size_of::<AES_KEY>()]>()\n                    .as_mut()\n                    .unwrap();\n                dec_bytes.zeroize();\n            },\n            SymmetricCipherKey::ChaCha20 { .. } => {}\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmer-vm-near-2.4.1/src/instance/ref.rs",
+    "start_line": 72,
+    "start_col": 1,
+    "end_line": 72,
+    "end_col": 28,
+    "code_snippet": "impl Drop for InstanceInner {\n    /// Drop the `InstanceInner`.\n    fn drop(&mut self) {\n        unsafe { Self::deallocate_instance(self) };\n    }\n}"
+}

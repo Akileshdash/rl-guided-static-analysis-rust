@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "odbc-api-14.2.0/src/handles/connection.rs",
+    "start_line": 55,
+    "start_col": 1,
+    "end_line": 55,
+    "end_col": 29,
+    "code_snippet": "impl Drop for Connection<'_> {\n    fn drop(&mut self) {\n        unsafe {\n            drop_handle(self.handle as Handle, HandleType::Dbc);\n        }\n    }\n}"
+}

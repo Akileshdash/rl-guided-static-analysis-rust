@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "gc-0.5.1/src/lib.rs",
+    "start_line": 312,
+    "start_col": 1,
+    "end_line": 312,
+    "end_col": 31,
+    "code_snippet": "impl<T: ?Sized> Drop for Gc<T> {\n    #[inline]\n    fn drop(&mut self) {\n        // If this pointer was a root, we should unroot it.\n        if self.rooted() {\n            unsafe {\n                self.inner().unroot_inner();\n            }\n        }\n    }\n}"
+}

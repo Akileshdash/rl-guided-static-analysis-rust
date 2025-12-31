@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `<rank_select::RankSelect101111<S, S0, BV> as rank_select::Rank>::try_rank`",
+    "file": "bitm-0.5.1/src/rank_select/mod.rs",
+    "start_line": 209,
+    "start_col": 15,
+    "end_line": 223,
+    "end_col": 6,
+    "code_snippet": "#[inline] fn try_rank(&self, index: usize) -> Option<usize> {\n        let block = index / 512;\n        let word_idx = index / 64;\n        // we start from access to content, as if given index of content is not out of bounds,\n        // then corresponding indices l1ranks and l2ranks are also not out of bound\n        let mut r = (self.content.get(word_idx)? & n_lowest_bits(index as u8 % 64)).count_ones() as usize;\n        let block_content = *unsafe{ self.l2ranks.get_unchecked(index/2048) };\n        #[cfg(target_pointer_width = \"64\")] { r += unsafe{ *self.l1ranks.get_unchecked(index >> 32) } + (block_content & 0xFFFFFFFFu64) as usize; } // 32 lowest bits   // for 34 bits: 0x3FFFFFFFFu64\n        #[cfg(target_pointer_width = \"32\")] { r += (block_content & 0xFFFFFFFFu64) as usize; }\n\n        r += (((block_content >> (11 * (!block & 3))) >> 32) & 0b1_11111_11111) as usize;\n\n        //Some(r + count_bits_in(unsafe {self.content.get_unchecked(block * 8/*word_idx&!7*/..word_idx)}))\n        Some(r + count_bits_in(unsafe {self.content.get_unchecked(word_idx&!7..word_idx)}))\n    }"
+}

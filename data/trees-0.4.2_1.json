@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "trees-0.4.2/src/node_vec.rs",
+    "start_line": 182,
+    "start_col": 1,
+    "end_line": 182,
+    "end_col": 28,
+    "code_snippet": "impl<T> Drop for NodeVec<T> {\n    fn drop( &mut self ) {\n        unsafe{ self.buf.set_len( 0 ); }\n    }\n}"
+}

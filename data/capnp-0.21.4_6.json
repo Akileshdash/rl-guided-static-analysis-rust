@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `private::layout::StructReader::<'a>::get_data_field`",
+    "file": "capnp-0.21.4/src/private/layout.rs",
+    "start_line": 3440,
+    "start_col": 5,
+    "end_line": 3450,
+    "end_col": 6,
+    "code_snippet": "pub fn get_data_field<T: Primitive + zero::Zero>(&self, offset: ElementCount) -> T {\n        // We need to check the offset because the struct may have\n        // been created with an old version of the protocol that did\n        // not contain the field.\n        if (offset + 1) * bits_per_element::<T>() <= self.data_size as usize {\n            let dwv: *const <T as Primitive>::Raw = self.data as *const _;\n            unsafe { <T as Primitive>::get(&*dwv.add(offset)) }\n        } else {\n            T::zero()\n        }\n    }"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/fiber.rs",
+    "start_line": 468,
+    "start_col": 1,
+    "end_line": 468,
+    "end_col": 29,
+    "code_snippet": "impl Drop for StoreFiber<'_> {\n    fn drop(&mut self) {\n        if self.fiber.is_none() {\n            return;\n        }\n\n        assert!(\n            self.fiber.as_ref().unwrap().done(),\n            \"attempted to drop in-progress fiber without first calling `StoreFiber::dispose`\"\n        );\n\n        self.state.take().unwrap().dispose();\n\n        unsafe {\n            self.engine\n                .allocator()\n                .deallocate_fiber_stack(self.fiber.take().unwrap().into_stack());\n        }\n    }\n}"
+}

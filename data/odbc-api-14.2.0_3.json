@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "odbc-api-14.2.0/src/handles/environment.rs",
+    "start_line": 51,
+    "start_col": 1,
+    "end_line": 51,
+    "end_col": 26,
+    "code_snippet": "impl Drop for Environment {\n    fn drop(&mut self) {\n        unsafe {\n            drop_handle(self.handle as Handle, HandleType::Env);\n        }\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "scryer-prolog-0.9.4/src/arena.rs",
+    "start_line": 790,
+    "start_col": 1,
+    "end_line": 790,
+    "end_col": 20,
+    "code_snippet": "impl Drop for Arena {\n    fn drop(&mut self) {\n        let mut ptr = self.base;\n\n        while !ptr.is_null() {\n            unsafe {\n                let ptr_r = &*ptr;\n\n                let layout = alloc::Layout::from_size_align_unchecked(\n                    ptr_r.slab_size(),\n                    mem::align_of::<AllocSlab>(),\n                );\n\n                drop_slab_in_place(&mut *ptr);\n\n                let next_ptr = ptr_r.next;\n                alloc::dealloc(ptr as *mut u8, layout);\n                ptr = next_ptr;\n            }\n        }\n\n        self.base = ptr::null_mut();\n    }\n}"
+}

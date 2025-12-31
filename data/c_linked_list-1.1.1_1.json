@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute",
+    "description": "Potential unsafe dataflow issue in `CLinkedListMut::<T, N>::len`",
+    "file": "c_linked_list-1.1.1/src/lib.rs",
+    "start_line": 93,
+    "start_col": 5,
+    "end_line": 101,
+    "end_col": 6,
+    "code_snippet": "pub fn len(&self) -> usize {\n        let mut node = self.head;\n        let mut ret = 0;\n        while !node.is_null() {\n            node = unsafe { (self.next)(&mut *node) };\n            ret += 1;\n        }\n        ret\n    }"
+}

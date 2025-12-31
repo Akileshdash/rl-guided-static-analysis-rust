@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "com-0.6.0/src/interfaces/iclass_factory.rs",
+    "start_line": 8,
+    "start_col": 1,
+    "end_line": 11,
+    "end_col": 39,
+    "code_snippet": "interfaces! {\n    /// [IClassFactory](https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iclassfactory) COM interface\n    #[uuid(\"00000001-0000-0000-c000-000000000046\")]\n    pub unsafe interface IClassFactory: IUnknown {\n        /// the [CreateInstance](https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iclassfactory-createinstance) COM method\n        pub unsafe fn CreateInstance(\n            &self,\n            aggr: Option<IUnknown>,\n            riid: *const GUID,\n            ppv: *mut *mut c_void,\n        ) -> HRESULT;\n        /// the [LockServer](https://docs.microsoft.com/en-us/windows/win32/api/unknwn/nf-unknwn-iclassfactory-lockserver) COM method\n        pub unsafe fn LockServer(&self, increment: BOOL) -> HRESULT;\n    }\n}"
+}

@@ -1,0 +1,12 @@
+{
+    "level": "Info",
+    "analyzer": "SendSyncVariance",
+    "op_type": "NaiveSyncForSync",
+    "description": "Suspicious impl of `Sync` found",
+    "file": "zng-app-0.16.9/src/widget/builder.rs",
+    "start_line": 3022,
+    "start_col": 1,
+    "end_line": 3022,
+    "end_col": 54,
+    "code_snippet": "unsafe impl<Tuple> Sync for PropertyInputTypes<Tuple> {}"
+}

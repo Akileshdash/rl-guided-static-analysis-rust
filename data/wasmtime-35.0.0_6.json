@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "wasmtime-35.0.0/src/runtime/type_registry.rs",
+    "start_line": 1247,
+    "start_col": 1,
+    "end_line": 1247,
+    "end_col": 32,
+    "code_snippet": "impl Drop for TypeRegistryInner {\n    fn drop(&mut self) {\n        let TypeRegistryInner {\n            hash_consing_map,\n            types,\n            type_to_rec_group,\n            type_to_supertypes,\n            type_to_trampoline,\n            type_to_gc_layout,\n            drop_stack,\n        } = self;\n        assert!(\n            hash_consing_map.is_empty(),\n            \"type registry not empty: hash consing map is not empty: {hash_consing_map:#?}\"\n        );\n        assert!(\n            types.is_empty(),\n            \"type registry not empty: types slab is not empty: {types:#?}\"\n        );\n        assert!(\n            type_to_rec_group.is_empty() || type_to_rec_group.values().all(|x| x.is_none()),\n            \"type registry not empty: type-to-rec-group map is not empty: {type_to_rec_group:#?}\"\n        );\n        assert!(\n            type_to_supertypes.is_empty() || type_to_supertypes.values().all(|x| x.is_none()),\n            \"type registry not empty: type-to-supertypes map is not empty: {type_to_supertypes:#?}\"\n        );\n        assert!(\n            type_to_trampoline.is_empty() || type_to_trampoline.values().all(|x| x.is_none()),\n            \"type registry not empty: type-to-trampoline map is not empty: {type_to_trampoline:#?}\"\n        );\n        assert!(\n            type_to_gc_layout.is_empty() || type_to_gc_layout.values().all(|x| x.is_none()),\n            \"type registry not empty: type-to-gc-layout map is not empty: {type_to_gc_layout:#?}\"\n        );\n        assert!(\n            drop_stack.is_empty(),\n            \"type registry not empty: drop stack is not empty: {drop_stack:#?}\"\n        );\n    }\n}"
+}

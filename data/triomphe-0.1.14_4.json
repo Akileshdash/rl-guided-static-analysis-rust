@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDataflow",
+    "op_type": "Transmute/WriteFlow",
+    "description": "Potential unsafe dataflow issue in `header::<impl arc::Arc<header::HeaderSlice<H, [T]>>>::from_header_and_iter`",
+    "file": "triomphe-0.1.14/src/header.rs",
+    "start_line": 29,
+    "start_col": 5,
+    "end_line": 66,
+    "end_col": 6,
+    "code_snippet": "pub fn from_header_and_iter<I>(header: H, mut items: I) -> Self\n    where\n        I: Iterator<Item = T> + ExactSizeIterator,\n    {\n        assert_ne!(mem::size_of::<T>(), 0, \"Need to think about ZST\");\n\n        let num_items = items.len();\n\n        let inner = Arc::allocate_for_header_and_slice(num_items);\n\n        unsafe {\n            // Write the data.\n            //\n            // Note that any panics here (i.e. from the iterator) are safe, since\n            // we'll just leak the uninitialized memory.\n            ptr::write(&mut ((*inner.as_ptr()).data.header), header);\n            let mut current = (*inner.as_ptr()).data.slice.as_mut_ptr();\n            for _ in 0..num_items {\n                ptr::write(\n                    current,\n                    items\n                        .next()\n                        .expect(\"ExactSizeIterator over-reported length\"),\n                );\n                current = current.offset(1);\n            }\n            assert!(\n                items.next().is_none(),\n                \"ExactSizeIterator under-reported length\"\n            );\n        }\n\n        // Safety: ptr is valid & the inner structure is fully initialized\n        Arc {\n            p: inner,\n            phantom: PhantomData,\n        }\n    }"
+}

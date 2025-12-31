@@ -1,0 +1,12 @@
+{
+    "level": "Warning",
+    "analyzer": "UnsafeDestructor",
+    "op_type": null,
+    "description": "unsafe block detected in drop",
+    "file": "semver-1.0.26/src/identifier.rs",
+    "start_line": 244,
+    "start_col": 1,
+    "end_line": 244,
+    "end_col": 25,
+    "code_snippet": "impl Drop for Identifier {\n    fn drop(&mut self) {\n        if self.is_empty_or_inline() {\n            return;\n        }\n        let ptr = repr_to_ptr_mut(self.head);\n        // SAFETY: ptr is one of our own heap allocations.\n        let len = unsafe { decode_len(ptr) };\n        let size = bytes_for_varint(len) + len.get();\n        let align = 2;\n        // SAFETY: align is not zero, align is a power of two, and rounding\n        // size up to align does not overflow isize::MAX. These guarantees were\n        // made when originally allocating this memory.\n        let layout = unsafe { Layout::from_size_align_unchecked(size, align) };\n        // SAFETY: ptr was previously allocated by the same allocator with the\n        // same layout.\n        unsafe { dealloc(ptr, layout) }\n    }\n}"
+}
